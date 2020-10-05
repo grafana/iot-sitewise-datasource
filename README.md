@@ -1,2 +1,3 @@
-# iot-sitewise-datasource
-IoT Sitewise (work in progress!)
+# IoT Sitewise Datasource
+
+WORK IN PROGRESS

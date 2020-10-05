@@ -1,0 +1,38 @@
+{
+  "type": "datasource",
+  "name": "Amazon IoT Sitewise",
+  "id": "grafana-iot-sitewise-datasource",
+
+  "backend": true,
+  "executable": "gpx_iot_sitewise",
+  "metrics": true,
+  "alerting": true,
+  "annotations": true,
+  
+  "info": {
+    "description": "IoT Sitewise",
+    "author": {
+      "name": "Grafana Labs",
+      "url": "https://grafana.com"
+    },
+    "keywords": ["datasource","iot","aws"],
+    "logos": {
+      "small": "img/sitewise.svg",
+      "large": "img/sitewise.svg"
+    },
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/grafana/timestream-datasource"
+      }
+    ],
+    "screenshots": [],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+  "dependencies": {
+    "grafanaVersion": "7.1.0",
+    "grafanaDependency": ">=7.1.0",
+    "plugins": []
+  }
+}

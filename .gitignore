@@ -1,0 +1,7 @@
+node_modules/
+coverage/
+ci/
+cypress/report.json
+cypress/screenshots/actual
+cypress/videos/
+dist/
