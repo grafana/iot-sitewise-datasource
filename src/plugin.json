@@ -1,0 +1,41 @@
+{
+  "type": "datasource",
+  "name": "aws-iot-sitewise-datasource",
+  "id": "aws-aws-iot-sitewise-datasource",
+  "metrics": true,
+  "streaming": true,
+  "info": {
+    "description": "Datasource plugin for AWS Sitewise",
+    "author": {
+      "name": "mattoa",
+      "url": "https://aws.amazon.com/iot-sitewise/"
+    },
+    "keywords": [
+      "iot",
+      "sitewise",
+      "aws",
+      "telemetry"
+    ],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://github.com/grafana/simple-datasource"
+      },
+      {
+        "name": "License",
+        "url": "https://github.com/grafana/simple-datasource/blob/master/LICENSE"
+      }
+    ],
+    "screenshots": [],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+  "dependencies": {
+    "grafanaVersion": "7.1.x",
+    "plugins": []
+  }
+}
