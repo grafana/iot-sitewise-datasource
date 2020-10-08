@@ -8,8 +8,8 @@ import (
 	"github.com/aws/aws-sdk-go/service/timestreamquery"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
-	gaws "github.com/grafana/timestream-datasource/pkg/common/aws"
-	"github.com/grafana/timestream-datasource/pkg/models"
+	gaws "github.com/grafana/iot-sitewise-datasource/pkg/common/aws"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
 // ExecuteQuery -- run a query

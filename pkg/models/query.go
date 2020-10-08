@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
-	"github.com/grafana/timestream-datasource/pkg/common"
+	"github.com/grafana/iot-sitewise-datasource/pkg/common"
 )
 
 // QueryModel represents a spreadsheet query.

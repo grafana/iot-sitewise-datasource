@@ -9,8 +9,8 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend/datasource"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/resource"
-	gaws "github.com/grafana/timestream-datasource/pkg/common/aws"
-	"github.com/grafana/timestream-datasource/pkg/models"
+	gaws "github.com/grafana/iot-sitewise-datasource/pkg/common/aws"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/request"

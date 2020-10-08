@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/timestreamquery"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
-	"github.com/grafana/timestream-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
 // QueryResultToDataFrame creates a DataFrame from query results

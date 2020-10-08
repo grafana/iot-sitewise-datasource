@@ -5,7 +5,7 @@ import (
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/datasource"
-	"github.com/grafana/timestream-datasource/pkg/timestream"
+	"github.com/grafana/iot-sitewise-datasource/pkg/timestream"
 )
 
 func main() {

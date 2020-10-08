@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/grafana/timestream-datasource/pkg/common/aws"
-	"github.com/grafana/timestream-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/common/aws"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
 const timeFilter = `\$__timeFilter`
