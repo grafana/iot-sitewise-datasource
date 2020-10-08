@@ -171,7 +171,7 @@ jobs:
           root: .
           paths:
             - ci/jobs/build_backend
-            
+
   package:
     executor: e2e_exec
     steps:
@@ -185,7 +185,7 @@ jobs:
       - run:
           name: Package Distribution (for signing/etc)
           command: |
-            EXEC_PREFIX=gpx_timestream
+            EXEC_PREFIX=gpx_iot-sitewise
             #
             # ci-package will create the zip file
             #
@@ -366,7 +366,7 @@ jobs:
             fi
 
   publish_github_release:
-    working_directory: ~/timestream-datasource
+    working_directory: ~/iot-sitewise-datasource
     docker:
       - image: cibuilds/github:0.13.0
     steps:
