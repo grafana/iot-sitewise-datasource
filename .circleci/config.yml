@@ -185,7 +185,7 @@ jobs:
       - run:
           name: Package Distribution (for signing/etc)
           command: |
-            EXEC_PREFIX=gpx_iot-sitewise
+            EXEC_PREFIX=gpx_iot_sitewise
             #
             # ci-package will create the zip file
             #
