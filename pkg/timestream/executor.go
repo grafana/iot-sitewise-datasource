@@ -50,11 +50,11 @@ func ExecuteQuery(ctx context.Context, query models.QueryModel, runner queryRunn
 	frame.Meta.ExecutedQueryString = raw
 
 	if frame.Meta.Custom == nil {
-		frame.Meta.Custom = &models.TimestreamCustomMeta{}
+		frame.Meta.Custom = &models.SitewiseCustomMeta{}
 	}
 
 	// Apply the timing info
-	meta := frame.Meta.Custom.(*models.TimestreamCustomMeta)
+	meta := frame.Meta.Custom.(*models.SitewiseCustomMeta)
 	if meta.NextToken == "" {
 		meta.FinishTime = finish
 	}

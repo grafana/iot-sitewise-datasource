@@ -3,22 +3,20 @@ import {
   DataQueryResponse,
   DataFrame,
   DataQueryRequest,
-  MetricFindValue,
   ScopedVars,
   QueryResultMetaStat,
 } from '@grafana/data';
-import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
+import { DataSourceWithBackend } from '@grafana/runtime';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
-import { TimestreamQuery, TimestreamOptions, TimestreamCustomMeta, MeasureInfo, DataType } from './types';
+import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta } from './types';
 import { getRequestLooper, MultiRequestTracker } from 'requestLooper';
 
-export class DataSource extends DataSourceWithBackend<TimestreamQuery, TimestreamOptions> {
+export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
-  options: TimestreamOptions;
+  options: SitewiseOptions;
 
-  constructor(instanceSettings: DataSourceInstanceSettings<TimestreamOptions>) {
+  constructor(instanceSettings: DataSourceInstanceSettings<SitewiseOptions>) {
     super(instanceSettings);
     this.options = instanceSettings.jsonData;
   }
@@ -26,55 +24,42 @@ export class DataSource extends DataSourceWithBackend<TimestreamQuery, Timestrea
   // This will support annotation queries for 7.2+
   annotations = {};
 
-  async metricFindQuery(query: any, options?: any): Promise<MetricFindValue[]> {
-    if (!query) {
-      return Promise.resolve([]);
-    }
-    const q = getTemplateSrv().replace(query as string);
-    return this.getStrings(q)
-      .toPromise()
-      .then(strings => {
-        return strings.map(s => ({
-          text: s,
-        }));
-      });
-  }
-
   /**
    * Do not execute queries that do not exist yet
    */
-  filterQuery(query: TimestreamQuery): boolean {
+  filterQuery(query: SitewiseQuery): boolean {
     return !!query.rawQuery;
   }
 
-  getQueryDisplayText(query: TimestreamQuery): string {
-    return query.rawQuery ?? '';
+  getQueryDisplayText(query: SitewiseQuery): string {
+    return 'TODO: ' + JSON.stringify(query);
   }
 
-  applyTemplateVariables(query: TimestreamQuery, scopedVars: ScopedVars): TimestreamQuery {
-    if (!query.rawQuery) {
-      return query;
-    }
+  applyTemplateVariables(query: SitewiseQuery, scopedVars: ScopedVars): SitewiseQuery {
+    // if (!query.rawQuery) {
+    //   return query;
+    // }
 
-    const templateSrv = getTemplateSrv();
-    return {
-      ...query,
-      database: templateSrv.replace(query.database || '', scopedVars),
-      table: templateSrv.replace(query.table || '', scopedVars),
-      measure: templateSrv.replace(query.measure || '', scopedVars),
-      rawQuery: templateSrv.replace(query.rawQuery), // DO NOT include scopedVars! it uses $__interval_ms!!!!!
-    };
+    // const templateSrv = getTemplateSrv();
+    // return {
+    //   ...query,
+    //   database: templateSrv.replace(query.database || '', scopedVars),
+    //   table: templateSrv.replace(query.table || '', scopedVars),
+    //   measure: templateSrv.replace(query.measure || '', scopedVars),
+    //   rawQuery: templateSrv.replace(query.rawQuery), // DO NOT include scopedVars! it uses $__interval_ms!!!!!
+    // };
+    return query;
   }
 
-  query(request: DataQueryRequest<TimestreamQuery>): Observable<DataQueryResponse> {
-    let tracker: TimestreamCustomMeta | undefined = undefined;
+  query(request: DataQueryRequest<SitewiseQuery>): Observable<DataQueryResponse> {
+    let tracker: SitewiseCustomMeta | undefined = undefined;
     let queryId: string | undefined = undefined;
     return getRequestLooper(request, {
       // Check for a "nextToken" in the response
       getNextQuery: (rsp: DataQueryResponse) => {
         if (rsp.data?.length) {
           const first = rsp.data[0] as DataFrame;
-          const meta = first.meta?.custom as TimestreamCustomMeta;
+          const meta = first.meta?.custom as SitewiseCustomMeta;
           if (meta && meta.nextToken) {
             queryId = meta.queryId;
 
@@ -82,7 +67,7 @@ export class DataSource extends DataSourceWithBackend<TimestreamQuery, Timestrea
               refId: first.refId,
               rawQuery: first.meta?.executedQueryString,
               nextToken: meta.nextToken,
-            } as TimestreamQuery;
+            } as SitewiseQuery;
           }
         }
         return undefined;
@@ -91,7 +76,7 @@ export class DataSource extends DataSourceWithBackend<TimestreamQuery, Timestrea
       /**
        * The original request
        */
-      query: (request: DataQueryRequest<TimestreamQuery>) => {
+      query: (request: DataQueryRequest<SitewiseQuery>) => {
         return super.query(request);
       },
 
@@ -99,7 +84,7 @@ export class DataSource extends DataSourceWithBackend<TimestreamQuery, Timestrea
        * Process the results
        */
       process: (t: MultiRequestTracker, data: DataFrame[], isLast: boolean) => {
-        const meta = data[0]?.meta?.custom as TimestreamCustomMeta;
+        const meta = data[0]?.meta?.custom as SitewiseCustomMeta;
         if (!meta) {
           return data; // NOOP
         }
@@ -113,7 +98,7 @@ export class DataSource extends DataSourceWithBackend<TimestreamQuery, Timestrea
           if (!tracker.subs?.length) {
             const { subs, nextToken, queryId, ...rest } = tracker;
             (rest as any).requestNumber = 1;
-            tracker.subs?.push(rest as TimestreamCustomMeta);
+            tracker.subs?.push(rest as SitewiseCustomMeta);
           }
           for (const m of tracker.subs!) {
             delete m.nextToken; // not useful in the
@@ -133,7 +118,7 @@ export class DataSource extends DataSourceWithBackend<TimestreamQuery, Timestrea
             ...t,
             ...meta,
             subs: [],
-          } as TimestreamCustomMeta;
+          } as SitewiseCustomMeta;
         }
 
         // Calculate stats
@@ -202,84 +187,12 @@ export class DataSource extends DataSourceWithBackend<TimestreamQuery, Timestrea
       },
     });
   }
-
-  //----------------------------------------------
-  // SCHEMA Style Functions
-  //----------------------------------------------
-
-  private getStrings(rawQuery: string): Observable<string[]> {
-    return this.query(({
-      targets: [
-        {
-          refId: 'GetStrings',
-          rawQuery,
-        },
-      ],
-    } as unknown) as DataQueryRequest).pipe(
-      map(res => {
-        const first = res.data[0] as DataFrame;
-        const vals = first.fields[0]?.values;
-        if (vals) {
-          return vals.toArray(); //
-        }
-        return [];
-      })
-    );
-  }
-
-  async getDatabases(like?: string): Promise<string[]> {
-    return this.getStrings('SHOW DATABASES').toPromise();
-  }
-
-  async getTables(db: string): Promise<string[]> {
-    if (!db) {
-      return [];
-    }
-    return this.getStrings(`SHOW TABLES FROM ${db}`).toPromise();
-  }
-
-  async getMeasureInfo(db: string, table: string): Promise<MeasureInfo[]> {
-    if (!db || !table) {
-      return [];
-    }
-    return this.query(({
-      targets: [
-        {
-          refId: 'X',
-          rawQuery: `SHOW MEASURES FROM ${db}.${table}`,
-        },
-      ],
-    } as unknown) as DataQueryRequest)
-      .toPromise()
-      .then(res => {
-        const rsp: MeasureInfo[] = [];
-        const first = res.data[0] as DataFrame;
-        if (!first || !first.length) {
-          return rsp;
-        }
-        const name = first.fields[0]?.values;
-        const type = first.fields[1]?.values;
-        const dims = first.fields[2]?.values;
-
-        for (let i = 0; i < first.length; i++) {
-          const dimensions = (JSON.parse(dims.get(i)) as any[]).map(row => {
-            return row.dimension_name;
-          });
-          rsp.push({
-            name: name.get(i) as string,
-            type: type.get(i) as DataType,
-            dimensions,
-          });
-        }
-        return rsp;
-      });
-  }
 }
 
-export function getNextTokenMeta(rsp: DataQueryResponse): TimestreamCustomMeta | undefined {
+export function getNextTokenMeta(rsp: DataQueryResponse): SitewiseCustomMeta | undefined {
   if (rsp.data?.length) {
     const first = rsp.data[0] as DataFrame;
-    const meta = first.meta?.custom as TimestreamCustomMeta;
+    const meta = first.meta?.custom as SitewiseCustomMeta;
     if (meta && meta.nextToken) {
       return meta;
     }

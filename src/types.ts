@@ -1,47 +1,13 @@
 import { DataQuery } from '@grafana/data';
 import { AwsDataSourceJsonData, AwsDataSourceSecureJsonData } from 'common/types';
 
-export interface ColumnInfo {
-  column: string;
-  type: string;
-  category: string;
-}
-
-export enum StandardFunction {
-  Value = 'value',
-  Avg = 'avg',
-  Min = 'min',
-  Max = 'mean',
-  P90 = 'p90',
-  P95 = 'p95',
-  P99 = 'p99',
-}
-
 export enum QueryType {
   Builder = 'builder',
   Samples = 'samples',
   Raw = 'raw',
 }
 
-export enum DataType {
-  varchar = 'varchar',
-  double = 'double',
-  timestamp = 'timestamp',
-}
-
-export interface MeasureInfo {
-  name: string;
-  type: DataType;
-  dimensions: string[]; // only the strings for now
-}
-
-export interface SchemaInfo {
-  databases?: string[];
-  tables?: string[];
-  measures?: MeasureInfo[];
-}
-
-export interface TimestreamCustomMeta {
+export interface SitewiseCustomMeta {
   queryId: string;
   nextToken?: string;
   hasSeries?: boolean;
@@ -54,10 +20,10 @@ export interface TimestreamCustomMeta {
   fetchTime?: number; // The frontend clock
 
   // when multiple queries exist we keep track of each request
-  subs?: TimestreamCustomMeta[];
+  subs?: SitewiseCustomMeta[];
 }
 
-export interface TimestreamQuery extends DataQuery {
+export interface SitewiseQuery extends DataQuery {
   // When specified, use this rather than the default for macros
   database?: string;
   table?: string;
@@ -70,12 +36,12 @@ export interface TimestreamQuery extends DataQuery {
   // nextToken?: string;
 }
 
-export interface TimestreamOptions extends AwsDataSourceJsonData {
+export interface SitewiseOptions extends AwsDataSourceJsonData {
   defaultDatabase?: string;
   defaultTable?: string;
   defaultMeasure?: string;
 }
 
-export interface TimestreamSecureJsonData extends AwsDataSourceSecureJsonData {
+export interface SitewiseSecureJsonData extends AwsDataSourceSecureJsonData {
   // nothing for now
 }

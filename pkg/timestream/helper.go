@@ -119,7 +119,7 @@ func QueryResultToDataFrame(res *timestreamquery.QueryOutput) (dr backend.DataRe
 		dr.Frames = append(dr.Frames, frame)
 	}
 
-	meta := &models.TimestreamCustomMeta{
+	meta := &models.SitewiseCustomMeta{
 		QueryID:   aws.StringValue(res.QueryId),
 		NextToken: aws.StringValue(res.NextToken),
 		HasSeries: timeseriesColumn != nil,

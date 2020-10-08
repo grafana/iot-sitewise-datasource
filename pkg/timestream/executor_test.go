@@ -23,7 +23,7 @@ func runTest(t *testing.T, name string) *backend.DataResponse {
 	// Remove changable fields
 	for _, frame := range dr.Frames {
 		if frame.Meta != nil {
-			meta := frame.Meta.Custom.(*models.TimestreamCustomMeta)
+			meta := frame.Meta.Custom.(*models.SitewiseCustomMeta)
 			meta.StartTime = 1111
 			meta.FinishTime = 2222
 			if meta.QueryID != "" {
