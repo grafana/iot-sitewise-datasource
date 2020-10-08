@@ -1,7 +1,7 @@
 package models
 
-// TimestreamCustomMeta is the standard metadata
-type TimestreamCustomMeta struct {
+// SitewiseCustomMeta is the standard metadata
+type SitewiseCustomMeta struct {
 	StartTime  int64 `json:"executionStartTime,omitempty"`
 	FinishTime int64 `json:"executionFinishTime,omitempty"`
 
