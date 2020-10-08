@@ -5,6 +5,7 @@
 
   "backend": true,
   "executable": "gpx_iot_sitewise",
+  
   "metrics": true,
   "alerting": true,
   "annotations": true,
