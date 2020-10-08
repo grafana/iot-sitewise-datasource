@@ -1,3 +1,3 @@
-# IoT Sitewise Datasource
+# AWS IoT Sitewise Datasource
 
 WORK IN PROGRESS
