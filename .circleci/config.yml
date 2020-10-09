@@ -199,7 +199,7 @@ jobs:
     - persist_to_workspace:
         root: .
         paths:
-        - ci/jobs/code_coverage_frontend
+        - test-results
     - store_test_results:
         path: test-results
 
