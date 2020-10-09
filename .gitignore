@@ -5,3 +5,5 @@ cypress/report.json
 cypress/screenshots/actual
 cypress/videos/
 dist/
+
+**/mocks/*.*
