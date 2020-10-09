@@ -212,7 +212,10 @@ jobs:
           at: .
       - run:
           name: Test backend
-          command: mage -v coverage && mv coverage/* ci/jobs/code_coverage_backend/
+          command: |
+            mage -v coverage
+            mkdir -p ci/jobs/code_coverage_backend
+            mv coverage/* ci/jobs/code_coverage_backend/
       - persist_to_workspace:
           root: .
           paths:
