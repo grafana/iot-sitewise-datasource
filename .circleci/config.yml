@@ -211,8 +211,8 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Build backend
-          command: mage -v buildAll
+          name: Test backend
+          command: mage -v coverage && mv coverage/* ci/jobs/code_coverage_backend/
       - persist_to_workspace:
           root: .
           paths:
