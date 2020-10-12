@@ -14,6 +14,10 @@ type MetaProvider interface {
 // Ideally this should contain non-domain specific methods for creating a frame
 // TODO: have a 'FrameMeta' for getting standard meta from the models. For response specific meta, we may need a second method for FrameData
 type Metadata interface {
+	// FrameName returns the name used to initialize the data frame.
 	FrameName() string
+	// Fields returns all fields expected to be present in the data frame.
 	Fields() ([]*data.Field, error)
+	// FrameMeta
+	// FrameMeta() (*data.FrameMeta, error)
 }

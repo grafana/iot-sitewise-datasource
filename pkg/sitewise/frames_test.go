@@ -80,14 +80,8 @@ type fieldAssert struct {
 
 func (fa fieldAssert) assert(t *testing.T) {
 	field := fa.fields[fa.idx]
-	assert.Equal(t, fa.expectedName, field.Name)
-	assert.Equal(t, fa.expectedType, field.Type(), "wrong value for type in Field[%d]. got %s expected %s", fa.idx, field.Type(), fa.expectedType)
-}
-
-var assertField = func(t *testing.T, fields data.Fields, idx int, name string, expected data.FieldType) {
-	got := fields[idx]
-	assert.Equal(t, name, got.Name)
-	assert.Equal(t, expected, got.Type(), "wrong value for type in Field[%d]. got %s expected %s", idx, got.Type(), expected)
+	assert.Equal(t, fa.expectedName, field.Name, "wrong name for field in Field[%d]. got %s expected %s", fa.idx, field.Name, fa.expectedName)
+	assert.Equal(t, fa.expectedType, field.Type(), "wrong type for field in Field[%d]. got %s expected %s", fa.idx, field.Type(), fa.expectedType)
 }
 
 var assertFramesAndGetFields = func(t *testing.T, frames data.Frames) data.Fields {
