@@ -1,0 +1,460 @@
+{
+    "AssetPropertyValueHistory": [
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602208800
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 47.171762312455954,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602209100
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 46.64528808819145,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602209400
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 47.18196486171094,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602209700
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 47.67195667517736,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602210000
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 47.355523529272986,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602210300
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 47.212089178811766,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602210600
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 46.128976741957814,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602210900
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 47.01414399752511,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602211200
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 46.41645298174654,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602211500
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 47.27415780150868,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602211800
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 47.662055221009076,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602212100
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 47.02273520428106,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602212400
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 47.49490243919585,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602212700
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 47.48646797017176,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602213000
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 46.601872345652154,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602213300
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 45.37142730802686,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602213600
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 44.86684993732802,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602213900
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 44.83862930010293,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602214200
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 45.2421883205746,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602214500
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 45.36604865788132,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602214800
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 45.01127820040436,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602215100
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 43.79075626867827,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602215400
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 43.304438310259776,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602215700
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 44.014382382105225,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602216000
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 43.917800842965605,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602216300
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 44.9006206721892,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602216600
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 45.44054341237902,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602216900
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 47.05064206696819,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602217200
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 47.07482904948737,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602217500
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 46.61607047988037,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602217800
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 45.52998659646972,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602218100
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 44.37390103942674,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602218400
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 42.353854243383886,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602218700
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 40.25808768345664,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1602219000
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 40.90457427319228,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        }
+    ],
+    "NextToken": null
+}

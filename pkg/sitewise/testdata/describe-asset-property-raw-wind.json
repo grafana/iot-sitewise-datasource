@@ -1,0 +1,22 @@
+{
+    "AssetId": "a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b",
+    "AssetModelId": "587d4e0e-045c-49ff-9fcc-c3032cb73309",
+    "AssetName": "Demo Turbine Asset 1",
+    "AssetProperty": {
+        "Alias": null,
+        "DataType": "DOUBLE",
+        "Id": "bfaa662d-0eb2-49d2-a24d-2dad5a75bfde",
+        "Name": "Wind Speed",
+        "Notification": {
+            "State": "DISABLED",
+            "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/bfaa662d-0eb2-49d2-a24d-2dad5a75bfde"
+        },
+        "Type": {
+            "Attribute": null,
+            "Measurement": {},
+            "Metric": null,
+            "Transform": null
+        },
+        "Unit": "m/s"
+    }
+}
