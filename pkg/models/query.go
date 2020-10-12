@@ -9,6 +9,28 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/common"
 )
 
+const (
+	QueryTypePropertyValueHistory = "PropertyValueHistory"
+	QueryTypePropertyValue        = "PropertyValue"
+	QueryTypePropertyAggregate    = "PropertyAggregate"
+)
+
+const (
+	AggregateMin    = "MINIMUM"
+	AggregateMax    = "MAXIMUM"
+	AggregateCount  = "COUNT"
+	AggregateAvg    = "AVERAGE"
+	AggregateStdDev = "STANDARD_DEVIATION"
+	AggregateSum    = "SUM"
+)
+
+type Query struct {
+	AwsRegion string `json:"region,omitempty"`
+}
+
+// 				timestream 				//
+// ------------------------------------ //
+
 // QueryModel represents a spreadsheet query.
 type QueryModel struct {
 	RawQuery  string `json:"rawQuery,omitempty"`
