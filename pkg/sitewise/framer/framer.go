@@ -14,6 +14,7 @@ type Framer interface {
 
 // FrameData is an interface which returns the column data for a DataFrame from an implementing type
 type FrameData interface {
+	// Rows returns the Sitewise response, marshaled into the data frame column/row format.
 	Rows() [][]interface{}
 }
 
