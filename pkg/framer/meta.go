@@ -2,7 +2,6 @@ package framer
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 
@@ -47,7 +46,7 @@ func (md AssetPropertyValueMetadata) getQueryTypeValueFields() ([]*data.Field, e
 
 	switch queryType {
 	case models.QueryTypePropertyAggregate:
-		return getAggregationFields(md.query, md.property)
+		return getAggregationFields(md.query)
 	case models.QueryTypePropertyValue:
 		return []*data.Field{data.NewField(fieldName, nil, fieldTypeForPropertyValue(md.property))}, nil
 	case models.QueryTypePropertyValueHistory:
@@ -73,7 +72,7 @@ func fieldTypeForPropertyValue(property *iotsitewise.DescribeAssetPropertyOutput
 	}
 }
 
-func getAggregationFields(query models.AssetPropertyValueQuery, property *iotsitewise.DescribeAssetPropertyOutput) ([]*data.Field, error) {
+func getAggregationFields(query models.AssetPropertyValueQuery) ([]*data.Field, error) {
 	var fields []*data.Field
 
 	// convert the query aggregate params to a "set"
@@ -90,32 +89,8 @@ func getAggregationFields(query models.AssetPropertyValueQuery, property *iotsit
 	return fields, nil
 }
 
-//func getAggregationTypeField(aggType string) (*data.Field, error) {
-//
-//	switch aggType {
-//	case models.AggregateAvg:
-//		return data.NewField("avg", nil, []*float64{}), nil
-//	case models.AggregateMin:
-//		return data.NewField("min", nil, []*float64{}), nil
-//	case models.AggregateMax:
-//		return data.NewField("max", nil, []*float64{}), nil
-//	case models.AggregateSum:
-//		return data.NewField("sum", nil, []*float64{}), nil
-//	case models.AggregateStdDev:
-//		return data.NewField("std. dev.", nil, []*float64{}), nil
-//	case models.AggregateCount:
-//		return data.NewField("count", nil, []*float64{}), nil
-//	default:
-//		return nil, nil
-//	}
-//}
-
 func (md AssetPropertyValueMetadata) FrameName() string {
 	return *md.property.AssetName
-}
-
-func frameName(asset *iotsitewise.DescribeAssetOutput, property *iotsitewise.DescribeAssetPropertyOutput) string {
-	return fmt.Sprintf("%s %s", *asset.AssetName, *property.AssetProperty.Name)
 }
 
 type propertyValueMetaProvider struct {
