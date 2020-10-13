@@ -157,6 +157,7 @@ jobs:
           name: Build backend
           command: |
             git config --global --add url."git@github.com:".insteadOf "https://github.com/"
+            mage -v mockGen
             mage -v buildAll
       - run:
           name: Test backend

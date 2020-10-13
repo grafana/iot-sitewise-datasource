@@ -9,14 +9,15 @@ import (
 )
 
 // Default configures the default target.
-var Default = build.BuildAll
+func Default() {
+	_ = MockGen()
+	build.BuildAll()
+}
 
-var Test = func() error {
+// MockGen generates mocks.
+// this can be changed to look at the directives when more mocks are needed.
+func MockGen() error {
+	//return sh.RunV("mockery", "--dir=pkg/sitewise/client/", "--name=Client")
+	return sh.RunV("go", "generate", "./pkg/...")
 
-	// generate mocks
-	if err := sh.RunV("mockery", "--dir=pkg/sitewise/client/", "--name=Client"); err != nil {
-		return err
-	}
-
-	return build.Test()
 }
