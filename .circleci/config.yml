@@ -161,7 +161,6 @@ jobs:
       - run:
           name: Test backend
           command: |
-            mage -v mockGen
             mage -v lint
             mage -v coverage
       - run:
