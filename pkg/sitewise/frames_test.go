@@ -5,22 +5,16 @@ import (
 	"testing"
 
 	"github.com/aws/aws-sdk-go/aws"
-
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
-
-	framerImpl "github.com/grafana/iot-sitewise-datasource/pkg/framer"
-	"github.com/grafana/iot-sitewise-datasource/pkg/resource"
-	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
-	"github.com/stretchr/testify/mock"
-
-	"github.com/stretchr/testify/assert"
-
-	"github.com/grafana/iot-sitewise-datasource/pkg/models"
-
 	"github.com/grafana/grafana-plugin-sdk-go/data"
-
+	framerImpl "github.com/grafana/iot-sitewise-datasource/pkg/framer"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/resource"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/framer"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 type apiFunc func(context.Context, client.Client, models.AssetPropertyValueQuery) (framer.FrameData, error)
