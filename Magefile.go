@@ -10,7 +10,6 @@ import (
 
 // Default configures the default target.
 func Default() {
-	_ = MockGen()
 	build.BuildAll()
 }
 
