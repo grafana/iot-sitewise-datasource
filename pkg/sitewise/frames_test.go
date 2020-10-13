@@ -10,14 +10,11 @@ import (
 	framerImpl "github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/resource"
-	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/framer"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
-
-type apiFunc func(context.Context, client.Client, models.AssetPropertyValueQuery) (framer.FrameData, error)
 
 type testScenario struct {
 	name         string
