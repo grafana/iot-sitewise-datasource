@@ -7,13 +7,13 @@ import (
 	"os"
 	"testing"
 
-	gaws "github.com/grafana/timestream-datasource/pkg/common/aws"
+	gaws "github.com/grafana/iot-sitewise-datasource/pkg/common/aws"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/timestreamquery"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/experimental"
-	"github.com/grafana/timestream-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
 func runTest(t *testing.T, name string) *backend.DataResponse {

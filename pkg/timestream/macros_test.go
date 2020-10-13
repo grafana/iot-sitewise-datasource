@@ -6,8 +6,8 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
-	"github.com/grafana/timestream-datasource/pkg/common/aws"
-	"github.com/grafana/timestream-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/common/aws"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
 func TestInterpolate(t *testing.T) {
