@@ -13,13 +13,7 @@ func Default() {
 	build.BuildAll()
 }
 
-// MockGen generates mocks.
-// this can be changed to look at the directives when more mocks are needed.
+// MockGen generates mocks from directives
 func MockGen() error {
-
-	if err := sh.RunV("docker", "pull", "vektra/mockery"); err != nil {
-		return err
-	}
-
 	return sh.RunV("go", "generate", "./pkg/...")
 }
