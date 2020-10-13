@@ -78,10 +78,12 @@ func getAggregationFields(query models.AssetPropertyValueQuery) ([]*data.Field, 
 	// convert the query aggregate params to a "set"
 	aggregations := util.StringSliceToSet(query.AggregateTypes)
 
-	for k, agg := range models.AggregateFields {
+	for _, k := range models.AggregateOrder {
 		// if the aggregate is in the "set", add to fields
 		if _, found := aggregations[k]; found {
-			fields = append(fields, data.NewField(agg.FieldName, nil, []*float64{}))
+			if agg, ok := models.AggregateFields[k]; ok {
+				fields = append(fields, data.NewField(agg.FieldName, nil, []*float64{}))
+			}
 		}
 
 	}

@@ -28,9 +28,11 @@ func (a AssetPropertyAggregates) Rows() [][]interface{} {
 func aggregateValues(value *iotsitewise.Aggregates) []interface{} {
 	var vals []interface{}
 
-	for _, agg := range models.AggregateFields {
-		if val := agg.ValueGetter(value); val != nil {
-			vals = append(vals, val)
+	for _, k := range models.AggregateOrder {
+		if agg, ok := models.AggregateFields[k]; ok {
+			if val := agg.ValueGetter(value); val != nil {
+				vals = append(vals, val)
+			}
 		}
 	}
 

@@ -35,6 +35,16 @@ type AggregateFieldHelper struct {
 	ValueGetter func(value *iotsitewise.Aggregates) *float64
 }
 
+// AggregateOrder is the expected field order for aggregation queries
+var AggregateOrder = []string{
+	AggregateAvg,
+	AggregateMin,
+	AggregateMax,
+	AggregateSum,
+	AggregateCount,
+	AggregateStdDev,
+}
+
 // AggregateFields assists with an ordering contract between the meta provider and row data.
 var AggregateFields = map[string]AggregateFieldHelper{
 	AggregateAvg: {
