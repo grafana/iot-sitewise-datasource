@@ -1,0 +1,158 @@
+{
+    "AssetArn": "arn:aws:iotsitewise:us-east-1:341474261430:asset/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b",
+    "AssetCreationDate": "2020-09-17T17:01:13Z",
+    "AssetHierarchies": [],
+    "AssetId": "a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b",
+    "AssetLastUpdateDate": "2020-09-17T17:01:13Z",
+    "AssetModelId": "587d4e0e-045c-49ff-9fcc-c3032cb73309",
+    "AssetName": "Demo Turbine Asset 1",
+    "AssetProperties": [
+        {
+            "Alias": null,
+            "DataType": "DOUBLE",
+            "Id": "75874949-5292-4eff-8674-bdb32d3797a1",
+            "Name": "Wind Direction",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/75874949-5292-4eff-8674-bdb32d3797a1"
+            },
+            "Unit": "Degrees"
+        },
+        {
+            "Alias": null,
+            "DataType": "INTEGER",
+            "Id": "c174fe17-5d2e-42d9-909b-336a417bc403",
+            "Name": "Model",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/c174fe17-5d2e-42d9-909b-336a417bc403"
+            },
+            "Unit": null
+        },
+        {
+            "Alias": null,
+            "DataType": "DOUBLE",
+            "Id": "d15f794a-a695-46cb-b8b0-f748e59f0e7f",
+            "Name": "Torque (Newton Meter)",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/d15f794a-a695-46cb-b8b0-f748e59f0e7f"
+            },
+            "Unit": "Nm"
+        },
+        {
+            "Alias": null,
+            "DataType": "DOUBLE",
+            "Id": "528222c8-bcff-475a-8464-80bd6473183e",
+            "Name": "Torque (KiloNewton Meter)",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/528222c8-bcff-475a-8464-80bd6473183e"
+            },
+            "Unit": "kNm"
+        },
+        {
+            "Alias": null,
+            "DataType": "DOUBLE",
+            "Id": "ec35cbb4-e5e1-440e-9c1d-7b44333f8e64",
+            "Name": "RotationsPerSecond",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/ec35cbb4-e5e1-440e-9c1d-7b44333f8e64"
+            },
+            "Unit": "RPS"
+        },
+        {
+            "Alias": null,
+            "DataType": "DOUBLE",
+            "Id": "6ee7ae33-bd0f-4a6d-aa8d-e12d63b5caa0",
+            "Name": "Overdrive State Time",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/6ee7ae33-bd0f-4a6d-aa8d-e12d63b5caa0"
+            },
+            "Unit": "Seconds"
+        },
+        {
+            "Alias": null,
+            "DataType": "DOUBLE",
+            "Id": "e91d024c-9c47-449b-b90d-890c888025e5",
+            "Name": "RotationsPerMinute",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/e91d024c-9c47-449b-b90d-890c888025e5"
+            },
+            "Unit": "RPM"
+        },
+        {
+            "Alias": null,
+            "DataType": "DOUBLE",
+            "Id": "82a07e29-8c0b-4ca6-acde-ce7ece724ad6",
+            "Name": "Overdrive State",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/82a07e29-8c0b-4ca6-acde-ce7ece724ad6"
+            },
+            "Unit": null
+        },
+        {
+            "Alias": null,
+            "DataType": "STRING",
+            "Id": "5b737da2-94e2-4c20-8062-235f96a9818b",
+            "Name": "Location",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/5b737da2-94e2-4c20-8062-235f96a9818b"
+            },
+            "Unit": null
+        },
+        {
+            "Alias": null,
+            "DataType": "DOUBLE",
+            "Id": "a973cbe6-1fe3-43da-9c86-e72826ff076d",
+            "Name": "Average Power",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/a973cbe6-1fe3-43da-9c86-e72826ff076d"
+            },
+            "Unit": "Watts"
+        },
+        {
+            "Alias": null,
+            "DataType": "DOUBLE",
+            "Id": "bfaa662d-0eb2-49d2-a24d-2dad5a75bfde",
+            "Name": "Wind Speed",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/bfaa662d-0eb2-49d2-a24d-2dad5a75bfde"
+            },
+            "Unit": "m/s"
+        },
+        {
+            "Alias": null,
+            "DataType": "DOUBLE",
+            "Id": "1e1e256e-e32a-4666-8aeb-22b4131192eb",
+            "Name": "Average Wind Speed",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/1e1e256e-e32a-4666-8aeb-22b4131192eb"
+            },
+            "Unit": "m/s"
+        },
+        {
+            "Alias": null,
+            "DataType": "STRING",
+            "Id": "e9aeda17-3476-408a-94ec-adcf0b7e1be1",
+            "Name": "Make",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/e9aeda17-3476-408a-94ec-adcf0b7e1be1"
+            },
+            "Unit": null
+        }
+    ],
+    "AssetStatus": {
+        "Error": null,
+        "State": "ACTIVE"
+    }
+}

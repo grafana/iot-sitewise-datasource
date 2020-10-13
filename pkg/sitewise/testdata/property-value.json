@@ -1,0 +1,15 @@
+{
+    "PropertyValue": {
+        "Quality": "GOOD",
+        "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1602219000
+        },
+        "Value": {
+            "BooleanValue": null,
+            "DoubleValue": 40.90457427319228,
+            "IntegerValue": null,
+            "StringValue": null
+        }
+    }
+}

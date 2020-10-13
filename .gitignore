@@ -5,5 +5,7 @@ cypress/report.json
 cypress/screenshots/actual
 cypress/videos/
 dist/
+.idea/
 
-**/mocks/*.*
+# until we can figure out how to install the mockery executable on circleci, leave this commented out
+#**/mocks/*.*
