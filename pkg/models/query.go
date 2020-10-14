@@ -15,6 +15,6 @@ const (
 	AggregateSum    = "SUM"
 )
 
-type Query struct {
+type BaseQuery struct {
 	AwsRegion string `json:"region,omitempty"`
 }
