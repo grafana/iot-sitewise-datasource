@@ -3,6 +3,8 @@ package sitewise
 import (
 	"context"
 
+	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fdata"
+
 	"github.com/aws/aws-sdk-go/aws"
 
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
@@ -10,13 +12,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
 
-type AssetProperty iotsitewise.DescribeAssetPropertyOutput
-
-func (ap AssetProperty) Rows() [][]interface{} {
-	panic("implement me!!!")
-}
-
-func GetAssetPropertyDescription(ctx context.Context, client client.Client, query models.DescribeAssetPropertyQuery) (*AssetProperty, error) {
+func GetAssetPropertyDescription(ctx context.Context, client client.Client, query models.DescribeAssetPropertyQuery) (*fdata.AssetProperty, error) {
 
 	awsReq := &iotsitewise.DescribeAssetPropertyInput{
 		AssetId:    aws.String(query.AssetId),
@@ -28,7 +24,7 @@ func GetAssetPropertyDescription(ctx context.Context, client client.Client, quer
 		return nil, err
 	}
 
-	return &AssetProperty{
+	return &fdata.AssetProperty{
 		AssetId:       resp.AssetId,
 		AssetModelId:  resp.AssetModelId,
 		AssetName:     resp.AssetName,

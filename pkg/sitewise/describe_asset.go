@@ -3,6 +3,8 @@ package sitewise
 import (
 	"context"
 
+	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fdata"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -10,13 +12,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
-type AssetDescription iotsitewise.DescribeAssetOutput
-
-func (a AssetDescription) Rows() [][]interface{} {
-	panic("implement me")
-}
-
-func GetAssetDescription(ctx context.Context, client client.Client, query models.DescribeAssetQuery) (*AssetDescription, error) {
+func GetAssetDescription(ctx context.Context, client client.Client, query models.DescribeAssetQuery) (*fdata.AssetDescription, error) {
 
 	awsReq := &iotsitewise.DescribeAssetInput{AssetId: aws.String(query.AssetId)}
 
@@ -26,7 +22,7 @@ func GetAssetDescription(ctx context.Context, client client.Client, query models
 		return nil, err
 	}
 
-	return &AssetDescription{
+	return &fdata.AssetDescription{
 		AssetArn:            resp.AssetArn,
 		AssetCreationDate:   resp.AssetCreationDate,
 		AssetHierarchies:    resp.AssetHierarchies,
