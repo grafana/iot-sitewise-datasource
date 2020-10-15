@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from '../DataSource';
-import { SitewiseQuery, SitewiseOptions, QueryType, AssetPropertyValueQuery } from '../types';
+import { SitewiseQuery, SitewiseOptions, QueryType, AssetPropertyValueQuery, ListAssetsQuery } from '../types';
 import { InlineField, Select } from '@grafana/ui';
 import { QueryTypeInfo, siteWisteQueryTypes, changeQueryType } from '../queryInfo';
 import { standardRegions } from 'common/types';
-import { QueryPropertyValueEditor } from './QueryPropertyValueEditor';
+import { AssetPropertyValueQueryEditor } from './AssetPropertyValueQueryEditor';
+import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
 
 type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 
@@ -28,11 +29,11 @@ export class QueryEditor extends PureComponent<Props> {
     }
     switch (query.queryType) {
       case QueryType.ListAssetModels:
-        return <div>Maybe add a search value?</div>;
+        return null; // nothing required
       case QueryType.ListAssets:
-        return <div>TODO: pick asset model</div>;
+        return <ListAssetsQueryEditor {...this.props} query={query as ListAssetsQuery} />;
       case QueryType.PropertyValue:
-        return <QueryPropertyValueEditor {...this.props} query={query as AssetPropertyValueQuery} />;
+        return <AssetPropertyValueQueryEditor {...this.props} query={query as AssetPropertyValueQuery} />;
     }
     return <div>Missing UI for query type: {query.queryType}</div>;
   }

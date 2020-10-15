@@ -6,7 +6,7 @@ import { SitewiseQueryEditorProps } from './types';
 
 type Props = SitewiseQueryEditorProps<AssetPropertyValueQuery>;
 
-export class QueryPropertyValueEditor extends PureComponent<Props> {
+export class AssetPropertyValueQueryEditor extends PureComponent<Props> {
   onAssetIdChange = (sel: SelectableValue<string>) => {
     const { onChange, query, onRunQuery } = this.props;
     onChange({ ...query, assetId: sel.value! });
