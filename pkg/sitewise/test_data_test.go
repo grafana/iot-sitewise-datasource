@@ -5,6 +5,11 @@ import (
 	"encoding/json"
 	"os"
 	"testing"
+	"time"
+
+	"github.com/grafana/grafana-plugin-sdk-go/backend"
+
+	"github.com/grafana/iot-sitewise-datasource/pkg/testutil"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 
@@ -13,12 +18,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
-)
-
-const (
-	testAssetId       = "a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b"
-	testPropIdAvgWind = "1e1e256e-e32a-4666-8aeb-22b4131192eb"
-	testPropIdRawWin  = "bfaa662d-0eb2-49d2-a24d-2dad5a75bfde"
 )
 
 type testDataFunc func(t *testing.T, client client.Client) interface{}
@@ -36,12 +35,62 @@ func TestGenerateTestData(t *testing.T) {
 
 	m := make(map[string]testDataFunc)
 
-	m["property-history-values.json"] = generatePropertyHistoryTestData
-	m["property-value.json"] = generatePropertyValueTestData
-	m["property-aggregate-values.json"] = generatePropertyAggregateTestData
+	m["property-history-values.json"] = func(t *testing.T, client client.Client) interface{} {
+		ctx := context.Background()
+
+		// hard coded values from my account
+		query := models.AssetPropertyValueQuery{}
+		query.AssetId = testutil.TestAssetId
+		query.PropertyId = testutil.TestPropIdAvgWind
+		query.TimeRange = backend.TimeRange{
+			From: time.Now().Add(time.Hour * -3), // return 3 hours of data. 60*3/5 = 36 points
+			To:   time.Now(),
+		}
+
+		resp, err := GetAssetPropertyValues(ctx, client, query)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		return resp
+	}
+	m["property-value.json"] = func(t *testing.T, client client.Client) interface{} {
+		ctx := context.Background()
+
+		query := models.AssetPropertyValueQuery{}
+		query.AssetId = testutil.TestAssetId
+		query.PropertyId = testutil.TestPropIdAvgWind
+
+		resp, err := GetAssetPropertyValue(ctx, client, query)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		return resp
+	}
+	m["property-aggregate-values.json"] = func(t *testing.T, client client.Client) interface{} {
+		ctx := context.Background()
+
+		query := models.AssetPropertyValueQuery{}
+		query.Resolution = "1m"
+		query.AggregateTypes = []string{"AVERAGE", "MAXIMUM", "MINIMUM"}
+		query.AssetId = testutil.TestAssetId
+		query.PropertyId = testutil.TestPropIdRawWin
+		query.TimeRange = backend.TimeRange{
+			From: time.Now().Add(time.Hour * -3), // return 3 hours of data. 60*3/5 = 36 points
+			To:   time.Now(),
+		}
+
+		resp, err := GetAssetPropertyAggregates(ctx, client, query)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		return resp
+	}
 	m["describe-asset.json"] = func(t *testing.T, client client.Client) interface{} {
 		ctx := context.Background()
-		resp, err := GetAssetDescription(ctx, client, models.DescribeAssetQuery{AssetId: testAssetId})
+		resp, err := GetAssetDescription(ctx, client, models.DescribeAssetQuery{AssetId: testutil.TestAssetId})
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -50,8 +99,8 @@ func TestGenerateTestData(t *testing.T) {
 	m["describe-asset-property-avg-wind.json"] = func(t *testing.T, client client.Client) interface{} {
 		ctx := context.Background()
 		resp, err := GetAssetPropertyDescription(ctx, client, models.DescribeAssetPropertyQuery{
-			AssetId:    testAssetId,
-			PropertyId: testPropIdAvgWind,
+			AssetId:    testutil.TestAssetId,
+			PropertyId: testutil.TestPropIdAvgWind,
 		})
 		if err != nil {
 			t.Fatal(err)
@@ -62,8 +111,8 @@ func TestGenerateTestData(t *testing.T) {
 	m["describe-asset-property-raw-wind.json"] = func(t *testing.T, client client.Client) interface{} {
 		ctx := context.Background()
 		resp, err := GetAssetPropertyDescription(ctx, client, models.DescribeAssetPropertyQuery{
-			AssetId:    testAssetId,
-			PropertyId: testPropIdRawWin,
+			AssetId:    testutil.TestAssetId,
+			PropertyId: testutil.TestPropIdRawWin,
 		})
 		if err != nil {
 			t.Fatal(err)
@@ -84,13 +133,12 @@ func writeTestData(filename string, tf testDataFunc, client client.Client, t *te
 	resp := tf(t, client)
 
 	js, err := json.MarshalIndent(resp, "", "    ")
-	//js, err := jsonutil.BuildJSON(resp)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	f, err := os.Create("./testdata/" + filename)
+	f, err := os.Create("../testdata/" + filename)
 
 	if err != nil {
 		t.Fatal(err)

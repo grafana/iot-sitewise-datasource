@@ -13,7 +13,7 @@ import (
 // NOTES: We have decided to not support propertyAlias targets, as there is no good way to go from propertyAlias -> assetId/propertyId.
 // This is done simply due to lack of solid generics support in golang.
 type AssetPropertyValueQuery struct {
-	Query
+	BaseQuery
 	AssetId        string   `json:"assetId"`
 	PropertyId     string   `json:"propertyId"`
 	NextToken      string   `json:"nextToken,omitempty"`

@@ -151,14 +151,14 @@ func ec2RoleProvider(sess *session.Session) credentials.Provider {
 }
 
 // GetAwsConfig get aws config from grafana config
-func GetAwsConfig(dsInfo DatasourceSettings) (*aws.Config, error) {
+func GetAwsConfig(dsInfo DatasourceSettings, region string) (*aws.Config, error) {
 	creds, err := getCredentials(&dsInfo)
 	if err != nil {
 		return nil, err
 	}
 
 	cfg := &aws.Config{
-		Region:      aws.String(dsInfo.Region),
+		Region:      aws.String(region),
 		Credentials: creds,
 	}
 

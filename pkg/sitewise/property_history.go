@@ -3,6 +3,8 @@ package sitewise
 import (
 	"context"
 
+	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fdata"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
@@ -11,20 +13,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
-
-type AssetPropertyValueHistory iotsitewise.GetAssetPropertyValueHistoryOutput
-
-func (p AssetPropertyValueHistory) Rows() [][]interface{} {
-	var rows [][]interface{}
-
-	for _, v := range p.AssetPropertyValueHistory {
-		rows = append(rows, []interface{}{
-			getTimeInMs(v.Timestamp),
-			getPropertyVariantValue(v.Value),
-		})
-	}
-	return rows
-}
 
 // GetAssetPropertyValueHistory requires either PropertyAlias OR (AssetID and PropertyID) to be set.
 // The front end component should ensure that both cannot be sent at the same time by the user.
@@ -68,7 +56,7 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetA
 	}
 }
 
-func GetAssetPropertyValues(ctx context.Context, client client.Client, query models.AssetPropertyValueQuery) (*AssetPropertyValueHistory, error) {
+func GetAssetPropertyValues(ctx context.Context, client client.Client, query models.AssetPropertyValueQuery) (*fdata.AssetPropertyValueHistory, error) {
 
 	awsReq := historyQueryToInput(query)
 
@@ -80,7 +68,7 @@ func GetAssetPropertyValues(ctx context.Context, client client.Client, query mod
 		return nil, err
 	}
 
-	return &AssetPropertyValueHistory{
+	return &fdata.AssetPropertyValueHistory{
 		AssetPropertyValueHistory: resp.AssetPropertyValueHistory,
 		NextToken:                 resp.NextToken,
 	}, nil
