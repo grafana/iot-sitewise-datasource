@@ -12,12 +12,12 @@ import (
 type clientGetterFunc func(ctx backend.PluginContext, q models.BaseQuery) (client client.Client, err error)
 
 type Datasource struct {
-	getClient clientGetterFunc
+	GetClient clientGetterFunc
 }
 
 func (ds *Datasource) HandleGetAssetPropertyValueHistoryQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (framer.Framer, error) {
 
-	sw, err := ds.getClient(req.PluginContext, query.BaseQuery)
+	sw, err := ds.GetClient(req.PluginContext, query.BaseQuery)
 	if err != nil {
 		return nil, err
 	}

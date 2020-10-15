@@ -10,13 +10,18 @@ import (
 
 func (s *Server) handlePropertyValueQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
 
-	query := &models.AssetPropertyValueQuery{}
-	if err := UnmarshalQuery(q.JSON, query); err != nil {
-		return *err
+	query, err := models.GetAssetPropertyValueQuery(&q)
+	if err != nil {
+		return DataResponseError(err, "failed to unmarshal JSON request into query")
 	}
+
 	fr, err := s.datasource.HandleGetAssetPropertyValueHistoryQuery(ctx, req, query)
 
-	return framer.FrameResponseWithError(fr, ctx, err)
+	if err != nil {
+		return DataResponseError(err, "failed to fetch query data")
+	}
+
+	return framer.FrameResponse(ctx, fr)
 }
 
 func (s *Server) HandlePropertyValueHistory(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {

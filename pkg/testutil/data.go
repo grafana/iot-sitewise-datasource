@@ -27,7 +27,7 @@ var UnmarshallFileContents = func(filename string, val interface{}) error {
 	return nil
 }
 
-var GetAssetProp = func(t *testing.T, filename string) iotsitewise.DescribeAssetPropertyOutput {
+var GetIotSitewiseAssetProp = func(t *testing.T, filename string) iotsitewise.DescribeAssetPropertyOutput {
 	property := iotsitewise.DescribeAssetPropertyOutput{}
 	err := UnmarshallFileContents(filename, &property)
 	if err != nil {
@@ -47,6 +47,15 @@ var GetPropVals = func(t *testing.T, filename string) fdata.AssetPropertyValue {
 
 var GetPropHistoryVals = func(t *testing.T, filename string) fdata.AssetPropertyValueHistory {
 	propVals := fdata.AssetPropertyValueHistory{}
+	err := UnmarshallFileContents(filename, &propVals)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return propVals
+}
+
+var GetIoTSitewisePropHistoryVals = func(t *testing.T, filename string) iotsitewise.GetAssetPropertyValueHistoryOutput {
+	propVals := iotsitewise.GetAssetPropertyValueHistoryOutput{}
 	err := UnmarshallFileContents(filename, &propVals)
 	if err != nil {
 		t.Fatal(err)

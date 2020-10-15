@@ -62,7 +62,7 @@ func getScenarios(t *testing.T) []*testScenario {
 				PropertyId: testutil.TestPropIdAvgWind,
 			},
 			propVals: testutil.GetPropVals(t, "property-value.json"),
-			property: testutil.GetAssetProp(t, "describe-asset-property-avg-wind.json"),
+			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json"),
 			validationFn: func(t *testing.T, frames data.Frames) {
 
 				fields := assertFramesAndGetFields(t, frames)
@@ -105,7 +105,7 @@ func getScenarios(t *testing.T) []*testScenario {
 					},
 				},
 			},
-			property: testutil.GetAssetProp(t, "describe-asset-property-avg-wind.json"),
+			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json"),
 			validationFn: func(t *testing.T, frames data.Frames) {
 				fields := assertFramesAndGetFields(t, frames)
 				fieldAssert{
@@ -132,7 +132,7 @@ func getScenarios(t *testing.T) []*testScenario {
 				PropertyId: testutil.TestPropIdAvgWind,
 			},
 			propVals: testutil.GetPropHistoryVals(t, "property-history-values.json"),
-			property: testutil.GetAssetProp(t, "describe-asset-property-avg-wind.json"),
+			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json"),
 			validationFn: func(t *testing.T, frames data.Frames) {
 
 				fields := assertFramesAndGetFields(t, frames)
@@ -163,7 +163,7 @@ func getScenarios(t *testing.T) []*testScenario {
 				QueryType:      models.QueryTypePropertyAggregate,
 			},
 			propVals: testutil.GetAssetPropAggregates(t, "property-aggregate-values.json"),
-			property: testutil.GetAssetProp(t, "describe-asset-property-raw-wind.json"),
+			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-raw-wind.json"),
 			validationFn: func(t *testing.T, frames data.Frames) {
 
 				fields := assertFramesAndGetFields(t, frames)

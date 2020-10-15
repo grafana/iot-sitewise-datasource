@@ -5,6 +5,8 @@ import (
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
+	dserrors "github.com/grafana/iot-sitewise-datasource/pkg/errors"
+	"github.com/grafana/iot-sitewise-datasource/pkg/server"
 )
 
 // DatasourceHandler is the plugin entrypoint and implements all of the necessary handler functions for dataqueries, healthchecks, and resources.
@@ -20,17 +22,16 @@ type DatasourceHandler struct {
 // The QueryDataResponse contains a map of RefID to the response for each query, and each response
 // contains Frames ([]*Frame).
 func (cr *DatasourceHandler) QueryData(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
-	//h, err := cr.im.Get(req.PluginContext)
-	//if err != nil {
-	//	return nil, err
-	//}
+	h, err := cr.im.Get(req.PluginContext)
+	if err != nil {
+		return nil, err
+	}
 
-	//if val, ok := h.(*sitewise.Datasource); ok {
-	//	return
-	//}
+	if ds, ok := h.(server.Datasource); ok {
+		return server.HandleQueryData(ctx, ds, req)
+	}
 
-	//TODO
-	return nil, nil
+	return nil, dserrors.ErrorBadDatasource
 }
 
 // CheckHealth handles health checks sent from Grafana to the plugin.
