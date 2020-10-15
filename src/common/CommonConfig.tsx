@@ -28,9 +28,7 @@ export interface State {
 
 export default class CommonConfig extends PureComponent<Props, State> {
   state: State = {
-    regions: standardRegions.map(r => {
-      return { value: r, label: r };
-    }),
+    regions: standardRegions,
   };
 
   // loadRegionsPromise: CancelablePromis<any> | null = null;
