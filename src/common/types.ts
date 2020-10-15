@@ -25,7 +25,7 @@ export const awsAuthProviderOptions = [
   { label: 'ARN', value: AwsAuthType.ARN },
 ] as Array<SelectableValue<AwsAuthType>>;
 
-export const standardRegions = [
+export const standardRegions: Array<SelectableValue<string>> = [
   'ap-east-1',
   'ap-northeast-1',
   'ap-northeast-2',
@@ -51,4 +51,6 @@ export const standardRegions = [
   'us-isob-east-1',
   'us-west-1',
   'us-west-2',
-];
+].map(r => {
+  return { value: r, label: r };
+});
