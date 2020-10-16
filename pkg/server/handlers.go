@@ -8,6 +8,20 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/framer"
 )
 
+func (s *Server) HandleHealthCheck(ctx context.Context, req *backend.CheckHealthRequest) (*backend.CheckHealthResult, error) {
+
+	if err := s.datasource.HealthCheck(ctx, req); err != nil {
+		return &backend.CheckHealthResult{
+			Status:  backend.HealthStatusError,
+			Message: err.Error(),
+		}, nil
+	}
+	return &backend.CheckHealthResult{
+		Status:  backend.HealthStatusOk,
+		Message: backend.HealthStatusOk.String(),
+	}, nil
+}
+
 func (s *Server) handlePropertyValueQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
 
 	query, err := models.GetAssetPropertyValueQuery(&q)

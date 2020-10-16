@@ -3,8 +3,11 @@ package server
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"testing"
 	"time"
+
+	"github.com/grafana/grafana-plugin-sdk-go/experimental"
 
 	"github.com/stretchr/testify/assert"
 
@@ -27,11 +30,17 @@ var (
 	}
 )
 
+type goldenParams struct {
+	update   bool
+	filename string
+}
+
 type testScenario struct {
 	name         string
 	queries      []backend.DataQuery
 	propVals     iotsitewise.GetAssetPropertyValueHistoryOutput
 	property     iotsitewise.DescribeAssetPropertyOutput
+	goldenParams *goldenParams
 	handlerFn    func(t *testing.T, srvr *Server) backend.QueryDataHandlerFunc
 	validationFn func(t *testing.T, dr *backend.QueryDataResponse, err error)
 }
@@ -65,6 +74,10 @@ var propertyValueHistoryResponseScenario = func(t *testing.T) *testScenario {
 		},
 		propVals: testutil.GetIoTSitewisePropHistoryVals(t, "property-history-values.json"),
 		property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json"),
+		goldenParams: &goldenParams{
+			update:   true,
+			filename: "property-history-values",
+		},
 		handlerFn: func(t *testing.T, srvr *Server) backend.QueryDataHandlerFunc {
 			return srvr.HandlePropertyValueHistory
 		},
@@ -86,6 +99,8 @@ var propertyValueHistoryResponseScenario = func(t *testing.T) *testScenario {
 			// do both fields have data
 			assert.True(t, dr.Frames[0].Fields[0].Len() > 1)
 			assert.True(t, dr.Frames[0].Fields[1].Len() > 1)
+
+			//experimental.CheckGoldenDataResponse("../testdata/property-history-values.golden.txt", &dr, true)
 		},
 	}
 
@@ -125,9 +140,20 @@ func runTestScenario(t *testing.T, scenario *testScenario) {
 			datasource: mockedDatasource(swmock),
 		}
 
-		dr, err := scenario.handlerFn(t, srvr)(ctx, req)
+		dqr, err := scenario.handlerFn(t, srvr)(ctx, req)
 
-		scenario.validationFn(t, dr, err)
+		scenario.validationFn(t, dqr, err)
+
+		// write out the golden for all data responses
+		if gp := scenario.goldenParams; gp != nil {
+			for i, dr := range dqr.Responses {
+				fname := fmt.Sprintf("../testdata/%s-%s.golden.txt", gp.filename, i)
+				if err := experimental.CheckGoldenDataResponse(fname, &dr, gp.update); err != nil {
+					t.Fatal(err)
+				}
+			}
+
+		}
 
 	})
 
