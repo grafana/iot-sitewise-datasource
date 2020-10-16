@@ -2,6 +2,7 @@ package framer
 
 import (
 	"context"
+	"time"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 
@@ -9,7 +10,7 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/framer"
-	resource "github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 )
 
 // AssetPropertyValueMetadata handles creating Fields for all 3 data fetching APIS. A few TODOs/remarks:
@@ -26,7 +27,7 @@ type AssetPropertyValueMetadata struct {
 func (md AssetPropertyValueMetadata) Fields() ([]*data.Field, error) {
 
 	fields := []*data.Field{
-		data.NewField("time", nil, []int64{}),
+		data.NewField("time", nil, []time.Time{}),
 	}
 
 	qfields, err := md.getQueryTypeValueFields()

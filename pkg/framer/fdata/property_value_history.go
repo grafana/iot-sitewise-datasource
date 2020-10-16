@@ -9,7 +9,7 @@ func (p AssetPropertyValueHistory) Rows() [][]interface{} {
 
 	for _, v := range p.AssetPropertyValueHistory {
 		rows = append(rows, []interface{}{
-			getTimeInMs(v.Timestamp),
+			getTimeValue(v.Timestamp),
 			getPropertyVariantValue(v.Value),
 		})
 	}

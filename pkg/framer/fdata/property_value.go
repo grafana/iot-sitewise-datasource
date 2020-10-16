@@ -2,6 +2,7 @@ package fdata
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 )
@@ -10,22 +11,23 @@ type AssetPropertyValue iotsitewise.GetAssetPropertyValueOutput
 
 func (a AssetPropertyValue) Rows() [][]interface{} {
 	rows := [][]interface{}{
-		{getTimeInMs(a.PropertyValue.Timestamp), getPropertyVariantValue(a.PropertyValue.Value)},
+		{getTimeValue(a.PropertyValue.Timestamp), getPropertyVariantValue(a.PropertyValue.Value)},
 	}
 
 	fmt.Println(rows)
 	return rows
 }
 
-func getTimeInMs(ts *iotsitewise.TimeInNanos) int64 {
-
-	secMs := *ts.TimeInSeconds * 1e3
-
-	if nanos := ts.OffsetInNanos; nanos != nil {
-		nanosMs := *ts.OffsetInNanos / 1e6
-		secMs = secMs + nanosMs
+func getTimeValue(ts *iotsitewise.TimeInNanos) time.Time {
+	var sec int64 = 0
+	var nsec int64 = 0
+	if ts.TimeInSeconds != nil {
+		sec = *ts.TimeInSeconds
 	}
-	return secMs
+	if ts.OffsetInNanos != nil {
+		nsec = *ts.OffsetInNanos
+	}
+	return time.Unix(sec, nsec)
 }
 
 func getPropertyVariantValue(variant *iotsitewise.Variant) interface{} {

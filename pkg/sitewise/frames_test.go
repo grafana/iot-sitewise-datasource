@@ -71,7 +71,7 @@ func getScenarios(t *testing.T) []*testScenario {
 					fields:       fields,
 					idx:          0,
 					expectedName: "time",
-					expectedType: data.FieldTypeInt64,
+					expectedType: data.FieldTypeTime,
 				}.assert(t)
 
 				fieldAssert{
@@ -112,7 +112,7 @@ func getScenarios(t *testing.T) []*testScenario {
 					fields:       fields,
 					idx:          0,
 					expectedName: "time",
-					expectedType: data.FieldTypeInt64,
+					expectedType: data.FieldTypeTime,
 				}.assert(t)
 
 				fieldAssert{
@@ -141,7 +141,7 @@ func getScenarios(t *testing.T) []*testScenario {
 					fields:       fields,
 					idx:          0,
 					expectedName: "time",
-					expectedType: data.FieldTypeInt64,
+					expectedType: data.FieldTypeTime,
 				}.assert(t)
 
 				fieldAssert{
@@ -175,7 +175,7 @@ func getScenarios(t *testing.T) []*testScenario {
 					fields:       fields,
 					idx:          0,
 					expectedName: "time",
-					expectedType: data.FieldTypeInt64,
+					expectedType: data.FieldTypeTime,
 				}.assert(t)
 
 				fieldAssert{
