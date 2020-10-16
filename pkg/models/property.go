@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
@@ -18,13 +19,30 @@ type AssetPropertyValueQuery struct {
 	PropertyId     string   `json:"propertyId"`
 	NextToken      string   `json:"nextToken,omitempty"`
 	Qualities      []string `json:"qualities,omitempty"`
-	AggregateTypes []string `json:"aggregateTypes"`
-	Resolution     string   `json:"resolution"`
+	AggregateTypes []string `json:"aggregateTypes,omitempty"`
+	Resolution     string   `json:"resolution,omitempty"`
 	// Not from JSON
+	// TODO: move to embedded struct?
 	Interval      time.Duration     `json:"-"`
 	TimeRange     backend.TimeRange `json:"-"`
 	MaxDataPoints int64             `json:"-"`
 	QueryType     string            `json:"-"`
+}
+
+func GetAssetPropertyValueQuery(dq *backend.DataQuery) (*AssetPropertyValueQuery, error) {
+
+	query := &AssetPropertyValueQuery{}
+	if err := json.Unmarshal(dq.JSON, query); err != nil {
+		return nil, err
+	}
+
+	// add on the DataQuery params
+	query.TimeRange = dq.TimeRange
+	query.Interval = dq.Interval
+	query.MaxDataPoints = dq.MaxDataPoints
+	query.QueryType = dq.QueryType
+
+	return query, nil
 }
 
 // AggregateFieldHelper is a struct used by both the meta provider and the row data.

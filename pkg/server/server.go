@@ -2,7 +2,10 @@ package server
 
 import (
 	"context"
-	"encoding/json"
+
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise"
+
+	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 
@@ -30,13 +33,17 @@ func processQueries(ctx context.Context, req *backend.QueryDataRequest, handler 
 }
 
 // UnmarshalQuery attempts to unmarshal a query from JSON
-func UnmarshalQuery(b []byte, v interface{}) *backend.DataResponse {
-	if err := json.Unmarshal(b, v); err != nil {
-		return &backend.DataResponse{
-			Error: errors.Wrap(err, "failed to unmarshal JSON request into query"),
-		}
+//func UnmarshalQuery(b []byte, v interface{}) *backend.DataResponse {
+//	if err := json.Unmarshal(b, v); err != nil {
+//		return DataResponseError(err, "failed to unmarshal JSON request into query")
+//	}
+//	return nil
+//}
+
+func DataResponseError(err error, message string) backend.DataResponse {
+	return backend.DataResponse{
+		Error: errors.Wrap(err, message),
 	}
-	return nil
 }
 
 // GetQueryHandlers creates the QueryTypeMux type for handling queries
@@ -46,4 +53,11 @@ func GetQueryHandlers(s *Server) *datasource.QueryTypeMux {
 	mux.HandleFunc(models.QueryTypePropertyValueHistory, s.HandlePropertyValueHistory)
 
 	return mux
+}
+
+func NewServerInstance(settings backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
+	srvr := &Server{
+		datasource: sitewise.NewDatasource(),
+	}
+	return srvr, nil
 }
