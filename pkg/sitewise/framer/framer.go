@@ -3,7 +3,7 @@ package framer
 import (
 	"context"
 
-	resource2 "github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
@@ -11,7 +11,7 @@ import (
 
 // Framer is an interface that allows any type to be treated as a data frame
 type Framer interface {
-	Frames(ctx context.Context, resources resource2.ResourceProvider) (data.Frames, error)
+	Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error)
 }
 
 // FrameData is an interface which returns the column data for a DataFrame from an implementing type

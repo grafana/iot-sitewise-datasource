@@ -3,15 +3,14 @@ package framer
 import (
 	"context"
 
-	resource2 "github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
-
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 )
 
 type AssetPropertyValueHistory iotsitewise.GetAssetPropertyValueHistoryOutput
 
-func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resource2.ResourceProvider) (data.Frames, error) {
+func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
 
 	length := len(p.AssetPropertyValueHistory)
 	property, err := resources.Property(ctx)
