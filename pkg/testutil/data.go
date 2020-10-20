@@ -7,8 +7,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
+
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
-	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fdata"
 )
 
 var UnmarshallFileContents = func(filename string, val interface{}) error {
@@ -36,8 +37,8 @@ var GetIotSitewiseAssetProp = func(t *testing.T, filename string) iotsitewise.De
 	return property
 }
 
-var GetPropVals = func(t *testing.T, filename string) fdata.AssetPropertyValue {
-	propVals := fdata.AssetPropertyValue{}
+var GetPropVals = func(t *testing.T, filename string) framer.AssetPropertyValue {
+	propVals := framer.AssetPropertyValue{}
 	err := UnmarshallFileContents(filename, &propVals)
 	if err != nil {
 		t.Fatal(err)
@@ -45,8 +46,8 @@ var GetPropVals = func(t *testing.T, filename string) fdata.AssetPropertyValue {
 	return propVals
 }
 
-var GetPropHistoryVals = func(t *testing.T, filename string) fdata.AssetPropertyValueHistory {
-	propVals := fdata.AssetPropertyValueHistory{}
+var GetPropHistoryVals = func(t *testing.T, filename string) framer.AssetPropertyValueHistory {
+	propVals := framer.AssetPropertyValueHistory{}
 	err := UnmarshallFileContents(filename, &propVals)
 	if err != nil {
 		t.Fatal(err)
@@ -63,8 +64,8 @@ var GetIoTSitewisePropHistoryVals = func(t *testing.T, filename string) iotsitew
 	return propVals
 }
 
-var GetAssetPropAggregates = func(t *testing.T, filename string) fdata.AssetPropertyAggregates {
-	propVals := fdata.AssetPropertyAggregates{}
+var GetAssetPropAggregates = func(t *testing.T, filename string) framer.AssetPropertyAggregates {
+	propVals := framer.AssetPropertyAggregates{}
 	err := UnmarshallFileContents(filename, &propVals)
 	if err != nil {
 		t.Fatal(err)

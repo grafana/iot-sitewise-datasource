@@ -8,17 +8,17 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
 
-type resourceProvider struct {
+type SitewiseResources struct {
 	client client.Client
 }
 
-func NewSitewiseResourceProvider(client client.Client) *resourceProvider {
-	return &resourceProvider{
+func NewSitewiseResources(client client.Client) *SitewiseResources {
+	return &SitewiseResources{
 		client: client,
 	}
 }
 
-func (rp *resourceProvider) Asset(ctx context.Context, assetId string) (*iotsitewise.DescribeAssetOutput, error) {
+func (rp *SitewiseResources) Asset(ctx context.Context, assetId string) (*iotsitewise.DescribeAssetOutput, error) {
 
 	resp, err := rp.client.DescribeAssetWithContext(ctx, &iotsitewise.DescribeAssetInput{
 		AssetId: aws.String(assetId),
@@ -27,7 +27,7 @@ func (rp *resourceProvider) Asset(ctx context.Context, assetId string) (*iotsite
 	return resp, err
 }
 
-func (rp *resourceProvider) Property(ctx context.Context, assetId string, propertyId string) (*iotsitewise.DescribeAssetPropertyOutput, error) {
+func (rp *SitewiseResources) Property(ctx context.Context, assetId string, propertyId string) (*iotsitewise.DescribeAssetPropertyOutput, error) {
 
 	resp, err := rp.client.DescribeAssetPropertyWithContext(ctx, &iotsitewise.DescribeAssetPropertyInput{
 		AssetId:    aws.String(assetId),
@@ -37,7 +37,7 @@ func (rp *resourceProvider) Property(ctx context.Context, assetId string, proper
 	return resp, err
 }
 
-func (rp *resourceProvider) AssetModel(ctx context.Context, modelId string) (*iotsitewise.DescribeAssetModelOutput, error) {
+func (rp *SitewiseResources) AssetModel(ctx context.Context, modelId string) (*iotsitewise.DescribeAssetModelOutput, error) {
 
 	resp, err := rp.client.DescribeAssetModelWithContext(ctx, &iotsitewise.DescribeAssetModelInput{
 		AssetModelId: aws.String(modelId),

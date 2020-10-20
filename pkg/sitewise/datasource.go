@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/grafana/grafana-plugin-sdk-go/data"
+
 	"github.com/pkg/errors"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -13,7 +15,6 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
-	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/framer"
 )
 
 type clientGetterFunc func(ctx backend.PluginContext, q models.BaseQuery) (client client.Client, err error)
@@ -46,7 +47,7 @@ func (ds *Datasource) HealthCheck(ctx context.Context, req *backend.CheckHealthR
 	}
 }
 
-func (ds *Datasource) HandleGetAssetPropertyValueHistoryQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (framer.Framer, error) {
+func (ds *Datasource) HandleGetAssetPropertyValueHistoryQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
 
 	sw, err := ds.GetClient(req.PluginContext, query.BaseQuery)
 	if err != nil {
@@ -58,5 +59,5 @@ func (ds *Datasource) HandleGetAssetPropertyValueHistoryQuery(ctx context.Contex
 		return nil, err
 	}
 
-	return framePropertyValueResponse(query, fdata, sw), nil
+	return frameResponse(ctx, query.BaseQuery, fdata, sw)
 }

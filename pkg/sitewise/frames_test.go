@@ -4,14 +4,13 @@ import (
 	"context"
 	"testing"
 
-	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fdata"
+	framer2 "github.com/grafana/iot-sitewise-datasource/pkg/framer"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/testutil"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
-	framerImpl "github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/resource"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
@@ -23,7 +22,7 @@ import (
 type testScenario struct {
 	name         string
 	query        models.AssetPropertyValueQuery
-	propVals     framer.FrameData
+	propVals     framer.Framer
 	property     iotsitewise.DescribeAssetPropertyOutput
 	validationFn func(t *testing.T, frames data.Frames)
 }
@@ -57,9 +56,11 @@ func getScenarios(t *testing.T) []*testScenario {
 		{
 			name: "TestAssetPropertyValue",
 			query: models.AssetPropertyValueQuery{
-				QueryType:  models.QueryTypePropertyValue,
-				AssetId:    testutil.TestAssetId,
-				PropertyId: testutil.TestPropIdAvgWind,
+				BaseQuery: models.BaseQuery{
+					QueryType:  models.QueryTypePropertyValue,
+					AssetId:    testutil.TestAssetId,
+					PropertyId: testutil.TestPropIdAvgWind,
+				},
 			},
 			propVals: testutil.GetPropVals(t, "property-value.json"),
 			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json"),
@@ -71,7 +72,7 @@ func getScenarios(t *testing.T) []*testScenario {
 					fields:       fields,
 					idx:          0,
 					expectedName: "time",
-					expectedType: data.FieldTypeInt64,
+					expectedType: data.FieldTypeTime,
 				}.assert(t)
 
 				fieldAssert{
@@ -86,11 +87,13 @@ func getScenarios(t *testing.T) []*testScenario {
 		{
 			name: "TestNullResponseAssetPropertyValues",
 			query: models.AssetPropertyValueQuery{
-				QueryType:  models.QueryTypePropertyValue,
-				AssetId:    testutil.TestAssetId,
-				PropertyId: testutil.TestPropIdAvgWind,
+				BaseQuery: models.BaseQuery{
+					QueryType:  models.QueryTypePropertyValue,
+					AssetId:    testutil.TestAssetId,
+					PropertyId: testutil.TestPropIdAvgWind,
+				},
 			},
-			propVals: fdata.AssetPropertyValue{
+			propVals: framer2.AssetPropertyValue{
 				PropertyValue: &iotsitewise.AssetPropertyValue{
 					Quality: aws.String("GOOD"),
 					Timestamp: &iotsitewise.TimeInNanos{
@@ -112,7 +115,7 @@ func getScenarios(t *testing.T) []*testScenario {
 					fields:       fields,
 					idx:          0,
 					expectedName: "time",
-					expectedType: data.FieldTypeInt64,
+					expectedType: data.FieldTypeTime,
 				}.assert(t)
 
 				fieldAssert{
@@ -127,9 +130,11 @@ func getScenarios(t *testing.T) []*testScenario {
 		{
 			name: "TestAssetPropertyHistoryValues",
 			query: models.AssetPropertyValueQuery{
-				QueryType:  models.QueryTypePropertyValueHistory,
-				AssetId:    testutil.TestAssetId,
-				PropertyId: testutil.TestPropIdAvgWind,
+				BaseQuery: models.BaseQuery{
+					QueryType:  models.QueryTypePropertyValueHistory,
+					AssetId:    testutil.TestAssetId,
+					PropertyId: testutil.TestPropIdAvgWind,
+				},
 			},
 			propVals: testutil.GetPropHistoryVals(t, "property-history-values.json"),
 			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json"),
@@ -141,7 +146,7 @@ func getScenarios(t *testing.T) []*testScenario {
 					fields:       fields,
 					idx:          0,
 					expectedName: "time",
-					expectedType: data.FieldTypeInt64,
+					expectedType: data.FieldTypeTime,
 				}.assert(t)
 
 				fieldAssert{
@@ -156,11 +161,13 @@ func getScenarios(t *testing.T) []*testScenario {
 		{
 			name: "TestAssetPropertyHistoryAggregates",
 			query: models.AssetPropertyValueQuery{
-				AssetId:        testutil.TestAssetId,
-				PropertyId:     testutil.TestPropIdRawWin,
+				BaseQuery: models.BaseQuery{
+					QueryType:  models.QueryTypePropertyAggregate,
+					AssetId:    testutil.TestAssetId,
+					PropertyId: testutil.TestPropIdRawWin,
+				},
 				AggregateTypes: []string{models.AggregateMax, models.AggregateMin, models.AggregateAvg},
 				Resolution:     "1m",
-				QueryType:      models.QueryTypePropertyAggregate,
 			},
 			propVals: testutil.GetAssetPropAggregates(t, "property-aggregate-values.json"),
 			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-raw-wind.json"),
@@ -175,7 +182,7 @@ func getScenarios(t *testing.T) []*testScenario {
 					fields:       fields,
 					idx:          0,
 					expectedName: "time",
-					expectedType: data.FieldTypeInt64,
+					expectedType: data.FieldTypeTime,
 				}.assert(t)
 
 				fieldAssert{
@@ -215,15 +222,9 @@ func TestFrameData(t *testing.T) {
 			sw := &mocks.Client{}
 			sw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&v.property, nil)
 
-			rp := resource.NewSitewiseResourceProvider(sw)
-			mp := framerImpl.NewPropertyValueMetaProvider(rp, v.query)
-			fr := framerImpl.PropertyValueQueryFramer{
-				FrameData:    v.propVals,
-				MetaProvider: mp,
-				Request:      v.query,
-			}
+			rp := resource.NewQueryResourceProvider(sw, v.query.BaseQuery)
 
-			dataFrames, err := fr.Frames(ctx)
+			dataFrames, err := v.propVals.Frames(ctx, rp)
 
 			if err != nil {
 				t.Fatal(err)
