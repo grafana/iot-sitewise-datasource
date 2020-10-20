@@ -24,11 +24,15 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 	valueField := data.NewFieldFromFieldType(fieldTypeForPropertyValue(property), length)
 	valueField.Name = *property.AssetProperty.Name
 
-	frame := data.NewFrame(*property.AssetName, timeField, valueField)
+	qualityField := data.NewFieldFromFieldType(data.FieldTypeNullableString, length)
+	qualityField.Name = "Quality"
+
+	frame := data.NewFrame(*property.AssetName, timeField, valueField, qualityField)
 
 	for i, v := range p.AssetPropertyValueHistory {
 		timeField.Set(i, getTime(v.Timestamp))
 		valueField.Set(i, getPropertyVariantValue(v.Value))
+		qualityField.Set(i, v.Quality)
 	}
 
 	return data.Frames{frame}, nil
