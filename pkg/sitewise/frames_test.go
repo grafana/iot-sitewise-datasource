@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	framer2 "github.com/grafana/iot-sitewise-datasource/pkg/framer"
+	framerimpl "github.com/grafana/iot-sitewise-datasource/pkg/framer"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/testutil"
 
@@ -30,10 +30,11 @@ type testScenario struct {
 // fieldAssert will verify the field created by the framer contains the expected information.
 // As we add additional field config + tags, expand this struct.
 type fieldAssert struct {
-	fields       data.Fields
-	idx          int
-	expectedName string
-	expectedType data.FieldType
+	fields         data.Fields
+	idx            int
+	expectedName   string
+	expectedType   data.FieldType
+	expectedConfig data.FieldConfig
 }
 
 func (fa fieldAssert) assert(t *testing.T) {
@@ -42,8 +43,8 @@ func (fa fieldAssert) assert(t *testing.T) {
 	assert.Equal(t, fa.expectedType, field.Type(), "wrong type for field in Field[%d]. got %s expected %s", fa.idx, field.Type(), fa.expectedType)
 }
 
-var assertFramesAndGetFields = func(t *testing.T, frames data.Frames) data.Fields {
-	assert.Len(t, frames, 1)
+var assertFramesAndGetFields = func(t *testing.T, length int, frames data.Frames) data.Fields {
+	assert.Len(t, frames, length)
 	frame := frames[0]
 	t.Log(frame.StringTable(-1, -1))
 
@@ -66,7 +67,7 @@ func getScenarios(t *testing.T) []*testScenario {
 			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json"),
 			validationFn: func(t *testing.T, frames data.Frames) {
 
-				fields := assertFramesAndGetFields(t, frames)
+				fields := assertFramesAndGetFields(t, 1, frames)
 
 				fieldAssert{
 					fields:       fields,
@@ -93,7 +94,7 @@ func getScenarios(t *testing.T) []*testScenario {
 					PropertyId: testutil.TestPropIdAvgWind,
 				},
 			},
-			propVals: framer2.AssetPropertyValue{
+			propVals: framerimpl.AssetPropertyValue{
 				PropertyValue: &iotsitewise.AssetPropertyValue{
 					Quality: aws.String("GOOD"),
 					Timestamp: &iotsitewise.TimeInNanos{
@@ -110,7 +111,7 @@ func getScenarios(t *testing.T) []*testScenario {
 			},
 			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json"),
 			validationFn: func(t *testing.T, frames data.Frames) {
-				fields := assertFramesAndGetFields(t, frames)
+				fields := assertFramesAndGetFields(t, 1, frames)
 				fieldAssert{
 					fields:       fields,
 					idx:          0,
@@ -140,7 +141,7 @@ func getScenarios(t *testing.T) []*testScenario {
 			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json"),
 			validationFn: func(t *testing.T, frames data.Frames) {
 
-				fields := assertFramesAndGetFields(t, frames)
+				fields := assertFramesAndGetFields(t, 1, frames)
 
 				fieldAssert{
 					fields:       fields,
@@ -173,7 +174,7 @@ func getScenarios(t *testing.T) []*testScenario {
 			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-raw-wind.json"),
 			validationFn: func(t *testing.T, frames data.Frames) {
 
-				fields := assertFramesAndGetFields(t, frames)
+				fields := assertFramesAndGetFields(t, 1, frames)
 
 				// time, avg, min, max
 				assert.Len(t, fields, 4, "expected [time, avg, min, max]")
@@ -205,6 +206,24 @@ func getScenarios(t *testing.T) []*testScenario {
 					expectedName: "max",
 					expectedType: data.FieldTypeNullableFloat64,
 				}.assert(t)
+			},
+		},
+		{
+			name:     "TestListAssetModels",
+			query:    models.AssetPropertyValueQuery{},
+			propVals: nil,
+			property: nil,
+			validationFn: func(t *testing.T, frames data.Frames) {
+
+				fields := assertFramesAndGetFields(t, 1, frames)
+
+				fieldAssert{
+					fields:         fields,
+					idx:            0,
+					expectedName:   "",
+					expectedType:   0,
+					expectedConfig: data.FieldConfig{},
+				}
 
 			},
 		},

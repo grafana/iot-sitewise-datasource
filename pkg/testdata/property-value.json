@@ -3,11 +3,11 @@
         "Quality": "GOOD",
         "Timestamp": {
             "OffsetInNanos": 0,
-            "TimeInSeconds": 1602219000
+            "TimeInSeconds": 1603220100
         },
         "Value": {
             "BooleanValue": null,
-            "DoubleValue": 40.90457427319228,
+            "DoubleValue": 14.944054694911172,
             "IntegerValue": null,
             "StringValue": null
         }

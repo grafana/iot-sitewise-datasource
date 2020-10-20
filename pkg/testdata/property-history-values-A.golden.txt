@@ -1,6 +1,10 @@
 🌟 This was machine generated.  Do not edit. 🌟
 
-Frame[0] 
+Frame[0] {
+    "custom": {
+        "hasSeries": true
+    }
+}
 Name: Demo Turbine Asset 1
 Dimensions: 3 Fields by 35 Rows
 +-------------------------------+--------------------------+-----------------+
