@@ -3,25 +3,21 @@ package framer
 import (
 	"context"
 
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
+
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 )
 
 // Framer is an interface that allows any type to be treated as a data frame
 type Framer interface {
-	Frames(ctx context.Context) (data.Frames, error)
-}
-
-// FrameData is an interface which returns the column data for a DataFrame from an implementing type
-type FrameData interface {
-	// Rows returns the Sitewise response, marshaled into the data frame column/row format.
-	Rows() [][]interface{}
+	Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error)
 }
 
 // FrameResponse creates a backend.DataResponse that contains the Framer's data.Frames
 func FrameResponse(ctx context.Context, f Framer) backend.DataResponse {
 
-	frames, err := f.Frames(ctx)
+	frames, err := f.Frames(ctx, nil)
 
 	return backend.DataResponse{
 		Frames: frames,

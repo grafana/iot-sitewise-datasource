@@ -1,4 +1,4 @@
 run:
   skip-files:
-    - pkg/resource/caching_provider.go
+    - pkg/resource/caching_resource_provider.go
     - pkg/sitewise/test_data_test.go

@@ -1,5 +1,11 @@
 package models
 
+import (
+	"time"
+
+	"github.com/grafana/grafana-plugin-sdk-go/backend"
+)
+
 const (
 	QueryTypePropertyValueHistory = "PropertyValueHistory"
 	QueryTypePropertyValue        = "PropertyValue"
@@ -16,5 +22,12 @@ const (
 )
 
 type BaseQuery struct {
-	AwsRegion string `json:"region,omitempty"`
+	AwsRegion  string `json:"region,omitempty"`
+	AssetId    string `json:"assetId,omitempty"`
+	PropertyId string `json:"propertyId,omitempty"`
+
+	Interval      time.Duration     `json:"-"`
+	TimeRange     backend.TimeRange `json:"-"`
+	MaxDataPoints int64             `json:"-"`
+	QueryType     string            `json:"-"`
 }

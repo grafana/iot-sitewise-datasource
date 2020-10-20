@@ -49,10 +49,10 @@ var propertyValueHistoryResponseScenario = func(t *testing.T) *testScenario {
 
 	query := models.AssetPropertyValueQuery{
 		BaseQuery: models.BaseQuery{
-			AwsRegion: "us-west-2",
+			AwsRegion:  "us-west-2",
+			AssetId:    testutil.TestAssetId,
+			PropertyId: testutil.TestPropIdAvgWind,
 		},
-		AssetId:    testutil.TestAssetId,
-		PropertyId: testutil.TestPropIdAvgWind,
 	}
 
 	qbytes, err := json.Marshal(query)

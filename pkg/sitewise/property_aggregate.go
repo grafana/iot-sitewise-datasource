@@ -3,7 +3,7 @@ package sitewise
 import (
 	"context"
 
-	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fdata"
+	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 
@@ -59,7 +59,7 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ge
 	}
 }
 
-func GetAssetPropertyAggregates(ctx context.Context, client client.Client, query models.AssetPropertyValueQuery) (*fdata.AssetPropertyAggregates, error) {
+func GetAssetPropertyAggregates(ctx context.Context, client client.Client, query models.AssetPropertyValueQuery) (*framer.AssetPropertyAggregates, error) {
 
 	awsReq := aggregateQueryToInput(query)
 
@@ -71,7 +71,7 @@ func GetAssetPropertyAggregates(ctx context.Context, client client.Client, query
 		return nil, err
 	}
 
-	return &fdata.AssetPropertyAggregates{
+	return &framer.AssetPropertyAggregates{
 		AggregatedValues: resp.AggregatedValues,
 		NextToken:        resp.NextToken,
 	}, nil

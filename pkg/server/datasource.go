@@ -3,14 +3,15 @@ package server
 import (
 	"context"
 
+	"github.com/grafana/grafana-plugin-sdk-go/data"
+
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
-	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/framer"
 )
 
 type Datasource interface {
 	HealthCheck(ctx context.Context, req *backend.CheckHealthRequest) error
-	HandleGetAssetPropertyValueHistoryQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (framer.Framer, error)
+	HandleGetAssetPropertyValueHistoryQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error)
 }
 
 // HandleQueryData handles the `QueryData` request for the Github datasource

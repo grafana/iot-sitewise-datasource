@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
-	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/framer"
 	"github.com/pkg/errors"
 )
 
@@ -19,17 +18,17 @@ const CacheCleanupInterval = time.Minute * 10
 var ErrNoValue = errors.New("no cached value was found with that key")
 
 type cachingProvider struct {
-	resources *resourceProvider
+	resources *SitewiseResources
 	cache     map[string]cachedResult
 }
 
 // cachedResult is a value and a timestamp that defines when the cached value is no longer usable
 type cachedResult struct {
-	Result    *framer.Metadata
+	Result    interface{}
 	ExpiresAt time.Time
 }
 
-func newCachedResult(f *framer.Metadata) cachedResult {
+func newCachedResult(f interface{}) cachedResult {
 	return cachedResult{
 		ExpiresAt: time.Now().Add(CacheDuration),
 		Result:    f,

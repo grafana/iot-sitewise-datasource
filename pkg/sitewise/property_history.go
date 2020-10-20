@@ -3,7 +3,7 @@ package sitewise
 import (
 	"context"
 
-	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fdata"
+	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 
@@ -56,7 +56,7 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetA
 	}
 }
 
-func GetAssetPropertyValues(ctx context.Context, client client.Client, query models.AssetPropertyValueQuery) (*fdata.AssetPropertyValueHistory, error) {
+func GetAssetPropertyValues(ctx context.Context, client client.Client, query models.AssetPropertyValueQuery) (*framer.AssetPropertyValueHistory, error) {
 
 	awsReq := historyQueryToInput(query)
 
@@ -68,7 +68,7 @@ func GetAssetPropertyValues(ctx context.Context, client client.Client, query mod
 		return nil, err
 	}
 
-	return &fdata.AssetPropertyValueHistory{
+	return &framer.AssetPropertyValueHistory{
 		AssetPropertyValueHistory: resp.AssetPropertyValueHistory,
 		NextToken:                 resp.NextToken,
 	}, nil
