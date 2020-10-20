@@ -21,8 +21,7 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 	timeField := data.NewFieldFromFieldType(data.FieldTypeTime, length)
 	timeField.Name = "time"
 
-	valueField := data.NewFieldFromFieldType(fieldTypeForPropertyValue(property), length)
-	valueField.Name = *property.AssetProperty.Name
+	valueField := newPropertyValueField(property, length)
 
 	qualityField := data.NewFieldFromFieldType(data.FieldTypeNullableString, length)
 	qualityField.Name = "Quality"

@@ -50,3 +50,42 @@ func getPropertyVariantValue(variant *iotsitewise.Variant) interface{} {
 
 	return nil
 }
+
+func newPropertyValueField(property *iotsitewise.DescribeAssetPropertyOutput, length int) *data.Field {
+	valueField := data.NewFieldFromFieldType(fieldTypeForPropertyValue(property), length)
+	valueField.Name = *property.AssetProperty.Name
+	valueField.Config = &data.FieldConfig{
+		Unit: toGrafanaUnit(property.AssetProperty.Unit),
+	}
+	return valueField
+}
+
+// Map values from ???:
+//   https://docs.microsoft.com/en-us/rest/api/monitor/metrics/list#unit
+// to
+//   https://github.com/grafana/grafana/blob/master/packages/grafana-data/src/valueFormats/categories.ts#L24
+func toGrafanaUnit(unit *string) string {
+	if unit == nil {
+		return ""
+	}
+
+	switch *unit {
+	case "BitsPerSecond":
+		return "bps"
+	case "Bytes":
+		return "decbytes" // or ICE
+	case "BytesPerSecond":
+		return "Bps"
+	case "Count":
+		return "short" // this is used for integers
+	case "CountPerSecond":
+		return "cps"
+	case "Percent":
+		return "percent"
+	case "Milliseconds":
+		return "ms"
+	case "Seconds":
+		return "s"
+	}
+	return *unit // this will become a suffix in the display
+}
