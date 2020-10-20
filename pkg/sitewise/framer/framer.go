@@ -14,12 +14,6 @@ type Framer interface {
 	Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error)
 }
 
-// FrameData is an interface which returns the column data for a DataFrame from an implementing type
-type FrameData interface {
-	// Rows returns the Sitewise response, marshaled into the data frame column/row format.
-	Rows() [][]interface{}
-}
-
 // FrameResponse creates a backend.DataResponse that contains the Framer's data.Frames
 func FrameResponse(ctx context.Context, f Framer) backend.DataResponse {
 

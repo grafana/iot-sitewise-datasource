@@ -2,7 +2,6 @@ package framer
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
@@ -10,15 +9,6 @@ import (
 )
 
 type AssetPropertyValue iotsitewise.GetAssetPropertyValueOutput
-
-func (a AssetPropertyValue) Rows() [][]interface{} {
-	rows := [][]interface{}{
-		{getTime(a.PropertyValue.Timestamp), getPropertyVariantValue(a.PropertyValue.Value)},
-	}
-
-	fmt.Println(rows)
-	return rows
-}
 
 func (p AssetPropertyValue) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
 
