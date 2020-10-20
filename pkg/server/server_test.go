@@ -95,10 +95,11 @@ var propertyValueHistoryResponseScenario = func(t *testing.T) *testScenario {
 			// does it have the expected asset property
 			assert.Equal(t, dr.Frames[0].Name, testutil.TestPropertyName)
 			// are there the expected number of fields
-			assert.Len(t, dr.Frames[0].Fields, 2)
+			assert.Len(t, dr.Frames[0].Fields, 3)
 			// do both fields have data
 			assert.True(t, dr.Frames[0].Fields[0].Len() > 1)
 			assert.True(t, dr.Frames[0].Fields[1].Len() > 1)
+			assert.True(t, dr.Frames[0].Fields[2].Len() > 1)
 
 			//experimental.CheckGoldenDataResponse("../testdata/property-history-values.golden.txt", &dr, true)
 		},
