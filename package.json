@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "View IoT Sitewise data in grafana",
   "scripts": {
-    "build": "rm -rf dist && grafana-toolkit plugin:build && mage",
+    "build": "rm -rf dist && grafana-toolkit plugin:build && mage build:backend",
     "test": "grafana-toolkit plugin:test",
     "dev": "rm -rf node_modules/@grafana/data/node_modules; grafana-toolkit plugin:dev",
     "watch": "grafana-toolkit plugin:dev --watch"
@@ -12,10 +12,15 @@
   "author": "Grafana Labs <team@grafana.com> (https://grafana.com)",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grafana/data": "next",
-    "@grafana/runtime": "next",
-    "@grafana/toolkit": "next",
-    "@grafana/ui": "next",
-    "@types/lodash": "latest"
+    "@grafana/data": "7.3.0-beta.1",
+    "@grafana/runtime": "7.3.0-beta.1",
+    "@grafana/toolkit": "7.3.0-beta.1",
+    "@grafana/ui": "7.3.0-beta.1"
+  },
+  "resolutions": {
+    "@grafana/data": "7.3.0-beta.1",
+    "@grafana/runtime": "7.3.0-beta.1",
+    "@grafana/toolkit": "7.3.0-beta.1",
+    "@grafana/ui": "7.3.0-beta.1"
   }
 }
