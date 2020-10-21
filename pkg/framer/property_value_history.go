@@ -4,9 +4,10 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
-	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 )
 
@@ -30,17 +31,17 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 
 	frame := data.NewFrame(*property.AssetName, timeField, valueField, qualityField)
 
-	for i, v := range p.AssetPropertyValueHistory {
-		timeField.Set(i, getTime(v.Timestamp))
-		valueField.Set(i, getPropertyVariantValue(v.Value))
-		qualityField.Set(i, v.Quality)
-	}
-
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{
 			NextToken: aws.StringValue(p.NextToken),
 			HasSeries: true,
 		},
+	}
+
+	for i, v := range p.AssetPropertyValueHistory {
+		timeField.Set(i, getTime(v.Timestamp))
+		valueField.Set(i, getPropertyVariantValue(v.Value))
+		qualityField.Set(i, v.Quality)
 	}
 
 	return data.Frames{frame}, nil

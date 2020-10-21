@@ -9,11 +9,8 @@ import (
 
 	"github.com/grafana/grafana-plugin-sdk-go/experimental"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/stretchr/testify/mock"
 
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/testutil"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
@@ -30,24 +27,31 @@ var (
 	}
 )
 
-type goldenParams struct {
-	update   bool
-	filename string
-}
+type testServerScenarioFn func(t *testing.T) *testScenario
 
 type testScenario struct {
-	name         string
-	queries      []backend.DataQuery
-	propVals     iotsitewise.GetAssetPropertyValueHistoryOutput
-	property     iotsitewise.DescribeAssetPropertyOutput
-	goldenParams *goldenParams
-	handlerFn    func(t *testing.T, srvr *Server) backend.QueryDataHandlerFunc
-	validationFn func(t *testing.T, dr *backend.QueryDataResponse, err error)
+	name           string
+	queries        []backend.DataQuery
+	mockSw         *mocks.Client
+	goldenFileName string
+	handlerFn      func(t *testing.T, srvr *Server) backend.QueryDataHandlerFunc
 }
 
-var propertyValueHistoryResponseScenario = func(t *testing.T) *testScenario {
+func (ts *testScenario) run(t *testing.T) {
+	runTestScenario(t, ts)
+}
 
-	query := models.AssetPropertyValueQuery{
+var getPropertyValueHistoryHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
+
+	mockSw := &mocks.Client{}
+
+	propVals := testutil.GetIoTSitewisePropHistoryVals(t, "property-history-values.json")
+	propDesc := testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json")
+
+	mockSw.On("GetAssetPropertyValueHistoryWithContext", mock.Anything, mock.Anything).Return(&propVals, nil)
+	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
+
+	swQuery := models.AssetPropertyValueQuery{
 		BaseQuery: models.BaseQuery{
 			AwsRegion:  "us-west-2",
 			AssetId:    testutil.TestAssetId,
@@ -55,13 +59,14 @@ var propertyValueHistoryResponseScenario = func(t *testing.T) *testScenario {
 		},
 	}
 
-	qbytes, err := json.Marshal(query)
+	qbytes, err := json.Marshal(swQuery)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	return &testScenario{
-		name: "PropertyValueHistoryResponseHappyCase",
+		name:   "PropertyValueHistoryResponseHappyCase",
+		mockSw: mockSw,
 		queries: []backend.DataQuery{
 			{
 				QueryType:     models.QueryTypePropertyValueHistory,
@@ -72,44 +77,55 @@ var propertyValueHistoryResponseScenario = func(t *testing.T) *testScenario {
 				JSON:          qbytes,
 			},
 		},
-		propVals: testutil.GetIoTSitewisePropHistoryVals(t, "property-history-values.json"),
-		property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json"),
-		goldenParams: &goldenParams{
-			update:   true,
-			filename: "property-history-values",
-		},
+		goldenFileName: "property-history-values",
 		handlerFn: func(t *testing.T, srvr *Server) backend.QueryDataHandlerFunc {
 			return srvr.HandlePropertyValueHistory
 		},
-		validationFn: func(t *testing.T, qdr *backend.QueryDataResponse, err error) {
+	}
+}
 
-			assert.NoError(t, err)
-			assert.Len(t, qdr.Responses, 1)
+var listAssetModelsHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
-			dr, found := qdr.Responses["A"]
+	mockSw := &mocks.Client{}
 
-			assert.True(t, found, "could not find expected data response")
-			assert.NoError(t, dr.Error)
-			assert.Len(t, dr.Frames, 1)
+	assetModels := testutil.GetIoTSitewiseAssetModels(t, "list-asset-models.json")
 
-			// does it have the expected asset property
-			assert.Equal(t, dr.Frames[0].Name, testutil.TestPropertyName)
-			// are there the expected number of fields
-			assert.Len(t, dr.Frames[0].Fields, 3)
-			// do both fields have data
-			assert.True(t, dr.Frames[0].Fields[0].Len() > 1)
-			assert.True(t, dr.Frames[0].Fields[1].Len() > 1)
-			assert.True(t, dr.Frames[0].Fields[2].Len() > 1)
+	mockSw.On("ListAssetModelsWithContext", mock.Anything, mock.Anything).Return(&assetModels, nil)
 
-			//experimental.CheckGoldenDataResponse("../testdata/property-history-values.golden.txt", &dr, true)
-		},
+	query := models.ListAssetModelsQuery{
+		BaseQuery: models.BaseQuery{},
+		NextToken: "",
 	}
 
+	qbytes, err := json.Marshal(query)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return &testScenario{
+		name:   "TestListAssetModelsResponseHappyCase",
+		mockSw: mockSw,
+		queries: []backend.DataQuery{
+			{
+				RefID:         "A",
+				QueryType:     models.QueryTypeListAssetModels,
+				MaxDataPoints: 100,
+				Interval:      1000,
+				TimeRange:     backend.TimeRange{},
+				JSON:          qbytes,
+			},
+		},
+		goldenFileName: "list-asset-models",
+		handlerFn: func(t *testing.T, srvr *Server) backend.QueryDataHandlerFunc {
+			return srvr.HandleListAssetModels
+		},
+	}
 }
 
 func testScenarios(t *testing.T) []*testScenario {
 	return []*testScenario{
-		propertyValueHistoryResponseScenario(t),
+		getPropertyValueHistoryHappyCase(t),
+		listAssetModelsHappyCase(t),
 	}
 }
 
@@ -127,10 +143,6 @@ func runTestScenario(t *testing.T, scenario *testScenario) {
 	t.Run(scenario.name, func(t *testing.T) {
 
 		ctx := context.Background()
-		swmock := &mocks.Client{}
-
-		swmock.On("GetAssetPropertyValueHistoryWithContext", mock.Anything, mock.Anything).Return(&scenario.propVals, nil)
-		swmock.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&scenario.property, nil)
 
 		req := &backend.QueryDataRequest{
 			PluginContext: backend.PluginContext{},
@@ -138,32 +150,40 @@ func runTestScenario(t *testing.T, scenario *testScenario) {
 		}
 
 		srvr := &Server{
-			datasource: mockedDatasource(swmock),
+			datasource: mockedDatasource(scenario.mockSw),
 		}
 
-		dqr, err := scenario.handlerFn(t, srvr)(ctx, req)
+		qdr, err := scenario.handlerFn(t, srvr)(ctx, req)
 
-		scenario.validationFn(t, dqr, err)
+		// this should always be nil, as the error is wrapped in the QueryDataResponse
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		// write out the golden for all data responses
-		if gp := scenario.goldenParams; gp != nil {
-			for i, dr := range dqr.Responses {
-				fname := fmt.Sprintf("../testdata/%s-%s.golden.txt", gp.filename, i)
-				if err := experimental.CheckGoldenDataResponse(fname, &dr, gp.update); err != nil {
-					t.Fatal(err)
+		for i, dr := range qdr.Responses {
+			fname := fmt.Sprintf("../testdata/%s-%s.golden.txt", scenario.goldenFileName, i)
+
+			// temporary fix for golden files https://github.com/grafana/grafana-plugin-sdk-go/issues/213
+			for _, fr := range dr.Frames {
+				if fr.Meta != nil {
+					fr.Meta.Custom = nil
 				}
 			}
 
+			if err := experimental.CheckGoldenDataResponse(fname, &dr, true); err != nil {
+				t.Fatal(err)
+			}
 		}
 
 	})
 
 }
 
-func TestDataResponse(t *testing.T) {
+func TestHandlePropertyValueHistory(t *testing.T) {
+	getPropertyValueHistoryHappyCase(t).run(t)
+}
 
-	for _, v := range testScenarios(t) {
-		runTestScenario(t, v)
-	}
-
+func TestHandleListAssetModels(t *testing.T) {
+	listAssetModelsHappyCase(t).run(t)
 }
