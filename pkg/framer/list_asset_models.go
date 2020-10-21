@@ -15,14 +15,10 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 )
 
-const (
-	assetModelsFrameName = "Asset Models"
-)
-
 type AssetModels iotsitewise.ListAssetModelsOutput
 
-func getAssetModelDescription(asset *iotsitewise.AssetModelSummary) (*string, error) {
-	jb, err := json.Marshal(*asset.Status)
+func getErrorDescription(details *iotsitewise.ErrorDetails) (*string, error) {
+	jb, err := json.Marshal(*details)
 	if err != nil {
 		return nil, err
 	}
@@ -32,33 +28,34 @@ func getAssetModelDescription(asset *iotsitewise.AssetModelSummary) (*string, er
 func (a AssetModels) Frames(_ context.Context, _ resource.ResourceProvider) (data.Frames, error) {
 	length := len(a.AssetModelSummaries)
 
-	fName := newFieldWithName(fields.Name, data.FieldTypeNullableString, length)
-	fArn := newFieldWithName(fields.Arn, data.FieldTypeNullableString, length)
-	fDescription := newFieldWithName(fields.Description, data.FieldTypeNullableString, length)
-	fId := newFieldWithName(fields.Id, data.FieldTypeNullableString, length)
-	fCreationDate := newFieldWithName(fields.CreationDate, data.FieldTypeNullableTime, length)
-	fLastUpdate := newFieldWithName(fields.LastUpdate, data.FieldTypeNullableTime, length)
-	fStatus := newFieldWithName(fields.Status, data.FieldTypeNullableString, length)
+	fName := newFieldWithName(fields.Name, data.FieldTypeString, length)
+	fArn := newFieldWithName(fields.Arn, data.FieldTypeString, length)
+	fDescription := newFieldWithName(fields.Description, data.FieldTypeString, length)
+	fID := newFieldWithName(fields.Id, data.FieldTypeString, length)
+	fCreationDate := newFieldWithName(fields.CreationDate, data.FieldTypeTime, length)
+	fLastUpdate := newFieldWithName(fields.LastUpdate, data.FieldTypeTime, length)
+	fStatusError := newFieldWithName("error", data.FieldTypeNullableString, length)
+	fStatusState := newFieldWithName("state", data.FieldTypeString, length)
 
 	for i, asset := range a.AssetModelSummaries {
+		fName.Set(i, *asset.Name)
+		fArn.Set(i, *asset.Arn)
+		fDescription.Set(i, *asset.Description)
+		fID.Set(i, *asset.Id)
+		fCreationDate.Set(i, *asset.CreationDate)
+		fLastUpdate.Set(i, *asset.LastUpdateDate)
 
-		fName.Set(i, asset.Name)
-		fArn.Set(i, asset.Arn)
-		fDescription.Set(i, asset.Description)
-		fId.Set(i, asset.Id)
-		fCreationDate.Set(i, asset.CreationDate)
-		fLastUpdate.Set(i, asset.LastUpdateDate)
-
-		summary, err := getAssetModelDescription(asset)
-		if err != nil {
-			return nil, err
+		if asset.Status.Error != nil {
+			val, err := getErrorDescription(asset.Status.Error)
+			if err != nil {
+				fStatusError.Set(i, val)
+			}
 		}
-
-		fStatus.Set(i, summary)
+		fStatusState.Set(i, *asset.Status.State)
 	}
 
-	frame := data.NewFrame(assetModelsFrameName,
-		fName, fDescription, fId, fArn, fStatus, fCreationDate, fLastUpdate,
+	frame := data.NewFrame("",
+		fName, fDescription, fID, fArn, fStatusError, fStatusState, fCreationDate, fLastUpdate,
 	)
 
 	frame.Meta = &data.FrameMeta{
