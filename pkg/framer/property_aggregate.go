@@ -126,7 +126,6 @@ func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{
 			NextToken: aws.StringValue(a.NextToken),
-			HasSeries: true,
 		},
 	}
 

@@ -64,7 +64,6 @@ func (a AssetModels) Frames(_ context.Context, _ resource.ResourceProvider) (dat
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{
 			NextToken: aws.StringValue(a.NextToken),
-			HasSeries: true,
 		},
 	}
 
