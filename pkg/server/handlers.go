@@ -25,13 +25,12 @@ func (s *Server) handlePropertyValueQuery(ctx context.Context, req *backend.Quer
 
 	query, err := models.GetAssetPropertyValueQuery(&q)
 	if err != nil {
-		return DataResponseError(err, "failed to unmarshal JSON request into query")
+		return DataResponseErrorUnmarshal(err)
 	}
 
 	frames, err := s.datasource.HandleGetAssetPropertyValueHistoryQuery(ctx, req, query)
-
 	if err != nil {
-		return DataResponseError(err, "failed to fetch query data")
+		return DataResponseErrorRequestFailed(err)
 	}
 
 	return backend.DataResponse{
@@ -41,7 +40,26 @@ func (s *Server) handlePropertyValueQuery(ctx context.Context, req *backend.Quer
 }
 
 func (s *Server) HandlePropertyValueHistory(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
-	return &backend.QueryDataResponse{
-		Responses: processQueries(ctx, req, s.handlePropertyValueQuery),
-	}, nil
+	return processQueries(ctx, req, s.handlePropertyValueQuery), nil
+}
+
+func (s *Server) handleListAssetModelsQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
+	query, err := models.GetListAssetModelsQuery(&q)
+	if err != nil {
+		return DataResponseErrorUnmarshal(err)
+	}
+
+	frames, err := s.datasource.HandleListAssetModelsQuery(ctx, req, query)
+	if err != nil {
+		return DataResponseErrorRequestFailed(err)
+	}
+
+	return backend.DataResponse{
+		Frames: frames,
+		Error:  nil,
+	}
+}
+
+func (s *Server) HandleListAssetModels(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
+	return processQueries(ctx, req, s.handleListAssetModelsQuery), nil
 }

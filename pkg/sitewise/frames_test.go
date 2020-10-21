@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	framer2 "github.com/grafana/iot-sitewise-datasource/pkg/framer"
+	framerimpl "github.com/grafana/iot-sitewise-datasource/pkg/framer"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/testutil"
 
@@ -22,7 +22,7 @@ import (
 type testScenario struct {
 	name         string
 	query        models.AssetPropertyValueQuery
-	propVals     framer.Framer
+	response     framer.Framer
 	property     iotsitewise.DescribeAssetPropertyOutput
 	validationFn func(t *testing.T, frames data.Frames)
 }
@@ -42,8 +42,8 @@ func (fa fieldAssert) assert(t *testing.T) {
 	assert.Equal(t, fa.expectedType, field.Type(), "wrong type for field in Field[%d]. got %s expected %s", fa.idx, field.Type(), fa.expectedType)
 }
 
-var assertFramesAndGetFields = func(t *testing.T, frames data.Frames) data.Fields {
-	assert.Len(t, frames, 1)
+var assertFramesAndGetFields = func(t *testing.T, length int, frames data.Frames) data.Fields {
+	assert.Len(t, frames, length)
 	frame := frames[0]
 	t.Log(frame.StringTable(-1, -1))
 
@@ -62,11 +62,11 @@ func getScenarios(t *testing.T) []*testScenario {
 					PropertyId: testutil.TestPropIdAvgWind,
 				},
 			},
-			propVals: testutil.GetPropVals(t, "property-value.json"),
+			response: testutil.GetPropVals(t, "property-value.json"),
 			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json"),
 			validationFn: func(t *testing.T, frames data.Frames) {
 
-				fields := assertFramesAndGetFields(t, frames)
+				fields := assertFramesAndGetFields(t, 1, frames)
 
 				fieldAssert{
 					fields:       fields,
@@ -93,7 +93,7 @@ func getScenarios(t *testing.T) []*testScenario {
 					PropertyId: testutil.TestPropIdAvgWind,
 				},
 			},
-			propVals: framer2.AssetPropertyValue{
+			response: framerimpl.AssetPropertyValue{
 				PropertyValue: &iotsitewise.AssetPropertyValue{
 					Quality: aws.String("GOOD"),
 					Timestamp: &iotsitewise.TimeInNanos{
@@ -110,7 +110,7 @@ func getScenarios(t *testing.T) []*testScenario {
 			},
 			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json"),
 			validationFn: func(t *testing.T, frames data.Frames) {
-				fields := assertFramesAndGetFields(t, frames)
+				fields := assertFramesAndGetFields(t, 1, frames)
 				fieldAssert{
 					fields:       fields,
 					idx:          0,
@@ -136,11 +136,11 @@ func getScenarios(t *testing.T) []*testScenario {
 					PropertyId: testutil.TestPropIdAvgWind,
 				},
 			},
-			propVals: testutil.GetPropHistoryVals(t, "property-history-values.json"),
+			response: testutil.GetPropHistoryVals(t, "property-history-values.json"),
 			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json"),
 			validationFn: func(t *testing.T, frames data.Frames) {
 
-				fields := assertFramesAndGetFields(t, frames)
+				fields := assertFramesAndGetFields(t, 1, frames)
 
 				fieldAssert{
 					fields:       fields,
@@ -169,11 +169,11 @@ func getScenarios(t *testing.T) []*testScenario {
 				AggregateTypes: []string{models.AggregateMax, models.AggregateMin, models.AggregateAvg},
 				Resolution:     "1m",
 			},
-			propVals: testutil.GetAssetPropAggregates(t, "property-aggregate-values.json"),
+			response: testutil.GetAssetPropAggregates(t, "property-aggregate-values.json"),
 			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-raw-wind.json"),
 			validationFn: func(t *testing.T, frames data.Frames) {
 
-				fields := assertFramesAndGetFields(t, frames)
+				fields := assertFramesAndGetFields(t, 1, frames)
 
 				// time, avg, min, max
 				assert.Len(t, fields, 4, "expected [time, avg, min, max]")
@@ -205,7 +205,6 @@ func getScenarios(t *testing.T) []*testScenario {
 					expectedName: "max",
 					expectedType: data.FieldTypeNullableFloat64,
 				}.assert(t)
-
 			},
 		},
 	}
@@ -224,7 +223,7 @@ func TestFrameData(t *testing.T) {
 
 			rp := resource.NewQueryResourceProvider(sw, v.query.BaseQuery)
 
-			dataFrames, err := v.propVals.Frames(ctx, rp)
+			dataFrames, err := v.response.Frames(ctx, rp)
 
 			if err != nil {
 				t.Fatal(err)

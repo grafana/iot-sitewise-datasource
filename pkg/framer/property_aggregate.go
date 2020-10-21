@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/aws/aws-sdk-go/aws"
+
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
@@ -120,6 +122,12 @@ func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.
 		fmt.Sprintf("%s %s", *property.AssetName, *property.AssetProperty.Name),
 		fields...,
 	)
+
+	frame.Meta = &data.FrameMeta{
+		Custom: models.SitewiseCustomMeta{
+			NextToken: aws.StringValue(a.NextToken),
+		},
+	}
 
 	return data.Frames{frame}, nil
 }

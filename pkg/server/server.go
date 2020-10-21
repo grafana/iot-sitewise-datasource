@@ -23,13 +23,16 @@ type Server struct {
 // type QueryDataHandlerFunc func(ctx context.Context, req *QueryDataRequest) (*QueryDataResponse, error)
 type QueryHandlerFunc func(context.Context, *backend.QueryDataRequest, backend.DataQuery) backend.DataResponse
 
-func processQueries(ctx context.Context, req *backend.QueryDataRequest, handler QueryHandlerFunc) backend.Responses {
+func processQueries(ctx context.Context, req *backend.QueryDataRequest, handler QueryHandlerFunc) *backend.QueryDataResponse {
 	res := backend.Responses{}
 	for _, v := range req.Queries {
 		res[v.RefID] = handler(ctx, req, v)
 	}
 
-	return res
+	return &backend.QueryDataResponse{
+		Responses: res,
+	}
+
 }
 
 // UnmarshalQuery attempts to unmarshal a query from JSON
@@ -46,11 +49,24 @@ func DataResponseError(err error, message string) backend.DataResponse {
 	}
 }
 
+func DataResponseErrorUnmarshal(err error) backend.DataResponse {
+	return backend.DataResponse{
+		Error: errors.Wrap(err, "failed to unmarshal JSON request into query"),
+	}
+}
+
+func DataResponseErrorRequestFailed(err error) backend.DataResponse {
+	return backend.DataResponse{
+		Error: errors.Wrap(err, "failed to fetch query data"),
+	}
+}
+
 // GetQueryHandlers creates the QueryTypeMux type for handling queries
 func GetQueryHandlers(s *Server) *datasource.QueryTypeMux {
 	mux := datasource.NewQueryTypeMux()
 
 	mux.HandleFunc(models.QueryTypePropertyValueHistory, s.HandlePropertyValueHistory)
+	mux.HandleFunc(models.QueryTypeListAssetModels, s.HandleListAssetModels)
 
 	return mux
 }

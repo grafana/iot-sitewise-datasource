@@ -120,6 +120,15 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 
+	m["list-asset-models.json"] = func(t *testing.T, client client.Client) interface{} {
+		ctx := context.Background()
+		resp, err := ListAssetModels(ctx, client, models.ListAssetModelsQuery{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return resp
+	}
+
 	sesh := session.Must(session.NewSession())
 	sw := iotsitewise.New(sesh, aws.NewConfig().WithRegion("us-east-1"))
 

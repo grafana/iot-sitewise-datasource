@@ -4,11 +4,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602208800
+                "TimeInSeconds": 1603209600
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 47.171762312455954,
+                "DoubleValue": 20.271689505505307,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -17,11 +17,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602209100
+                "TimeInSeconds": 1603209900
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 46.64528808819145,
+                "DoubleValue": 20.297604358963408,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -30,11 +30,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602209400
+                "TimeInSeconds": 1603210200
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 47.18196486171094,
+                "DoubleValue": 20.07622639393919,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -43,11 +43,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602209700
+                "TimeInSeconds": 1603210500
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 47.67195667517736,
+                "DoubleValue": 20.817385995812675,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -56,11 +56,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602210000
+                "TimeInSeconds": 1603210800
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 47.355523529272986,
+                "DoubleValue": 21.217785601922966,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -69,11 +69,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602210300
+                "TimeInSeconds": 1603211100
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 47.212089178811766,
+                "DoubleValue": 21.230408108080226,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -82,11 +82,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602210600
+                "TimeInSeconds": 1603211400
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 46.128976741957814,
+                "DoubleValue": 21.961728628888263,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -95,11 +95,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602210900
+                "TimeInSeconds": 1603211700
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 47.01414399752511,
+                "DoubleValue": 22.37178040962405,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -108,11 +108,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602211200
+                "TimeInSeconds": 1603212000
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 46.41645298174654,
+                "DoubleValue": 23.429738512271825,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -121,11 +121,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602211500
+                "TimeInSeconds": 1603212300
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 47.27415780150868,
+                "DoubleValue": 24.080912256804176,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -134,11 +134,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602211800
+                "TimeInSeconds": 1603212600
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 47.662055221009076,
+                "DoubleValue": 23.063364585799977,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -147,11 +147,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602212100
+                "TimeInSeconds": 1603212900
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 47.02273520428106,
+                "DoubleValue": 23.015655306951853,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -160,11 +160,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602212400
+                "TimeInSeconds": 1603213200
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 47.49490243919585,
+                "DoubleValue": 23.64961508543719,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -173,11 +173,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602212700
+                "TimeInSeconds": 1603213500
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 47.48646797017176,
+                "DoubleValue": 23.946863263746373,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -186,11 +186,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602213000
+                "TimeInSeconds": 1603213800
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 46.601872345652154,
+                "DoubleValue": 24.801254171283485,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -199,11 +199,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602213300
+                "TimeInSeconds": 1603214100
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 45.37142730802686,
+                "DoubleValue": 25.01454872585407,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -212,11 +212,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602213600
+                "TimeInSeconds": 1603214400
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 44.86684993732802,
+                "DoubleValue": 24.55237577057594,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -225,11 +225,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602213900
+                "TimeInSeconds": 1603214700
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 44.83862930010293,
+                "DoubleValue": 23.88052376013831,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -238,11 +238,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602214200
+                "TimeInSeconds": 1603215000
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 45.2421883205746,
+                "DoubleValue": 23.247823318683977,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -251,11 +251,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602214500
+                "TimeInSeconds": 1603215300
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 45.36604865788132,
+                "DoubleValue": 22.866631180174405,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -264,11 +264,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602214800
+                "TimeInSeconds": 1603215600
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 45.01127820040436,
+                "DoubleValue": 21.36945187394639,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -277,11 +277,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602215100
+                "TimeInSeconds": 1603215900
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 43.79075626867827,
+                "DoubleValue": 18.99545778129021,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -290,11 +290,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602215400
+                "TimeInSeconds": 1603216200
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 43.304438310259776,
+                "DoubleValue": 18.118042179706798,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -303,11 +303,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602215700
+                "TimeInSeconds": 1603216500
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 44.014382382105225,
+                "DoubleValue": 18.58339010231433,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -316,11 +316,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602216000
+                "TimeInSeconds": 1603216800
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 43.917800842965605,
+                "DoubleValue": 17.917485522146016,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -329,11 +329,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602216300
+                "TimeInSeconds": 1603217100
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 44.9006206721892,
+                "DoubleValue": 18.37437278371124,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -342,11 +342,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602216600
+                "TimeInSeconds": 1603217400
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 45.44054341237902,
+                "DoubleValue": 18.722952546175406,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -355,11 +355,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602216900
+                "TimeInSeconds": 1603217700
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 47.05064206696819,
+                "DoubleValue": 17.344583317488954,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -368,11 +368,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602217200
+                "TimeInSeconds": 1603218000
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 47.07482904948737,
+                "DoubleValue": 16.73891140425878,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -381,11 +381,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602217500
+                "TimeInSeconds": 1603218300
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 46.61607047988037,
+                "DoubleValue": 16.59288500389927,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -394,11 +394,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602217800
+                "TimeInSeconds": 1603218600
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 45.52998659646972,
+                "DoubleValue": 16.05236242242246,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -407,11 +407,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602218100
+                "TimeInSeconds": 1603218900
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 44.37390103942674,
+                "DoubleValue": 16.28469640941478,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -420,11 +420,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602218400
+                "TimeInSeconds": 1603219200
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 42.353854243383886,
+                "DoubleValue": 16.784101504515757,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -433,11 +433,11 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602218700
+                "TimeInSeconds": 1603219500
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 40.25808768345664,
+                "DoubleValue": 16.371180644412988,
                 "IntegerValue": null,
                 "StringValue": null
             }
@@ -446,11 +446,24 @@
             "Quality": "GOOD",
             "Timestamp": {
                 "OffsetInNanos": 0,
-                "TimeInSeconds": 1602219000
+                "TimeInSeconds": 1603219800
             },
             "Value": {
                 "BooleanValue": null,
-                "DoubleValue": 40.90457427319228,
+                "DoubleValue": 15.855638969447064,
+                "IntegerValue": null,
+                "StringValue": null
+            }
+        },
+        {
+            "Quality": "GOOD",
+            "Timestamp": {
+                "OffsetInNanos": 0,
+                "TimeInSeconds": 1603220100
+            },
+            "Value": {
+                "BooleanValue": null,
+                "DoubleValue": 14.944054694911172,
                 "IntegerValue": null,
                 "StringValue": null
             }

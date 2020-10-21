@@ -12,6 +12,7 @@ import (
 type Datasource interface {
 	HealthCheck(ctx context.Context, req *backend.CheckHealthRequest) error
 	HandleGetAssetPropertyValueHistoryQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error)
+	HandleListAssetModelsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssetModelsQuery) (data.Frames, error)
 }
 
 // HandleQueryData handles the `QueryData` request for the Github datasource
