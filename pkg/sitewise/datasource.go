@@ -42,6 +42,9 @@ func (ds *Datasource) invoke(ctx context.Context, req *backend.QueryDataRequest,
 	}
 
 	fr, err := invoker(ctx, sw)
+	if err != nil {
+		return nil, err
+	}
 
 	return frameResponse(ctx, baseQuery, fr, sw)
 }

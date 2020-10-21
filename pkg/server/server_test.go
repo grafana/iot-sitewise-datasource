@@ -122,13 +122,6 @@ var listAssetModelsHappyCase testServerScenarioFn = func(t *testing.T) *testScen
 	}
 }
 
-func testScenarios(t *testing.T) []*testScenario {
-	return []*testScenario{
-		getPropertyValueHistoryHappyCase(t),
-		listAssetModelsHappyCase(t),
-	}
-}
-
 func mockedDatasource(swmock *mocks.Client) Datasource {
 	return &sitewise.Datasource{
 		GetClient: func(_ backend.PluginContext, _ models.BaseQuery) (client client.Client, err error) {

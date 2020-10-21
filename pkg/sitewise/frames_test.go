@@ -30,11 +30,10 @@ type testScenario struct {
 // fieldAssert will verify the field created by the framer contains the expected information.
 // As we add additional field config + tags, expand this struct.
 type fieldAssert struct {
-	fields         data.Fields
-	idx            int
-	expectedName   string
-	expectedType   data.FieldType
-	expectedConfig data.FieldConfig
+	fields       data.Fields
+	idx          int
+	expectedName string
+	expectedType data.FieldType
 }
 
 func (fa fieldAssert) assert(t *testing.T) {
