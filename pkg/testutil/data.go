@@ -72,3 +72,12 @@ var GetAssetPropAggregates = func(t *testing.T, filename string) framer.AssetPro
 	}
 	return propVals
 }
+
+var GetIoTSitewiseAssetModels = func(t *testing.T, filename string) iotsitewise.ListAssetModelsOutput {
+	assetModels := iotsitewise.ListAssetModelsOutput{}
+	err := UnmarshallFileContents(filename, &assetModels)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return assetModels
+}

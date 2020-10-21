@@ -52,12 +52,17 @@ func getPropertyVariantValue(variant *iotsitewise.Variant) interface{} {
 }
 
 func newPropertyValueField(property *iotsitewise.DescribeAssetPropertyOutput, length int) *data.Field {
-	valueField := data.NewFieldFromFieldType(fieldTypeForPropertyValue(property), length)
-	valueField.Name = *property.AssetProperty.Name
+	valueField := newFieldWithName(*property.AssetProperty.Name, fieldTypeForPropertyValue(property), length)
 	valueField.Config = &data.FieldConfig{
 		Unit: toGrafanaUnit(property.AssetProperty.Unit),
 	}
 	return valueField
+}
+
+func newFieldWithName(name string, fieldType data.FieldType, length int) *data.Field {
+	field := data.NewFieldFromFieldType(fieldType, length)
+	field.Name = name
+	return field
 }
 
 // Map values from ???:

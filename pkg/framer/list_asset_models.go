@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -13,7 +15,9 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 )
 
-const assetModelsFrameName = "Asset Models"
+const (
+	assetModelsFrameName = "Asset Models"
+)
 
 type AssetModels iotsitewise.ListAssetModelsOutput
 
@@ -28,14 +32,13 @@ func getAssetModelDescription(asset *iotsitewise.AssetModelSummary) (*string, er
 func (a AssetModels) Frames(_ context.Context, _ resource.ResourceProvider) (data.Frames, error) {
 	length := len(a.AssetModelSummaries)
 
-	fName := data.NewFieldFromFieldType(data.FieldTypeNullableString, length)
-
-	fArn := data.NewFieldFromFieldType(data.FieldTypeNullableString, length)
-	fDescription := data.NewFieldFromFieldType(data.FieldTypeNullableString, length)
-	fId := data.NewFieldFromFieldType(data.FieldTypeNullableString, length)
-	fCreationDate := data.NewFieldFromFieldType(data.FieldTypeNullableTime, length)
-	fLastUpdate := data.NewFieldFromFieldType(data.FieldTypeNullableTime, length)
-	fStatus := data.NewFieldFromFieldType(data.FieldTypeNullableString, length)
+	fName := newFieldWithName(fields.Name, data.FieldTypeNullableString, length)
+	fArn := newFieldWithName(fields.Arn, data.FieldTypeNullableString, length)
+	fDescription := newFieldWithName(fields.Description, data.FieldTypeNullableString, length)
+	fId := newFieldWithName(fields.Id, data.FieldTypeNullableString, length)
+	fCreationDate := newFieldWithName(fields.CreationDate, data.FieldTypeNullableTime, length)
+	fLastUpdate := newFieldWithName(fields.LastUpdate, data.FieldTypeNullableTime, length)
+	fStatus := newFieldWithName(fields.Status, data.FieldTypeNullableString, length)
 
 	for i, asset := range a.AssetModelSummaries {
 
