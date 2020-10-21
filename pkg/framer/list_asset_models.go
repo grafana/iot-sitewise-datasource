@@ -38,7 +38,6 @@ func (a AssetModels) Frames(_ context.Context, _ resource.ResourceProvider) (dat
 	fStatusState := newFieldWithName("state", data.FieldTypeString, length)
 
 	for i, asset := range a.AssetModelSummaries {
-
 		fName.Set(i, *asset.Name)
 		fArn.Set(i, *asset.Arn)
 		fDescription.Set(i, *asset.Description)
@@ -46,15 +45,13 @@ func (a AssetModels) Frames(_ context.Context, _ resource.ResourceProvider) (dat
 		fCreationDate.Set(i, *asset.CreationDate)
 		fLastUpdate.Set(i, *asset.LastUpdateDate)
 
-		if asset.Status != nil {
-			if asset.Status.Error != nil {
-				val, err := getErrorDescription(asset.Status.Error)
-				if err != nil {
-					fStatusError.Set(i, val)
-				}
+		if asset.Status.Error != nil {
+			val, err := getErrorDescription(asset.Status.Error)
+			if err != nil {
+				fStatusError.Set(i, val)
 			}
-			fStatusState.Set(i, *asset.Status.State)
 		}
+		fStatusState.Set(i, *asset.Status.State)
 	}
 
 	frame := data.NewFrame("",
