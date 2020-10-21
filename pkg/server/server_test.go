@@ -35,6 +35,7 @@ type testScenario struct {
 	mockSw         *mocks.Client
 	goldenFileName string
 	handlerFn      func(t *testing.T, srvr *Server) backend.QueryDataHandlerFunc
+	validationFn   func(t *testing.T, dr *backend.QueryDataResponse)
 }
 
 func (ts *testScenario) run(t *testing.T) {
@@ -151,6 +152,10 @@ func runTestScenario(t *testing.T, scenario *testScenario) {
 		// this should always be nil, as the error is wrapped in the QueryDataResponse
 		if err != nil {
 			t.Fatal(err)
+		}
+
+		if scenario.validationFn != nil {
+			scenario.validationFn(t, qdr)
 		}
 
 		// write out the golden for all data responses
