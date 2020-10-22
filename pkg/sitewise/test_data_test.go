@@ -31,7 +31,7 @@ type testDataFunc func(t *testing.T, client client.Client) interface{}
 //
 func TestGenerateTestData(t *testing.T) {
 
-	//t.Skip("Integration Test") // comment line to run this
+	t.Skip("Integration Test") // comment line to run this
 
 	m := make(map[string]testDataFunc)
 
