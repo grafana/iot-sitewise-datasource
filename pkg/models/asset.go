@@ -1,10 +1,33 @@
 package models
 
+import (
+	"encoding/json"
+
+	"github.com/grafana/grafana-plugin-sdk-go/backend"
+)
+
 type DescribeAssetQuery struct {
-	AssetId string `json:"assetId"`
+	BaseQuery
 }
 
 type DescribeAssetPropertyQuery struct {
-	AssetId    string `json:"assetId"`
-	PropertyId string `json:"propertyId"`
+	BaseQuery
+}
+
+type ListAssetsQuery struct {
+	BaseQuery
+	ModelId string `json:"modelId,omitempty"`
+	Filter  string `json:"filter,omitempty"`
+}
+
+func GetListAssetsQuery(dq *backend.DataQuery) (*ListAssetsQuery, error) {
+	query := &ListAssetsQuery{}
+	if err := json.Unmarshal(dq.JSON, query); err != nil {
+		return nil, err
+	}
+
+	// add on the DataQuery params
+	query.MaxDataPoints = dq.MaxDataPoints
+	query.QueryType = dq.QueryType
+	return query, nil
 }

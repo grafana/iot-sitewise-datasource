@@ -75,3 +75,9 @@ func (ds *Datasource) HandleListAssetModelsQuery(ctx context.Context, req *backe
 		return ListAssetModels(ctx, sw, *query)
 	})
 }
+
+func (ds *Datasource) HandleListAssetsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssetsQuery) (data.Frames, error) {
+	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.Client) (framer.Framer, error) {
+		return ListAssets(ctx, sw, *query)
+	})
+}

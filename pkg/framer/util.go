@@ -1,8 +1,10 @@
 package framer
 
 import (
+	"encoding/json"
 	"time"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 )
@@ -93,4 +95,21 @@ func toGrafanaUnit(unit *string) string {
 		return "s"
 	}
 	return *unit // this will become a suffix in the display
+}
+
+func fieldsSlice(fields ...*data.Field) data.Fields {
+	return fields
+}
+
+func getErrorDescription(details *iotsitewise.ErrorDetails) (*string, error) {
+
+	if details == nil {
+		return nil, nil
+	}
+
+	jb, err := json.Marshal(*details)
+	if err != nil {
+		return nil, err
+	}
+	return aws.String(string(jb)), nil
 }

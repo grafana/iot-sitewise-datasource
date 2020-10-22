@@ -36,6 +36,7 @@ func TestGenerateTestData(t *testing.T) {
 	m := make(map[string]testDataFunc)
 
 	m["property-history-values.json"] = func(t *testing.T, client client.Client) interface{} {
+
 		ctx := context.Background()
 
 		// hard coded values from my account
@@ -55,6 +56,7 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 	m["property-value.json"] = func(t *testing.T, client client.Client) interface{} {
+
 		ctx := context.Background()
 
 		query := models.AssetPropertyValueQuery{}
@@ -69,6 +71,7 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 	m["property-aggregate-values.json"] = func(t *testing.T, client client.Client) interface{} {
+
 		ctx := context.Background()
 
 		query := models.AssetPropertyValueQuery{}
@@ -89,19 +92,24 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 	m["describe-asset.json"] = func(t *testing.T, client client.Client) interface{} {
+
 		ctx := context.Background()
-		resp, err := GetAssetDescription(ctx, client, models.DescribeAssetQuery{AssetId: testutil.TestAssetId})
+		query := models.DescribeAssetQuery{}
+		query.AssetId = testutil.TestAssetId
+
+		resp, err := GetAssetDescription(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}
 		return resp
 	}
 	m["describe-asset-property-avg-wind.json"] = func(t *testing.T, client client.Client) interface{} {
+
 		ctx := context.Background()
-		resp, err := GetAssetPropertyDescription(ctx, client, models.DescribeAssetPropertyQuery{
-			AssetId:    testutil.TestAssetId,
-			PropertyId: testutil.TestPropIdAvgWind,
-		})
+		query := models.DescribeAssetPropertyQuery{}
+		query.AssetId = testutil.TestAssetId
+		query.PropertyId = testutil.TestPropIdAvgWind
+		resp, err := GetAssetPropertyDescription(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -109,11 +117,12 @@ func TestGenerateTestData(t *testing.T) {
 	}
 
 	m["describe-asset-property-raw-wind.json"] = func(t *testing.T, client client.Client) interface{} {
+
 		ctx := context.Background()
-		resp, err := GetAssetPropertyDescription(ctx, client, models.DescribeAssetPropertyQuery{
-			AssetId:    testutil.TestAssetId,
-			PropertyId: testutil.TestPropIdRawWin,
-		})
+		query := models.DescribeAssetPropertyQuery{}
+		query.AssetId = testutil.TestAssetId
+		query.PropertyId = testutil.TestPropIdRawWin
+		resp, err := GetAssetPropertyDescription(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -121,8 +130,33 @@ func TestGenerateTestData(t *testing.T) {
 	}
 
 	m["list-asset-models.json"] = func(t *testing.T, client client.Client) interface{} {
+
 		ctx := context.Background()
 		resp, err := ListAssetModels(ctx, client, models.ListAssetModelsQuery{})
+		if err != nil {
+			t.Fatal(err)
+		}
+		return resp
+	}
+
+	m["list-assets.json"] = func(t *testing.T, client client.Client) interface{} {
+
+		ctx := context.Background()
+		query := models.ListAssetsQuery{}
+		query.ModelId = testutil.TestAssetModelId
+		query.Filter = "ALL"
+		resp, err := ListAssets(ctx, client, query)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return resp
+	}
+
+	m["list-assets-top-level.json"] = func(t *testing.T, client client.Client) interface{} {
+
+		ctx := context.Background()
+		query := models.ListAssetsQuery{}
+		resp, err := ListAssets(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}

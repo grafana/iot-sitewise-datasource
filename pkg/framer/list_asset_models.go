@@ -2,28 +2,16 @@ package framer
 
 import (
 	"context"
-	"encoding/json"
-
-	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
-
-	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 
 	"github.com/aws/aws-sdk-go/aws"
-
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 )
 
 type AssetModels iotsitewise.ListAssetModelsOutput
-
-func getErrorDescription(details *iotsitewise.ErrorDetails) (*string, error) {
-	jb, err := json.Marshal(*details)
-	if err != nil {
-		return nil, err
-	}
-	return aws.String(string(jb)), nil
-}
 
 func (a AssetModels) Frames(_ context.Context, _ resource.ResourceProvider) (data.Frames, error) {
 	length := len(a.AssetModelSummaries)
@@ -34,8 +22,8 @@ func (a AssetModels) Frames(_ context.Context, _ resource.ResourceProvider) (dat
 	fID := newFieldWithName(fields.Id, data.FieldTypeString, length)
 	fCreationDate := newFieldWithName(fields.CreationDate, data.FieldTypeTime, length)
 	fLastUpdate := newFieldWithName(fields.LastUpdate, data.FieldTypeTime, length)
-	fStatusError := newFieldWithName("error", data.FieldTypeNullableString, length)
-	fStatusState := newFieldWithName("state", data.FieldTypeString, length)
+	fStatusError := newFieldWithName(fields.StatusError, data.FieldTypeNullableString, length)
+	fStatusState := newFieldWithName(fields.StatusState, data.FieldTypeString, length)
 
 	for i, asset := range a.AssetModelSummaries {
 		fName.Set(i, *asset.Name)
