@@ -4,11 +4,8 @@ import (
 	"context"
 	"testing"
 
-	framerimpl "github.com/grafana/iot-sitewise-datasource/pkg/framer"
-
 	"github.com/grafana/iot-sitewise-datasource/pkg/testutil"
 
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
@@ -79,50 +76,7 @@ func getScenarios(t *testing.T) []*testScenario {
 					fields:       fields,
 					idx:          1,
 					expectedName: "Average Wind Speed",
-					expectedType: data.FieldTypeNullableFloat64,
-				}.assert(t)
-
-			},
-		},
-		{
-			name: "TestNullResponseAssetPropertyValues",
-			query: models.AssetPropertyValueQuery{
-				BaseQuery: models.BaseQuery{
-					QueryType:  models.QueryTypePropertyValue,
-					AssetId:    testutil.TestAssetId,
-					PropertyId: testutil.TestPropIdAvgWind,
-				},
-			},
-			response: framerimpl.AssetPropertyValue{
-				PropertyValue: &iotsitewise.AssetPropertyValue{
-					Quality: aws.String("GOOD"),
-					Timestamp: &iotsitewise.TimeInNanos{
-						OffsetInNanos: aws.Int64(0),
-						TimeInSeconds: aws.Int64(1602219000),
-					},
-					Value: &iotsitewise.Variant{
-						BooleanValue: nil,
-						DoubleValue:  nil,
-						IntegerValue: nil,
-						StringValue:  nil,
-					},
-				},
-			},
-			property: testutil.GetIotSitewiseAssetProp(t, "describe-asset-property-avg-wind.json"),
-			validationFn: func(t *testing.T, frames data.Frames) {
-				fields := assertFramesAndGetFields(t, 1, frames)
-				fieldAssert{
-					fields:       fields,
-					idx:          0,
-					expectedName: "time",
-					expectedType: data.FieldTypeTime,
-				}.assert(t)
-
-				fieldAssert{
-					fields:       fields,
-					idx:          1,
-					expectedName: "Average Wind Speed",
-					expectedType: data.FieldTypeNullableFloat64,
+					expectedType: data.FieldTypeFloat64,
 				}.assert(t)
 
 			},
@@ -153,7 +107,7 @@ func getScenarios(t *testing.T) []*testScenario {
 					fields:       fields,
 					idx:          1,
 					expectedName: "Average Wind Speed",
-					expectedType: data.FieldTypeNullableFloat64,
+					expectedType: data.FieldTypeFloat64,
 				}.assert(t)
 
 			},
@@ -189,21 +143,21 @@ func getScenarios(t *testing.T) []*testScenario {
 					fields:       fields,
 					idx:          1,
 					expectedName: "avg",
-					expectedType: data.FieldTypeNullableFloat64,
+					expectedType: data.FieldTypeFloat64,
 				}.assert(t)
 
 				fieldAssert{
 					fields:       fields,
 					idx:          2,
 					expectedName: "min",
-					expectedType: data.FieldTypeNullableFloat64,
+					expectedType: data.FieldTypeFloat64,
 				}.assert(t)
 
 				fieldAssert{
 					fields:       fields,
 					idx:          3,
 					expectedName: "max",
-					expectedType: data.FieldTypeNullableFloat64,
+					expectedType: data.FieldTypeFloat64,
 				}.assert(t)
 			},
 		},

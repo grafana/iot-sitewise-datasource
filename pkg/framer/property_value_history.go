@@ -3,6 +3,8 @@ package framer
 import (
 	"context"
 
+	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 
@@ -21,13 +23,9 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 		return nil, err
 	}
 
-	timeField := data.NewFieldFromFieldType(data.FieldTypeTime, length)
-	timeField.Name = "time"
-
-	valueField := newPropertyValueField(property, length)
-
-	qualityField := data.NewFieldFromFieldType(data.FieldTypeNullableString, length)
-	qualityField.Name = "Quality"
+	timeField := fields.TimeField(length)
+	valueField := fields.PropertyValueField(property, length)
+	qualityField := fields.QualityField(length)
 
 	frame := data.NewFrame(*property.AssetName, timeField, valueField, qualityField)
 
@@ -40,7 +38,7 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 	for i, v := range p.AssetPropertyValueHistory {
 		timeField.Set(i, getTime(v.Timestamp))
 		valueField.Set(i, getPropertyVariantValue(v.Value))
-		qualityField.Set(i, v.Quality)
+		qualityField.Set(i, *v.Quality)
 	}
 
 	return data.Frames{frame}, nil

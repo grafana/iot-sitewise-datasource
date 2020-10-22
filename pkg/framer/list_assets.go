@@ -2,7 +2,6 @@ package framer
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
@@ -14,34 +13,19 @@ import (
 
 type Assets iotsitewise.ListAssetsOutput
 
-func getAssetSummaryHierarchies(asset *iotsitewise.AssetSummary) (string, error) {
-
-	hvalues := []iotsitewise.AssetHierarchy{}
-
-	for _, h := range asset.Hierarchies {
-		hvalues = append(hvalues, *h)
-	}
-
-	heirarchies, err := json.Marshal(hvalues)
-	if err != nil {
-		return "", err
-	}
-	return string(heirarchies), nil
-}
-
-func (a Assets) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
+func (a Assets) Frames(_ context.Context, _ resource.ResourceProvider) (data.Frames, error) {
 
 	length := len(a.AssetSummaries)
 
-	fName := newFieldWithName(fields.Name, data.FieldTypeString, length)
-	fId := newFieldWithName(fields.Id, data.FieldTypeString, length)
-	fArn := newFieldWithName(fields.Arn, data.FieldTypeString, length)
-	fModelId := newFieldWithName(fields.Id, data.FieldTypeString, length)
-	fStatusError := newFieldWithName(fields.StatusError, data.FieldTypeNullableString, length)
-	fStatusState := newFieldWithName(fields.StatusState, data.FieldTypeString, length)
-	fHierarchies := newFieldWithName(fields.Id, data.FieldTypeString, length)
-	fCreationDate := newFieldWithName(fields.CreationDate, data.FieldTypeTime, length)
-	fLastUpdate := newFieldWithName(fields.LastUpdate, data.FieldTypeTime, length)
+	fName := fields.NameField(length)
+	fId := fields.IdField(length)
+	fArn := fields.ArnField(length)
+	fModelId := fields.ModelIdField(length)
+	fStatusError := fields.StatusErrorField(length)
+	fStatusState := fields.StatusStateField(length)
+	fHierarchies := fields.HierarchiesField(length)
+	fCreationDate := fields.CreationDateField(length)
+	fLastUpdate := fields.LastUpdateField(length)
 
 	for i, asset := range a.AssetSummaries {
 		fName.Set(i, *asset.Name)
@@ -58,14 +42,14 @@ func (a Assets) Frames(ctx context.Context, resources resource.ResourceProvider)
 		}
 		fStatusError.Set(i, statusErr)
 
-		heirarchies, err := getAssetSummaryHierarchies(asset)
+		hierarchies, err := getAssetHierarchies(asset.Hierarchies)
 		if err != nil {
 			return nil, err
 		}
-		fHierarchies.Set(i, heirarchies)
+		fHierarchies.Set(i, hierarchies)
 	}
 
-	allFields := fieldsSlice(fName, fId, fModelId, fArn, fCreationDate, fLastUpdate, fStatusState, fStatusError, fHierarchies)
+	allFields := data.Fields{fName, fId, fModelId, fArn, fCreationDate, fLastUpdate, fStatusState, fStatusError, fHierarchies}
 
 	frame := data.NewFrame("", allFields...)
 

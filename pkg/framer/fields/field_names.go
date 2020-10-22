@@ -10,4 +10,9 @@ const (
 	Status       = "status"
 	StatusError  = "error"
 	StatusState  = "state"
+	ModelId      = "model_id"
+	Properties   = "properties"
+	Hierarchies  = "hierarchies"
+	Time         = "time"
+	Quality      = "quality"
 )

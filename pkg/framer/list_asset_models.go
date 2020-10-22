@@ -16,20 +16,20 @@ type AssetModels iotsitewise.ListAssetModelsOutput
 func (a AssetModels) Frames(_ context.Context, _ resource.ResourceProvider) (data.Frames, error) {
 	length := len(a.AssetModelSummaries)
 
-	fName := newFieldWithName(fields.Name, data.FieldTypeString, length)
-	fArn := newFieldWithName(fields.Arn, data.FieldTypeString, length)
-	fDescription := newFieldWithName(fields.Description, data.FieldTypeString, length)
-	fID := newFieldWithName(fields.Id, data.FieldTypeString, length)
-	fCreationDate := newFieldWithName(fields.CreationDate, data.FieldTypeTime, length)
-	fLastUpdate := newFieldWithName(fields.LastUpdate, data.FieldTypeTime, length)
-	fStatusError := newFieldWithName(fields.StatusError, data.FieldTypeNullableString, length)
-	fStatusState := newFieldWithName(fields.StatusState, data.FieldTypeString, length)
+	fName := fields.NameField(length)
+	fArn := fields.ArnField(length)
+	fDescription := fields.DescriptionField(length)
+	fId := fields.IdField(length)
+	fCreationDate := fields.CreationDateField(length)
+	fLastUpdate := fields.LastUpdateField(length)
+	fStatusError := fields.StatusErrorField(length)
+	fStatusState := fields.StatusStateField(length)
 
 	for i, asset := range a.AssetModelSummaries {
 		fName.Set(i, *asset.Name)
 		fArn.Set(i, *asset.Arn)
 		fDescription.Set(i, *asset.Description)
-		fID.Set(i, *asset.Id)
+		fId.Set(i, *asset.Id)
 		fCreationDate.Set(i, *asset.CreationDate)
 		fLastUpdate.Set(i, *asset.LastUpdateDate)
 
@@ -43,7 +43,7 @@ func (a AssetModels) Frames(_ context.Context, _ resource.ResourceProvider) (dat
 	}
 
 	frame := data.NewFrame("",
-		fName, fDescription, fID, fArn, fStatusError, fStatusState, fCreationDate, fLastUpdate,
+		fName, fDescription, fId, fArn, fStatusError, fStatusState, fCreationDate, fLastUpdate,
 	)
 
 	frame.Meta = &data.FrameMeta{
