@@ -1,6 +1,15 @@
 🌟 This was machine generated.  Do not edit. 🌟
 
 Frame[0] {}
+
+export interface YourFrameView {
+  time: number; // time.Time
+  "Average Wind Speed": number; // float64
+  quality: string; // string
+}
+
+
+
 Name: Demo Turbine Asset 1
 Dimensions: 3 Fields by 36 Rows
 +-------------------------------+--------------------------+----------------+

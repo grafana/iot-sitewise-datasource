@@ -1,6 +1,20 @@
 🌟 This was machine generated.  Do not edit. 🌟
 
 Frame[0] {}
+
+export interface YourFrameView {
+  name: string; // string
+  description: string; // string
+  id: string; // string
+  arn: string; // string
+  error?: string; // *string
+  state: string; // string
+  creation_date: number; // time.Time
+  last_update: number; // time.Time
+}
+
+
+
 Name: 
 Dimensions: 8 Fields by 2 Rows
 +----------------------------+--------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+---------------------------------------------------------------------------------------------+-----------------+----------------+-------------------------------+-------------------------------+
