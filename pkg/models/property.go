@@ -12,7 +12,6 @@ import (
 // This is done simply due to lack of solid generics support in golang.
 type AssetPropertyValueQuery struct {
 	BaseQuery
-	NextToken      string   `json:"nextToken,omitempty"`
 	Qualities      []string `json:"qualities,omitempty"`
 	AggregateTypes []string `json:"aggregateTypes,omitempty"`
 	Resolution     string   `json:"resolution,omitempty"`

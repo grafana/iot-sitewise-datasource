@@ -94,3 +94,7 @@ func toGrafanaUnit(unit *string) string {
 	}
 	return *unit // this will become a suffix in the display
 }
+
+func fieldsSlice(fields ...*data.Field) data.Fields {
+	return fields
+}

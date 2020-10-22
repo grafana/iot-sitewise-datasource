@@ -8,4 +8,6 @@ const (
 	CreationDate = "creation_date"
 	LastUpdate   = "last_update"
 	Status       = "status"
+	StatusError  = "error"
+	StatusState  = "state"
 )

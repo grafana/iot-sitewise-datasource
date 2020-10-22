@@ -14,14 +14,9 @@ import (
 
 func ListAssetModels(ctx context.Context, client client.Client, query models.ListAssetModelsQuery) (*framer.AssetModels, error) {
 
-	var token *string
-	if query.NextToken != "" {
-		token = aws.String(query.NextToken)
-	}
-
 	resp, err := client.ListAssetModelsWithContext(ctx, &iotsitewise.ListAssetModelsInput{
 		MaxResults: aws.Int64(250),
-		NextToken:  token,
+		NextToken:  getNextToken(query.BaseQuery),
 	})
 
 	if err != nil {

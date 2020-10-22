@@ -4,14 +4,11 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
-
-	"github.com/grafana/iot-sitewise-datasource/pkg/models"
-
 	"github.com/aws/aws-sdk-go/aws"
-
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 )
 
