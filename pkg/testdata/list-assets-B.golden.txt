@@ -1,6 +1,21 @@
 🌟 This was machine generated.  Do not edit. 🌟
 
 Frame[0] {}
+
+export interface YourFrameView {
+  name: string; // string
+  id: string; // string
+  model_id: string; // string
+  arn: string; // string
+  creation_date: number; // time.Time
+  last_update: number; // time.Time
+  state: string; // string
+  error?: string; // *string
+  hierarchies: string; // string
+}
+
+
+
 Name: 
 Dimensions: 9 Fields by 4 Rows
 +----------------------+--------------------------------------+--------------------------------------+---------------------------------------------------------------------------------------+-------------------------------+-------------------------------+----------------+-----------------+-------------------+

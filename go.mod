@@ -5,7 +5,7 @@ go 1.14
 require (
 	github.com/aws/aws-sdk-go v1.35.12
 	github.com/google/go-cmp v0.5.2 // indirect
-	github.com/grafana/grafana-plugin-sdk-go v0.78.0
+	github.com/grafana/grafana-plugin-sdk-go v0.78.1-0.20201022205520-ad18f1c7cba2
 	github.com/magefile/mage v1.10.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/objx v0.3.0 // indirect
