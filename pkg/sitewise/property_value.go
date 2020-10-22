@@ -7,7 +7,6 @@ import (
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
@@ -19,13 +18,8 @@ func valueQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetAss
 		assetId    *string
 	)
 
-	if query.AssetId != "" {
-		assetId = aws.String(query.AssetId)
-	}
-
-	if query.PropertyId != "" {
-		propertyId = aws.String(query.PropertyId)
-	}
+	assetId = getAssetId(query.BaseQuery)
+	propertyId = getPropertyId(query.BaseQuery)
 
 	return &iotsitewise.GetAssetPropertyValueInput{
 		AssetId:    assetId,

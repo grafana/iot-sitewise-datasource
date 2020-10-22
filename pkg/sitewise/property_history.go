@@ -27,17 +27,9 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetA
 		qualities  []*string
 	)
 
-	if query.AssetId != "" {
-		assetId = aws.String(query.AssetId)
-	}
-
-	if query.PropertyId != "" {
-		propertyId = aws.String(query.PropertyId)
-	}
-
-	if query.NextToken != "" {
-		nextToken = aws.String(query.NextToken)
-	}
+	assetId = getAssetId(query.BaseQuery)
+	propertyId = getPropertyId(query.BaseQuery)
+	nextToken = getNextToken(query.BaseQuery)
 
 	if len(query.Qualities) > 0 {
 		qualities = aws.StringSlice(query.Qualities)
