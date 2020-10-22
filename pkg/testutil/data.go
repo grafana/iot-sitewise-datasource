@@ -12,6 +12,14 @@ import (
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 )
 
+var SerializeStruct = func(t *testing.T, val interface{}) []byte {
+	vbytes, err := json.Marshal(val)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return vbytes
+}
+
 var UnmarshallFileContents = func(filename string, val interface{}) error {
 
 	cwd, _ := os.Getwd()
@@ -80,4 +88,13 @@ var GetIoTSitewiseAssetModels = func(t *testing.T, filename string) iotsitewise.
 		t.Fatal(err)
 	}
 	return assetModels
+}
+
+var GetIoTSitewiseAssets = func(t *testing.T, filename string) iotsitewise.ListAssetsOutput {
+	assets := iotsitewise.ListAssetsOutput{}
+	err := UnmarshallFileContents(filename, &assets)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return assets
 }

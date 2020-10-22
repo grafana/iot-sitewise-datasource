@@ -21,6 +21,18 @@ func (s *Server) HandleHealthCheck(ctx context.Context, req *backend.CheckHealth
 	}, nil
 }
 
+func (s *Server) HandlePropertyValueHistory(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
+	return processQueries(ctx, req, s.handlePropertyValueQuery), nil
+}
+
+func (s *Server) HandleListAssetModels(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
+	return processQueries(ctx, req, s.handleListAssetModelsQuery), nil
+}
+
+func (s *Server) HandleListAssets(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
+	return processQueries(ctx, req, s.handleListAssetsQuery), nil
+}
+
 func (s *Server) handlePropertyValueQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
 
 	query, err := models.GetAssetPropertyValueQuery(&q)
@@ -37,10 +49,6 @@ func (s *Server) handlePropertyValueQuery(ctx context.Context, req *backend.Quer
 		Frames: frames,
 		Error:  nil,
 	}
-}
-
-func (s *Server) HandlePropertyValueHistory(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
-	return processQueries(ctx, req, s.handlePropertyValueQuery), nil
 }
 
 func (s *Server) handleListAssetModelsQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
@@ -60,6 +68,20 @@ func (s *Server) handleListAssetModelsQuery(ctx context.Context, req *backend.Qu
 	}
 }
 
-func (s *Server) HandleListAssetModels(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
-	return processQueries(ctx, req, s.handleListAssetModelsQuery), nil
+func (s *Server) handleListAssetsQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
+
+	query, err := models.GetListAssetsQuery(&q)
+	if err != nil {
+		return DataResponseErrorUnmarshal(err)
+	}
+
+	frames, err := s.datasource.HandleListAssetsQuery(ctx, req, query)
+	if err != nil {
+		return DataResponseErrorRequestFailed(err)
+	}
+
+	return backend.DataResponse{
+		Frames: frames,
+		Error:  nil,
+	}
 }

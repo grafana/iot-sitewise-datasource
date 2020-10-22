@@ -2,10 +2,12 @@ package server
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"strings"
 	"testing"
 	"time"
+
+	"github.com/aws/aws-sdk-go/service/iotsitewise"
 
 	"github.com/grafana/grafana-plugin-sdk-go/experimental"
 
@@ -60,11 +62,6 @@ var getPropertyValueHistoryHappyCase testServerScenarioFn = func(t *testing.T) *
 		},
 	}
 
-	qbytes, err := json.Marshal(swQuery)
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	return &testScenario{
 		name:   "PropertyValueHistoryResponseHappyCase",
 		mockSw: mockSw,
@@ -75,7 +72,7 @@ var getPropertyValueHistoryHappyCase testServerScenarioFn = func(t *testing.T) *
 				MaxDataPoints: 100,
 				Interval:      1000,
 				TimeRange:     timeRange,
-				JSON:          qbytes,
+				JSON:          testutil.SerializeStruct(t, swQuery),
 			},
 		},
 		goldenFileName: "property-history-values",
@@ -98,11 +95,6 @@ var listAssetModelsHappyCase testServerScenarioFn = func(t *testing.T) *testScen
 		NextToken: "",
 	}
 
-	qbytes, err := json.Marshal(query)
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	return &testScenario{
 		name:   "TestListAssetModelsResponseHappyCase",
 		mockSw: mockSw,
@@ -113,13 +105,64 @@ var listAssetModelsHappyCase testServerScenarioFn = func(t *testing.T) *testScen
 				MaxDataPoints: 100,
 				Interval:      1000,
 				TimeRange:     backend.TimeRange{},
-				JSON:          qbytes,
+				JSON:          testutil.SerializeStruct(t, query),
 			},
 		},
 		goldenFileName: "list-asset-models",
 		handlerFn: func(t *testing.T, srvr *Server) backend.QueryDataHandlerFunc {
 			return srvr.HandleListAssetModels
 		},
+	}
+}
+
+var listAssetsHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
+
+	mockSw := &mocks.Client{}
+
+	topLevelAssets := testutil.GetIoTSitewiseAssets(t, "list-assets-top-level.json")
+	childAssets := testutil.GetIoTSitewiseAssets(t, "list-assets.json")
+
+	mockSw.On("ListAssetsWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.ListAssetsInput) bool {
+		return req.AssetModelId == nil && *req.Filter == "TOP_LEVEL"
+	})).Return(&topLevelAssets, nil)
+
+	mockSw.On("ListAssetsWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.ListAssetsInput) bool {
+		if req.AssetModelId == nil {
+			return false
+		}
+		return *req.AssetModelId == testutil.TestAssetModelId && *req.Filter == "ALL"
+	})).Return(&childAssets, nil)
+
+	queryTopLevel := models.ListAssetsQuery{
+		ModelId: "",
+		Filter:  "",
+	}
+
+	queryChild := models.ListAssetsQuery{
+		ModelId: testutil.TestAssetModelId,
+		Filter:  "ALL",
+	}
+
+	return &testScenario{
+		name: "TestListAssetsHappyCase",
+		queries: []backend.DataQuery{
+			{
+				RefID:     "A",
+				QueryType: models.QueryTypeListAssets,
+				JSON:      testutil.SerializeStruct(t, queryTopLevel),
+			},
+			{
+				RefID:     "B",
+				QueryType: models.QueryTypeListAssets,
+				JSON:      testutil.SerializeStruct(t, queryChild),
+			},
+		},
+		mockSw:         mockSw,
+		goldenFileName: "list-assets",
+		handlerFn: func(t *testing.T, srvr *Server) backend.QueryDataHandlerFunc {
+			return srvr.HandleListAssets
+		},
+		validationFn: nil,
 	}
 }
 
@@ -170,7 +213,9 @@ func runTestScenario(t *testing.T, scenario *testScenario) {
 			}
 
 			if err := experimental.CheckGoldenDataResponse(fname, &dr, true); err != nil {
-				t.Fatal(err)
+				if !strings.Contains(err.Error(), "no such file or directory") {
+					t.Fatal(err)
+				}
 			}
 		}
 
@@ -184,4 +229,8 @@ func TestHandlePropertyValueHistory(t *testing.T) {
 
 func TestHandleListAssetModels(t *testing.T) {
 	listAssetModelsHappyCase(t).run(t)
+}
+
+func TestHandleListAssets(t *testing.T) {
+	listAssetsHappyCase(t).run(t)
 }
