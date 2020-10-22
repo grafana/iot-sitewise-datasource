@@ -14,19 +14,6 @@ import (
 
 type Assets iotsitewise.ListAssetsOutput
 
-func getErrorDescription(details *iotsitewise.ErrorDetails) (*string, error) {
-
-	if details == nil {
-		return nil, nil
-	}
-
-	jb, err := json.Marshal(*details)
-	if err != nil {
-		return nil, err
-	}
-	return aws.String(string(jb)), nil
-}
-
 func getAssetSummaryHierarchies(asset *iotsitewise.AssetSummary) (string, error) {
 
 	hvalues := []iotsitewise.AssetHierarchy{}
