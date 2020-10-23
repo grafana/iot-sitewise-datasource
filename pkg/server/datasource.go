@@ -12,12 +12,14 @@ import (
 type Datasource interface {
 	HealthCheck(ctx context.Context, req *backend.CheckHealthRequest) error
 	HandleGetAssetPropertyValueHistoryQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error)
+	HandleGetAssetPropertyAggregateQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error)
+	HandleGetAssetPropertyValueQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error)
 	HandleListAssetModelsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssetModelsQuery) (data.Frames, error)
 	HandleListAssetsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssetsQuery) (data.Frames, error)
 	HandleDescribeAssetQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.DescribeAssetQuery) (data.Frames, error)
 }
 
-// HandleQueryData handles the `QueryData` request for the Github datasource
+// HandleQueryData handles the `QueryData` request for the Github Datasource
 func HandleQueryData(ctx context.Context, srvr *Server, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
 	m := GetQueryHandlers(srvr)
 	return m.QueryData(ctx, req)

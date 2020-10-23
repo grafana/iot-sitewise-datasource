@@ -46,12 +46,12 @@ func getAggregationFields(length int, aggs *iotsitewise.Aggregates) ([]string, m
 
 	if val := aggs.Count; val != nil {
 		aggregateTypes = append(aggregateTypes, models.AggregateCount)
-		aggregateFields[models.AggregateAvg] = fields.AggregationField(length, "count")
+		aggregateFields[models.AggregateCount] = fields.AggregationField(length, "count")
 	}
 
 	if val := aggs.StandardDeviation; val != nil {
 		aggregateTypes = append(aggregateTypes, models.AggregateStdDev)
-		aggregateFields[models.AggregateStdDev] = fields.AggregationField(length, "std. dev.")
+		aggregateFields[models.AggregateStdDev] = fields.AggregationField(length, "stddev")
 	}
 
 	return aggregateTypes, aggregateFields

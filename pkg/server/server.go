@@ -15,7 +15,7 @@ import (
 )
 
 type Server struct {
-	datasource Datasource
+	Datasource Datasource
 }
 
 // QueryHandlerFunc is the function signature used for mux.HandleFunc
@@ -35,20 +35,6 @@ func processQueries(ctx context.Context, req *backend.QueryDataRequest, handler 
 
 }
 
-// UnmarshalQuery attempts to unmarshal a query from JSON
-//func UnmarshalQuery(b []byte, v interface{}) *backend.DataResponse {
-//	if err := json.Unmarshal(b, v); err != nil {
-//		return DataResponseError(err, "failed to unmarshal JSON request into query")
-//	}
-//	return nil
-//}
-
-func DataResponseError(err error, message string) backend.DataResponse {
-	return backend.DataResponse{
-		Error: errors.Wrap(err, message),
-	}
-}
-
 func DataResponseErrorUnmarshal(err error) backend.DataResponse {
 	return backend.DataResponse{
 		Error: errors.Wrap(err, "failed to unmarshal JSON request into query"),
@@ -66,6 +52,8 @@ func GetQueryHandlers(s *Server) *datasource.QueryTypeMux {
 	mux := datasource.NewQueryTypeMux()
 
 	mux.HandleFunc(models.QueryTypePropertyValueHistory, s.HandlePropertyValueHistory)
+	mux.HandleFunc(models.QueryTypePropertyAggregate, s.HandlePropertyAggregate)
+	mux.HandleFunc(models.QueryTypePropertyValue, s.HandlePropertyValue)
 	mux.HandleFunc(models.QueryTypeListAssetModels, s.HandleListAssetModels)
 	mux.HandleFunc(models.QueryTypeListAssets, s.HandleListAssets)
 
@@ -74,7 +62,7 @@ func GetQueryHandlers(s *Server) *datasource.QueryTypeMux {
 
 func NewServerInstance(settings backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
 	srvr := &Server{
-		datasource: sitewise.NewDatasource(),
+		Datasource: sitewise.NewDatasource(),
 	}
 	return srvr, nil
 }
