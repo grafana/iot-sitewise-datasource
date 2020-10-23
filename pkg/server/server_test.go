@@ -166,6 +166,50 @@ var listAssetsHappyCase testServerScenarioFn = func(t *testing.T) *testScenario 
 	}
 }
 
+var describeAssetHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
+
+	mockSw := &mocks.Client{}
+
+	asset := testutil.GetIoTSitewiseAssetDescription(t, "describe-asset.json")
+	assetWithHierarchy := testutil.GetIoTSitewiseAssetDescription(t, "describe-asset-top-level.json")
+
+	mockSw.On("DescribeAssetWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetInput) bool {
+		return req.AssetId != nil && *req.AssetId == testutil.TestAssetId
+	})).Return(&asset, nil)
+
+	mockSw.On("DescribeAssetWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetInput) bool {
+		return req.AssetId != nil && *req.AssetId == testutil.TestTopLevelAssetId
+	})).Return(&assetWithHierarchy, nil)
+
+	query := models.DescribeAssetQuery{}
+	query.AssetId = testutil.TestAssetId
+
+	queryTopLevel := models.DescribeAssetQuery{}
+	queryTopLevel.AssetId = testutil.TestTopLevelAssetId
+
+	return &testScenario{
+		name: "DescribeAssetHappyCase",
+		queries: []backend.DataQuery{
+			{
+				RefID:     "A",
+				QueryType: models.QueryTypeDescribeAsset,
+				JSON:      testutil.SerializeStruct(t, query),
+			},
+			{
+				RefID:     "B",
+				QueryType: models.QueryTypeDescribeAsset,
+				JSON:      testutil.SerializeStruct(t, queryTopLevel),
+			},
+		},
+		mockSw:         mockSw,
+		goldenFileName: "describe-asset",
+		handlerFn: func(s *testing.T, srvr *Server) backend.QueryDataHandlerFunc {
+			return srvr.HandleDescribeAsset
+		},
+		validationFn: nil,
+	}
+}
+
 func mockedDatasource(swmock *mocks.Client) Datasource {
 	return &sitewise.Datasource{
 		GetClient: func(_ backend.PluginContext, _ models.BaseQuery) (client client.Client, err error) {
@@ -218,9 +262,7 @@ func runTestScenario(t *testing.T, scenario *testScenario) {
 				}
 			}
 		}
-
 	})
-
 }
 
 func TestHandlePropertyValueHistory(t *testing.T) {
@@ -233,4 +275,8 @@ func TestHandleListAssetModels(t *testing.T) {
 
 func TestHandleListAssets(t *testing.T) {
 	listAssetsHappyCase(t).run(t)
+}
+
+func TestHandleDescribeAsset(t *testing.T) {
+	describeAssetHappyCase(t).run(t)
 }

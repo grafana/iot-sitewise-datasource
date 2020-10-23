@@ -45,16 +45,15 @@ func getErrorDescription(details *iotsitewise.ErrorDetails) (*string, error) {
 		return nil, nil
 	}
 
-	jb, err := json.Marshal(*details)
+	jb, err := serialize(*details)
 	if err != nil {
 		return nil, err
 	}
 	return aws.String(string(jb)), nil
 }
 
-func getAssetHierarchies(hierarchies []*iotsitewise.AssetHierarchy) (string, error) {
-
-	serialized, err := json.Marshal(hierarchies)
+func serialize(item interface{}) (string, error) {
+	serialized, err := json.Marshal(item)
 
 	if err != nil {
 		return "", err

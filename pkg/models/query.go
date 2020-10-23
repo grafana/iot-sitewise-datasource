@@ -12,6 +12,7 @@ const (
 	QueryTypePropertyAggregate    = "PropertyAggregate"
 	QueryTypeListAssetModels      = "ListAssetModels"
 	QueryTypeListAssets           = "ListAssets"
+	QueryTypeDescribeAsset        = "DescribeAsset"
 )
 
 const (

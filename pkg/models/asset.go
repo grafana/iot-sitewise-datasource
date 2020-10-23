@@ -20,6 +20,17 @@ type ListAssetsQuery struct {
 	Filter  string `json:"filter,omitempty"`
 }
 
+func GetDescribeAssetQuery(dq *backend.DataQuery) (*DescribeAssetQuery, error) {
+	query := &DescribeAssetQuery{}
+	if err := json.Unmarshal(dq.JSON, query); err != nil {
+		return nil, err
+	}
+
+	// add on the DataQuery params
+	query.QueryType = dq.QueryType
+	return query, nil
+}
+
 func GetListAssetsQuery(dq *backend.DataQuery) (*ListAssetsQuery, error) {
 	query := &ListAssetsQuery{}
 	if err := json.Unmarshal(dq.JSON, query); err != nil {
