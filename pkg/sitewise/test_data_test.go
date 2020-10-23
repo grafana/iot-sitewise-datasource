@@ -20,6 +20,10 @@ import (
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 )
 
+const (
+	SKIPALL = true
+)
+
 type testDataFunc func(t *testing.T, client client.Client) interface{}
 
 // How to run tests:
@@ -31,12 +35,14 @@ type testDataFunc func(t *testing.T, client client.Client) interface{}
 //
 func TestGenerateTestData(t *testing.T) {
 
-	t.Skip("Integration Test") // comment line to run this
+	if SKIPALL {
+		t.Skip("Integration Test")
+	}
 
 	m := make(map[string]testDataFunc)
 
 	m["property-history-values.json"] = func(t *testing.T, client client.Client) interface{} {
-
+		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 
 		// hard coded values from my account
@@ -56,7 +62,7 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 	m["property-value.json"] = func(t *testing.T, client client.Client) interface{} {
-
+		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 
 		query := models.AssetPropertyValueQuery{}
@@ -71,7 +77,7 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 	m["property-aggregate-values.json"] = func(t *testing.T, client client.Client) interface{} {
-
+		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 
 		query := models.AssetPropertyValueQuery{}
@@ -92,19 +98,31 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 	m["describe-asset.json"] = func(t *testing.T, client client.Client) interface{} {
-
+		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetQuery{}
 		query.AssetId = testutil.TestAssetId
 
-		resp, err := GetAssetDescription(ctx, client, query)
+		resp, err := DescribeAsset(ctx, client, query)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return resp
+	}
+	m["describe-asset-top-level.json"] = func(t *testing.T, client client.Client) interface{} {
+		t.Skip("Integration Test") // comment line to run this
+		ctx := context.Background()
+		query := models.DescribeAssetQuery{}
+		query.AssetId = testutil.TestTopLevelAssetId
+
+		resp, err := DescribeAsset(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}
 		return resp
 	}
 	m["describe-asset-property-avg-wind.json"] = func(t *testing.T, client client.Client) interface{} {
-
+		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetPropertyQuery{}
 		query.AssetId = testutil.TestAssetId
@@ -117,7 +135,7 @@ func TestGenerateTestData(t *testing.T) {
 	}
 
 	m["describe-asset-property-raw-wind.json"] = func(t *testing.T, client client.Client) interface{} {
-
+		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetPropertyQuery{}
 		query.AssetId = testutil.TestAssetId
@@ -130,7 +148,7 @@ func TestGenerateTestData(t *testing.T) {
 	}
 
 	m["list-asset-models.json"] = func(t *testing.T, client client.Client) interface{} {
-
+		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		resp, err := ListAssetModels(ctx, client, models.ListAssetModelsQuery{})
 		if err != nil {
@@ -140,7 +158,7 @@ func TestGenerateTestData(t *testing.T) {
 	}
 
 	m["list-assets.json"] = func(t *testing.T, client client.Client) interface{} {
-
+		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.ListAssetsQuery{}
 		query.ModelId = testutil.TestAssetModelId
@@ -153,7 +171,7 @@ func TestGenerateTestData(t *testing.T) {
 	}
 
 	m["list-assets-top-level.json"] = func(t *testing.T, client client.Client) interface{} {
-
+		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.ListAssetsQuery{}
 		resp, err := ListAssets(ctx, client, query)
@@ -167,36 +185,38 @@ func TestGenerateTestData(t *testing.T) {
 	sw := iotsitewise.New(sesh, aws.NewConfig().WithRegion("us-east-1"))
 
 	for k, v := range m {
-		writeTestData(k, v, sw, t)
+		writeTestData(t, k, v, sw)
 	}
 }
 
-func writeTestData(filename string, tf testDataFunc, client client.Client, t *testing.T) {
+func writeTestData(t *testing.T, filename string, tf testDataFunc, client client.Client) {
 
-	resp := tf(t, client)
+	t.Run(filename, func(t *testing.T) {
+		resp := tf(t, client)
 
-	js, err := json.MarshalIndent(resp, "", "    ")
+		js, err := json.MarshalIndent(resp, "", "    ")
 
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	f, err := os.Create("../testdata/" + filename)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	defer func() {
-		cerr := f.Close()
-		if err == nil {
-			err = cerr
+		if err != nil {
+			t.Fatal(err)
 		}
-	}()
 
-	_, err = f.Write(js)
-	if err != nil {
-		t.Fatal(err)
-	}
+		f, err := os.Create("../testdata/" + filename)
+
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		defer func() {
+			cerr := f.Close()
+			if err == nil {
+				err = cerr
+			}
+		}()
+
+		_, err = f.Write(js)
+		if err != nil {
+			t.Fatal(err)
+		}
+	})
 
 }

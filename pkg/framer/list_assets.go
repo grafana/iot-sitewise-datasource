@@ -42,7 +42,8 @@ func (a Assets) Frames(_ context.Context, _ resource.ResourceProvider) (data.Fra
 		}
 		fStatusError.Set(i, statusErr)
 
-		hierarchies, err := getAssetHierarchies(asset.Hierarchies)
+		hierarchies, err := serialize(asset.Hierarchies)
+		//getAssetHierarchies(asset.Hierarchies)
 		if err != nil {
 			return nil, err
 		}

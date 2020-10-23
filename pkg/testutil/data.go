@@ -98,3 +98,12 @@ var GetIoTSitewiseAssets = func(t *testing.T, filename string) iotsitewise.ListA
 	}
 	return assets
 }
+
+var GetIoTSitewiseAssetDescription = func(t *testing.T, filename string) iotsitewise.DescribeAssetOutput {
+	asset := iotsitewise.DescribeAssetOutput{}
+	err := UnmarshallFileContents(filename, &asset)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return asset
+}
