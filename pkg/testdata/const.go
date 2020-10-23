@@ -1,4 +1,4 @@
-package testutil
+package testdata
 
 const (
 	TestAssetModelId    = "587d4e0e-045c-49ff-9fcc-c3032cb73309"
