@@ -9,7 +9,7 @@ import (
 
 func (s *Server) HandleHealthCheck(ctx context.Context, req *backend.CheckHealthRequest) (*backend.CheckHealthResult, error) {
 
-	if err := s.datasource.HealthCheck(ctx, req); err != nil {
+	if err := s.Datasource.HealthCheck(ctx, req); err != nil {
 		return &backend.CheckHealthResult{
 			Status:  backend.HealthStatusError,
 			Message: err.Error(),
@@ -22,6 +22,14 @@ func (s *Server) HandleHealthCheck(ctx context.Context, req *backend.CheckHealth
 }
 
 func (s *Server) HandlePropertyValueHistory(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
+	return processQueries(ctx, req, s.handlePropertyValueHistoryQuery), nil
+}
+
+func (s *Server) HandlePropertyAggregate(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
+	return processQueries(ctx, req, s.handlePropertyAggregateQuery), nil
+}
+
+func (s *Server) HandlePropertyValue(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
 	return processQueries(ctx, req, s.handlePropertyValueQuery), nil
 }
 
@@ -37,6 +45,42 @@ func (s *Server) HandleDescribeAsset(ctx context.Context, req *backend.QueryData
 	return processQueries(ctx, req, s.handleDescribeAssetQuery), nil
 }
 
+func (s *Server) handlePropertyValueHistoryQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
+
+	query, err := models.GetAssetPropertyValueQuery(&q)
+	if err != nil {
+		return DataResponseErrorUnmarshal(err)
+	}
+
+	frames, err := s.Datasource.HandleGetAssetPropertyValueHistoryQuery(ctx, req, query)
+	if err != nil {
+		return DataResponseErrorRequestFailed(err)
+	}
+
+	return backend.DataResponse{
+		Frames: frames,
+		Error:  nil,
+	}
+}
+
+func (s *Server) handlePropertyAggregateQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
+
+	query, err := models.GetAssetPropertyValueQuery(&q)
+	if err != nil {
+		return DataResponseErrorUnmarshal(err)
+	}
+
+	frames, err := s.Datasource.HandleGetAssetPropertyAggregateQuery(ctx, req, query)
+	if err != nil {
+		return DataResponseErrorRequestFailed(err)
+	}
+
+	return backend.DataResponse{
+		Frames: frames,
+		Error:  nil,
+	}
+}
+
 func (s *Server) handlePropertyValueQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
 
 	query, err := models.GetAssetPropertyValueQuery(&q)
@@ -44,7 +88,7 @@ func (s *Server) handlePropertyValueQuery(ctx context.Context, req *backend.Quer
 		return DataResponseErrorUnmarshal(err)
 	}
 
-	frames, err := s.datasource.HandleGetAssetPropertyValueHistoryQuery(ctx, req, query)
+	frames, err := s.Datasource.HandleGetAssetPropertyValueQuery(ctx, req, query)
 	if err != nil {
 		return DataResponseErrorRequestFailed(err)
 	}
@@ -61,7 +105,7 @@ func (s *Server) handleListAssetModelsQuery(ctx context.Context, req *backend.Qu
 		return DataResponseErrorUnmarshal(err)
 	}
 
-	frames, err := s.datasource.HandleListAssetModelsQuery(ctx, req, query)
+	frames, err := s.Datasource.HandleListAssetModelsQuery(ctx, req, query)
 	if err != nil {
 		return DataResponseErrorRequestFailed(err)
 	}
@@ -79,7 +123,7 @@ func (s *Server) handleListAssetsQuery(ctx context.Context, req *backend.QueryDa
 		return DataResponseErrorUnmarshal(err)
 	}
 
-	frames, err := s.datasource.HandleListAssetsQuery(ctx, req, query)
+	frames, err := s.Datasource.HandleListAssetsQuery(ctx, req, query)
 	if err != nil {
 		return DataResponseErrorRequestFailed(err)
 	}
@@ -97,7 +141,7 @@ func (s *Server) handleDescribeAssetQuery(ctx context.Context, req *backend.Quer
 		return DataResponseErrorUnmarshal(err)
 	}
 
-	frames, err := s.datasource.HandleDescribeAssetQuery(ctx, req, query)
+	frames, err := s.Datasource.HandleDescribeAssetQuery(ctx, req, query)
 	if err != nil {
 		return DataResponseErrorRequestFailed(err)
 	}

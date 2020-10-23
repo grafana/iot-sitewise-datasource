@@ -70,6 +70,18 @@ func (ds *Datasource) HandleGetAssetPropertyValueHistoryQuery(ctx context.Contex
 	})
 }
 
+func (ds *Datasource) HandleGetAssetPropertyAggregateQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
+	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.Client) (framer.Framer, error) {
+		return GetAssetPropertyAggregates(ctx, sw, *query)
+	})
+}
+
+func (ds *Datasource) HandleGetAssetPropertyValueQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
+	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.Client) (framer.Framer, error) {
+		return GetAssetPropertyValue(ctx, sw, *query)
+	})
+}
+
 func (ds *Datasource) HandleListAssetModelsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssetModelsQuery) (data.Frames, error) {
 	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.Client) (framer.Framer, error) {
 		return ListAssetModels(ctx, sw, *query)

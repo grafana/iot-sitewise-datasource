@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
 
-	"github.com/grafana/iot-sitewise-datasource/pkg/testutil"
+	"github.com/grafana/grafana-plugin-sdk-go/backend"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 
@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	SKIPALL = true
+	SKIPALL = false
 )
 
 type testDataFunc func(t *testing.T, client client.Client) interface{}
@@ -47,8 +47,8 @@ func TestGenerateTestData(t *testing.T) {
 
 		// hard coded values from my account
 		query := models.AssetPropertyValueQuery{}
-		query.AssetId = testutil.TestAssetId
-		query.PropertyId = testutil.TestPropIdAvgWind
+		query.AssetId = testdata.TestAssetId
+		query.PropertyId = testdata.TestPropIdAvgWind
 		query.TimeRange = backend.TimeRange{
 			From: time.Now().Add(time.Hour * -3), // return 3 hours of data. 60*3/5 = 36 points
 			To:   time.Now(),
@@ -66,8 +66,8 @@ func TestGenerateTestData(t *testing.T) {
 		ctx := context.Background()
 
 		query := models.AssetPropertyValueQuery{}
-		query.AssetId = testutil.TestAssetId
-		query.PropertyId = testutil.TestPropIdAvgWind
+		query.AssetId = testdata.TestAssetId
+		query.PropertyId = testdata.TestPropIdAvgWind
 
 		resp, err := GetAssetPropertyValue(ctx, client, query)
 		if err != nil {
@@ -77,14 +77,16 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 	m["property-aggregate-values.json"] = func(t *testing.T, client client.Client) interface{} {
-		t.Skip("Integration Test") // comment line to run this
+		//t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 
 		query := models.AssetPropertyValueQuery{}
 		query.Resolution = "1m"
-		query.AggregateTypes = []string{"AVERAGE", "MAXIMUM", "MINIMUM"}
-		query.AssetId = testutil.TestAssetId
-		query.PropertyId = testutil.TestPropIdRawWin
+		query.AggregateTypes = []string{
+			models.AggregateCount, models.AggregateAvg, models.AggregateMin, models.AggregateMax, models.AggregateSum, models.AggregateStdDev,
+		}
+		query.AssetId = testdata.TestAssetId
+		query.PropertyId = testdata.TestPropIdRawWin
 		query.TimeRange = backend.TimeRange{
 			From: time.Now().Add(time.Hour * -3), // return 3 hours of data. 60*3/5 = 36 points
 			To:   time.Now(),
@@ -101,7 +103,7 @@ func TestGenerateTestData(t *testing.T) {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetQuery{}
-		query.AssetId = testutil.TestAssetId
+		query.AssetId = testdata.TestAssetId
 
 		resp, err := DescribeAsset(ctx, client, query)
 		if err != nil {
@@ -113,7 +115,7 @@ func TestGenerateTestData(t *testing.T) {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetQuery{}
-		query.AssetId = testutil.TestTopLevelAssetId
+		query.AssetId = testdata.TestTopLevelAssetId
 
 		resp, err := DescribeAsset(ctx, client, query)
 		if err != nil {
@@ -125,8 +127,8 @@ func TestGenerateTestData(t *testing.T) {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetPropertyQuery{}
-		query.AssetId = testutil.TestAssetId
-		query.PropertyId = testutil.TestPropIdAvgWind
+		query.AssetId = testdata.TestAssetId
+		query.PropertyId = testdata.TestPropIdAvgWind
 		resp, err := GetAssetPropertyDescription(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
@@ -138,8 +140,8 @@ func TestGenerateTestData(t *testing.T) {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetPropertyQuery{}
-		query.AssetId = testutil.TestAssetId
-		query.PropertyId = testutil.TestPropIdRawWin
+		query.AssetId = testdata.TestAssetId
+		query.PropertyId = testdata.TestPropIdRawWin
 		resp, err := GetAssetPropertyDescription(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
@@ -161,7 +163,7 @@ func TestGenerateTestData(t *testing.T) {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.ListAssetsQuery{}
-		query.ModelId = testutil.TestAssetModelId
+		query.ModelId = testdata.TestAssetModelId
 		query.Filter = "ALL"
 		resp, err := ListAssets(ctx, client, query)
 		if err != nil {
