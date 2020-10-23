@@ -25,11 +25,26 @@ export interface AssetSummary {
   hierarchies: string; // string
 }
 
-// Processed form
+// Mapped from DataFrame result
+export interface DescribeAssetResult {
+  name: string; // string
+  id: string; // string
+  arn: string; // string
+  model_id: string; // string
+  state: string; // string
+  error?: string; // *string
+  creation_date: number; // time.Time
+  last_update: number; // time.Time
+  hierarchies: string; // string
+  properties: string; // string
+}
+
+// Processed form DescribeAssetResult
 export interface AssetInfo {
   name: string; // string
   id: string; // string
-  modelId: string;
+  arn: string; // string
+  model_id: string;
   properties: AssetPropertyInfo[];
 }
 

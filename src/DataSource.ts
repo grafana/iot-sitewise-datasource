@@ -60,9 +60,9 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
     return query;
   }
 
-  runQuery(query: SitewiseQuery): Observable<DataQueryResponse> {
+  runQuery(query: SitewiseQuery, maxDataPoints?: number): Observable<DataQueryResponse> {
     // @ts-ignore
-    return this.query({ targets: [query], requestId: `iot.${counter++}` });
+    return this.query({ targets: [query], requestId: `iot.${counter++}`, maxDataPoints });
   }
 }
 

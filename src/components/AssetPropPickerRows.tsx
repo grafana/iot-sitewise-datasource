@@ -1,47 +1,75 @@
 import React, { PureComponent } from 'react';
 import { SelectableValue } from '@grafana/data';
-import { SitewiseQuery } from '../types';
+import { SitewiseQuery, AssetInfo } from '../types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
-import { AssetInfo } from 'queryResponseTypes';
+import { AssetExplorerModal } from './AssetExplorerModal';
 
 type Props = SitewiseQueryEditorProps<SitewiseQuery>;
 
 interface State {
-  showId?: boolean;
   asset?: AssetInfo;
-  options: Array<SelectableValue<string>>;
+  assets: Array<SelectableValue<string>>;
   loading: boolean;
+  openModal: boolean;
 }
 
 export class AssetPropPickerRows extends PureComponent<Props, State> {
   state: State = {
-    options: [],
+    assets: [],
     loading: true,
+    openModal: false,
   };
 
-  async componentDidMount() {
+  async updateInfo() {
     const { query, datasource } = this.props;
     const update: State = {
       loading: false,
     } as State;
 
     const cache = datasource.getCache(query.region);
-    if (query.assetId) {
+    if (query?.assetId) {
       try {
         update.asset = await cache.getAssetInfo(query.assetId);
       } catch (err) {
-        console.warn('error reading assets', err);
+        console.warn('error reading asset info', err);
       }
     }
-    update.options = await cache.getAssetPickerOptions();
+
+    try {
+      update.assets = await cache.getAssetPickerOptions();
+    } catch (err) {
+      console.warn('error getting options', err);
+    }
 
     this.setState(update);
+  }
+
+  async componentDidMount() {
+    this.updateInfo();
+  }
+
+  async componentDidUpdate(oldProps: Props) {
+    const { query } = this.props;
+    if (query?.assetId !== oldProps?.query?.assetId) {
+      if (!query.assetId) {
+        this.setState({ asset: undefined, loading: false });
+      } else {
+        this.setState({ loading: true });
+        this.updateInfo();
+      }
+    }
   }
 
   onAssetChange = (sel: SelectableValue<string>) => {
     const { onChange, query, onRunQuery } = this.props;
     onChange({ ...query, assetId: sel.value! });
+    onRunQuery();
+  };
+
+  onPropertyChange = (sel: SelectableValue<string>) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({ ...query, propertyId: sel.value! });
     onRunQuery();
   };
 
@@ -51,10 +79,15 @@ export class AssetPropPickerRows extends PureComponent<Props, State> {
     onRunQuery();
   };
 
+  openAssetExplorer = () => {
+    console.log('TODO!');
+  };
+
   render() {
     const { query } = this.props;
-    const { loading, options, asset } = this.state;
-    let current = options.find(v => v.value === query.assetId);
+    const { loading, asset, assets } = this.state;
+
+    let current = query.assetId ? assets.find(v => v.value === query.assetId) : undefined;
     if (!current && query.assetId) {
       if (loading) {
         current = { label: 'loading...', value: query.assetId };
@@ -65,7 +98,8 @@ export class AssetPropPickerRows extends PureComponent<Props, State> {
       }
     }
 
-    const showProp = query.propertyId || asset?.properties;
+    const showProp = query.propertyId || asset;
+    const properties = showProp ? (asset ? asset.properties : []) : [];
 
     return (
       <>
@@ -73,7 +107,7 @@ export class AssetPropPickerRows extends PureComponent<Props, State> {
           <InlineField label="Asset" labelWidth={10} grow={true}>
             <Select
               isLoading={loading}
-              options={options}
+              options={assets}
               value={current}
               onChange={this.onAssetChange}
               placeholder="Select an asset"
@@ -84,11 +118,19 @@ export class AssetPropPickerRows extends PureComponent<Props, State> {
               formatCreateLabel={txt => `Asset ID: ${txt}`}
             />
           </InlineField>
+          <AssetExplorerModal {...this.props} />
         </div>
         {showProp && (
           <div className="gf-form">
             <InlineField label="Property" labelWidth={10} grow={true}>
-              <div>TODO: property picker</div>
+              <Select
+                isLoading={loading}
+                options={properties}
+                value={properties.find(p => p.value === query.propertyId)}
+                onChange={this.onPropertyChange}
+                placeholder="Select a property"
+                isSearchable={true}
+              />
             </InlineField>
           </div>
         )}

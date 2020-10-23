@@ -1,7 +1,8 @@
-import { DataFrame, DataFrameView, SelectableValue } from '@grafana/data';
+import { DataFrameView, SelectableValue } from '@grafana/data';
 import { DataSource } from 'DataSource';
 import { ListAssetsQuery, QueryType } from 'types';
-import { AssetModelSummary, AssetInfo, AssetSummary } from './queryResponseTypes';
+import { AssetModelSummary, AssetSummary, DescribeAssetResult } from './queryResponseTypes';
+import { AssetPropertyInfo, AssetInfo } from './types';
 import { map } from 'rxjs/operators';
 
 /**
@@ -21,18 +22,24 @@ export class SitewiseCache {
     }
 
     return this.ds
-      .runQuery({
-        refId: 'getAssetInfo',
-        queryType: QueryType.DescribeAsset,
-        assetId: id,
-        region: this.region,
-      })
+      .runQuery(
+        {
+          refId: 'getAssetInfo',
+          queryType: QueryType.DescribeAsset,
+          assetId: id,
+          region: this.region,
+        },
+        1000
+      )
       .pipe(
         map(res => {
           if (res.data.length) {
-            const info = frameToAssetInfo(res.data[0]);
-            this.assetsById.set(id, info);
-            return info;
+            const view = new DataFrameView<DescribeAssetResult>(res.data[0]);
+            if (view && view.length) {
+              const info = frameToAssetInfo(view.get(0));
+              this.assetsById.set(id, info);
+              return info;
+            }
           }
           throw 'asset not found';
         })
@@ -74,7 +81,7 @@ export class SitewiseCache {
       region: this.region,
     };
     return this.ds
-      .runQuery(query)
+      .runQuery(query, 1000)
       .pipe(
         map(res => {
           if (res.data.length) {
@@ -94,6 +101,7 @@ export class SitewiseCache {
       for (const asset of topLevel) {
         options.push({
           label: asset.name,
+          value: asset.id,
           description: asset.arn,
         });
       }
@@ -105,14 +113,34 @@ export class SitewiseCache {
     for (const asset of this.assetsById.values()) {
       options.push({
         label: asset.name,
-        description: asset.id,
+        value: asset.id,
+        description: asset.arn,
       });
     }
     return options;
   }
 }
 
-export function frameToAssetInfo(frame: DataFrame): AssetInfo {
-  console.log('TODO', frame);
-  return {} as AssetInfo;
+export function frameToAssetInfo(res: DescribeAssetResult): AssetInfo {
+  const properties: AssetPropertyInfo[] = JSON.parse(res.properties);
+  for (const p of properties) {
+    p.value = p.Id;
+    p.label = p.Name;
+
+    if (p.Unit) {
+      p.label += ' (' + p.Unit + ')';
+    }
+
+    if (p.DataType) {
+      p.description = p.DataType;
+      if (p.Alias) {
+        p.description += ' // ' + p.Alias;
+      }
+    }
+  }
+
+  return {
+    ...res,
+    properties,
+  };
 }

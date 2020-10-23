@@ -1,4 +1,4 @@
-import { DataQuery } from '@grafana/data';
+import { DataQuery, SelectableValue } from '@grafana/data';
 import { AwsDataSourceJsonData, AwsDataSourceSecureJsonData } from 'common/types';
 
 // Matches https://github.com/grafana/iot-sitewise-datasource/blob/main/pkg/models/query.go#L3
@@ -125,6 +125,28 @@ export interface AssetPropertyAggregatesQuery extends SitewiseQuery {
 
 export function isAssetPropertyAggregatesQuery(q?: SitewiseQuery): q is AssetPropertyAggregatesQuery {
   return q?.queryType === QueryType.PropertyAggregate;
+}
+
+// matches native sitewise API with capitals
+export interface AssetPropertyInfo extends SelectableValue<string> {
+  Alias?: string;
+  DataType: string;
+  Id: string;
+  Name: string;
+  Unit: string;
+
+  // Filled in for selectable values
+  value: string;
+  label: string;
+}
+
+// Processed form DescribeAssetResult frame
+export interface AssetInfo {
+  name: string; // string
+  id: string; // string
+  arn: string; // string
+  model_id: string;
+  properties: AssetPropertyInfo[];
 }
 
 /**
