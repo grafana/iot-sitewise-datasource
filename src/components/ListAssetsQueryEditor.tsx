@@ -18,7 +18,7 @@ const filters = [
 export class ListAssetsQueryEditor extends PureComponent<Props> {
   onAssetModelIdChange = (sel: SelectableValue<string>) => {
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, assetModelId: sel.value! });
+    onChange({ ...query, modelId: sel.value! });
     onRunQuery();
   };
 
@@ -32,10 +32,10 @@ export class ListAssetsQueryEditor extends PureComponent<Props> {
     const { query } = this.props;
     const modelIds: Array<SelectableValue<string>> = [];
 
-    if (query.assetModelId) {
+    if (query.modelId) {
       modelIds.push({
-        label: query.assetModelId,
-        value: query.assetModelId,
+        label: query.modelId,
+        value: query.modelId,
       });
     }
 
@@ -45,7 +45,7 @@ export class ListAssetsQueryEditor extends PureComponent<Props> {
           <InlineField label="Model ID" labelWidth={10} grow={true}>
             <Select
               options={modelIds}
-              value={modelIds.find(v => v.value === query.assetModelId) || undefined}
+              value={modelIds.find(v => v.value === query.modelId) || undefined}
               onChange={this.onAssetModelIdChange}
               placeholder="Select an asset model id"
               allowCustomValue={true}
