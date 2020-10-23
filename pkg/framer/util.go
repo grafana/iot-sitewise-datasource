@@ -45,7 +45,7 @@ func getErrorDescription(details *iotsitewise.ErrorDetails) (*string, error) {
 		return nil, nil
 	}
 
-	jb, err := json.Marshal(*details)
+	jb, err := serialize(*details)
 	if err != nil {
 		return nil, err
 	}
