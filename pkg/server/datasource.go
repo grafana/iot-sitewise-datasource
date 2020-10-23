@@ -19,7 +19,7 @@ type Datasource interface {
 	HandleDescribeAssetQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.DescribeAssetQuery) (data.Frames, error)
 }
 
-// HandleQueryData handles the `QueryData` request for the Github Datasource
+// HandleQueryData handles the `QueryData` request for the Sitewise Datasource
 func HandleQueryData(ctx context.Context, srvr *Server, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
 	m := GetQueryHandlers(srvr)
 	return m.QueryData(ctx, req)
