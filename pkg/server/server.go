@@ -56,6 +56,7 @@ func GetQueryHandlers(s *Server) *datasource.QueryTypeMux {
 	mux.HandleFunc(models.QueryTypePropertyValue, s.HandlePropertyValue)
 	mux.HandleFunc(models.QueryTypeListAssetModels, s.HandleListAssetModels)
 	mux.HandleFunc(models.QueryTypeListAssets, s.HandleListAssets)
+	mux.HandleFunc(models.QueryTypeDescribeAsset, s.HandleDescribeAsset)
 
 	return mux
 }
