@@ -34,7 +34,7 @@ func (a AssetModels) Frames(_ context.Context, _ resource.ResourceProvider) (dat
 		fLastUpdate.Set(i, *asset.LastUpdateDate)
 
 		if asset.Status.Error != nil {
-			val, err := serialize(asset.Status.Error)
+			val, err := getErrorDescription(asset.Status.Error)
 			if err != nil {
 				fStatusError.Set(i, val)
 			}
