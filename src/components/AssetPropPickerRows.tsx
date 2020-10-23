@@ -14,7 +14,7 @@ interface State {
   loading: boolean;
 }
 
-export class AssetPickerRow extends PureComponent<Props, State> {
+export class AssetPropPickerRows extends PureComponent<Props, State> {
   state: State = {
     options: [],
     loading: true,
@@ -26,15 +26,15 @@ export class AssetPickerRow extends PureComponent<Props, State> {
       loading: false,
     } as State;
 
+    const cache = datasource.getCache(query.region);
     if (query.assetId) {
       try {
-        update.asset = await datasource.cache.getAssetInfo(query.assetId);
-      }
-      catch(err) {
+        update.asset = await cache.getAssetInfo(query.assetId);
+      } catch (err) {
         console.warn('error reading assets', err);
       }
     }
-    update.options = await datasource.cache.getAssetPickerOptions();
+    update.options = await cache.getAssetPickerOptions();
 
     this.setState(update);
   }
@@ -65,6 +65,8 @@ export class AssetPickerRow extends PureComponent<Props, State> {
       }
     }
 
+    const showProp = query.propertyId || asset?.properties;
+
     return (
       <>
         <div className="gf-form">
@@ -83,6 +85,13 @@ export class AssetPickerRow extends PureComponent<Props, State> {
             />
           </InlineField>
         </div>
+        {showProp && (
+          <div className="gf-form">
+            <InlineField label="Property" labelWidth={10} grow={true}>
+              <div>TODO: property picker</div>
+            </InlineField>
+          </div>
+        )}
       </>
     );
   }

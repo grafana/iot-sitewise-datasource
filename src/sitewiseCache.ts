@@ -4,14 +4,15 @@ import { ListAssetsQuery, QueryType } from 'types';
 import { AssetModelSummary, AssetInfo, AssetSummary } from './queryResponseTypes';
 import { map } from 'rxjs/operators';
 
+/**
+ * Keep a differnt cache for each region
+ */
 export class SitewiseCache {
   private models?: DataFrameView<AssetModelSummary>;
   private assetsById = new Map<string, AssetInfo>();
   private topLevelAssets?: DataFrameView<AssetSummary>;
 
-  constructor(private ds: DataSource) {
-    console.log('DS', ds);
-  }
+  constructor(private ds: DataSource, private region: string) {}
 
   async getAssetInfo(id: string): Promise<AssetInfo> {
     const v = this.assetsById.get(id);
@@ -24,6 +25,7 @@ export class SitewiseCache {
         refId: 'getAssetInfo',
         queryType: QueryType.DescribeAsset,
         assetId: id,
+        region: this.region,
       })
       .pipe(
         map(res => {
@@ -47,6 +49,7 @@ export class SitewiseCache {
       .runQuery({
         refId: 'getModels',
         queryType: QueryType.ListAssetModels,
+        region: this.region,
       })
       .pipe(
         map(res => {
@@ -68,6 +71,7 @@ export class SitewiseCache {
       refId: 'topLevelAssets',
       queryType: QueryType.ListAssets,
       filter: 'TOP_LEVEL',
+      region: this.region,
     };
     return this.ds
       .runQuery(query)
@@ -85,12 +89,16 @@ export class SitewiseCache {
 
   async getAssetPickerOptions(): Promise<Array<SelectableValue<string>>> {
     const options: Array<SelectableValue<string>> = [];
-    const topLevel = await this.getTopLevelAssets();
-    for (const asset of topLevel) {
-      options.push({
-        label: asset.name,
-        description: asset.arn,
-      });
+    try {
+      const topLevel = await this.getTopLevelAssets();
+      for (const asset of topLevel) {
+        options.push({
+          label: asset.name,
+          description: asset.arn,
+        });
+      }
+    } catch (err) {
+      console.log('Error reading top level assests', err);
     }
 
     // Also add recent values

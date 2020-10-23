@@ -8,12 +8,26 @@ import { Observable } from 'rxjs';
 export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
   readonly options: SitewiseOptions;
-  readonly cache: SitewiseCache;
+  private cache = new Map<string, SitewiseCache>();
 
   constructor(instanceSettings: DataSourceInstanceSettings<SitewiseOptions>) {
     super(instanceSettings);
     this.options = instanceSettings.jsonData;
-    this.cache = new SitewiseCache(this);
+  }
+
+  /**
+   * Get a region scoped cache
+   */
+  getCache(region?: string) {
+    if (!region || region === 'default') {
+      region = this.options.defaultRegion || '';
+    }
+    let v = this.cache.get(region);
+    if (!v) {
+      v = new SitewiseCache(this, region);
+      this.cache.set(region, v);
+    }
+    return v;
   }
 
   // This will support annotation queries for 7.2+
