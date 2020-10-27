@@ -1,10 +1,11 @@
-import { DataQuery } from '@grafana/data';
+import { DataQuery, SelectableValue } from '@grafana/data';
 import { AwsDataSourceJsonData, AwsDataSourceSecureJsonData } from 'common/types';
 
 // Matches https://github.com/grafana/iot-sitewise-datasource/blob/main/pkg/models/query.go#L3
 export enum QueryType {
   ListAssetModels = 'ListAssetModels',
   ListAssets = 'ListAssets',
+  DescribeAsset = 'DescribeAsset',
   PropertyValue = 'PropertyValue',
   PropertyValueHistory = 'PropertyValueHistory',
   PropertyAggregate = 'PropertyAggregate',
@@ -17,10 +18,10 @@ export enum SiteWiseQualities {
 }
 
 export enum SiteWiseResolution {
+  Auto = 'AUTO', // or missing!
   Min = '1m',
   Hour = '1h',
   Day = '1d',
-  Auto = 'AUTO', // or missing!
 }
 
 export enum AggregateTypes {
@@ -35,9 +36,13 @@ export enum AggregateTypes {
 export interface SitewiseQuery extends DataQuery {
   queryType: QueryType;
   region?: string; // aws region string
+
+  // Although these are not required everywhere, many queries use them
+  assetId?: string;
+  propertyId?: string;
 }
 
-export interface SitewiseQueryWithPages {
+export interface SitewiseNextQuery extends SitewiseQuery {
   /**
    * The next token should never be saved in the JSON model, however some queries
    * will require multiple pages in order to fulfil the requests
@@ -48,7 +53,7 @@ export interface SitewiseQueryWithPages {
 /**
  * {@link https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListAssetModels.html}
  */
-export interface ListAssetModelsQuery extends SitewiseQuery, SitewiseQueryWithPages {
+export interface ListAssetModelsQuery extends SitewiseQuery {
   queryType: QueryType.ListAssetModels;
 }
 
@@ -59,9 +64,9 @@ export function isListAssetModelsQuery(q?: SitewiseQuery): q is ListAssetModelsQ
 /**
  * {@link https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListAssetModels.html}
  */
-export interface ListAssetsQuery extends SitewiseQuery, SitewiseQueryWithPages {
+export interface ListAssetsQuery extends SitewiseQuery {
   queryType: QueryType.ListAssets;
-  assetModelId: string;
+  modelId?: string;
   filter: 'ALL' | 'TOP_LEVEL';
 }
 
@@ -70,15 +75,22 @@ export function isListAssetsQuery(q?: SitewiseQuery): q is ListAssetsQuery {
 }
 
 /**
+ * {@link https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListAssetModels.html}
+ */
+export interface DescribeAssetQuery extends SitewiseQuery {
+  queryType: QueryType.DescribeAsset;
+}
+
+export function isDescribeAssetQuery(q?: SitewiseQuery): q is ListAssetModelsQuery {
+  return q?.queryType === QueryType.DescribeAsset;
+}
+
+/**
  * {@link https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyValue.html}
  * {@link https://github.com/grafana/iot-sitewise-datasource/blob/main/pkg/models/property.go#L15}
  */
 export interface AssetPropertyValueQuery extends SitewiseQuery {
   queryType: QueryType.PropertyValue;
-
-  assetId: string;
-  propertyId: string;
-  // NOTE: 'propertyAlias' is not supported, but the UI should be able to show aliases
 }
 
 export function isAssetPropertyValueQuery(q?: SitewiseQuery): q is AssetPropertyValueQuery {
@@ -88,11 +100,9 @@ export function isAssetPropertyValueQuery(q?: SitewiseQuery): q is AssetProperty
 /**
  * {@link https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyValueHistory.html}
  */
-export interface AssetPropertyValueHistoryQuery extends SitewiseQuery, SitewiseQueryWithPages {
+export interface AssetPropertyValueHistoryQuery extends SitewiseQuery {
   queryType: QueryType.PropertyValueHistory;
 
-  assetId: string;
-  propertyId: string;
   qualities?: SiteWiseQualities[]; // Docs say "Fixed number of 1 item.????" does that mean only one?
   timeOrdering?: 'ASCENDING' | 'DESCENDING';
 }
@@ -104,11 +114,9 @@ export function isAssetPropertyValueHistoryQuery(q?: SitewiseQuery): q is AssetP
 /**
  * {@link https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyAggregates.html}
  */
-export interface AssetPropertyAggregatesQuery extends SitewiseQuery, SitewiseQueryWithPages {
+export interface AssetPropertyAggregatesQuery extends SitewiseQuery {
   queryType: QueryType.PropertyAggregate;
 
-  assetId: string;
-  propertyId: string;
   resolution?: SiteWiseResolution;
   aggregateTypes: AggregateTypes[]; // at least one
   qualities?: SiteWiseQualities[];
@@ -119,23 +127,36 @@ export function isAssetPropertyAggregatesQuery(q?: SitewiseQuery): q is AssetPro
   return q?.queryType === QueryType.PropertyAggregate;
 }
 
+// matches native sitewise API with capitals
+export interface AssetPropertyInfo extends SelectableValue<string> {
+  Alias?: string;
+  DataType: string;
+  Id: string;
+  Name: string;
+  Unit: string;
+
+  // Filled in for selectable values
+  value: string;
+  label: string;
+}
+
+// Processed form DescribeAssetResult frame
+export interface AssetInfo {
+  name: string; // string
+  id: string; // string
+  arn: string; // string
+  model_id: string;
+  properties: AssetPropertyInfo[];
+}
+
 /**
  * Metadata attached to DataFrame results
  */
 export interface SitewiseCustomMeta {
-  queryId: string;
   nextToken?: string;
-  hasSeries?: boolean;
 
-  executionStartTime?: number; // The backend clock
-  executionFinishTime?: number; // The backend clock
-
-  fetchStartTime?: number; // The frontend clock
-  fetchEndTime?: number; // The frontend clock
-  fetchTime?: number; // The frontend clock
-
-  // when multiple queries exist we keep track of each request
-  subs?: SitewiseCustomMeta[];
+  // Show the aggregate value actually used
+  resolution?: string;
 }
 
 /**

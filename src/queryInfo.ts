@@ -18,11 +18,25 @@ export interface QueryTypeInfo extends SelectableValue<QueryType> {
 
 export const siteWisteQueryTypes: QueryTypeInfo[] = [
   {
-    label: 'List asset models',
-    value: QueryType.ListAssetModels,
-    description: 'Retrieves a paginated list of summaries of all asset models.',
-    defaultQuery: {} as ListAssetModelsQuery,
-    keys: [],
+    label: 'Get property value aggregates',
+    value: QueryType.PropertyAggregate,
+    description: `Gets aggregated values for an asset property.`,
+    defaultQuery: {
+      resolution: SiteWiseResolution.Auto,
+      aggregateTypes: [AggregateTypes.AVERAGE],
+    } as AssetPropertyAggregatesQuery,
+  },
+  {
+    label: 'Get property value history',
+    value: QueryType.PropertyValueHistory,
+    description: `Gets the history of an asset property's value.`,
+    defaultQuery: {} as AssetPropertyValueHistoryQuery,
+  },
+  {
+    label: 'Get property value',
+    value: QueryType.PropertyValue,
+    description: `Gets an asset property's current value.`,
+    defaultQuery: {} as AssetPropertyValueQuery,
   },
   {
     label: 'List assets',
@@ -33,25 +47,11 @@ export const siteWisteQueryTypes: QueryTypeInfo[] = [
     } as ListAssetsQuery,
   },
   {
-    label: 'Get property value',
-    value: QueryType.PropertyValue,
-    description: `Gets an asset property's current value.`,
-    defaultQuery: {} as AssetPropertyValueQuery,
-  },
-  {
-    label: 'Get property value history',
-    value: QueryType.PropertyValueHistory,
-    description: `Gets the history of an asset property's value.`,
-    defaultQuery: {} as AssetPropertyValueHistoryQuery,
-  },
-  {
-    label: 'Get property value aggregates',
-    value: QueryType.PropertyAggregate,
-    description: `Gets aggregated values for an asset property.`,
-    defaultQuery: {
-      resolution: SiteWiseResolution.Auto,
-      aggregateTypes: [AggregateTypes.AVERAGE],
-    } as AssetPropertyAggregatesQuery,
+    label: 'List asset models',
+    value: QueryType.ListAssetModels,
+    description: 'Retrieves this list of all asset models',
+    defaultQuery: {} as ListAssetModelsQuery,
+    keys: [],
   },
 ];
 

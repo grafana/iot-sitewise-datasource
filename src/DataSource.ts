@@ -1,15 +1,33 @@
-import { DataSourceInstanceSettings, ScopedVars } from '@grafana/data';
+import { DataSourceInstanceSettings, ScopedVars, DataQueryResponse } from '@grafana/data';
 import { DataSourceWithBackend } from '@grafana/runtime';
+import { SitewiseCache } from 'sitewiseCache';
 
 import { SitewiseQuery, SitewiseOptions } from './types';
+import { Observable } from 'rxjs';
 
 export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
-  options: SitewiseOptions;
+  readonly options: SitewiseOptions;
+  private cache = new Map<string, SitewiseCache>();
 
   constructor(instanceSettings: DataSourceInstanceSettings<SitewiseOptions>) {
     super(instanceSettings);
     this.options = instanceSettings.jsonData;
+  }
+
+  /**
+   * Get a region scoped cache
+   */
+  getCache(region?: string) {
+    if (!region || region === 'default') {
+      region = this.options.defaultRegion || '';
+    }
+    let v = this.cache.get(region);
+    if (!v) {
+      v = new SitewiseCache(this, region);
+      this.cache.set(region, v);
+    }
+    return v;
   }
 
   // This will support annotation queries for 7.2+
@@ -41,4 +59,11 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
     // };
     return query;
   }
+
+  runQuery(query: SitewiseQuery, maxDataPoints?: number): Observable<DataQueryResponse> {
+    // @ts-ignore
+    return this.query({ targets: [query], requestId: `iot.${counter++}`, maxDataPoints });
+  }
 }
+
+let counter = 1000;
