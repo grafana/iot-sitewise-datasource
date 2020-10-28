@@ -70,6 +70,29 @@ export class SitewiseCache {
       .toPromise();
   }
 
+  // No cache for now
+  async getAssetsOfType(modelId: string): Promise<DataFrameView<AssetSummary>> {
+    const query: ListAssetsQuery = {
+      refId: 'getAssetsOfType',
+      queryType: QueryType.ListAssets,
+      filter: 'ALL',
+      modelId,
+      region: this.region,
+    };
+    return this.ds
+      .runQuery(query, 1000)
+      .pipe(
+        map(res => {
+          if (res.data.length) {
+            this.topLevelAssets = new DataFrameView<AssetSummary>(res.data[0]);
+            return this.topLevelAssets;
+          }
+          throw 'no assets found';
+        })
+      )
+      .toPromise();
+  }
+
   async getTopLevelAssets(): Promise<DataFrameView<AssetSummary>> {
     if (this.topLevelAssets) {
       return Promise.resolve(this.topLevelAssets);
