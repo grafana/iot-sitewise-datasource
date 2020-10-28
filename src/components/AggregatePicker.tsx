@@ -5,10 +5,10 @@ import difference from 'lodash/difference';
 import { Select } from '@grafana/ui';
 
 import { Registry, SelectableValue } from '@grafana/data';
-import { AggregateType } from 'types';
+import { AggregateType, AssetPropertyInfo } from 'types';
 
 interface Props {
-  placeholder?: string;
+  assetPropInfo?: AssetPropertyInfo;
   onChange: (stats: AggregateType[]) => void;
   stats: AggregateType[];
   allowMultiple?: boolean;
@@ -17,19 +17,22 @@ interface Props {
   menuPlacement?: 'auto' | 'bottom' | 'top';
 }
 
-const aggReg = new Registry(() => [
-  { id: AggregateType.AVERAGE, name: 'Average' },
-  { id: AggregateType.COUNT, name: 'Count' },
-  { id: AggregateType.MAXIMUM, name: 'Max' },
-  { id: AggregateType.MINIMUM, name: 'Min' },
-  { id: AggregateType.SUM, name: 'Sum' },
-  { id: AggregateType.STANDARD_DEVIATION, name: 'Stddev', description: 'Standard Deviation' },
+//type AggChecker = (p:AssetPropertyInfo) => boolean;
+const AnyTypeOK = (p: AssetPropertyInfo) => true;
+const OnlyNumbers = (p: AssetPropertyInfo) => p.DataType !== 'STRING';
+
+export const aggReg = new Registry(() => [
+  { id: AggregateType.AVERAGE, name: 'Average', isValid: OnlyNumbers },
+  { id: AggregateType.COUNT, name: 'Count', isValid: AnyTypeOK },
+  { id: AggregateType.MAXIMUM, name: 'Max', isValid: OnlyNumbers },
+  { id: AggregateType.MINIMUM, name: 'Min', isValid: OnlyNumbers },
+  { id: AggregateType.SUM, name: 'Sum', isValid: OnlyNumbers },
+  { id: AggregateType.STANDARD_DEVIATION, name: 'Stddev', description: 'Standard Deviation', isValid: OnlyNumbers },
 ]);
 
 export class AggregatePicker extends PureComponent<Props> {
   static defaultProps: Partial<Props> = {
     allowMultiple: true,
-    defaultStat: AggregateType.AVERAGE,
   };
 
   componentDidMount() {
@@ -73,9 +76,12 @@ export class AggregatePicker extends PureComponent<Props> {
   };
 
   render() {
-    const { stats, allowMultiple, defaultStat, placeholder, className, menuPlacement } = this.props;
+    const { stats, allowMultiple, defaultStat, className, menuPlacement, assetPropInfo } = this.props;
 
     const select = aggReg.selectOptions(stats);
+    if (assetPropInfo && assetPropInfo.DataType === 'STRING') {
+      select.options = aggReg.list().filter(a => a.isValid(assetPropInfo));
+    }
     return (
       <Select
         value={select.current}
@@ -84,7 +90,6 @@ export class AggregatePicker extends PureComponent<Props> {
         isMulti={allowMultiple}
         isSearchable={true}
         options={select.options as any}
-        placeholder={placeholder}
         onChange={this.onSelectionChange}
         menuPlacement={menuPlacement}
       />
