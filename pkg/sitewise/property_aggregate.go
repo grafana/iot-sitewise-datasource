@@ -2,6 +2,7 @@ package sitewise
 
 import (
 	"context"
+	"time"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 
@@ -13,7 +14,22 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
+func getBestResolution(interval time.Duration) string {
+	if interval < time.Minute*30 {
+		return "1m"
+	}
+	if interval < time.Hour*20 {
+		return "1h"
+	}
+	return "1d" // largest interval
+}
+
 func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetAssetPropertyAggregatesInput {
+
+	resolution := query.Resolution
+	if resolution == "AUTO" {
+		resolution = getBestResolution(query.Interval)
+	}
 
 	var (
 		propertyId     *string
@@ -21,7 +37,6 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ge
 		nextToken      *string
 		aggregateTypes = aws.StringSlice(query.AggregateTypes)
 		qualities      []*string
-		resolution     = aws.String(query.Resolution)
 	)
 
 	assetId = getAssetId(query.BaseQuery)
@@ -42,7 +57,7 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ge
 		NextToken:      nextToken,
 		PropertyId:     propertyId,
 		Qualities:      qualities,
-		Resolution:     resolution,
+		Resolution:     aws.String(resolution),
 		StartDate:      from,
 	}
 }

@@ -118,7 +118,7 @@ export interface AssetPropertyAggregatesQuery extends SitewiseQuery {
   queryType: QueryType.PropertyAggregate;
 
   resolution?: SiteWiseResolution;
-  aggregateTypes: AggregateTypes[]; // at least one
+  aggregate: AggregateTypes[]; // at least one
   qualities?: SiteWiseQualities[];
   timeOrdering?: 'ASCENDING' | 'DESCENDING';
 }

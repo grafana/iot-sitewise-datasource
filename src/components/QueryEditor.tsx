@@ -68,9 +68,9 @@ export class QueryEditor extends PureComponent<Props> {
               placeholder="Select query type"
             />
           </InlineField>
-          <InlineField label="Region">
+          <InlineField label="Region" labelWidth={10}>
             <Select
-              width={20}
+              width={18}
               options={regions}
               value={standardRegions.find(v => v.value === query.region) || defaultRegion}
               onChange={this.onRegionChange}

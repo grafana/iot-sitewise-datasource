@@ -15,6 +15,8 @@
     "@grafana/data": "next",
     "@grafana/runtime": "next",
     "@grafana/toolkit": "next",
-    "@grafana/ui": "next"
+    "@grafana/ui": "next",
+    "@types/lodash": "latest",
+    "lodash": "latest"
   }
 }

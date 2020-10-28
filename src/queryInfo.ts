@@ -23,7 +23,7 @@ export const siteWisteQueryTypes: QueryTypeInfo[] = [
     description: `Gets aggregated values for an asset property.`,
     defaultQuery: {
       resolution: SiteWiseResolution.Auto,
-      aggregateTypes: [AggregateTypes.AVERAGE],
+      aggregate: [AggregateTypes.AVERAGE],
     } as AssetPropertyAggregatesQuery,
   },
   {

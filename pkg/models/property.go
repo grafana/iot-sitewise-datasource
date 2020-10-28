@@ -13,7 +13,7 @@ import (
 type AssetPropertyValueQuery struct {
 	BaseQuery
 	Qualities      []string `json:"qualities,omitempty"`
-	AggregateTypes []string `json:"aggregateTypes,omitempty"`
+	AggregateTypes []string `json:"aggregate,omitempty"`
 	Resolution     string   `json:"resolution,omitempty"`
 }
 

@@ -3,7 +3,7 @@ import { SelectableValue } from '@grafana/data';
 import { SitewiseQuery, AssetInfo } from '../types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
-import { AssetExplorerModal } from './AssetExplorerModal';
+import { AssetBrowser } from './AssetBrowser';
 
 type Props = SitewiseQueryEditorProps<SitewiseQuery>;
 
@@ -118,7 +118,7 @@ export class AssetPropPickerRows extends PureComponent<Props, State> {
               formatCreateLabel={txt => `Asset ID: ${txt}`}
             />
           </InlineField>
-          <AssetExplorerModal {...this.props} />
+          <AssetBrowser {...this.props} />
         </div>
         {showProp && (
           <div className="gf-form">
