@@ -31,8 +31,8 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetA
 	propertyId = getPropertyId(query.BaseQuery)
 	nextToken = getNextToken(query.BaseQuery)
 
-	if len(query.Qualities) > 0 {
-		qualities = aws.StringSlice(query.Qualities)
+	if query.Quality != "" && query.Quality != "ANY" {
+		qualities = aws.StringSlice([]string{query.Quality})
 	}
 
 	from, to := util.TimeRangeToUnix(query.TimeRange)

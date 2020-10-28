@@ -28,16 +28,12 @@ func ToGrafanaUnit(unit *string) string {
 	}
 
 	switch *unit {
-	case "BitsPerSecond":
-		return "bps"
-	case "Bytes":
-		return "decbytes" // or ICE
-	case "BytesPerSecond":
-		return "Bps"
+	case "Watts":
+		return "watt"
+	case "Kilowatts":
+		return "kwatt"
 	case "Count":
 		return "short" // this is used for integers
-	case "CountPerSecond":
-		return "cps"
 	case "Percent":
 		return "percent"
 	case "Milliseconds":

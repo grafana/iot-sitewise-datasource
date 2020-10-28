@@ -1,21 +1,12 @@
 import React, { PureComponent } from 'react';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from '../DataSource';
-import {
-  SitewiseQuery,
-  SitewiseOptions,
-  QueryType,
-  ListAssetsQuery,
-  AssetPropertyValueHistoryQuery,
-  AssetPropertyAggregatesQuery,
-} from '../types';
+import { SitewiseQuery, SitewiseOptions, QueryType, ListAssetsQuery } from '../types';
 import { InlineField, Select } from '@grafana/ui';
 import { QueryTypeInfo, siteWisteQueryTypes, changeQueryType } from '../queryInfo';
 import { standardRegions } from 'common/types';
-import { PropertyValueHistoryEditor } from './PropertyValueHistoryEditor';
 import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
-import { AssetPropPickerRows } from './AssetPropPickerRows';
-import { PropertyAggregatesEditor } from './PropertyAggregatesEditor';
+import { PropertyQueryEditor } from './PropertyQueryEditor';
 
 type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 
@@ -42,11 +33,9 @@ export class QueryEditor extends PureComponent<Props> {
       case QueryType.ListAssets:
         return <ListAssetsQueryEditor {...this.props} query={query as ListAssetsQuery} />;
       case QueryType.PropertyValue:
-        return <AssetPropPickerRows {...this.props} />;
-      case QueryType.PropertyValueHistory:
-        return <PropertyValueHistoryEditor {...this.props} query={query as AssetPropertyValueHistoryQuery} />;
       case QueryType.PropertyAggregate:
-        return <PropertyAggregatesEditor {...this.props} query={query as AssetPropertyAggregatesQuery} />;
+      case QueryType.PropertyValueHistory:
+        return <PropertyQueryEditor {...this.props} />;
     }
     return <div>Missing UI for query type: {query.queryType}</div>;
   }
@@ -68,9 +57,9 @@ export class QueryEditor extends PureComponent<Props> {
               placeholder="Select query type"
             />
           </InlineField>
-          <InlineField label="Region">
+          <InlineField label="Region" labelWidth={10}>
             <Select
-              width={20}
+              width={18}
               options={regions}
               value={standardRegions.find(v => v.value === query.region) || defaultRegion}
               onChange={this.onRegionChange}

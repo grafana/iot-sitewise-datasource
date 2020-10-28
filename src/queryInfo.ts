@@ -2,13 +2,15 @@ import { SelectableValue } from '@grafana/data';
 import {
   QueryType,
   SitewiseQuery,
-  AggregateTypes,
+  AggregateType,
   AssetPropertyAggregatesQuery,
   ListAssetsQuery,
   ListAssetModelsQuery,
   AssetPropertyValueQuery,
   AssetPropertyValueHistoryQuery,
   SiteWiseResolution,
+  AssetInfo,
+  AssetPropertyInfo,
 } from './types';
 
 export interface QueryTypeInfo extends SelectableValue<QueryType> {
@@ -23,14 +25,17 @@ export const siteWisteQueryTypes: QueryTypeInfo[] = [
     description: `Gets aggregated values for an asset property.`,
     defaultQuery: {
       resolution: SiteWiseResolution.Auto,
-      aggregateTypes: [AggregateTypes.AVERAGE],
+      aggregates: [AggregateType.AVERAGE],
+      timeOrdering: 'ASCENDING',
     } as AssetPropertyAggregatesQuery,
   },
   {
     label: 'Get property value history',
     value: QueryType.PropertyValueHistory,
     description: `Gets the history of an asset property's value.`,
-    defaultQuery: {} as AssetPropertyValueHistoryQuery,
+    defaultQuery: {
+      timeOrdering: 'ASCENDING',
+    } as AssetPropertyValueHistoryQuery,
   },
   {
     label: 'Get property value',
@@ -70,4 +75,18 @@ export function changeQueryType(q: SitewiseQuery, info: QueryTypeInfo): Sitewise
   console.log('CHANGE', q, copy);
 
   return copy;
+}
+
+export function getAssetProperty(asset?: AssetInfo, propId?: string): AssetPropertyInfo | undefined {
+  if (!asset?.properties || !propId) {
+    return undefined;
+  }
+  return asset.properties.find(p => p.Id === propId);
+}
+
+export function getDefaultAggregate(prop?: AssetPropertyInfo): AggregateType {
+  if (prop?.DataType === 'STRING') {
+    return AggregateType.COUNT;
+  }
+  return AggregateType.AVERAGE;
 }

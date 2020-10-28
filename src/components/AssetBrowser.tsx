@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Icon, IconName, Modal } from '@grafana/ui';
-import { IconSize } from '@grafana/ui/types/icon';
+import { Button, Icon, Modal } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { SitewiseQuery } from 'types';
 
@@ -10,24 +9,16 @@ interface State {
   isOpen: boolean;
 }
 
-export const ModalHeader = ({
-  title,
-  iconName = 'exclamation-triangle',
-  size = 'lg',
-}: {
-  title: string;
-  iconName: IconName;
-  size: IconSize;
-}) => {
+export const ModalHeader = () => {
   return (
     <div className="modal-header-title">
-      <Icon name={iconName} size={size} />
-      <span className="p-l-1">{title}</span>
+      <Icon name="folder-open" size="lg" />
+      <span className="p-l-1">Asset Browser</span>
     </div>
   );
 };
 
-export class AssetExplorerModal extends Component<Props, State> {
+export class AssetBrowser extends Component<Props, State> {
   state: State = { isOpen: false };
 
   render() {
@@ -36,9 +27,9 @@ export class AssetExplorerModal extends Component<Props, State> {
     return (
       <>
         <Button
-          variant="primary"
+          variant="secondary"
           size="md"
-          icon="search-plus"
+          icon="folder-open"
           onClick={event =>
             this.setState({ isOpen: true }, () => {
               console.log(this.state);
@@ -47,11 +38,7 @@ export class AssetExplorerModal extends Component<Props, State> {
         >
           Explore
         </Button>
-        <Modal
-          title={<ModalHeader title="Browse for assets" iconName="search" size="xxl" />}
-          isOpen={isOpen}
-          onDismiss={() => this.setState({ isOpen: false })}
-        >
+        <Modal title={<ModalHeader />} isOpen={isOpen} onDismiss={() => this.setState({ isOpen: false })}>
           <div>
             <h3>Search by Asset Model types, or Property attributes!!!</h3>
           </div>

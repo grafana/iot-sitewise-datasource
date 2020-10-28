@@ -11,10 +11,16 @@ export enum QueryType {
   PropertyAggregate = 'PropertyAggregate',
 }
 
-export enum SiteWiseQualities {
+export enum SiteWiseQuality {
+  ANY = 'ANY',
   GOOD = 'GOOD',
   BAD = 'BAD',
   UNCERTAIN = 'UNCERTAIN',
+}
+
+export enum SiteWiseTimeOrder {
+  ASCENDING = 'ASCENDING',
+  DESCENDING = 'DESCENDING',
 }
 
 export enum SiteWiseResolution {
@@ -24,7 +30,7 @@ export enum SiteWiseResolution {
   Day = '1d',
 }
 
-export enum AggregateTypes {
+export enum AggregateType {
   AVERAGE = 'AVERAGE',
   COUNT = 'COUNT',
   MAXIMUM = 'MAXIMUM',
@@ -103,8 +109,8 @@ export function isAssetPropertyValueQuery(q?: SitewiseQuery): q is AssetProperty
 export interface AssetPropertyValueHistoryQuery extends SitewiseQuery {
   queryType: QueryType.PropertyValueHistory;
 
-  qualities?: SiteWiseQualities[]; // Docs say "Fixed number of 1 item.????" does that mean only one?
-  timeOrdering?: 'ASCENDING' | 'DESCENDING';
+  quality?: SiteWiseQuality;
+  timeOrdering?: SiteWiseTimeOrder;
 }
 
 export function isAssetPropertyValueHistoryQuery(q?: SitewiseQuery): q is AssetPropertyValueHistoryQuery {
@@ -118,9 +124,10 @@ export interface AssetPropertyAggregatesQuery extends SitewiseQuery {
   queryType: QueryType.PropertyAggregate;
 
   resolution?: SiteWiseResolution;
-  aggregateTypes: AggregateTypes[]; // at least one
-  qualities?: SiteWiseQualities[];
-  timeOrdering?: 'ASCENDING' | 'DESCENDING';
+  aggregates: AggregateType[]; // at least one
+
+  quality?: SiteWiseQuality;
+  timeOrdering?: SiteWiseTimeOrder;
 }
 
 export function isAssetPropertyAggregatesQuery(q?: SitewiseQuery): q is AssetPropertyAggregatesQuery {
