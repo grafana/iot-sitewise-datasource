@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { AggregateTypes, AssetPropertyAggregatesQuery, SiteWiseResolution } from '../types';
+import { AggregateType, AssetPropertyAggregatesQuery, SiteWiseResolution } from '../types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetPropPickerRows } from './AssetPropPickerRows';
@@ -16,9 +16,9 @@ const resolutions: Array<SelectableValue<SiteWiseResolution>> = [
 ];
 
 export class PropertyAggregatesEditor extends PureComponent<Props> {
-  onAggregateChange = (aggregate: AggregateTypes[]) => {
+  onAggregateChange = (aggregates: AggregateType[]) => {
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, aggregate });
+    onChange({ ...query, aggregates });
     onRunQuery();
   };
 
@@ -36,7 +36,7 @@ export class PropertyAggregatesEditor extends PureComponent<Props> {
         <AssetPropPickerRows {...(this.props as any)} />
         <div className="gf-form">
           <InlineField label="Aggregate" labelWidth={10} grow={true}>
-            <AggregatePicker stats={query.aggregate} onChange={this.onAggregateChange} />
+            <AggregatePicker stats={query.aggregates ?? []} onChange={this.onAggregateChange} />
           </InlineField>
           <InlineField label="Resolution" labelWidth={10}>
             <Select

@@ -2,7 +2,7 @@ import { SelectableValue } from '@grafana/data';
 import {
   QueryType,
   SitewiseQuery,
-  AggregateTypes,
+  AggregateType,
   AssetPropertyAggregatesQuery,
   ListAssetsQuery,
   ListAssetModelsQuery,
@@ -23,7 +23,7 @@ export const siteWisteQueryTypes: QueryTypeInfo[] = [
     description: `Gets aggregated values for an asset property.`,
     defaultQuery: {
       resolution: SiteWiseResolution.Auto,
-      aggregate: [AggregateTypes.AVERAGE],
+      aggregates: [AggregateType.AVERAGE],
     } as AssetPropertyAggregatesQuery,
   },
   {

@@ -5,31 +5,31 @@ import difference from 'lodash/difference';
 import { Select } from '@grafana/ui';
 
 import { Registry, SelectableValue } from '@grafana/data';
-import { AggregateTypes } from 'types';
+import { AggregateType } from 'types';
 
 interface Props {
   placeholder?: string;
-  onChange: (stats: AggregateTypes[]) => void;
-  stats: AggregateTypes[];
+  onChange: (stats: AggregateType[]) => void;
+  stats: AggregateType[];
   allowMultiple?: boolean;
-  defaultStat?: AggregateTypes;
+  defaultStat?: AggregateType;
   className?: string;
   menuPlacement?: 'auto' | 'bottom' | 'top';
 }
 
 const aggReg = new Registry(() => [
-  { id: AggregateTypes.AVERAGE, name: 'Average' },
-  { id: AggregateTypes.COUNT, name: 'Count' },
-  { id: AggregateTypes.MAXIMUM, name: 'Max' },
-  { id: AggregateTypes.MINIMUM, name: 'Min' },
-  { id: AggregateTypes.SUM, name: 'Sum' },
-  { id: AggregateTypes.STANDARD_DEVIATION, name: 'Stddev' },
+  { id: AggregateType.AVERAGE, name: 'Average' },
+  { id: AggregateType.COUNT, name: 'Count' },
+  { id: AggregateType.MAXIMUM, name: 'Max' },
+  { id: AggregateType.MINIMUM, name: 'Min' },
+  { id: AggregateType.SUM, name: 'Sum' },
+  { id: AggregateType.STANDARD_DEVIATION, name: 'Stddev', description: 'Standard Deviation' },
 ]);
 
 export class AggregatePicker extends PureComponent<Props> {
   static defaultProps: Partial<Props> = {
     allowMultiple: true,
-    defaultStat: AggregateTypes.AVERAGE,
+    defaultStat: AggregateType.AVERAGE,
   };
 
   componentDidMount() {
@@ -63,7 +63,7 @@ export class AggregatePicker extends PureComponent<Props> {
     }
   };
 
-  onSelectionChange = (item: SelectableValue<AggregateTypes>) => {
+  onSelectionChange = (item: SelectableValue<AggregateType>) => {
     const { onChange } = this.props;
     if (Array.isArray(item)) {
       onChange(item.map(v => v.value));

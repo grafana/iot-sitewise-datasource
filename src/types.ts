@@ -24,7 +24,7 @@ export enum SiteWiseResolution {
   Day = '1d',
 }
 
-export enum AggregateTypes {
+export enum AggregateType {
   AVERAGE = 'AVERAGE',
   COUNT = 'COUNT',
   MAXIMUM = 'MAXIMUM',
@@ -118,7 +118,7 @@ export interface AssetPropertyAggregatesQuery extends SitewiseQuery {
   queryType: QueryType.PropertyAggregate;
 
   resolution?: SiteWiseResolution;
-  aggregate: AggregateTypes[]; // at least one
+  aggregates: AggregateType[]; // at least one
   qualities?: SiteWiseQualities[];
   timeOrdering?: 'ASCENDING' | 'DESCENDING';
 }
