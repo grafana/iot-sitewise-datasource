@@ -41,7 +41,7 @@ export class BrowseHierarchy extends Component<Props, State> {
     }
 
     return (
-      <div style={{height:'60vh'}}>
+      <div style={{ height: '60vh' }}>
         {hierarchy.map((level, idx) => {
           if (idx === hierarchy.length - 1) {
             return <div key={idx}>SHOW EACH?</div>;

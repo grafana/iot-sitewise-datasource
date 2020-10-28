@@ -67,7 +67,7 @@ export class BrowseModels extends Component<Props, State> {
 
     return (
       <>
-        <div style={{height:'60vh'}}>
+        <div style={{ height: '60vh' }}>
           <h4>Model:</h4>
           <Select
             options={modelOptions}
@@ -76,10 +76,11 @@ export class BrowseModels extends Component<Props, State> {
             backspaceRemovesValue={true}
             isSearchable={true}
           />
-          <br/><br/>
+          <br />
+          <br />
           <h4>Asset:</h4>
           <Select
-         //   isOpen={true}
+            //   isOpen={true}
             options={assetOptions}
             placeholder="select asset"
             onChange={this.onAssetChanged}

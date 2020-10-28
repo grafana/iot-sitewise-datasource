@@ -21,7 +21,7 @@ const filters = [
 ];
 
 export class ListAssetsQueryEditor extends PureComponent<Props, State> {
-  state:State = {};
+  state: State = {};
 
   async componentDidMount() {
     const { query } = this.props;
@@ -45,19 +45,21 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
   render() {
     const { query } = this.props;
     const { models } = this.state;
-    const modelIds = models ? models.map( m => ({
-      value: m.id,
-      label: m.name,
-      description: m.description,
-    })) : [];
-    let currentModel = modelIds.find( m => m.value === query.modelId );
-    if(query.modelId && !currentModel) {
+    const modelIds = models
+      ? models.map(m => ({
+          value: m.id,
+          label: m.name,
+          description: m.description,
+        }))
+      : [];
+    let currentModel = modelIds.find(m => m.value === query.modelId);
+    if (query.modelId && !currentModel) {
       currentModel = {
         value: query.modelId,
-        label: 'Model ID: '+query.modelId,
+        label: 'Model ID: ' + query.modelId,
         description: '',
       };
-    };
+    }
 
     return (
       <>
