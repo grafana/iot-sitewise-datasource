@@ -1,10 +1,15 @@
 import React, { PureComponent } from 'react';
-import { SelectableValue } from '@grafana/data';
-import { ListAssetsQuery } from '../types';
+import { DataFrameView, SelectableValue } from '@grafana/data';
+import { ListAssetsQuery } from 'types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
+import { AssetModelSummary } from 'queryResponseTypes';
 
 type Props = SitewiseQueryEditorProps<ListAssetsQuery>;
+
+interface State {
+  models?: DataFrameView<AssetModelSummary>;
+}
 
 const filters = [
   {
@@ -15,7 +20,16 @@ const filters = [
   { label: 'All', value: 'ALL', description: 'The list includes all assets for a given asset model ID' },
 ];
 
-export class ListAssetsQueryEditor extends PureComponent<Props> {
+export class ListAssetsQueryEditor extends PureComponent<Props, State> {
+  state:State = {};
+
+  async componentDidMount() {
+    const { query } = this.props;
+    const cache = this.props.datasource.getCache(query.region);
+    const models = await cache.getModels();
+    this.setState({ models });
+  }
+
   onAssetModelIdChange = (sel: SelectableValue<string>) => {
     const { onChange, query, onRunQuery } = this.props;
     onChange({ ...query, modelId: sel.value! });
@@ -30,22 +44,29 @@ export class ListAssetsQueryEditor extends PureComponent<Props> {
 
   render() {
     const { query } = this.props;
-    const modelIds: Array<SelectableValue<string>> = [];
-
-    if (query.modelId) {
-      modelIds.push({
-        label: query.modelId,
+    const { models } = this.state;
+    const modelIds = models ? models.map( m => ({
+      value: m.id,
+      label: m.name,
+      description: m.description,
+    })) : [];
+    let currentModel = modelIds.find( m => m.value === query.modelId );
+    if(query.modelId && !currentModel) {
+      currentModel = {
         value: query.modelId,
-      });
-    }
+        label: 'Model ID: '+query.modelId,
+        description: '',
+      };
+    };
 
     return (
       <>
         <div className="gf-form">
           <InlineField label="Model ID" labelWidth={10} grow={true}>
             <Select
+              isLoading={!models}
               options={modelIds}
-              value={modelIds.find(v => v.value === query.modelId) || undefined}
+              value={currentModel}
               onChange={this.onAssetModelIdChange}
               placeholder="Select an asset model id"
               allowCustomValue={true}

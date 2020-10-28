@@ -9,11 +9,11 @@ import {
   isAssetPropertyAggregatesQuery,
   isAssetPropertyValueHistoryQuery,
   AssetPropertyInfo,
-} from '../types';
+} from 'types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
-import { AssetBrowser } from './AssetBrowser';
-import { AggregatePicker, aggReg } from './AggregatePicker';
+import { AssetBrowser } from '../browser/AssetBrowser';
+import { AggregatePicker, aggReg } from '../AggregatePicker';
 import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
 import { QualityAndOrderRow } from './QualityAndOrderRow';
 
@@ -112,7 +112,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     onRunQuery();
   };
 
-  onSetAssetId = (assetId: string) => {
+  onSetAssetId = (assetId?: string) => {
     const { onChange, query, onRunQuery } = this.props;
     onChange({ ...query, assetId });
     onRunQuery();
@@ -177,6 +177,14 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const showQuality =
       (query.propertyId && isAssetPropertyAggregatesQuery(query)) || isAssetPropertyValueHistoryQuery(query);
 
+    let currentProperty = properties.find(p => p.Id === query.propertyId);
+    if (!currentProperty && query.propertyId) {
+      currentProperty = {
+        value: query.propertyId,
+        label: 'Unknown property: ' + query.propertyId,
+      } as AssetPropertyInfo;
+    }
+
     return (
       <>
         <div className="gf-form">
@@ -194,7 +202,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
               formatCreateLabel={txt => `Asset ID: ${txt}`}
             />
           </InlineField>
-          <AssetBrowser {...this.props} />
+          <AssetBrowser {...this.props} onAssetChanged={this.onSetAssetId} />
         </div>
         {showProp && (
           <>
@@ -203,7 +211,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                 <Select
                   isLoading={loading}
                   options={properties}
-                  value={properties.find(p => p.value === query.propertyId)}
+                  value={currentProperty}
                   onChange={this.onPropertyChange}
                   placeholder="Select a property"
                   isSearchable={true}

@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
-import { DataSource } from '../DataSource';
-import { SitewiseQuery, SitewiseOptions, QueryType, ListAssetsQuery } from '../types';
+import { DataSource } from 'DataSource';
+import { SitewiseQuery, SitewiseOptions, QueryType, ListAssetsQuery } from 'types';
 import { InlineField, Select } from '@grafana/ui';
-import { QueryTypeInfo, siteWisteQueryTypes, changeQueryType } from '../queryInfo';
+import { QueryTypeInfo, siteWisteQueryTypes, changeQueryType } from 'queryInfo';
 import { standardRegions } from 'common/types';
 import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
 import { PropertyQueryEditor } from './PropertyQueryEditor';

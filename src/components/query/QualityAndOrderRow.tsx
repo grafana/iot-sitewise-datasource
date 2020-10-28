@@ -5,7 +5,7 @@ import {
   AssetPropertyValueHistoryQuery,
   AssetPropertyAggregatesQuery,
   SiteWiseQuality,
-} from '../types';
+} from 'types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 

@@ -18,7 +18,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   /**
    * Get a region scoped cache
    */
-  getCache(region?: string) {
+  getCache(region?: string): SitewiseCache {
     if (!region || region === 'default') {
       region = this.options.defaultRegion || '';
     }
