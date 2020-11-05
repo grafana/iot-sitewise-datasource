@@ -1,5 +1,5 @@
 import { DataSourceInstanceSettings, ScopedVars, DataQueryResponse, DataQueryRequest, DataFrame } from '@grafana/data';
-import { DataSourceWithBackend } from '@grafana/runtime';
+import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 import { SitewiseCache } from 'sitewiseCache';
 
 import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta } from './types';
@@ -43,22 +43,38 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   }
 
   getQueryDisplayText(query: SitewiseQuery): string {
-    return 'TODO: ' + JSON.stringify(query);
+    const cache = this.getCache(query.region);
+    let txt: string = query.queryType;
+    if (query.assetId) {
+      const info = cache.getAssetInfoSync(query.assetId);
+      if (!info) {
+        return txt + ' / ' + query.assetId;
+      }
+      txt += ' / ' + info.name;
+
+      if (query.propertyId && info.properties) {
+        const p = info.properties.find(v => v.Id === query.propertyId);
+        if (p) {
+          txt += ' / ' + p.Name;
+        } else {
+          txt += ' / ' + query.propertyId;
+        }
+      }
+    }
+    return txt;
   }
 
+  /**
+   * Supports template variables for region, asset and property
+   */
   applyTemplateVariables(query: SitewiseQuery, scopedVars: ScopedVars): SitewiseQuery {
-    // if (!query.rawQuery) {
-    //   return query;
-    // }
-
-    // const templateSrv = getTemplateSrv();
-    // return {
-    //   ...query,
-    //   database: templateSrv.replace(query.database || '', scopedVars),
-    //   table: templateSrv.replace(query.table || '', scopedVars),
-    //   measure: templateSrv.replace(query.measure || '', scopedVars),
-    //   rawQuery: templateSrv.replace(query.rawQuery), // DO NOT include scopedVars! it uses $__interval_ms!!!!!
-    // };
+    const templateSrv = getTemplateSrv();
+    return {
+      ...query,
+      region: templateSrv.replace(query.region || '', scopedVars),
+      assetId: templateSrv.replace(query.assetId || '', scopedVars),
+      propertyId: templateSrv.replace(query.propertyId || '', scopedVars),
+    };
     return query;
   }
 
