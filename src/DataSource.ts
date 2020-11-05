@@ -2,7 +2,7 @@ import { DataSourceInstanceSettings, ScopedVars, DataQueryResponse, DataQueryReq
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 import { SitewiseCache } from 'sitewiseCache';
 
-import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta } from './types';
+import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta, isPropertyQueryType } from './types';
 import { Observable } from 'rxjs';
 import { getRequestLooper, MultiRequestTracker } from 'requestLooper';
 import { appendMatchingFrames } from 'appendFrames';
@@ -39,7 +39,13 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
    * Do not execute queries that do not exist yet
    */
   filterQuery(query: SitewiseQuery): boolean {
-    return !!query.queryType;
+    if (!query.queryType) {
+      return false; // skip the query
+    }
+    if (isPropertyQueryType(query.queryType)) {
+      return !!(query.assetId && query.propertyId);
+    }
+    return true; // keep the query
   }
 
   getQueryDisplayText(query: SitewiseQuery): string {

@@ -55,6 +55,7 @@ export class QueryEditor extends PureComponent<Props> {
               value={siteWisteQueryTypes.find(v => v.value === query.queryType)}
               onChange={this.onQueryTypeChange}
               placeholder="Select query type"
+              menuPlacement="bottom"
             />
           </InlineField>
           <InlineField label="Region" labelWidth={10}>
@@ -66,6 +67,7 @@ export class QueryEditor extends PureComponent<Props> {
               backspaceRemovesValue={true}
               allowCustomValue={true}
               isClearable={true}
+              menuPlacement="bottom"
             />
           </InlineField>
         </div>

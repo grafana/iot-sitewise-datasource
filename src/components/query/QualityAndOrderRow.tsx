@@ -49,6 +49,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
               value={qualities.find(v => v.value === query.quality) ?? qualities[0]}
               onChange={this.onQualityChange}
               isSearchable={true}
+              menuPlacement="bottom"
             />
           </InlineField>
           <InlineField label="Time" labelWidth={8}>
@@ -57,6 +58,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
               value={ordering.find(v => v.value === query.timeOrdering) ?? ordering[0]}
               onChange={this.onOrderChange}
               isSearchable={true}
+              menuPlacement="bottom"
             />
           </InlineField>
         </div>

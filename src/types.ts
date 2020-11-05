@@ -134,6 +134,14 @@ export function isAssetPropertyAggregatesQuery(q?: SitewiseQuery): q is AssetPro
   return q?.queryType === QueryType.PropertyAggregate;
 }
 
+export function isPropertyQueryType(queryType?: QueryType): boolean {
+  return (
+    queryType === QueryType.PropertyAggregate ||
+    queryType === QueryType.PropertyValue ||
+    queryType === QueryType.PropertyValueHistory
+  );
+}
+
 // matches native sitewise API with capitals
 export interface AssetPropertyInfo extends SelectableValue<string> {
   Alias?: string;

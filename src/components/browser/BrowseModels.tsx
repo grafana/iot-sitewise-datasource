@@ -75,6 +75,7 @@ export class BrowseModels extends Component<Props, State> {
             onChange={this.onModelIdChange}
             backspaceRemovesValue={true}
             isSearchable={true}
+            menuPlacement="bottom"
           />
           <br />
           <br />
@@ -86,6 +87,7 @@ export class BrowseModels extends Component<Props, State> {
             onChange={this.onAssetChanged}
             backspaceRemovesValue={true}
             isSearchable={true}
+            menuPlacement="bottom"
           />
         </div>
       </>

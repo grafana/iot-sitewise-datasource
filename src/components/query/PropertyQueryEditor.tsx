@@ -118,6 +118,12 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     onRunQuery();
   };
 
+  onSetPropertyId = (propertyId?: string) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({ ...query, propertyId });
+    onRunQuery();
+  };
+
   //--------------------------------------------------------------------------------
   //
   //--------------------------------------------------------------------------------
@@ -143,6 +149,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             stats={query.aggregates ?? []}
             onChange={this.onAggregateChange}
             defaultStat={getDefaultAggregate(property)}
+            menuPlacement="bottom"
           />
         </InlineField>
         <InlineField label="Resolution" labelWidth={10}>
@@ -151,6 +158,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             options={resolutions}
             value={resolutions.find(v => v.value === query.resolution) || resolutions[0]}
             onChange={this.onResolutionChange}
+            menuPlacement="bottom"
           />
         </InlineField>
       </div>
@@ -168,11 +176,11 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       } else if (asset) {
         current = { label: asset.name, description: query.assetId, value: query.assetId };
       } else {
-        current = { label: `Unknown: ${query.assetId}`, value: query.assetId };
+        current = { label: `ID: ${query.assetId}`, value: query.assetId };
       }
     }
 
-    const showProp = query.propertyId || asset;
+    const showProp = query.propertyId || query.assetId;
     const properties = showProp ? (asset ? asset.properties : []) : [];
     const showQuality =
       (query.propertyId && isAssetPropertyAggregatesQuery(query)) || isAssetPropertyValueHistoryQuery(query);
@@ -181,7 +189,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     if (!currentProperty && query.propertyId) {
       currentProperty = {
         value: query.propertyId,
-        label: 'Unknown property: ' + query.propertyId,
+        label: 'ID: ' + query.propertyId,
       } as AssetPropertyInfo;
     }
 
@@ -200,6 +208,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
               isSearchable={true}
               onCreateOption={this.onSetAssetId}
               formatCreateLabel={txt => `Asset ID: ${txt}`}
+              menuPlacement="bottom"
             />
           </InlineField>
           <AssetBrowser {...this.props} onAssetChanged={this.onSetAssetId} />
@@ -214,7 +223,11 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                   value={currentProperty}
                   onChange={this.onPropertyChange}
                   placeholder="Select a property"
+                  allowCustomValue={true}
                   isSearchable={true}
+                  onCreateOption={this.onSetPropertyId}
+                  formatCreateLabel={txt => `Property ID: ${txt}`}
+                  menuPlacement="bottom"
                 />
               </InlineField>
             </div>
