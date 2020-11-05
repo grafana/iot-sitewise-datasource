@@ -47,6 +47,18 @@ export class SitewiseCache {
       .toPromise();
   }
 
+  getAssetInfoSync(id: string): AssetInfo|undefined {
+    const v = this.assetsById.get(id);
+    if (v) {
+      return v
+    }
+    try {
+      (async () => await this.getAssetInfo(id))();
+    }
+    catch {}
+    return this.assetsById.get(id);
+  }
+
   async getModels(): Promise<DataFrameView<AssetModelSummary>> {
     if (this.models) {
       return Promise.resolve(this.models);
