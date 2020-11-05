@@ -47,15 +47,14 @@ export class SitewiseCache {
       .toPromise();
   }
 
-  getAssetInfoSync(id: string): AssetInfo|undefined {
+  getAssetInfoSync(id: string): AssetInfo | undefined {
     const v = this.assetsById.get(id);
     if (v) {
-      return v
+      return v;
     }
     try {
       (async () => await this.getAssetInfo(id))();
-    }
-    catch {}
+    } catch {}
     return this.assetsById.get(id);
   }
 

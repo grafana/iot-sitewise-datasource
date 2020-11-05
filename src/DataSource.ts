@@ -2,7 +2,7 @@ import { DataSourceInstanceSettings, ScopedVars, DataQueryResponse, DataQueryReq
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 import { SitewiseCache } from 'sitewiseCache';
 
-import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta, AssetInfo, isAssetPropertyAggregatesQuery } from './types';
+import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta } from './types';
 import { Observable } from 'rxjs';
 import { getRequestLooper, MultiRequestTracker } from 'requestLooper';
 import { appendMatchingFrames } from 'appendFrames';
@@ -47,8 +47,8 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
     let txt: string = query.queryType;
     if (query.assetId) {
       const info = cache.getAssetInfoSync(query.assetId);
-      if(!info) {
-        return txt + ' / ' + query.assetId
+      if (!info) {
+        return txt + ' / ' + query.assetId;
       }
       txt += ' / ' + info.name;
 
