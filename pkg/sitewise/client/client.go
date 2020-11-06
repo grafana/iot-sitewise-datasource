@@ -43,6 +43,10 @@ func initClient(ctx backend.PluginContext, region string) (Client, error) {
 		return nil, fmt.Errorf("error reading settings: %s", err.Error())
 	}
 
+	if region == "" {
+		region = settings.DefaultRegion
+	}
+
 	cfg, err := gaws.GetAwsConfig(settings, region)
 	if err != nil {
 		return nil, err
