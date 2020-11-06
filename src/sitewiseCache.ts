@@ -157,6 +157,8 @@ export class SitewiseCache {
 
 export function frameToAssetInfo(res: DescribeAssetResult): AssetInfo {
   const properties: AssetPropertyInfo[] = JSON.parse(res.properties);
+  const hierarchy: AssetPropertyInfo[] = JSON.parse(res.hierarchies); // has Id, Name
+
   for (const p of properties) {
     p.value = p.Id;
     p.label = p.Name;
@@ -176,5 +178,9 @@ export function frameToAssetInfo(res: DescribeAssetResult): AssetInfo {
   return {
     ...res,
     properties,
+    hierarchy: hierarchy.map(v => ({
+      label: v.Name,
+      value: v.Id,
+    })),
   };
 }

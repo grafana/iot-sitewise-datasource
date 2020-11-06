@@ -9,6 +9,8 @@ import {
   isAssetPropertyAggregatesQuery,
   isAssetPropertyValueHistoryQuery,
   AssetPropertyInfo,
+  ListAssociatedAssetsQuery,
+  isListAssociatedAssetsQuery,
 } from 'types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
@@ -18,7 +20,7 @@ import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
 import { QualityAndOrderRow } from './QualityAndOrderRow';
 import { firstLabelWith } from './QueryEditor';
 
-type Props = SitewiseQueryEditorProps<SitewiseQuery | AssetPropertyAggregatesQuery>;
+type Props = SitewiseQueryEditorProps<SitewiseQuery | AssetPropertyAggregatesQuery | ListAssociatedAssetsQuery>;
 
 const resolutions: Array<SelectableValue<SiteWiseResolution>> = [
   { value: SiteWiseResolution.Auto, label: 'Auto', description: 'Pick a resolution based on the time window' },
@@ -125,6 +127,26 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     onRunQuery();
   };
 
+  onSetHierarchyId = (hierarchyId?: string) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({ ...(query as any), hierarchyId });
+    onRunQuery();
+  };
+
+  onHierarchyIdChange = (sel: SelectableValue<string>) => {
+    const { onChange, query, onRunQuery } = this.props;
+    const update = { ...query };
+    if (isListAssociatedAssetsQuery(update)) {
+      if (sel.value && sel.value.length) {
+        update.hierarchyId = sel.value;
+      } else {
+        delete update.hierarchyId;
+      }
+    }
+    onChange(update);
+    onRunQuery();
+  };
+
   //--------------------------------------------------------------------------------
   //
   //--------------------------------------------------------------------------------
@@ -166,6 +188,41 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     );
   }
 
+  renderAssociatedAsset(query: ListAssociatedAssetsQuery) {
+    const { asset, loading } = this.state;
+    const heiarchies = [{ value: '', label: '** Parent **' }, ...asset?.hierarchy];
+    let current = heiarchies.find(v => v.value === query.hierarchyId);
+    if (!current) {
+      if (query.hierarchyId) {
+        current = { value: query.hierarchyId, label: 'ID: ' + query.hierarchyId };
+        heiarchies.push(current);
+      } else {
+        current = heiarchies[0]; // parent
+      }
+    }
+
+    return (
+      <div className="gf-form">
+        <InlineField label="Show" labelWidth={firstLabelWith} grow={true}>
+          <Select
+            isLoading={loading}
+            options={heiarchies}
+            value={current}
+            onChange={this.onHierarchyIdChange}
+            placeholder="Select..."
+            allowCustomValue={true}
+            backspaceRemovesValue={true}
+            isClearable={true}
+            isSearchable={true}
+            onCreateOption={this.onSetHierarchyId}
+            formatCreateLabel={txt => `Hierarchy Id: ${txt}`}
+            menuPlacement="bottom"
+          />
+        </InlineField>
+      </div>
+    );
+  }
+
   render() {
     const { query } = this.props;
     const { loading, asset, assets } = this.state;
@@ -181,7 +238,8 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       }
     }
 
-    const showProp = query.propertyId || query.assetId;
+    const isAssociatedAssets = isListAssociatedAssetsQuery(query);
+    const showProp = !isAssociatedAssets && (query.propertyId || query.assetId);
     const properties = showProp ? (asset ? asset.properties : []) : [];
     const showQuality =
       (query.propertyId && isAssetPropertyAggregatesQuery(query)) || isAssetPropertyValueHistoryQuery(query);
@@ -240,6 +298,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             )}
           </>
         )}
+        {isAssociatedAssets && this.renderAssociatedAsset(query as ListAssociatedAssetsQuery)}
       </>
     );
   }
