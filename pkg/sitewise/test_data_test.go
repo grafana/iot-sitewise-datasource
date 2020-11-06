@@ -197,6 +197,19 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 
+	m["list-associated-assets-parent.json"] = func(t *testing.T, client client.Client) interface{} {
+		t.Skip("Integration Test") // comment line to run this
+		ctx := context.Background()
+		query := models.ListAssociatedAssetsQuery{}
+		query.AssetId = testdata.TestAssetId
+		query.TraversalDirection = "PARENT"
+		resp, err := ListAssociatedAssets(ctx, client, query)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return resp
+	}
+
 	sesh := session.Must(session.NewSession())
 	sw := iotsitewise.New(sesh, aws.NewConfig().WithRegion("us-east-1"))
 

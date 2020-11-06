@@ -13,12 +13,25 @@ import (
 
 func ListAssociatedAssets(ctx context.Context, client client.Client, query models.ListAssociatedAssetsQuery) (*framer.AssociatedAssets, error) {
 
+	var (
+		hierarchyId        *string
+		traversalDirection *string
+	)
+
+	if query.HierarchyId != "" {
+		hierarchyId = aws.String(query.HierarchyId)
+	}
+
+	if query.TraversalDirection != "" {
+		traversalDirection = aws.String(query.TraversalDirection)
+	}
+
 	resp, err := client.ListAssociatedAssetsWithContext(ctx, &iotsitewise.ListAssociatedAssetsInput{
 		AssetId:            getAssetId(query.BaseQuery),
-		HierarchyId:        aws.String(query.HierarchyId),
+		HierarchyId:        hierarchyId,
 		MaxResults:         MaxSitewiseResults,
 		NextToken:          getNextToken(query.BaseQuery),
-		TraversalDirection: aws.String(query.TraversalDirection),
+		TraversalDirection: traversalDirection,
 	})
 
 	if err != nil {

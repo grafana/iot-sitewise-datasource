@@ -16,10 +16,11 @@ import (
 )
 
 func TestHandleListAssociatedAssets(t *testing.T) {
-	listAssociatedAssetsHappyCase(t).run(t)
+	listAssociatedAssetsChildrenHappyCase(t).run(t)
+	listAssociatedAssetsParentHappyCase(t).run(t)
 }
 
-var listAssociatedAssetsHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
+var listAssociatedAssetsChildrenHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
 	mockSw := &mocks.Client{}
 
@@ -28,10 +29,13 @@ var listAssociatedAssetsHappyCase testServerScenarioFn = func(t *testing.T) *tes
 	argMatcher := mock.MatchedBy(func(req *iotsitewise.ListAssociatedAssetsInput) bool {
 		assetId := req.AssetId
 		hierarchyId := req.HierarchyId
-		if assetId == nil || hierarchyId == nil {
+		traversal := req.TraversalDirection
+		if assetId == nil || hierarchyId == nil || traversal == nil {
 			return false
 		}
-		return testdata.TestTopLevelAssetId == *assetId && testdata.TestTopLevelAssetHierarchyId == *hierarchyId
+		return testdata.TestTopLevelAssetId == *assetId &&
+			testdata.TestTopLevelAssetHierarchyId == *hierarchyId &&
+			"CHILD" == *traversal
 	})
 
 	mockSw.On("ListAssociatedAssetsWithContext", mock.Anything, argMatcher).Return(&assets, nil)
@@ -39,9 +43,10 @@ var listAssociatedAssetsHappyCase testServerScenarioFn = func(t *testing.T) *tes
 	query := models.ListAssociatedAssetsQuery{}
 	query.AssetId = testdata.TestTopLevelAssetId
 	query.HierarchyId = testdata.TestTopLevelAssetHierarchyId
+	query.TraversalDirection = "CHILD"
 
 	return &testScenario{
-		name: "ListAssociatedAssetsHappyCase",
+		name: "ListAssociatedAssetsChildHappyCase",
 		queries: []backend.DataQuery{
 			{
 				RefID:     "A",
@@ -51,6 +56,46 @@ var listAssociatedAssetsHappyCase testServerScenarioFn = func(t *testing.T) *tes
 		},
 		mockSw:         mockSw,
 		goldenFileName: "list-associated-assets",
+		handlerFn: func(srvr *server.Server) backend.QueryDataHandlerFunc {
+			return srvr.HandleListAssociatedAssets
+		},
+		validationFn: nil,
+	}
+}
+
+var listAssociatedAssetsParentHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
+
+	mockSw := &mocks.Client{}
+
+	assets := testdata.GetIoTSitewiseAssociatedAssets(t, testDataRelativePath("list-associated-assets-parent.json"))
+
+	argMatcher := mock.MatchedBy(func(req *iotsitewise.ListAssociatedAssetsInput) bool {
+		assetId := req.AssetId
+		traversal := req.TraversalDirection
+		if assetId == nil || traversal == nil {
+			return false
+		}
+		return testdata.TestAssetId == *assetId &&
+			"PARENT" == *traversal
+	})
+
+	mockSw.On("ListAssociatedAssetsWithContext", mock.Anything, argMatcher).Return(&assets, nil)
+
+	query := models.ListAssociatedAssetsQuery{}
+	query.AssetId = testdata.TestAssetId
+	query.TraversalDirection = "PARENT"
+
+	return &testScenario{
+		name: "ListAssociatedAssetsParentHappyCase",
+		queries: []backend.DataQuery{
+			{
+				RefID:     "A",
+				QueryType: models.QueryTypeListAssociatedAssets,
+				JSON:      testdata.SerializeStruct(t, query),
+			},
+		},
+		mockSw:         mockSw,
+		goldenFileName: "list-associated-assets-parent",
 		handlerFn: func(srvr *server.Server) backend.QueryDataHandlerFunc {
 			return srvr.HandleListAssociatedAssets
 		},
