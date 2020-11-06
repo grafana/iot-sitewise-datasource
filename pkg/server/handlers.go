@@ -145,7 +145,7 @@ func (s *Server) handleListAssociatedAssetsQuery(ctx context.Context, req *backe
 		return DataResponseErrorUnmarshal(err)
 	}
 
-	frames, err := s.Datasource.HandleListAssociatedAssetModelsQuery(ctx, req, query)
+	frames, err := s.Datasource.HandleListAssociatedAssetsQuery(ctx, req, query)
 	if err != nil {
 		return DataResponseErrorRequestFailed(err)
 	}
