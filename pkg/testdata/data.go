@@ -124,3 +124,12 @@ var GetIoTSitewiseAssetDescription = func(t *testing.T, path string) iotsitewise
 	}
 	return asset
 }
+
+var GetIoTSitewiseAssociatedAssets = func(t *testing.T, path string) iotsitewise.ListAssociatedAssetsOutput {
+	assets := iotsitewise.ListAssociatedAssetsOutput{}
+	err := UnmarshallFileContents(path, &assets)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return assets
+}

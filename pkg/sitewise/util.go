@@ -5,6 +5,10 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
+var (
+	MaxSitewiseResults = aws.Int64(250)
+)
+
 func getNextToken(query models.BaseQuery) *string {
 	if query.NextToken == "" {
 		return nil

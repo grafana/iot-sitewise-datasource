@@ -1,0 +1,57 @@
+{
+    "AssetSummaries": [
+        {
+            "Arn": "arn:aws:iotsitewise:us-east-1:341474261430:asset/07412cb4-0a8b-4939-af9c-5dcb3b2933e5",
+            "AssetModelId": "587d4e0e-045c-49ff-9fcc-c3032cb73309",
+            "CreationDate": "2020-09-17T17:01:12Z",
+            "Hierarchies": [],
+            "Id": "07412cb4-0a8b-4939-af9c-5dcb3b2933e5",
+            "LastUpdateDate": "2020-09-17T17:01:12Z",
+            "Name": "Demo Turbine Asset 2",
+            "Status": {
+                "Error": null,
+                "State": "ACTIVE"
+            }
+        },
+        {
+            "Arn": "arn:aws:iotsitewise:us-east-1:341474261430:asset/2a1e95f2-d49b-4f36-bee2-95cda2ac9654",
+            "AssetModelId": "587d4e0e-045c-49ff-9fcc-c3032cb73309",
+            "CreationDate": "2020-09-17T17:01:14Z",
+            "Hierarchies": [],
+            "Id": "2a1e95f2-d49b-4f36-bee2-95cda2ac9654",
+            "LastUpdateDate": "2020-09-17T17:01:14Z",
+            "Name": "Demo Turbine Asset 4",
+            "Status": {
+                "Error": null,
+                "State": "ACTIVE"
+            }
+        },
+        {
+            "Arn": "arn:aws:iotsitewise:us-east-1:341474261430:asset/a999c93c-a2ed-4a31-b832-533a922440f9",
+            "AssetModelId": "587d4e0e-045c-49ff-9fcc-c3032cb73309",
+            "CreationDate": "2020-09-17T17:01:12Z",
+            "Hierarchies": [],
+            "Id": "a999c93c-a2ed-4a31-b832-533a922440f9",
+            "LastUpdateDate": "2020-09-17T17:01:12Z",
+            "Name": "Demo Turbine Asset 3",
+            "Status": {
+                "Error": null,
+                "State": "ACTIVE"
+            }
+        },
+        {
+            "Arn": "arn:aws:iotsitewise:us-east-1:341474261430:asset/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b",
+            "AssetModelId": "587d4e0e-045c-49ff-9fcc-c3032cb73309",
+            "CreationDate": "2020-09-17T17:01:13Z",
+            "Hierarchies": [],
+            "Id": "a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b",
+            "LastUpdateDate": "2020-09-17T17:01:13Z",
+            "Name": "Demo Turbine Asset 1",
+            "Status": {
+                "Error": null,
+                "State": "ACTIVE"
+            }
+        }
+    ],
+    "NextToken": null
+}
