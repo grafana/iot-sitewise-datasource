@@ -8,6 +8,7 @@ import {
 } from 'types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
+import { firstLabelWith } from './QueryEditor';
 
 type Props = SitewiseQueryEditorProps<AssetPropertyValueHistoryQuery | AssetPropertyAggregatesQuery>;
 
@@ -42,7 +43,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
     return (
       <>
         <div className="gf-form">
-          <InlineField label="Quality" labelWidth={14}>
+          <InlineField label="Quality" labelWidth={firstLabelWith}>
             <Select
               width={20}
               options={qualities}

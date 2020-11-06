@@ -10,6 +10,8 @@ import { PropertyQueryEditor } from './PropertyQueryEditor';
 
 type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 
+export const firstLabelWith = 14;
+
 export class QueryEditor extends PureComponent<Props> {
   onQueryTypeChange = (sel: SelectableValue<QueryType>) => {
     const { onChange, query, onRunQuery } = this.props;

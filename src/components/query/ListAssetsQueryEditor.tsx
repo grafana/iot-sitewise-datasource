@@ -4,6 +4,7 @@ import { ListAssetsQuery } from 'types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetModelSummary } from 'queryResponseTypes';
+import { firstLabelWith } from './QueryEditor';
 
 type Props = SitewiseQueryEditorProps<ListAssetsQuery>;
 
@@ -64,7 +65,7 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
     return (
       <>
         <div className="gf-form">
-          <InlineField label="Model ID" labelWidth={14} grow={true}>
+          <InlineField label="Model ID" labelWidth={firstLabelWith} grow={true}>
             <Select
               isLoading={!models}
               options={modelIds}
@@ -80,7 +81,7 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
           </InlineField>
         </div>
         <div className="gf-form">
-          <InlineField label="Filter" labelWidth={14} grow={true}>
+          <InlineField label="Filter" labelWidth={firstLabelWith} grow={true}>
             <Select
               options={filters}
               value={filters.find(v => v.value === query.filter) || filters[0]}

@@ -16,6 +16,7 @@ import { AssetBrowser } from '../browser/AssetBrowser';
 import { AggregatePicker, aggReg } from '../AggregatePicker';
 import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
 import { QualityAndOrderRow } from './QualityAndOrderRow';
+import { firstLabelWith } from './QueryEditor';
 
 type Props = SitewiseQueryEditorProps<SitewiseQuery | AssetPropertyAggregatesQuery>;
 
@@ -144,7 +145,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const { property } = this.state;
     return (
       <div className="gf-form">
-        <InlineField label="Aggregate" labelWidth={10} grow={true}>
+        <InlineField label="Aggregate" labelWidth={firstLabelWith} grow={true}>
           <AggregatePicker
             stats={query.aggregates ?? []}
             onChange={this.onAggregateChange}
@@ -196,7 +197,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     return (
       <>
         <div className="gf-form">
-          <InlineField label="Asset" labelWidth={14} grow={true}>
+          <InlineField label="Asset" labelWidth={firstLabelWith} grow={true}>
             <Select
               isLoading={loading}
               options={assets}
@@ -216,7 +217,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         {showProp && (
           <>
             <div className="gf-form">
-              <InlineField label="Property" labelWidth={14} grow={true}>
+              <InlineField label="Property" labelWidth={firstLabelWith} grow={true}>
                 <Select
                   isLoading={loading}
                   options={properties}
