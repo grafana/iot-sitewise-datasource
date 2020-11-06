@@ -13,46 +13,75 @@ import (
 
 type Assets iotsitewise.ListAssetsOutput
 
+type assetSummaryFields struct {
+	Name         *data.Field
+	Id           *data.Field
+	Arn          *data.Field
+	ModelId      *data.Field
+	StatusError  *data.Field
+	StatusState  *data.Field
+	Hierarchies  *data.Field
+	CreationDate *data.Field
+	LastUpdate   *data.Field
+}
+
+func (f *assetSummaryFields) fields() data.Fields {
+	return data.Fields{
+		f.Name,
+		f.Id,
+		f.ModelId,
+		f.Arn,
+		f.CreationDate,
+		f.LastUpdate,
+		f.StatusState,
+		f.StatusError,
+		f.Hierarchies,
+	}
+}
+
+func newAssetSummaryFields(length int) *assetSummaryFields {
+	return &assetSummaryFields{
+		Name:         fields.NameField(length),
+		Id:           fields.IdField(length),
+		Arn:          fields.ArnField(length),
+		ModelId:      fields.ModelIdField(length),
+		StatusError:  fields.StatusErrorField(length),
+		StatusState:  fields.StatusStateField(length),
+		Hierarchies:  fields.HierarchiesField(length),
+		CreationDate: fields.CreationDateField(length),
+		LastUpdate:   fields.LastUpdateField(length),
+	}
+}
+
 func (a Assets) Frames(_ context.Context, _ resource.ResourceProvider) (data.Frames, error) {
 
 	length := len(a.AssetSummaries)
 
-	fName := fields.NameField(length)
-	fId := fields.IdField(length)
-	fArn := fields.ArnField(length)
-	fModelId := fields.ModelIdField(length)
-	fStatusError := fields.StatusErrorField(length)
-	fStatusState := fields.StatusStateField(length)
-	fHierarchies := fields.HierarchiesField(length)
-	fCreationDate := fields.CreationDateField(length)
-	fLastUpdate := fields.LastUpdateField(length)
+	assetFields := newAssetSummaryFields(length)
 
 	for i, asset := range a.AssetSummaries {
-		fName.Set(i, *asset.Name)
-		fId.Set(i, *asset.Id)
-		fArn.Set(i, *asset.Arn)
-		fModelId.Set(i, *asset.AssetModelId)
-		fStatusState.Set(i, *asset.Status.State)
-		fCreationDate.Set(i, *asset.CreationDate)
-		fLastUpdate.Set(i, *asset.LastUpdateDate)
+		assetFields.Name.Set(i, *asset.Name)
+		assetFields.Id.Set(i, *asset.Id)
+		assetFields.Arn.Set(i, *asset.Arn)
+		assetFields.ModelId.Set(i, *asset.AssetModelId)
+		assetFields.StatusState.Set(i, *asset.Status.State)
+		assetFields.CreationDate.Set(i, *asset.CreationDate)
+		assetFields.LastUpdate.Set(i, *asset.LastUpdateDate)
 
 		statusErr, err := getErrorDescription(asset.Status.Error)
 		if err != nil {
 			return nil, err
 		}
-		fStatusError.Set(i, statusErr)
+		assetFields.StatusError.Set(i, statusErr)
 
 		hierarchies, err := serialize(asset.Hierarchies)
-		//getAssetHierarchies(asset.Hierarchies)
 		if err != nil {
 			return nil, err
 		}
-		fHierarchies.Set(i, hierarchies)
+		assetFields.Hierarchies.Set(i, hierarchies)
 	}
 
-	allFields := data.Fields{fName, fId, fModelId, fArn, fCreationDate, fLastUpdate, fStatusState, fStatusError, fHierarchies}
-
-	frame := data.NewFrame("", allFields...)
+	frame := data.NewFrame("", assetFields.fields()...)
 
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{

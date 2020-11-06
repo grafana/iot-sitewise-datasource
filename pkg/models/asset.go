@@ -20,6 +20,12 @@ type ListAssetsQuery struct {
 	Filter  string `json:"filter,omitempty"`
 }
 
+type ListAssociatedAssetsQuery struct {
+	BaseQuery
+	HierarchyId        string `json:"hierarchyId,omitempty"`
+	TraversalDirection string `json:"traversalDirection,omitempty"`
+}
+
 func GetDescribeAssetQuery(dq *backend.DataQuery) (*DescribeAssetQuery, error) {
 	query := &DescribeAssetQuery{}
 	if err := json.Unmarshal(dq.JSON, query); err != nil {
@@ -33,6 +39,18 @@ func GetDescribeAssetQuery(dq *backend.DataQuery) (*DescribeAssetQuery, error) {
 
 func GetListAssetsQuery(dq *backend.DataQuery) (*ListAssetsQuery, error) {
 	query := &ListAssetsQuery{}
+	if err := json.Unmarshal(dq.JSON, query); err != nil {
+		return nil, err
+	}
+
+	// add on the DataQuery params
+	query.MaxDataPoints = dq.MaxDataPoints
+	query.QueryType = dq.QueryType
+	return query, nil
+}
+
+func GetListAssociatedAssetsQuery(dq *backend.DataQuery) (*ListAssociatedAssetsQuery, error) {
+	query := &ListAssociatedAssetsQuery{}
 	if err := json.Unmarshal(dq.JSON, query); err != nil {
 		return nil, err
 	}

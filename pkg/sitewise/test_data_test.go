@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	SKIPALL = true
+	SKIPALL = false
 )
 
 type testDataFunc func(t *testing.T, client client.Client) interface{}
@@ -177,6 +177,20 @@ func TestGenerateTestData(t *testing.T) {
 		ctx := context.Background()
 		query := models.ListAssetsQuery{}
 		resp, err := ListAssets(ctx, client, query)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return resp
+	}
+
+	m["list-associated-assets.json"] = func(t *testing.T, client client.Client) interface{} {
+		//t.Skip("Integration Test") // comment line to run this
+		ctx := context.Background()
+		query := models.ListAssociatedAssetsQuery{}
+		query.AssetId = testdata.TestTopLevelAssetId
+		query.HierarchyId = testdata.TestTopLevelAssetHierarchyId
+		query.TraversalDirection = "CHILD"
+		resp, err := ListAssociatedAssets(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}
