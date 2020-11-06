@@ -5,6 +5,7 @@ import { AwsDataSourceJsonData, AwsDataSourceSecureJsonData } from 'common/types
 export enum QueryType {
   ListAssetModels = 'ListAssetModels',
   ListAssets = 'ListAssets',
+  ListAssociatedAssets = 'ListAssociatedAssets',
   DescribeAsset = 'DescribeAsset',
   PropertyValue = 'PropertyValue',
   PropertyValueHistory = 'PropertyValueHistory',
@@ -80,6 +81,17 @@ export function isListAssetsQuery(q?: SitewiseQuery): q is ListAssetsQuery {
   return q?.queryType === QueryType.ListAssets;
 }
 
+// https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListAssociatedAssets.html
+
+export interface ListAssociatedAssetsQuery extends SitewiseQuery {
+  queryType: QueryType.ListAssociatedAssets;
+  hierarchyId?: string; // if empty, will list the parents
+}
+
+export function isListAssociatedAssetsQuery(q?: SitewiseQuery): q is ListAssociatedAssetsQuery {
+  return q?.queryType === QueryType.ListAssociatedAssets;
+}
+
 /**
  * {@link https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListAssetModels.html}
  */
@@ -144,10 +156,10 @@ export function isPropertyQueryType(queryType?: QueryType): boolean {
 
 // matches native sitewise API with capitals
 export interface AssetPropertyInfo extends SelectableValue<string> {
-  Alias?: string;
-  DataType: string;
   Id: string;
   Name: string;
+  Alias?: string;
+  DataType: string;
   Unit: string;
 
   // Filled in for selectable values
@@ -162,6 +174,7 @@ export interface AssetInfo {
   arn: string; // string
   model_id: string;
   properties: AssetPropertyInfo[];
+  hierarchy: Array<SelectableValue<string>>; // Id is value
 }
 
 /**

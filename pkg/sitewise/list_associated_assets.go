@@ -20,10 +20,9 @@ func ListAssociatedAssets(ctx context.Context, client client.Client, query model
 
 	if query.HierarchyId != "" {
 		hierarchyId = aws.String(query.HierarchyId)
-	}
-
-	if query.TraversalDirection != "" {
-		traversalDirection = aws.String(query.TraversalDirection)
+		traversalDirection = aws.String("CHILD")
+	} else {
+		traversalDirection = aws.String("PARENT")
 	}
 
 	resp, err := client.ListAssociatedAssetsWithContext(ctx, &iotsitewise.ListAssociatedAssetsInput{

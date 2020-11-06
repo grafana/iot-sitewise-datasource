@@ -189,7 +189,6 @@ func TestGenerateTestData(t *testing.T) {
 		query := models.ListAssociatedAssetsQuery{}
 		query.AssetId = testdata.TestTopLevelAssetId
 		query.HierarchyId = testdata.TestTopLevelAssetHierarchyId
-		query.TraversalDirection = "CHILD"
 		resp, err := ListAssociatedAssets(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
@@ -202,7 +201,6 @@ func TestGenerateTestData(t *testing.T) {
 		ctx := context.Background()
 		query := models.ListAssociatedAssetsQuery{}
 		query.AssetId = testdata.TestAssetId
-		query.TraversalDirection = "PARENT"
 		resp, err := ListAssociatedAssets(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)

@@ -11,6 +11,8 @@ import {
   SiteWiseResolution,
   AssetInfo,
   AssetPropertyInfo,
+  ListAssociatedAssetsQuery,
+  isListAssociatedAssetsQuery,
 } from './types';
 
 export interface QueryTypeInfo extends SelectableValue<QueryType> {
@@ -63,6 +65,13 @@ export const siteWisteQueryTypes: QueryTypeInfo[] = [
     defaultQuery: {} as ListAssetModelsQuery,
     helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyAggregates.html',
   },
+  {
+    label: 'List associated assets',
+    value: QueryType.ListAssociatedAssets,
+    description: 'Retrieves a paginated list of associated assets.',
+    defaultQuery: {} as ListAssociatedAssetsQuery,
+    helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListAssociatedAssets.html',
+  },
 ];
 
 export function changeQueryType(q: SitewiseQuery, info: QueryTypeInfo): SitewiseQuery {
@@ -74,10 +83,14 @@ export function changeQueryType(q: SitewiseQuery, info: QueryTypeInfo): Sitewise
     ...q,
     queryType: info.value,
   };
+  const a = copy as any;
 
-  // TODO: for each query type, remove the unused fields
-
-  console.log('CHANGE', q, copy);
+  if (isListAssociatedAssetsQuery(copy)) {
+    delete a.timeOrdering;
+    delete a.filter;
+    delete a.resolution;
+    delete a.aggregates;
+  }
 
   return copy;
 }

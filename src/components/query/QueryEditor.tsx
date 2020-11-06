@@ -34,6 +34,7 @@ export class QueryEditor extends PureComponent<Props> {
         return null; // nothing required
       case QueryType.ListAssets:
         return <ListAssetsQueryEditor {...this.props} query={query as ListAssetsQuery} />;
+      case QueryType.ListAssociatedAssets:
       case QueryType.PropertyValue:
       case QueryType.PropertyAggregate:
       case QueryType.PropertyValueHistory:
