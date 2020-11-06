@@ -16,6 +16,7 @@ import { AssetBrowser } from '../browser/AssetBrowser';
 import { AggregatePicker, aggReg } from '../AggregatePicker';
 import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
 import { QualityAndOrderRow } from './QualityAndOrderRow';
+import { firstLabelWith } from './QueryEditor';
 
 type Props = SitewiseQueryEditorProps<SitewiseQuery | AssetPropertyAggregatesQuery>;
 
@@ -118,6 +119,12 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     onRunQuery();
   };
 
+  onSetPropertyId = (propertyId?: string) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({ ...query, propertyId });
+    onRunQuery();
+  };
+
   //--------------------------------------------------------------------------------
   //
   //--------------------------------------------------------------------------------
@@ -138,11 +145,12 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const { property } = this.state;
     return (
       <div className="gf-form">
-        <InlineField label="Aggregate" labelWidth={10} grow={true}>
+        <InlineField label="Aggregate" labelWidth={firstLabelWith} grow={true}>
           <AggregatePicker
             stats={query.aggregates ?? []}
             onChange={this.onAggregateChange}
             defaultStat={getDefaultAggregate(property)}
+            menuPlacement="bottom"
           />
         </InlineField>
         <InlineField label="Resolution" labelWidth={10}>
@@ -151,6 +159,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             options={resolutions}
             value={resolutions.find(v => v.value === query.resolution) || resolutions[0]}
             onChange={this.onResolutionChange}
+            menuPlacement="bottom"
           />
         </InlineField>
       </div>
@@ -168,11 +177,11 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       } else if (asset) {
         current = { label: asset.name, description: query.assetId, value: query.assetId };
       } else {
-        current = { label: `Unknown: ${query.assetId}`, value: query.assetId };
+        current = { label: `ID: ${query.assetId}`, value: query.assetId };
       }
     }
 
-    const showProp = query.propertyId || asset;
+    const showProp = query.propertyId || query.assetId;
     const properties = showProp ? (asset ? asset.properties : []) : [];
     const showQuality =
       (query.propertyId && isAssetPropertyAggregatesQuery(query)) || isAssetPropertyValueHistoryQuery(query);
@@ -181,14 +190,14 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     if (!currentProperty && query.propertyId) {
       currentProperty = {
         value: query.propertyId,
-        label: 'Unknown property: ' + query.propertyId,
+        label: 'ID: ' + query.propertyId,
       } as AssetPropertyInfo;
     }
 
     return (
       <>
         <div className="gf-form">
-          <InlineField label="Asset" labelWidth={10} grow={true}>
+          <InlineField label="Asset" labelWidth={firstLabelWith} grow={true}>
             <Select
               isLoading={loading}
               options={assets}
@@ -200,6 +209,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
               isSearchable={true}
               onCreateOption={this.onSetAssetId}
               formatCreateLabel={txt => `Asset ID: ${txt}`}
+              menuPlacement="bottom"
             />
           </InlineField>
           <AssetBrowser {...this.props} onAssetChanged={this.onSetAssetId} />
@@ -207,14 +217,18 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         {showProp && (
           <>
             <div className="gf-form">
-              <InlineField label="Property" labelWidth={10} grow={true}>
+              <InlineField label="Property" labelWidth={firstLabelWith} grow={true}>
                 <Select
                   isLoading={loading}
                   options={properties}
                   value={currentProperty}
                   onChange={this.onPropertyChange}
                   placeholder="Select a property"
+                  allowCustomValue={true}
                   isSearchable={true}
+                  onCreateOption={this.onSetPropertyId}
+                  formatCreateLabel={txt => `Property ID: ${txt}`}
+                  menuPlacement="bottom"
                 />
               </InlineField>
             </div>

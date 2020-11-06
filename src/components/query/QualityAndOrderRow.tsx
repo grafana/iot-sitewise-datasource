@@ -8,6 +8,7 @@ import {
 } from 'types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
+import { firstLabelWith } from './QueryEditor';
 
 type Props = SitewiseQueryEditorProps<AssetPropertyValueHistoryQuery | AssetPropertyAggregatesQuery>;
 
@@ -42,13 +43,14 @@ export class QualityAndOrderRow extends PureComponent<Props> {
     return (
       <>
         <div className="gf-form">
-          <InlineField label="Quality" labelWidth={10}>
+          <InlineField label="Quality" labelWidth={firstLabelWith}>
             <Select
               width={20}
               options={qualities}
               value={qualities.find(v => v.value === query.quality) ?? qualities[0]}
               onChange={this.onQualityChange}
               isSearchable={true}
+              menuPlacement="bottom"
             />
           </InlineField>
           <InlineField label="Time" labelWidth={8}>
@@ -57,6 +59,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
               value={ordering.find(v => v.value === query.timeOrdering) ?? ordering[0]}
               onChange={this.onOrderChange}
               isSearchable={true}
+              menuPlacement="bottom"
             />
           </InlineField>
         </div>
