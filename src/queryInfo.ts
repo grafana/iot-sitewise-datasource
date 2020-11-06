@@ -16,6 +16,7 @@ import {
 export interface QueryTypeInfo extends SelectableValue<QueryType> {
   value: QueryType; // not optional
   defaultQuery: Partial<SitewiseQuery>;
+  helpURL: string;
 }
 
 export const siteWisteQueryTypes: QueryTypeInfo[] = [
@@ -28,6 +29,7 @@ export const siteWisteQueryTypes: QueryTypeInfo[] = [
       aggregates: [AggregateType.AVERAGE],
       timeOrdering: 'ASCENDING',
     } as AssetPropertyAggregatesQuery,
+    helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyAggregates.html',
   },
   {
     label: 'Get property value history',
@@ -36,12 +38,14 @@ export const siteWisteQueryTypes: QueryTypeInfo[] = [
     defaultQuery: {
       timeOrdering: 'ASCENDING',
     } as AssetPropertyValueHistoryQuery,
+    helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyAggregates.html',
   },
   {
     label: 'Get property value',
     value: QueryType.PropertyValue,
     description: `Gets an asset property's current value.`,
     defaultQuery: {} as AssetPropertyValueQuery,
+    helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyAggregates.html',
   },
   {
     label: 'List assets',
@@ -50,13 +54,14 @@ export const siteWisteQueryTypes: QueryTypeInfo[] = [
     defaultQuery: {
       filter: 'TOP_LEVEL',
     } as ListAssetsQuery,
+    helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyAggregates.html',
   },
   {
     label: 'List asset models',
     value: QueryType.ListAssetModels,
     description: 'Retrieves this list of all asset models',
     defaultQuery: {} as ListAssetModelsQuery,
-    keys: [],
+    helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyAggregates.html',
   },
 ];
 

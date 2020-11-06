@@ -64,7 +64,7 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
     return (
       <>
         <div className="gf-form">
-          <InlineField label="Model ID" labelWidth={10} grow={true}>
+          <InlineField label="Model ID" labelWidth={14} grow={true}>
             <Select
               isLoading={!models}
               options={modelIds}
@@ -80,7 +80,7 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
           </InlineField>
         </div>
         <div className="gf-form">
-          <InlineField label="Filter" labelWidth={10} grow={true}>
+          <InlineField label="Filter" labelWidth={14} grow={true}>
             <Select
               options={filters}
               value={filters.find(v => v.value === query.filter) || filters[0]}

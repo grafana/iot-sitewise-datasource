@@ -42,7 +42,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
     return (
       <>
         <div className="gf-form">
-          <InlineField label="Quality" labelWidth={10}>
+          <InlineField label="Quality" labelWidth={14}>
             <Select
               width={20}
               options={qualities}

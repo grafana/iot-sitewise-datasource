@@ -196,7 +196,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     return (
       <>
         <div className="gf-form">
-          <InlineField label="Asset" labelWidth={10} grow={true}>
+          <InlineField label="Asset" labelWidth={14} grow={true}>
             <Select
               isLoading={loading}
               options={assets}
@@ -216,7 +216,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         {showProp && (
           <>
             <div className="gf-form">
-              <InlineField label="Property" labelWidth={10} grow={true}>
+              <InlineField label="Property" labelWidth={14} grow={true}>
                 <Select
                   isLoading={loading}
                   options={properties}

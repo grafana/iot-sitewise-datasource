@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from 'DataSource';
 import { SitewiseQuery, SitewiseOptions, QueryType, ListAssetsQuery } from 'types';
-import { InlineField, Select } from '@grafana/ui';
+import { Icon, InlineField, LinkButton, Select } from '@grafana/ui';
 import { QueryTypeInfo, siteWisteQueryTypes, changeQueryType } from 'queryInfo';
 import { standardRegions } from 'common/types';
 import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
@@ -45,20 +45,31 @@ export class QueryEditor extends PureComponent<Props> {
 
     const defaultRegion = { label: `Default`, desctiption: datasource.options?.defaultRegion, value: undefined };
     const regions = query.region ? [defaultRegion, ...standardRegions] : standardRegions;
+    const currentQueryType = siteWisteQueryTypes.find(v => v.value === query.queryType);
+    const queryTooltip = currentQueryType ? (
+      <div>
+        {currentQueryType.description} <br />
+        <LinkButton href={currentQueryType.helpURL} target="_blank">
+          API Docs <Icon name="external-link-alt" />
+        </LinkButton>
+      </div>
+    ) : (
+      undefined
+    );
 
     return (
       <>
         <div className="gf-form">
-          <InlineField label="Query type" labelWidth={10} grow={true}>
+          <InlineField label="Query type" labelWidth={14} grow={true} tooltip={queryTooltip}>
             <Select
               options={siteWisteQueryTypes}
-              value={siteWisteQueryTypes.find(v => v.value === query.queryType)}
+              value={currentQueryType}
               onChange={this.onQueryTypeChange}
               placeholder="Select query type"
               menuPlacement="bottom"
             />
           </InlineField>
-          <InlineField label="Region" labelWidth={10}>
+          <InlineField label="Region" labelWidth={14}>
             <Select
               width={18}
               options={regions}
