@@ -28,7 +28,7 @@ func valueQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetAss
 
 }
 
-func GetAssetPropertyValue(ctx context.Context, client client.Client, query models.AssetPropertyValueQuery) (*framer.AssetPropertyValue, error) {
+func GetAssetPropertyValue(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (*framer.AssetPropertyValue, error) {
 
 	awsReq := valueQueryToInput(query)
 

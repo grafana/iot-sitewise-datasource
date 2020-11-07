@@ -18,12 +18,12 @@ func TestHandlePropertyValueHistory(t *testing.T) {
 
 var getPropertyValueHistoryHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
-	mockSw := &mocks.Client{}
+	mockSw := &mocks.SitewiseClient{}
 
 	propVals := testdata.GetIoTSitewisePropHistoryVals(t, testDataRelativePath("property-history-values.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 
-	mockSw.On("GetAssetPropertyValueHistoryWithContext", mock.Anything, mock.Anything).Return(&propVals, nil)
+	mockSw.On("GetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
 
 	query := models.AssetPropertyValueQuery{

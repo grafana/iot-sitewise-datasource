@@ -10,7 +10,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
 
-func GetAssetPropertyDescription(ctx context.Context, client client.Client, query models.DescribeAssetPropertyQuery) (*framer.AssetProperty, error) {
+func GetAssetPropertyDescription(ctx context.Context, client client.SitewiseClient, query models.DescribeAssetPropertyQuery) (*framer.AssetProperty, error) {
 
 	awsReq := &iotsitewise.DescribeAssetPropertyInput{
 		AssetId:    getAssetId(query.BaseQuery),

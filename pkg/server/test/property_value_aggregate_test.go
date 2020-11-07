@@ -27,12 +27,12 @@ func TestHandlePropertyValueAggregate(t *testing.T) {
 
 var propertyValueAggregateHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
-	mockSw := &mocks.Client{}
+	mockSw := &mocks.SitewiseClient{}
 
 	propAggs := testdata.GetIoTSitewisePropAggregateVals(t, testDataRelativePath("property-aggregate-values.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-raw-wind.json"))
 
-	mockSw.On("GetAssetPropertyAggregatesWithContext", mock.Anything, mock.Anything).Return(&propAggs, nil)
+	mockSw.On("GetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggs, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
 
 	query := models.AssetPropertyValueQuery{

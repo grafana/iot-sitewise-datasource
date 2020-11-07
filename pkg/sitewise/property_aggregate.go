@@ -62,13 +62,15 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ge
 	}
 }
 
-func GetAssetPropertyAggregates(ctx context.Context, client client.Client, query models.AssetPropertyValueQuery) (*framer.AssetPropertyAggregates, error) {
+func GetAssetPropertyAggregates(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (*framer.AssetPropertyAggregates, error) {
+
+	var (
+		maxDps = int(query.MaxDataPoints)
+	)
 
 	awsReq := aggregateQueryToInput(query)
 
-	// NOTE: there is a paginated API if we want to push pagination requests down to the server
-	// See: https://docs.aws.amazon.com/sdk-for-go/api/service/iotsitewise/#IoTSiteWise.GetAssetPropertyAggregatesPagesWithContext
-	resp, err := client.GetAssetPropertyAggregatesWithContext(ctx, awsReq)
+	resp, err := client.GetAssetPropertyAggregatesPageAggregation(ctx, awsReq, query.MaxPageAggregations, maxDps)
 
 	if err != nil {
 		return nil, err

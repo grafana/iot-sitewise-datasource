@@ -9,10 +9,10 @@ import (
 )
 
 type SitewiseResources struct {
-	client client.Client
+	client client.SitewiseClient
 }
 
-func NewSitewiseResources(client client.Client) *SitewiseResources {
+func NewSitewiseResources(client client.SitewiseClient) *SitewiseResources {
 	return &SitewiseResources{
 		client: client,
 	}

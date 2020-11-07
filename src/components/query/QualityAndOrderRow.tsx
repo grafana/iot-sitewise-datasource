@@ -6,7 +6,7 @@ import {
   AssetPropertyAggregatesQuery,
   SiteWiseQuality,
 } from 'types';
-import { InlineField, Select } from '@grafana/ui';
+import { InlineField, Input, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { firstLabelWith } from './QueryEditor';
 
@@ -37,6 +37,12 @@ export class QualityAndOrderRow extends PureComponent<Props> {
     onRunQuery();
   };
 
+  onMaxPageAggregations = (event: React.FormEvent<HTMLInputElement>) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({ ...query, maxPageAggregations: Number.parseInt(event.currentTarget.value, 10) });
+    onRunQuery();
+  };
+
   render() {
     const { query } = this.props;
 
@@ -61,6 +67,9 @@ export class QualityAndOrderRow extends PureComponent<Props> {
               isSearchable={true}
               menuPlacement="bottom"
             />
+          </InlineField>
+          <InlineField label="Pages per Query" labelWidth={8}>
+            <Input value={query.maxPageAggregations ?? 1} onChange={this.onMaxPageAggregations} width={8} css="" />
           </InlineField>
         </div>
       </>

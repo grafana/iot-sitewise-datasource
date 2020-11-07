@@ -19,8 +19,8 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
 
-type clientGetterFunc func(ctx backend.PluginContext, q models.BaseQuery) (client client.Client, err error)
-type invokerFunc func(ctx context.Context, sw client.Client) (framer.Framer, error)
+type clientGetterFunc func(ctx backend.PluginContext, q models.BaseQuery) (client client.SitewiseClient, err error)
+type invokerFunc func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error)
 
 type Datasource struct {
 	GetClient clientGetterFunc
@@ -28,7 +28,7 @@ type Datasource struct {
 
 func NewDatasource() *Datasource {
 	return &Datasource{
-		GetClient: func(ctx backend.PluginContext, q models.BaseQuery) (swclient client.Client, err error) {
+		GetClient: func(ctx backend.PluginContext, q models.BaseQuery) (swclient client.SitewiseClient, err error) {
 			swclient, err = client.GetClient(ctx, q.AwsRegion)
 			return
 		},
@@ -65,43 +65,43 @@ func (ds *Datasource) HealthCheck(ctx context.Context, req *backend.CheckHealthR
 }
 
 func (ds *Datasource) HandleGetAssetPropertyValueHistoryQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.Client) (framer.Framer, error) {
+	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return GetAssetPropertyValues(ctx, sw, *query)
 	})
 }
 
 func (ds *Datasource) HandleGetAssetPropertyAggregateQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.Client) (framer.Framer, error) {
+	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return GetAssetPropertyAggregates(ctx, sw, *query)
 	})
 }
 
 func (ds *Datasource) HandleGetAssetPropertyValueQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.Client) (framer.Framer, error) {
+	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return GetAssetPropertyValue(ctx, sw, *query)
 	})
 }
 
 func (ds *Datasource) HandleListAssetModelsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssetModelsQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.Client) (framer.Framer, error) {
+	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return ListAssetModels(ctx, sw, *query)
 	})
 }
 
 func (ds *Datasource) HandleListAssociatedAssetsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssociatedAssetsQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.Client) (framer.Framer, error) {
+	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return ListAssociatedAssets(ctx, sw, *query)
 	})
 }
 
 func (ds *Datasource) HandleListAssetsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssetsQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.Client) (framer.Framer, error) {
+	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return ListAssets(ctx, sw, *query)
 	})
 }
 
 func (ds *Datasource) HandleDescribeAssetQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.DescribeAssetQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.Client) (framer.Framer, error) {
+	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return DescribeAsset(ctx, sw, *query)
 	})
 }
