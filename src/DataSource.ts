@@ -2,7 +2,7 @@ import { DataSourceInstanceSettings, ScopedVars, DataQueryResponse, DataQueryReq
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 import { SitewiseCache } from 'sitewiseCache';
 
-import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta, isPropertyQueryType } from './types';
+import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta, isPropertyQueryType, SitewiseNextQuery } from './types';
 import { Observable } from 'rxjs';
 import { getRequestLooper, MultiRequestTracker } from 'requestLooper';
 import { appendMatchingFrames } from 'appendFrames';
@@ -92,19 +92,23 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   query(request: DataQueryRequest<SitewiseQuery>): Observable<DataQueryResponse> {
     return getRequestLooper(request, {
       // Check for a "nextToken" in the response
-      // NOTE:  this well behave weird if multiple requests are in one query!
-      getNextQuery: (rsp: DataQueryResponse) => {
+      getNextQueries: (rsp: DataQueryResponse) => {
         if (rsp.data?.length) {
-          const first = rsp.data[0] as DataFrame;
-          const meta = first.meta?.custom as SitewiseCustomMeta;
-          if (meta && meta.nextToken) {
-            const query = request.targets.find(t => t.refId === first.refId);
-            if (query) {
-              return {
-                ...query,
-                nextToken: meta.nextToken,
-              };
+          const next: SitewiseNextQuery[] = [];
+          for (const frame of rsp.data as DataFrame[]) {
+            const meta = frame.meta?.custom as SitewiseCustomMeta;
+            if (meta && meta.nextToken) {
+              const query = request.targets.find(t => t.refId === frame.refId);
+              if (query) {
+                next.push({
+                  ...query,
+                  nextToken: meta.nextToken,
+                });
+              }
             }
+          }
+          if (next.length) {
+            return next;
           }
         }
         return undefined;
