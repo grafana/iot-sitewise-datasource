@@ -77,7 +77,10 @@ func GetAssetPropertyAggregates(ctx context.Context, client client.SitewiseClien
 	}
 
 	return &framer.AssetPropertyAggregates{
-		AggregatedValues: resp.AggregatedValues,
-		NextToken:        resp.NextToken,
+		Request: *awsReq,
+		Response: iotsitewise.GetAssetPropertyAggregatesOutput{
+			AggregatedValues: resp.AggregatedValues,
+			NextToken:        resp.NextToken,
+		},
 	}, nil
 }
