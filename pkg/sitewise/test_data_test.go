@@ -14,17 +14,13 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
-
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
 )
 
 const (
 	SKIPALL = true
 )
 
-type testDataFunc func(t *testing.T, client client.Client) interface{}
+type testDataFunc func(t *testing.T, client client.SitewiseClient) interface{}
 
 // How to run tests:
 //
@@ -41,7 +37,7 @@ func TestGenerateTestData(t *testing.T) {
 
 	m := make(map[string]testDataFunc)
 
-	m["property-history-values.json"] = func(t *testing.T, client client.Client) interface{} {
+	m["property-history-values.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 
@@ -53,6 +49,7 @@ func TestGenerateTestData(t *testing.T) {
 			From: time.Now().Add(time.Hour * -3), // return 3 hours of data. 60*3/5 = 36 points
 			To:   time.Now(),
 		}
+		query.MaxPageAggregations = 1
 
 		resp, err := GetAssetPropertyValues(ctx, client, query)
 		if err != nil {
@@ -61,7 +58,7 @@ func TestGenerateTestData(t *testing.T) {
 
 		return resp
 	}
-	m["property-value.json"] = func(t *testing.T, client client.Client) interface{} {
+	m["property-value.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 
@@ -76,7 +73,7 @@ func TestGenerateTestData(t *testing.T) {
 
 		return resp
 	}
-	m["property-aggregate-values.json"] = func(t *testing.T, client client.Client) interface{} {
+	m["property-aggregate-values.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 
@@ -91,6 +88,7 @@ func TestGenerateTestData(t *testing.T) {
 			From: time.Now().Add(time.Hour * -3), // return 3 hours of data. 60*3/5 = 36 points
 			To:   time.Now(),
 		}
+		query.MaxPageAggregations = 1
 
 		resp, err := GetAssetPropertyAggregates(ctx, client, query)
 		if err != nil {
@@ -99,7 +97,7 @@ func TestGenerateTestData(t *testing.T) {
 
 		return resp
 	}
-	m["describe-asset.json"] = func(t *testing.T, client client.Client) interface{} {
+	m["describe-asset.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetQuery{}
@@ -111,7 +109,7 @@ func TestGenerateTestData(t *testing.T) {
 		}
 		return resp
 	}
-	m["describe-asset-top-level.json"] = func(t *testing.T, client client.Client) interface{} {
+	m["describe-asset-top-level.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetQuery{}
@@ -123,7 +121,7 @@ func TestGenerateTestData(t *testing.T) {
 		}
 		return resp
 	}
-	m["describe-asset-property-avg-wind.json"] = func(t *testing.T, client client.Client) interface{} {
+	m["describe-asset-property-avg-wind.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetPropertyQuery{}
@@ -136,7 +134,7 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 
-	m["describe-asset-property-raw-wind.json"] = func(t *testing.T, client client.Client) interface{} {
+	m["describe-asset-property-raw-wind.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetPropertyQuery{}
@@ -149,7 +147,7 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 
-	m["list-asset-models.json"] = func(t *testing.T, client client.Client) interface{} {
+	m["list-asset-models.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		resp, err := ListAssetModels(ctx, client, models.ListAssetModelsQuery{})
@@ -159,7 +157,7 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 
-	m["list-assets.json"] = func(t *testing.T, client client.Client) interface{} {
+	m["list-assets.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.ListAssetsQuery{}
@@ -172,7 +170,7 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 
-	m["list-assets-top-level.json"] = func(t *testing.T, client client.Client) interface{} {
+	m["list-assets-top-level.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.ListAssetsQuery{}
@@ -183,7 +181,7 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 
-	m["list-associated-assets.json"] = func(t *testing.T, client client.Client) interface{} {
+	m["list-associated-assets.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.ListAssociatedAssetsQuery{}
@@ -196,7 +194,7 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 
-	m["list-associated-assets-parent.json"] = func(t *testing.T, client client.Client) interface{} {
+	m["list-associated-assets-parent.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.ListAssociatedAssetsQuery{}
@@ -208,15 +206,14 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 
-	sesh := session.Must(session.NewSession())
-	sw := iotsitewise.New(sesh, aws.NewConfig().WithRegion("us-east-1"))
+	sw := client.NewSitewiseClientForRegion("us-east-1")
 
 	for k, v := range m {
 		writeTestData(t, k, v, sw)
 	}
 }
 
-func writeTestData(t *testing.T, filename string, tf testDataFunc, client client.Client) {
+func writeTestData(t *testing.T, filename string, tf testDataFunc, client client.SitewiseClient) {
 
 	t.Run(filename, func(t *testing.T) {
 		resp := tf(t, client)

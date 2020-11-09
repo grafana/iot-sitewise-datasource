@@ -13,7 +13,7 @@ type queryResourceProvider struct {
 	baseQuery models.BaseQuery
 }
 
-func NewQueryResourceProvider(client client.Client, query models.BaseQuery) *queryResourceProvider {
+func NewQueryResourceProvider(client client.SitewiseClient, query models.BaseQuery) *queryResourceProvider {
 
 	return &queryResourceProvider{
 		resources: NewSitewiseResources(client),

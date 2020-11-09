@@ -12,7 +12,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
 
-func ListAssetModels(ctx context.Context, client client.Client, query models.ListAssetModelsQuery) (*framer.AssetModels, error) {
+func ListAssetModels(ctx context.Context, client client.SitewiseClient, query models.ListAssetModelsQuery) (*framer.AssetModels, error) {
 
 	resp, err := client.ListAssetModelsWithContext(ctx, &iotsitewise.ListAssetModelsInput{
 		MaxResults: aws.Int64(250),

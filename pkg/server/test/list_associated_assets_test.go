@@ -22,7 +22,7 @@ func TestHandleListAssociatedAssets(t *testing.T) {
 
 var listAssociatedAssetsChildrenHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
-	mockSw := &mocks.Client{}
+	mockSw := &mocks.SitewiseClient{}
 
 	assets := testdata.GetIoTSitewiseAssociatedAssets(t, testDataRelativePath("list-associated-assets.json"))
 
@@ -63,7 +63,7 @@ var listAssociatedAssetsChildrenHappyCase testServerScenarioFn = func(t *testing
 
 var listAssociatedAssetsParentHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
-	mockSw := &mocks.Client{}
+	mockSw := &mocks.SitewiseClient{}
 
 	assets := testdata.GetIoTSitewiseAssociatedAssets(t, testDataRelativePath("list-associated-assets-parent.json"))
 

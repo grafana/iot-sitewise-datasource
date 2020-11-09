@@ -11,7 +11,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
 
-func ListAssets(ctx context.Context, client client.Client, query models.ListAssetsQuery) (*framer.Assets, error) {
+func ListAssets(ctx context.Context, client client.SitewiseClient, query models.ListAssetsQuery) (*framer.Assets, error) {
 
 	var (
 		filter       *string

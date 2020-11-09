@@ -3,15 +3,12 @@ package sitewise
 import (
 	"context"
 
-	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
-
-	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
-
-	"github.com/grafana/iot-sitewise-datasource/pkg/util"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
 // GetAssetPropertyValueHistory requires either PropertyAlias OR (AssetID and PropertyID) to be set.
@@ -48,13 +45,14 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetA
 	}
 }
 
-func GetAssetPropertyValues(ctx context.Context, client client.Client, query models.AssetPropertyValueQuery) (*framer.AssetPropertyValueHistory, error) {
+func GetAssetPropertyValues(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (*framer.AssetPropertyValueHistory, error) {
+
+	var (
+		maxDps = int(query.MaxDataPoints)
+	)
 
 	awsReq := historyQueryToInput(query)
-
-	// NOTE: there is a paginated API if we want to push pagination requests down to the server
-	// See: https://docs.aws.amazon.com/sdk-for-go/api/service/iotsitewise/#IoTSiteWise.GetAssetPropertyValueHistoryPagesWithContext
-	resp, err := client.GetAssetPropertyValueHistoryWithContext(ctx, awsReq)
+	resp, err := client.GetAssetPropertyValueHistoryPageAggregation(ctx, awsReq, query.MaxPageAggregations, maxDps)
 
 	if err != nil {
 		return nil, err

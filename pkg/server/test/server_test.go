@@ -30,7 +30,7 @@ type testServerScenarioFn func(t *testing.T) *testScenario
 type testScenario struct {
 	name           string
 	queries        []backend.DataQuery
-	mockSw         *mocks.Client
+	mockSw         *mocks.SitewiseClient
 	goldenFileName string
 	handlerFn      func(srvr *server.Server) backend.QueryDataHandlerFunc
 	validationFn   func(t *testing.T, dr *backend.QueryDataResponse)
@@ -46,9 +46,9 @@ func testDataRelativePath(filename string) string {
 	return "../../testdata/" + filename
 }
 
-func mockedDatasource(swmock *mocks.Client) server.Datasource {
+func mockedDatasource(swmock *mocks.SitewiseClient) server.Datasource {
 	return &sitewise.Datasource{
-		GetClient: func(_ backend.PluginContext, _ models.BaseQuery) (client client.Client, err error) {
+		GetClient: func(_ backend.PluginContext, _ models.BaseQuery) (client client.SitewiseClient, err error) {
 			client = swmock
 			return
 		},

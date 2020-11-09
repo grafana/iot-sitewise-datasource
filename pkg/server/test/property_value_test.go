@@ -19,7 +19,7 @@ func TestHandlePropertyValue(t *testing.T) {
 
 var getPropertyValueHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
-	mockSw := &mocks.Client{}
+	mockSw := &mocks.SitewiseClient{}
 
 	propVal := testdata.GetIoTSitewisePropVal(t, testDataRelativePath("property-value.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-raw-wind.json"))

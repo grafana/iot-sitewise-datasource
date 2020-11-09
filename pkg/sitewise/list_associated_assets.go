@@ -11,7 +11,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
 
-func ListAssociatedAssets(ctx context.Context, client client.Client, query models.ListAssociatedAssetsQuery) (*framer.AssociatedAssets, error) {
+func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, query models.ListAssociatedAssetsQuery) (*framer.AssociatedAssets, error) {
 
 	var (
 		hierarchyId        *string

@@ -19,7 +19,7 @@ func TestHandleDescribeAsset(t *testing.T) {
 
 var describeAssetHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
-	mockSw := &mocks.Client{}
+	mockSw := &mocks.SitewiseClient{}
 
 	asset := testdata.GetIoTSitewiseAssetDescription(t, testDataRelativePath("describe-asset.json"))
 	assetWithHierarchy := testdata.GetIoTSitewiseAssetDescription(t, testDataRelativePath("describe-asset-top-level.json"))

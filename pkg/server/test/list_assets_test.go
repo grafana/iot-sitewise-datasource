@@ -19,7 +19,7 @@ func TestHandleListAssets(t *testing.T) {
 
 var listAssetsHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
-	mockSw := &mocks.Client{}
+	mockSw := &mocks.SitewiseClient{}
 
 	topLevelAssets := testdata.GetIoTSitewiseAssets(t, testDataRelativePath("list-assets-top-level.json"))
 	childAssets := testdata.GetIoTSitewiseAssets(t, testDataRelativePath("list-assets.json"))

@@ -24,6 +24,11 @@ func GetAssetPropertyValueQuery(dq *backend.DataQuery) (*AssetPropertyValueQuery
 		return nil, err
 	}
 
+	// default to 1 if unset
+	if query.MaxPageAggregations < 1 {
+		query.MaxPageAggregations = 1
+	}
+
 	// add on the DataQuery params
 	query.TimeRange = dq.TimeRange
 	query.Interval = dq.Interval

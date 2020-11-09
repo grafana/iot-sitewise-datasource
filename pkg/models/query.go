@@ -26,10 +26,11 @@ const (
 )
 
 type BaseQuery struct {
-	AwsRegion  string `json:"region,omitempty"`
-	AssetId    string `json:"assetId,omitempty"`
-	PropertyId string `json:"propertyId,omitempty"`
-	NextToken  string `json:"nextToken,omitempty"`
+	AwsRegion           string `json:"region,omitempty"`
+	AssetId             string `json:"assetId,omitempty"`
+	PropertyId          string `json:"propertyId,omitempty"`
+	NextToken           string `json:"nextToken,omitempty"`
+	MaxPageAggregations int    `json:"maxPageAggregations,omitempty"`
 
 	Interval      time.Duration     `json:"-"`
 	TimeRange     backend.TimeRange `json:"-"`
