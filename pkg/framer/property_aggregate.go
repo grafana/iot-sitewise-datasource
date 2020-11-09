@@ -15,7 +15,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-type AssetPropertyAggregates iotsitewise.GetAssetPropertyAggregatesOutput
+type AssetPropertyAggregates struct {
+	Request  iotsitewise.GetAssetPropertyAggregatesInput
+	Response iotsitewise.GetAssetPropertyAggregatesOutput
+}
 
 // getAggregationFields enforces ordering of aggregate fields
 // Golang maps return a random order during iteration
@@ -87,7 +90,9 @@ func addAggregateFieldValues(idx int, fields map[string]*data.Field, aggs *iotsi
 
 func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
 
-	length := len(a.AggregatedValues)
+	resp := a.Response
+
+	length := len(resp.AggregatedValues)
 
 	if length < 1 {
 		return nil, errors.New("no aggregation values found for query")
@@ -100,9 +105,9 @@ func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.
 
 	timeField := fields.TimeField(length)
 	// this will enforce ordering
-	aggregateTypes, aggregateFields := getAggregationFields(length, a.AggregatedValues[0].Value)
+	aggregateTypes, aggregateFields := getAggregationFields(length, resp.AggregatedValues[0].Value)
 
-	for i, v := range a.AggregatedValues {
+	for i, v := range resp.AggregatedValues {
 		timeField.Set(i, *v.Timestamp)
 		addAggregateFieldValues(i, aggregateFields, v.Value)
 	}
@@ -120,7 +125,9 @@ func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.
 
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{
-			NextToken: aws.StringValue(a.NextToken),
+			NextToken:  aws.StringValue(resp.NextToken),
+			Resolution: aws.StringValue(a.Request.Resolution),
+			Aggregates: aws.StringValueSlice(a.Request.AggregateTypes),
 		},
 	}
 
