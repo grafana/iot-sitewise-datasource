@@ -39,7 +39,8 @@ export class QualityAndOrderRow extends PureComponent<Props> {
 
   onMaxPageAggregations = (event: React.FormEvent<HTMLInputElement>) => {
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, maxPageAggregations: Number.parseInt(event.currentTarget.value, 10) });
+
+    onChange({ ...query, maxPageAggregations: +event.currentTarget.value });
     onRunQuery();
   };
 
@@ -69,7 +70,14 @@ export class QualityAndOrderRow extends PureComponent<Props> {
             />
           </InlineField>
           <InlineField label="Pages per Query" labelWidth={8}>
-            <Input value={query.maxPageAggregations ?? 1} onChange={this.onMaxPageAggregations} width={8} css="" />
+            <Input
+              pattern="[0-9]*"
+              value={query.maxPageAggregations ?? 1}
+              placeholder="enter a number"
+              onChange={this.onMaxPageAggregations}
+              width={8}
+              css=""
+            />
           </InlineField>
         </div>
       </>
