@@ -72,6 +72,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
           <InlineField label="Pages per Query" labelWidth={8}>
             <Input
               type="number"
+              min="0"
               value={query.maxPageAggregations ?? 1}
               placeholder="enter a number"
               onChange={this.onMaxPageAggregations}
