@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Spinner } from '@grafana/ui';
 import { AssetInfo } from '../../types';
 import { SitewiseCache } from 'sitewiseCache';
 import { DataFrameView } from '@grafana/data';
 import { AssetSummary } from 'queryResponseTypes';
+import { AssetHierarchy } from './AssetHierarchy';
 
 export interface Props {
   cache: SitewiseCache;
@@ -30,25 +30,26 @@ export class BrowseHierarchy extends Component<Props, State> {
   }
 
   render() {
-    const { hierarchy } = this.state;
-    if (!hierarchy.length) {
-      return (
-        <div>
-          <Spinner />
-          Loading hierarchy...
-        </div>
-      );
-    }
+    // const { hierarchy } = this.state;
+    // if (!hierarchy.length) {
+    //   return (
+    //     <div>
+    //       <Spinner />
+    //       Loading hierarchy...
+    //     </div>
+    //   );
+    // }
 
     return (
-      <div style={{ height: '60vh' }}>
-        {hierarchy.map((level, idx) => {
-          if (idx === hierarchy.length - 1) {
-            return <div key={idx}>SHOW EACH?</div>;
-          }
-          return <div key={idx}>SELECT for level... {idx}</div>;
-        })}
-      </div>
+      // <div style={{ height: '60vh' }}>
+      //   {hierarchy.map((level, idx) => {
+      //     if (idx === hierarchy.length - 1) {
+      //       return <div key={idx}>SHOW EACH?</div>;
+      //     }
+      //     return <div key={idx}>SELECT for level... {idx}</div>;
+      //   })}
+      // </div>
+      <AssetHierarchy cache={this.props.cache} currentAsset={this.props.asset}  onAssetChanged={assetId => console.log(assetId)}/>
     );
   }
 }

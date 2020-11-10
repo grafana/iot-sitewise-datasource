@@ -1,8 +1,8 @@
 import { DataFrameView, SelectableValue } from '@grafana/data';
 import { DataSource } from 'DataSource';
-import { ListAssetsQuery, QueryType } from 'types';
+import { ListAssetsQuery, ListAssociatedAssetsQuery, QueryType } from 'types';
 import { AssetModelSummary, AssetSummary, DescribeAssetResult } from './queryResponseTypes';
-import { AssetPropertyInfo, AssetInfo } from './types';
+import { AssetInfo, AssetPropertyInfo } from './types';
 import { map } from 'rxjs/operators';
 
 /**
@@ -99,6 +99,28 @@ export class SitewiseCache {
             return this.topLevelAssets;
           }
           throw 'no assets found';
+        })
+      )
+      .toPromise();
+  }
+
+  async getAssociatedAssets(assetId: string, hierarchyId?: string): Promise<DataFrameView<AssetSummary>> {
+    const query: ListAssociatedAssetsQuery = {
+      queryType: QueryType.ListAssociatedAssets,
+      refId: 'associatedAssets',
+      assetId: assetId,
+      hierarchyId: hierarchyId,
+    };
+
+    return this.ds
+      .runQuery(query, 1000)
+      .pipe(
+        map(res => {
+          if (res.data.length) {
+            return new DataFrameView<AssetSummary>(res.data[0]);
+          } else {
+            throw 'no asset hierarchy found';
+          }
         })
       )
       .toPromise();

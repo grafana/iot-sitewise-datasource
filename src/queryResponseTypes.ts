@@ -1,5 +1,11 @@
 // TODO? this file should be auto-generated!
 
+// https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_AssetHierarchy.html
+export interface HierarchyInfo {
+  id: string;
+  name: string;
+}
+
 // Mapped from DataFrame result
 export interface AssetModelSummary {
   name: string; // string
