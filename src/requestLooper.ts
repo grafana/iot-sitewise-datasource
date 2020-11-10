@@ -11,7 +11,7 @@ export interface RequestLoopOptions<TQuery extends DataQuery = DataQuery> {
   /**
    * If the response needs an additional request to execute, return it here
    */
-  getNextQuery: (rsp: DataQueryResponse) => TQuery | undefined;
+  getNextQueries: (rsp: DataQueryResponse) => TQuery[] | undefined;
 
   /**
    * The datasource execute method
@@ -37,7 +37,7 @@ export function getRequestLooper<T extends DataQuery = DataQuery>(
   options: RequestLoopOptions<T>
 ): Observable<DataQueryResponse> {
   return new Observable<DataQueryResponse>(subscriber => {
-    let nextQuery: T | undefined = undefined;
+    let nextQueries: T[] | undefined = undefined;
     let subscription: Subscription | undefined = undefined;
     const tracker: MultiRequestTracker = {
       fetchStartTime: Date.now(),
@@ -52,10 +52,10 @@ export function getRequestLooper<T extends DataQuery = DataQuery>(
         tracker.fetchEndTime = Date.now();
         loadingState = rsp.state;
         if (loadingState !== LoadingState.Error) {
-          nextQuery = options.getNextQuery(rsp);
-          loadingState = nextQuery ? LoadingState.Streaming : LoadingState.Done;
+          nextQueries = options.getNextQueries(rsp);
+          loadingState = nextQueries ? LoadingState.Streaming : LoadingState.Done;
         }
-        const data = options.process(tracker, rsp.data, !!!nextQuery);
+        const data = options.process(tracker, rsp.data, !!!nextQueries);
         subscriber.next({ ...rsp, data, state: loadingState, key: req.requestId });
       },
       error: (err: any) => {
@@ -68,7 +68,7 @@ export function getRequestLooper<T extends DataQuery = DataQuery>(
         }
 
         // Let the previous request finish first
-        if (nextQuery) {
+        if (nextQueries) {
           tracker.fetchEndTime = undefined;
           tracker.fetchStartTime = Date.now();
           subscription = options
@@ -76,10 +76,10 @@ export function getRequestLooper<T extends DataQuery = DataQuery>(
               ...req,
               requestId: `${req.requestId}.${++count}`,
               startTime: tracker.fetchStartTime,
-              targets: [nextQuery],
+              targets: nextQueries,
             })
             .subscribe(observer);
-          nextQuery = undefined;
+          nextQueries = undefined;
         } else {
           subscriber.complete();
         }
@@ -90,7 +90,7 @@ export function getRequestLooper<T extends DataQuery = DataQuery>(
     subscription = options.query(req).subscribe(observer);
 
     return () => {
-      nextQuery = undefined;
+      nextQueries = undefined;
       observer.complete();
       if (!tracker.fetchEndTime) {
         options.onCancel(tracker);
