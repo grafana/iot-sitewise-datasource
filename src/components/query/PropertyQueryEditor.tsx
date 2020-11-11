@@ -270,7 +270,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
               menuPlacement="bottom"
             />
           </InlineField>
-          <AssetBrowser {...this.props} onAssetChanged={this.onSetAssetId} />
+          <AssetBrowser {...this.props} assetId={query.assetId} onAssetChanged={this.onSetAssetId} />
         </div>
         {showProp && (
           <>

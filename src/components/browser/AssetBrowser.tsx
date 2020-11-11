@@ -71,7 +71,7 @@ export class AssetBrowser extends Component<Props, State> {
     if (byModel) {
       return <BrowseModels cache={cache} asset={asset} onAssetChanged={this.onSelectAsset} />;
     }
-    return <BrowseHierarchy cache={cache} asset={asset} onAssetChanged={this.onSelectAsset} />;
+    return <BrowseHierarchy cache={cache} asset={asset} onAssetSelected={this.onSelectAsset} />;
   }
 
   render() {
