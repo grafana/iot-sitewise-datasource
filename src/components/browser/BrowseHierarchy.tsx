@@ -49,7 +49,11 @@ export class BrowseHierarchy extends Component<Props, State> {
       //     return <div key={idx}>SELECT for level... {idx}</div>;
       //   })}
       // </div>
-      <AssetHierarchy cache={this.props.cache} currentAsset={this.props.asset}  onAssetChanged={assetId => console.log(assetId)}/>
+      <AssetHierarchy
+        cache={this.props.cache}
+        currentAsset={this.props.asset}
+        onAssetChanged={assetId => console.log(assetId)}
+      />
     );
   }
 }
