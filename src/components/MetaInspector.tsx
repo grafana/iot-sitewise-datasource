@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { MetadataInspectorProps, DataFrame } from '@grafana/data';
 import { DataSource } from '../DataSource';
-import { SitewiseQuery, SitewiseOptions } from '../types';
+import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta } from '../types';
+import { Tag } from '@grafana/ui';
 
 export type Props = MetadataInspectorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 
@@ -9,24 +10,34 @@ export class MetaInspector extends PureComponent<Props> {
   state = { index: 0 };
 
   renderInfo = (frame: DataFrame, idx: number) => {
-    const custom = frame.meta?.custom;
+    const custom = frame.meta?.custom as SitewiseCustomMeta;
     if (!custom) {
       return null;
     }
 
     return (
       <div key={idx}>
-        <h3>Query ID</h3>
-        <pre>{custom.queryId}</pre>
-        {custom.nextToken && (
-          <>
-            <h3>Next Token</h3>
-            <pre>{custom.nextToken}</pre>
-          </>
+        {custom.resolution && (
+          <div>
+            <h3>Resolution</h3>
+            <Tag name={custom.resolution} colorIndex={1} />
+            <br />
+            <br />
+          </div>
         )}
 
-        <h3>Details</h3>
-        <pre>{JSON.stringify(custom, null, 2)}</pre>
+        {custom.aggregates?.length && (
+          <div>
+            <h3>Aggregates</h3>
+            {custom.aggregates.map(agg => {
+              return (
+                <>
+                  <Tag name={agg} key={agg} colorIndex={1} /> &nbsp;
+                </>
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   };

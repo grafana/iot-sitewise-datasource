@@ -185,8 +185,9 @@ export interface AssetInfo {
 export interface SitewiseCustomMeta {
   nextToken?: string;
 
-  // Show the aggregate value actually used
   resolution?: string;
+
+  aggregates?: string[];
 }
 
 /**
