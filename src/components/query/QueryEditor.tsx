@@ -1,3 +1,4 @@
+import defaults from 'lodash/defaults';
 import React, { PureComponent } from 'react';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from 'DataSource';
@@ -9,6 +10,10 @@ import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
 import { PropertyQueryEditor } from './PropertyQueryEditor';
 
 type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
+
+const queryDefaults: Partial<SitewiseQuery> = {
+  maxPageAggregations: 1,
+};
 
 export const firstLabelWith = 14;
 
@@ -44,7 +49,8 @@ export class QueryEditor extends PureComponent<Props> {
   }
 
   render() {
-    const { query, datasource } = this.props;
+    const { datasource } = this.props;
+    const query = defaults(this.props.query, queryDefaults);
 
     const defaultRegion = { label: `Default`, desctiption: datasource.options?.defaultRegion, value: undefined };
     const regions = query.region ? [defaultRegion, ...standardRegions] : standardRegions;

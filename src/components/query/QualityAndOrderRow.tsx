@@ -69,17 +69,17 @@ export class QualityAndOrderRow extends PureComponent<Props> {
               menuPlacement="bottom"
             />
           </InlineField>
-          <InlineField label="Pages per Query" labelWidth={8}>
-            <Input
-              type="number"
-              min="0"
-              value={query.maxPageAggregations ?? 1}
-              placeholder="enter a number"
-              onChange={this.onMaxPageAggregations}
-              width={8}
-              css=""
-            />
-          </InlineField>
+          {/*<InlineField label="Pages per Query" labelWidth={8}>*/}
+          {/*  <Input*/}
+          {/*    type="number"*/}
+          {/*    min="0"*/}
+          {/*    value={query.maxPageAggregations ?? 1}*/}
+          {/*    placeholder="enter a number"*/}
+          {/*    onChange={this.onMaxPageAggregations}*/}
+          {/*    width={8}*/}
+          {/*    css=""*/}
+          {/*  />*/}
+          {/*</InlineField>*/}
         </div>
       </>
     );
