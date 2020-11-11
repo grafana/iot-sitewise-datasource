@@ -3,7 +3,7 @@ import { SitewiseCache } from '../../sitewiseCache';
 import { AssetInfo } from '../../types';
 import { DataFrameView, SelectableValue } from '@grafana/data';
 import { AssetSummary } from '../../queryResponseTypes';
-import {Button, Label, Select} from '@grafana/ui';
+import { Button, Label, Select } from '@grafana/ui';
 
 export interface State {
   childAssets?: DataFrameView<AssetSummary>;
@@ -77,12 +77,12 @@ export class BrowseHierarchy extends Component<Props, State> {
   };
 
   onAssetSelected = async (_: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    const {asset} = this.state;
-    const {onAssetSelected} = this.props;
+    const { asset } = this.state;
+    const { onAssetSelected } = this.props;
     if (asset) {
-      onAssetSelected(asset.id)
+      onAssetSelected(asset.id);
     }
-  }
+  };
 
   render() {
     const { asset, assets, childAssets, currentHierarchy } = this.state;
@@ -111,9 +111,11 @@ export class BrowseHierarchy extends Component<Props, State> {
 
     return (
       <div style={{ height: '60vh' }}>
-        <Button name="copy" size="md" variant="secondary" onClick={this.onAssetSelected} > Select </Button>
-        <br/>
-        <br/>
+        <Button name="copy" size="md" variant="secondary" onClick={this.onAssetSelected}>
+          Select
+        </Button>
+        <br />
+        <br />
         <Label description="asset to select">Asset:</Label>
         <Select
           options={assets}
