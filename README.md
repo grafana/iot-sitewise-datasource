@@ -1,7 +1,6 @@
-# AWS IoT Sitewise Datasource
+# AWS IoT Sitewise Datasource Development Guide
 
-WORK IN PROGRESS
-
+Please add any feedback to the [issues](https://github.com/grafana/iot-sitewise-datasource/issues) folder, and we will follow up shortly.
 
 ## Developer Guide
 
@@ -36,7 +35,17 @@ mage buildAll
 mage test
 ```
 
-### Docker
+### Install
+
+Instructions to install grafana server locally can be found, here:
+
+- [Grafana Server](https://grafana.com/docs/grafana/latest/installation/)
+
+To install the plugin locally, copy the built plugin to the Grafana plugin directory (usually: `/var/lib/grafana/plugins`)
+
+- https://grafana.com/docs/grafana/latest/plugins/installation/
+
+### Docker development setup
 
 1. Create AWS credentials file:
 
@@ -55,7 +64,7 @@ EOF
 ```BASH
 # Run from directory containing iot-sitewise-datasource clone
 cd /Workspace/iot-sitewise-datasource
-docker run -e GF_DEFAULT_APP_MODE=development -e AWS_SHARED_CREDENTIALS_FILE="/Users/grafana/.aws/credentials" -d -p 3000:3000 -v ~/.aws/credentials:/Users/grafana/.aws/credentials -v "$(pwd)"/dist:/var/lib/grafana/plugins --name=grafana grafana/grafana:latest
+docker run -e GF_DEFAULT_APP_MODE=development -e AWS_SHARED_CREDENTIALS_FILE="/Users/grafana/.aws/credentials" -d -p 3000:3000 -v ~/.aws/:/Users/grafana/.aws/ -v "$(pwd)"/dist:/var/lib/grafana/plugins --name=grafana grafana/grafana:latest
 ```
 
 3. Reload plugin
