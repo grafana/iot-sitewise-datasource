@@ -8,7 +8,8 @@ For configuraiton options, see: [src/README.md](src/README.md)
 To get the latest build artifacts for a branch:
 1. find the green checkbox after a build
 2. click link to the "package" details link
-2. open the
+3. open the "Artifacts" tab
+4. Pick the appropriate download for your platform
 
 <table>
   <tr>
