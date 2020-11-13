@@ -20,7 +20,7 @@ This datasource supports reading data from [AWS IoT SiteWise](https://aws.amazon
 
 ## Authentication
 
-In this section we will go through the different type of authentication you can use for Timestream data source.
+In this section we will go through the different type of authentication you can use for IoT sitewise data source.
 
 ### Example AWS credentials
 
