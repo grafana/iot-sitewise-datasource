@@ -55,6 +55,8 @@ Once authentication is configured, click "Save and Test" to verify the service i
 
 TODO: query editor docs
 
+![query-editor](https://github.com/grafana/iot-sitewise-datasource/blob/user-readme/docs/editor.png?raw=true)
+
 
 ### Alerting
 
