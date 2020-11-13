@@ -2,6 +2,8 @@
 
 Please add any feedback to the [issues](https://github.com/grafana/iot-sitewise-datasource/issues) folder, and we will follow up shortly.
 
+For configuraiton options, see: [src/README.md](src/README.md)
+
 ## Developer Guide
 
 ### Build
