@@ -1,10 +1,5 @@
 # AWS IoT Sitewise Datasource Development Guide
 
-This plugin is currently in pre-release mode. You can find current build artifacts, here:
-
-- [Darwin](https://storage.googleapis.com/integration-artifacts/grafana-iot-sitewise-datasource/0.0.1/main/latest/grafana-iot-sitewise-datasource-0.0.1.darwin_amd64.zip)
-- [Linux](https://storage.googleapis.com/integration-artifacts/grafana-iot-sitewise-datasource/0.0.1/main/latest/grafana-iot-sitewise-datasource-0.0.1.linux_amd64.zip)
-
 Please add any feedback to the [issues](https://github.com/grafana/iot-sitewise-datasource/issues) folder, and we will follow up shortly.
 
 ## Developer Guide
