@@ -1,16 +1,18 @@
 # AWS IoT Sitewise Datasource Development Guide
 
-To get the latest build artifacts: 
-- go to the [circle CI workflow](https://app.circleci.com/pipelines/github/grafana/iot-sitewise-datasource?branch=main)
-- click the latest [plugin_workflow](https://app.circleci.com/pipelines/github/grafana/iot-sitewise-datasource/141/workflows/f8bff94b-a8ad-4c8e-bb05-b5c80c0c670d)
-- go to the [package](https://app.circleci.com/pipelines/github/grafana/iot-sitewise-datasource/141/workflows/f8bff94b-a8ad-4c8e-bb05-b5c80c0c670d/jobs/850) step
-- click '[artifacts](https://app.circleci.com/pipelines/github/grafana/iot-sitewise-datasource/141/workflows/f8bff94b-a8ad-4c8e-bb05-b5c80c0c670d/jobs/850/artifacts)'
-
-You should see build artifacts for darwin/linux/windows
-
 Please add any feedback to the [issues](https://github.com/grafana/iot-sitewise-datasource/issues) folder, and we will follow up shortly.
 
 For configuraiton options, see: [src/README.md](src/README.md)
+
+
+To get the latest build artifacts for a branch, click on the green checkbox after the build, and then link to the "package" details:
+
+![package](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/package.png)
+
+Once in circleci, look at the artifacts tab and find the download for your platform:
+
+![artifacts](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/artifacts.png)
+
 
 ## Developer Guide
 
