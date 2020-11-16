@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {assetSummaryToAssetInfo, SitewiseCache} from '../../sitewiseCache';
+import { assetSummaryToAssetInfo, SitewiseCache } from '../../sitewiseCache';
 import { AssetInfo } from '../../types';
 import { DataFrameView, SelectableValue } from '@grafana/data';
 import { AssetSummary } from '../../queryResponseTypes';
@@ -41,10 +41,10 @@ export class BrowseHierarchy extends Component<Props, State> {
   getParentInfo = async (assetId: string): Promise<AssetInfo[]> => {
     const { cache } = this.props;
 
-    const parentSummaries = await cache.getAssociatedAssets(assetId)
-    return assetSummaryToAssetInfo(parentSummaries)
-    return []
-  }
+    const parentSummaries = await cache.getAssociatedAssets(assetId);
+    return assetSummaryToAssetInfo(parentSummaries);
+    return [];
+  };
 
   onSetAssetId = async (assetId?: string) => {
     if (assetId) {
@@ -64,7 +64,7 @@ export class BrowseHierarchy extends Component<Props, State> {
         children: undefined,
       });
     }
-  }
+  };
 
   onAssetChange = async (sel: SelectableValue<string>) => {
     await this.setSelectedAssetInfo(sel.value);
@@ -74,10 +74,9 @@ export class BrowseHierarchy extends Component<Props, State> {
     await this.setSelectedAssetInfo(sel.value);
   };
 
-
   onParentChanged = async (sel: SelectableValue<string>) => {
     await this.setSelectedAssetInfo(sel.value);
-  }
+  };
 
   onHierarchyChange = async (sel: SelectableValue<string>) => {
     const { asset } = this.state;
@@ -104,14 +103,12 @@ export class BrowseHierarchy extends Component<Props, State> {
     const { cache } = this.props;
     const { asset } = this.state;
     if (asset) {
-      const parentSummary = await cache.getAssociatedAssets(asset.id)
+      const parentSummary = await cache.getAssociatedAssets(asset.id);
       if (parentSummary.length === 1) {
-        this.setState({...this.state, asset: assetSummaryToAssetInfo(parentSummary)[0]})
+        this.setState({ ...this.state, asset: assetSummaryToAssetInfo(parentSummary)[0] });
       }
     }
-  }
-
-
+  };
 
   render() {
     const { asset, assets, parents, children, currentHierarchy } = this.state;
@@ -136,12 +133,15 @@ export class BrowseHierarchy extends Component<Props, State> {
         ? asset.hierarchy.find(value => value.value === currentHierarchy)
         : { value: undefined, description: undefined };
 
-    let parentVals = parents ? parents.map(p => { return {
-      label: p.name,
-      value: p.id,
-      description: p.arn,
-    }
-    }) : []
+    let parentVals = parents
+      ? parents.map(p => {
+          return {
+            label: p.name,
+            value: p.id,
+            description: p.arn,
+          };
+        })
+      : [];
 
     return (
       <div style={{ height: '60vh' }}>
