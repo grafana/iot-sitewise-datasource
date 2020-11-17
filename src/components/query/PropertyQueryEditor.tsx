@@ -190,14 +190,18 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
   renderAssociatedAsset(query: ListAssociatedAssetsQuery) {
     const { asset, loading } = this.state;
-    const heiarchies = [{ value: '', label: '** Parent **' }, ...asset?.hierarchy];
-    let current = heiarchies.find(v => v.value === query.hierarchyId);
+    const hierarchies: Array<SelectableValue<string>> = [{ value: '', label: '** Parent **' }];
+    if (asset) {
+      hierarchies.push(...asset.hierarchy);
+    }
+
+    let current = hierarchies.find(v => v.value === query.hierarchyId);
     if (!current) {
       if (query.hierarchyId) {
         current = { value: query.hierarchyId, label: 'ID: ' + query.hierarchyId };
-        heiarchies.push(current);
+        hierarchies.push(current);
       } else {
-        current = heiarchies[0]; // parent
+        current = hierarchies[0]; // parent
       }
     }
 
@@ -206,7 +210,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         <InlineField label="Show" labelWidth={firstLabelWith} grow={true}>
           <Select
             isLoading={loading}
-            options={heiarchies}
+            options={hierarchies}
             value={current}
             onChange={this.onHierarchyIdChange}
             placeholder="Select..."
