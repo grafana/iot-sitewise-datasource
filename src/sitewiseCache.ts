@@ -206,3 +206,22 @@ export function frameToAssetInfo(res: DescribeAssetResult): AssetInfo {
     })),
   };
 }
+
+export function assetSummaryToAssetInfo(res: DataFrameView<AssetSummary>): AssetInfo[] {
+  let results: AssetInfo[] = [];
+
+  for (const info of res.toArray()) {
+    const hierarchy: AssetPropertyInfo[] = JSON.parse(info.hierarchies); // has Id, Name
+    const properties: AssetPropertyInfo[] = [];
+    results.push({
+      ...info,
+      properties,
+      hierarchy: hierarchy.map(v => ({
+        label: v.Name,
+        value: v.Id,
+      })),
+    });
+  }
+
+  return results;
+}
