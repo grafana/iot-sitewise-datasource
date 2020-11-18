@@ -89,10 +89,9 @@ func GetClient(region string, settings awsds.AWSDatasourceSettings, provider aws
 
 	swcfg := &aws.Config{}
 
-	// TODO: will put this back soon
-	// if settings.Endpoint != "" {
-	// 	swcfg.Endpoint = aws.String(settings.Endpoint)
-	// }
+	if settings.Endpoint != "" {
+		swcfg.Endpoint = aws.String(settings.Endpoint)
+	}
 
 	return &sitewiseClient{iotsitewise.New(sess, swcfg)}, nil
 }
