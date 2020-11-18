@@ -3,12 +3,13 @@ import { DataSourceJsonData, SelectableValue } from '@grafana/data';
 export enum AwsAuthType {
   Keys = 'keys',
   Credentials = 'credentials',
-  ARN = 'arn',
+  Default = 'default', // was 'arn',
 }
 
 export interface AwsDataSourceJsonData extends DataSourceJsonData {
   authType?: AwsAuthType;
   assumeRoleArn?: string;
+  externalId?: string;
   profile?: string; // Credentials profile name, as specified in ~/.aws/credentials
   defaultRegion?: string; // region if it is not defined by your credentials file
   endpoint?: string;
@@ -20,9 +21,9 @@ export interface AwsDataSourceSecureJsonData {
 }
 
 export const awsAuthProviderOptions = [
+  { label: 'AWS SDK Default', value: AwsAuthType.Default },
   { label: 'Access & secret key', value: AwsAuthType.Keys },
   { label: 'Credentials file', value: AwsAuthType.Credentials },
-  { label: 'ARN', value: AwsAuthType.ARN },
 ] as Array<SelectableValue<AwsAuthType>>;
 
 export const standardRegions: Array<SelectableValue<string>> = [

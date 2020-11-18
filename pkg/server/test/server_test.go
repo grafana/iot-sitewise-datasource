@@ -12,7 +12,6 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/experimental"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
-	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
@@ -48,7 +47,7 @@ func testDataRelativePath(filename string) string {
 
 func mockedDatasource(swmock *mocks.SitewiseClient) server.Datasource {
 	return &sitewise.Datasource{
-		GetClient: func(_ backend.PluginContext, _ models.BaseQuery) (client client.SitewiseClient, err error) {
+		GetClient: func(region string) (client client.SitewiseClient, err error) {
 			client = swmock
 			return
 		},

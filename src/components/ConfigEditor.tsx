@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import { SitewiseOptions, SitewiseSecureJsonData, SitewiseQuery } from '../types';
-import CommonConfig from '../common/CommonConfig';
+import ConnectionConfig from '../common/ConnectionConfig';
 
 export type Props = DataSourcePluginOptionsEditorProps<SitewiseOptions, SitewiseSecureJsonData>;
 
@@ -19,7 +19,7 @@ export class ConfigEditor extends PureComponent<Props, State> {
     return (
       <>
         <div>
-          <CommonConfig {...this.props} />
+          <ConnectionConfig {...this.props} />
         </div>
       </>
     );
