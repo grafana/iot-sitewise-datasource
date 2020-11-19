@@ -1,11 +1,11 @@
 import React, { FunctionComponent, useState, useEffect } from 'react';
 import { css } from 'emotion';
-import { DataFrameView, GrafanaTheme } from '@grafana/data';
+import { GrafanaTheme } from '@grafana/data';
 import { AssetSummary } from '../../../queryResponseTypes';
-import { CollapsableSection, Label, Spinner, styleMixins, stylesFactory, useTheme } from '@grafana/ui';
-import { AssetHierarchyNode } from './AssetHierarchyNode';
+import { styleMixins, stylesFactory, useTheme } from '@grafana/ui';
 import { AssetInfo } from '../../../types';
 import { SitewiseCache } from '../../../sitewiseCache';
+import { AssetList } from './AssetList';
 
 const getStyles = stylesFactory((theme: GrafanaTheme) => {
   return {
@@ -22,22 +22,20 @@ const getStyles = stylesFactory((theme: GrafanaTheme) => {
 export interface HierarchyInfo {
   name?: string;
   id?: string;
+  description?: string;
 }
 
+// either must have children injected, or have asset + cache
 export interface Props {
   asset?: AssetInfo | AssetSummary;
   hierarchy: HierarchyInfo;
-  children?: DataFrameView<AssetSummary>;
+  children?: AssetSummary[];
   cache?: SitewiseCache;
   onSelect: (assetId: string) => void;
   onInspect: (assetId: string) => void;
 }
 
-const hierarchyLabel = (info: HierarchyInfo) => {
-  return <Label description={info.id}>{info.name}</Label>;
-};
-
-export const AssetHierarchy: FunctionComponent<Props> = ({
+export const AssetHierarchyList: FunctionComponent<Props> = ({
   asset,
   hierarchy,
   children,
@@ -45,32 +43,17 @@ export const AssetHierarchy: FunctionComponent<Props> = ({
   onSelect,
   onInspect,
 }) => {
-  const [currentChildren, setChildren] = useState<DataFrameView<AssetSummary> | undefined>(children);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [currentChildren, setChildren] = useState<AssetSummary[] | undefined>(children);
 
   const theme = useTheme();
   const style = getStyles(theme);
 
-  const label = (hierarchyLabel(hierarchy) as unknown) as string;
-
-  const renderChildren = () => {
-    return currentChildren?.toArray().map(c => {
-      return (
-        <li key={c.name} className={style.listItem}>
-          <AssetHierarchyNode asset={c} onInspect={onInspect} onSelect={onSelect} />
-        </li>
-      );
-    });
-  };
-
   useEffect(() => {
-    // try to load children is none passed in
+    // try to load children if none passed in
     if (!currentChildren && asset && cache) {
-      setIsLoading(true);
       const fetchData = async () => {
         const results = await cache.getAssociatedAssets(asset.id, hierarchy.id);
-        setChildren(results);
-        setIsLoading(false);
+        setChildren(results.toArray());
       };
       fetchData();
     }
@@ -78,44 +61,12 @@ export const AssetHierarchy: FunctionComponent<Props> = ({
 
   return (
     <div className={style.container}>
-      <CollapsableSection label={label} isOpen={false}>
-        {isLoading ? (
-          <div>
-            <Spinner /> Loading children...{' '}
-          </div>
-        ) : (
-          <ul>{renderChildren()}</ul>
-        )}
-      </CollapsableSection>
+      <AssetList
+        assets={currentChildren}
+        listInfo={{ id: hierarchy.id, description: hierarchy.id, name: hierarchy.name }}
+        onSelect={onSelect}
+        onInspect={onInspect}
+      />
     </div>
   );
 };
-
-// export class AssetHierarchyList extends PureComponent<Props> {
-//   renderChildren = () => {
-//     return this.props.children?.map(c => {
-//       return(
-//         <li key={c.name}>
-//           <AssetHierarchyNode asset={c} />
-//         </li>
-//       );
-//
-//     });
-//   };
-//
-//   render() {
-//     const { hierarchy } = this.props;
-//
-//     const label = hierarchyLabel(hierarchy) as unknown as string;
-//
-//     return (
-//       <div style={{ height: '60vh' }}>
-//         <CollapsableSection label={label} isOpen={false}>
-//           <ul>
-//             {this.renderChildren()}
-//           </ul>
-//         </CollapsableSection>
-//       </div>
-//     );
-//   }
-// }

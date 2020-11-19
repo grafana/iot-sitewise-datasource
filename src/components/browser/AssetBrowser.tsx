@@ -5,7 +5,6 @@ import { DataSource } from 'DataSource';
 import { SitewiseCache } from 'sitewiseCache';
 import { BrowseModels } from './BrowseModels';
 import { BrowseHierarchy } from './BrowseHierarchy';
-import { HierachyTree } from './HierachyTree';
 
 export interface Props {
   datasource: DataSource;
@@ -16,8 +15,7 @@ export interface Props {
 
 interface State {
   isOpen: boolean;
-  byModel: boolean;
-  tab: 'Modal' | 'Hierarchy' | 'HierarchyTree'; // temporary?
+  tab: 'Modal' | 'Hierarchy';
   cache?: SitewiseCache;
   asset?: AssetInfo;
 }
@@ -32,7 +30,7 @@ export const ModalHeader = () => {
 };
 
 export class AssetBrowser extends Component<Props, State> {
-  state: State = { isOpen: false, tab: 'Hierarchy', byModel: false };
+  state: State = { isOpen: false, tab: 'Hierarchy' };
 
   async componentDidMount() {
     const { assetId, region } = this.props;
@@ -74,16 +72,9 @@ export class AssetBrowser extends Component<Props, State> {
     switch (tab) {
       case 'Hierarchy':
         return <BrowseHierarchy cache={cache} asset={asset} onAssetSelected={this.onSelectAsset} />;
-      case 'HierarchyTree':
-        return <HierachyTree cache={cache} asset={asset} onAssetSelected={this.onSelectAsset} />;
       case 'Modal':
         return <BrowseModels cache={cache} asset={asset} onAssetChanged={this.onSelectAsset} />;
     }
-
-    // if (byModel) {
-    //   return <BrowseModels cache={cache} asset={asset} onAssetChanged={this.onSelectAsset} />;
-    // }
-    // return <BrowseHierarchy cache={cache} asset={asset} onAssetSelected={this.onSelectAsset} />;
   }
 
   render() {
@@ -111,19 +102,13 @@ export class AssetBrowser extends Component<Props, State> {
                   css
                   label={'Hierarchy'}
                   active={'Hierarchy' === tab}
-                  onChangeTab={() => this.setState({ tab: 'Hierarchy', byModel: false })}
+                  onChangeTab={() => this.setState({ tab: 'Hierarchy' })}
                 />
                 <Tab
                   css
                   label={'By Model'}
                   active={'Modal' === tab}
-                  onChangeTab={() => this.setState({ tab: 'Modal', byModel: true })}
-                />
-                <Tab
-                  css
-                  label={'Hierarchy Tree'}
-                  active={'HierarchyTree' === tab}
-                  onChangeTab={() => this.setState({ tab: 'HierarchyTree', byModel: true })}
+                  onChangeTab={() => this.setState({ tab: 'Modal' })}
                 />
               </TabsBar>
               <TabContent style={{ maxHeight: '90vh' }}>

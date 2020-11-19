@@ -43,10 +43,10 @@ const getStyles = stylesFactory((theme: GrafanaTheme) => {
 export interface Props {
   asset: AssetInfo | AssetSummary;
   onSelect: (assetId: string) => void;
-  onInspect: (assetId: string) => void;
+  onInspect?: (assetId: string) => void;
 }
 
-export const AssetHierarchyNode: FunctionComponent<Props> = ({ asset, onInspect, onSelect }) => {
+export const AssetListItem: FunctionComponent<Props> = ({ asset, onInspect, onSelect }) => {
   const theme = useTheme();
   const style = getStyles(theme);
 
@@ -69,7 +69,17 @@ export const AssetHierarchyNode: FunctionComponent<Props> = ({ asset, onInspect,
       </div>
 
       <div className={style.buttons} hidden={!isEntered}>
-        <Button icon="arrow-up" size="md" variant="link" onClick={_ => onInspect(asset.id)}>
+        <Button
+          icon="arrow-up"
+          size="md"
+          variant="link"
+          hidden={!onInspect}
+          onClick={_ => {
+            if (onInspect) {
+              onInspect(asset.id);
+            }
+          }}
+        >
           {' '}
           Inspect{' '}
         </Button>
