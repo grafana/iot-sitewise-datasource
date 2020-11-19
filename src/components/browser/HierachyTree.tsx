@@ -3,7 +3,7 @@ import { assetSummaryToAssetInfo, SitewiseCache } from '../../sitewiseCache';
 import { AssetInfo } from '../../types';
 import { SelectableValue } from '@grafana/data';
 import { Button, Label, Select } from '@grafana/ui';
-import {AssetHierarchy} from './hierarchy/AssetHierarchyList';
+import { AssetHierarchy } from './hierarchy/AssetHierarchyList';
 
 const UNSET_VAL = { value: undefined, description: undefined };
 
@@ -114,8 +114,8 @@ export class HierachyTree extends Component<Props, State> {
           menuPlacement="bottom"
         />
         <p />
-        {parents && parents.length > 0 ?
-          (<>
+        {parents && parents.length > 0 ? (
+          <>
             <Label description="asset parent to select">Parents:</Label>
             <Select
               options={parentVals}
@@ -125,25 +125,26 @@ export class HierachyTree extends Component<Props, State> {
               isSearchable={true}
               menuPlacement="bottom"
             />
-          </>) : undefined
-        }
+          </>
+        ) : (
+          undefined
+        )}
         <p />
 
         {asset ? (
           <ul>
-            {
-              asset.hierarchy.map((h) => {
+            {asset.hierarchy.map(h => {
               return (
                 <li key={h.label}>
                   <AssetHierarchy
-                    hierarchy={{name: h.label, id: h.value}}
+                    hierarchy={{ name: h.label, id: h.value }}
                     asset={asset}
                     cache={this.props.cache}
                     onInspect={this.onSetAssetId}
                     onSelect={this.onAssetSelected}
                   />
                 </li>
-              )
+              );
             })}
           </ul>
         ) : (

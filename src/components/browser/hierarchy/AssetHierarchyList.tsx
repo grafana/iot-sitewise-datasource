@@ -1,11 +1,11 @@
-import React, {FunctionComponent, useState, useEffect} from 'react';
-import {css} from 'emotion';
-import {DataFrameView, GrafanaTheme} from '@grafana/data';
+import React, { FunctionComponent, useState, useEffect } from 'react';
+import { css } from 'emotion';
+import { DataFrameView, GrafanaTheme } from '@grafana/data';
 import { AssetSummary } from '../../../queryResponseTypes';
-import {CollapsableSection, Label, Spinner, styleMixins, stylesFactory, useTheme} from '@grafana/ui';
+import { CollapsableSection, Label, Spinner, styleMixins, stylesFactory, useTheme } from '@grafana/ui';
 import { AssetHierarchyNode } from './AssetHierarchyNode';
-import {AssetInfo} from "../../../types";
-import {SitewiseCache} from "../../../sitewiseCache";
+import { AssetInfo } from '../../../types';
+import { SitewiseCache } from '../../../sitewiseCache';
 
 const getStyles = stylesFactory((theme: GrafanaTheme) => {
   return {
@@ -15,8 +15,8 @@ const getStyles = stylesFactory((theme: GrafanaTheme) => {
     `,
     listItem: css`
       ${styleMixins.listItem(theme)}
-    `
-  }
+    `,
+  };
 });
 
 export interface HierarchyInfo {
@@ -25,25 +25,25 @@ export interface HierarchyInfo {
 }
 
 export interface Props {
-  asset?: AssetInfo | AssetSummary
+  asset?: AssetInfo | AssetSummary;
   hierarchy: HierarchyInfo;
   children?: DataFrameView<AssetSummary>;
-  cache?: SitewiseCache
-  onSelect: (assetId: string) => void
-  onInspect: (assetId: string) => void
+  cache?: SitewiseCache;
+  onSelect: (assetId: string) => void;
+  onInspect: (assetId: string) => void;
 }
 
 const hierarchyLabel = (info: HierarchyInfo) => {
-  return (<Label description={info.id}>{info.name}</Label>);
+  return <Label description={info.id}>{info.name}</Label>;
 };
 
 export const AssetHierarchy: FunctionComponent<Props> = ({
-                                                           asset,
-                                                           hierarchy,
-                                                           children,
+  asset,
+  hierarchy,
+  children,
   cache,
   onSelect,
-  onInspect
+  onInspect,
 }) => {
   const [currentChildren, setChildren] = useState<DataFrameView<AssetSummary> | undefined>(children);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -51,7 +51,7 @@ export const AssetHierarchy: FunctionComponent<Props> = ({
   const theme = useTheme();
   const style = getStyles(theme);
 
-  const label = hierarchyLabel(hierarchy) as unknown as string;
+  const label = (hierarchyLabel(hierarchy) as unknown) as string;
 
   const renderChildren = () => {
     return currentChildren?.toArray().map(c => {
@@ -60,9 +60,8 @@ export const AssetHierarchy: FunctionComponent<Props> = ({
           <AssetHierarchyNode asset={c} onInspect={onInspect} onSelect={onSelect} />
         </li>
       );
-
     });
-  }
+  };
 
   useEffect(() => {
     // try to load children is none passed in
@@ -70,28 +69,27 @@ export const AssetHierarchy: FunctionComponent<Props> = ({
       setIsLoading(true);
       const fetchData = async () => {
         const results = await cache.getAssociatedAssets(asset.id, hierarchy.id);
-        setChildren(results)
+        setChildren(results);
         setIsLoading(false);
       };
       fetchData();
     }
-  }, [asset])
+  }, [currentChildren, asset, cache, hierarchy.id]);
 
   return (
     <div className={style.container}>
       <CollapsableSection label={label} isOpen={false}>
-        {isLoading
-          ?
-          (<div><Spinner/> Loading children... </div>)
-          :
-          (<ul>
-            {renderChildren()}
-          </ul>)
-        }
+        {isLoading ? (
+          <div>
+            <Spinner /> Loading children...{' '}
+          </div>
+        ) : (
+          <ul>{renderChildren()}</ul>
+        )}
       </CollapsableSection>
     </div>
   );
-}
+};
 
 // export class AssetHierarchyList extends PureComponent<Props> {
 //   renderChildren = () => {
