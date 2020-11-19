@@ -4,8 +4,12 @@ package client
 
 import (
 	"context"
+	"fmt"
+	"os"
+	"runtime"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/aws/aws-sdk-go/service/iotsitewise/iotsitewiseiface"
@@ -81,17 +85,23 @@ func (c *sitewiseClient) GetAssetPropertyAggregatesPageAggregation(ctx context.C
 }
 
 func GetClient(region string, settings awsds.AWSDatasourceSettings, provider awsds.AmazonSessionProvider) (client SitewiseClient, err error) {
-
 	sess, err := provider(region, settings)
 	if err != nil {
 		return nil, err
 	}
 
 	swcfg := &aws.Config{}
-
 	if settings.Endpoint != "" {
 		swcfg.Endpoint = aws.String(settings.Endpoint)
 	}
+	c := iotsitewise.New(sess, swcfg)
+	c.Handlers.Send.PushFront(func(r *request.Request) {
+		r.HTTPRequest.Header.Set("User-Agent", userAgentString())
+	})
+	return &sitewiseClient{c}, nil
+}
 
-	return &sitewiseClient{iotsitewise.New(sess, swcfg)}, nil
+// TODO, move to https://github.com/grafana/grafana-plugin-sdk-go
+func userAgentString() string {
+	return fmt.Sprintf("%s/%s (%s; %s) Grafana/%s", aws.SDKName, aws.SDKVersion, runtime.Version(), runtime.GOOS, os.Getenv("GF_VERSION"))
 }
