@@ -15,7 +15,7 @@ export interface Props {
 
 interface State {
   isOpen: boolean;
-  byModel: boolean;
+  tab: 'Modal' | 'Hierarchy';
   cache?: SitewiseCache;
   asset?: AssetInfo;
 }
@@ -30,7 +30,7 @@ export const ModalHeader = () => {
 };
 
 export class AssetBrowser extends Component<Props, State> {
-  state: State = { isOpen: false, byModel: false };
+  state: State = { isOpen: false, tab: 'Hierarchy' };
 
   async componentDidMount() {
     const { assetId, region } = this.props;
@@ -59,7 +59,7 @@ export class AssetBrowser extends Component<Props, State> {
   };
 
   renderBody() {
-    const { cache, byModel, asset } = this.state;
+    const { cache, tab, asset } = this.state;
     if (!cache) {
       return (
         <div>
@@ -68,14 +68,17 @@ export class AssetBrowser extends Component<Props, State> {
         </div>
       );
     }
-    if (byModel) {
-      return <BrowseModels cache={cache} asset={asset} onAssetChanged={this.onSelectAsset} />;
+
+    switch (tab) {
+      case 'Hierarchy':
+        return <BrowseHierarchy cache={cache} asset={asset} onAssetSelected={this.onSelectAsset} />;
+      case 'Modal':
+        return <BrowseModels cache={cache} asset={asset} onAssetChanged={this.onSelectAsset} />;
     }
-    return <BrowseHierarchy cache={cache} asset={asset} onAssetSelected={this.onSelectAsset} />;
   }
 
   render() {
-    const { isOpen, byModel } = this.state;
+    const { isOpen, tab } = this.state;
 
     return (
       <>
@@ -95,8 +98,18 @@ export class AssetBrowser extends Component<Props, State> {
           <div>
             <div>
               <TabsBar>
-                <Tab css label={'Heiarchy'} active={!byModel} onChangeTab={() => this.setState({ byModel: false })} />
-                <Tab css label={'By Model'} active={byModel} onChangeTab={() => this.setState({ byModel: true })} />
+                <Tab
+                  css
+                  label={'Hierarchy'}
+                  active={'Hierarchy' === tab}
+                  onChangeTab={() => this.setState({ tab: 'Hierarchy' })}
+                />
+                <Tab
+                  css
+                  label={'By Model'}
+                  active={'Modal' === tab}
+                  onChangeTab={() => this.setState({ tab: 'Modal' })}
+                />
               </TabsBar>
               <TabContent style={{ maxHeight: '90vh' }}>
                 <div>{this.renderBody()}</div>

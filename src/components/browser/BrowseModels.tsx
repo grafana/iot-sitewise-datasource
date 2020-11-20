@@ -4,6 +4,7 @@ import { AssetInfo } from '../../types';
 import { SitewiseCache } from 'sitewiseCache';
 import { DataFrameView, SelectableValue } from '@grafana/data';
 import { AssetModelSummary, AssetSummary } from 'queryResponseTypes';
+import { AssetList } from './hierarchy/AssetList';
 
 export interface Props {
   cache: SitewiseCache;
@@ -36,9 +37,9 @@ export class BrowseModels extends Component<Props, State> {
     this.setState({ modelId, assets });
   };
 
-  onAssetChanged = async (sel: SelectableValue<string>) => {
-    if (sel.value) {
-      this.props.onAssetChanged(sel.value);
+  onAssetChanged = async (assetId?: string) => {
+    if (assetId) {
+      this.props.onAssetChanged(assetId);
     }
   };
 
@@ -57,13 +58,8 @@ export class BrowseModels extends Component<Props, State> {
       label: m.name,
       description: m.description,
     }));
-    const assetOptions = assets
-      ? assets.map(m => ({
-          value: m.id,
-          label: m.name,
-          description: m.arn,
-        }))
-      : [];
+
+    const selectedModel = modelOptions.find(v => v.value === modelId);
 
     return (
       <>
@@ -71,7 +67,7 @@ export class BrowseModels extends Component<Props, State> {
           <h4>Model:</h4>
           <Select
             options={modelOptions}
-            value={modelOptions.find(v => v.value === modelId) || {}}
+            value={selectedModel || {}}
             onChange={this.onModelIdChange}
             backspaceRemovesValue={true}
             isSearchable={true}
@@ -79,16 +75,19 @@ export class BrowseModels extends Component<Props, State> {
           />
           <br />
           <br />
-          <h4>Asset:</h4>
-          <Select
-            //   isOpen={true}
-            options={assetOptions}
-            placeholder="select asset"
-            onChange={this.onAssetChanged}
-            backspaceRemovesValue={true}
-            isSearchable={true}
-            menuPlacement="bottom"
-          />
+          <h4>Assets:</h4>
+          {selectedModel && assets ? (
+            <AssetList
+              assets={assets.toArray()}
+              listInfo={{ name: selectedModel.label, id: selectedModel.value, description: selectedModel.description }}
+              onSelect={this.onAssetChanged}
+            />
+          ) : (
+            <>
+              <p />
+              <h6>No assets found.</h6>
+            </>
+          )}
         </div>
       </>
     );
