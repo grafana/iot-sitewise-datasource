@@ -4,10 +4,7 @@ import { AssetInfo } from '../../types';
 import { SelectableValue } from '@grafana/data';
 import { Select } from '@grafana/ui';
 import { AssetHierarchyList } from './hierarchy/AssetHierarchyList';
-import { AssetList } from './hierarchy/AssetList';
 import { AssetListItem } from './hierarchy/AssetListItem';
-
-// const UNSET_VAL = { value: undefined, description: undefined };
 
 export interface State {
   assets: Array<SelectableValue<string>>;
@@ -66,28 +63,25 @@ export class BrowseHierarchy extends Component<Props, State> {
   };
 
   onAssetSelected = async (assetId?: string) => {
-    const { onAssetSelected } = this.props;
     if (assetId) {
-      onAssetSelected(assetId);
+      this.props.onAssetSelected(assetId);
     }
   };
 
-  renderParents = () => {
+  renderParents() {
     const { asset, parents } = this.state;
-
-    if (asset && parents && parents.length) {
+    if (asset && parents?.length) {
       return (
-        <AssetList
-          assets={parents}
-          listInfo={{ name: 'Parents:', description: 'asset parent to select', id: asset?.id }}
-          onSelect={this.onAssetSelected}
-          onInspect={this.onSetAssetId}
+        <Select
+          options={parents.map(v => ({ label: v.name, value: v.id, description: v.id }))}
+          onChange={this.onAssetChange}
+          placeholder="Parent assets..."
+          menuPlacement="bottom"
         />
       );
     }
-
-    return <h6>No parents for asset.</h6>;
-  };
+    return;
+  }
 
   renderHierarchies = () => {
     const { asset } = this.state;
@@ -131,10 +125,8 @@ export class BrowseHierarchy extends Component<Props, State> {
       <>
         {asset ? (
           <>
-            <h5>Asset:</h5>
             <AssetListItem current={true} asset={asset} onSelect={() => this.onAssetSelected(asset?.id)} />
-            <h5>Parents:</h5>
-            [show dropdown]
+            {this.renderParents()}
           </>
         ) : (
           <Select
@@ -150,6 +142,7 @@ export class BrowseHierarchy extends Component<Props, State> {
             menuPlacement="bottom"
           />
         )}
+        <br />
         <div style={{ height: '60vh', overflow: 'auto' }}>
           <h5> Asset Hierarchies: </h5>
           <this.renderHierarchies />
