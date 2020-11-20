@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { assetSummaryToAssetInfo, SitewiseCache } from '../../sitewiseCache';
 import { AssetInfo } from '../../types';
 import { SelectableValue } from '@grafana/data';
-import { Select } from '@grafana/ui';
+import { Input, Select } from '@grafana/ui';
 import { AssetHierarchyList } from './hierarchy/AssetHierarchyList';
 import { AssetListItem } from './hierarchy/AssetListItem';
 
@@ -10,6 +10,7 @@ export interface State {
   assets: Array<SelectableValue<string>>;
   asset?: AssetInfo;
   parents?: AssetInfo[];
+  search?: string;
 }
 
 export interface Props {
@@ -68,6 +69,10 @@ export class BrowseHierarchy extends Component<Props, State> {
     }
   };
 
+  onSearchChange = (event: React.FormEvent<HTMLInputElement>) => {
+    this.setState({ search: event.currentTarget.value });
+  };
+
   renderParents() {
     const { asset, parents } = this.state;
     if (asset && parents?.length) {
@@ -84,33 +89,36 @@ export class BrowseHierarchy extends Component<Props, State> {
   }
 
   renderHierarchies = () => {
-    const { asset } = this.state;
-
-    if (asset) {
-      return (
-        <ul>
-          {asset.hierarchy.length ? (
-            asset.hierarchy.map(h => {
-              return (
-                <li key={h.label}>
-                  <AssetHierarchyList
-                    hierarchy={{ name: h.label, id: h.value }}
-                    asset={asset}
-                    cache={this.props.cache}
-                    onInspect={this.onSetAssetId}
-                    onSelect={this.onAssetSelected}
-                  />
-                </li>
-              );
-            })
-          ) : (
-            <h6>No hierarchies found for asset.</h6>
-          )}
-        </ul>
-      );
+    const { asset, search } = this.state;
+    if (!asset) {
+      return;
+    }
+    if (!asset.hierarchy.length) {
+      return <h6>No hierarchies found for asset.</h6>;
     }
 
-    return <></>;
+    return (
+      <>
+        <h5> Asset Hierarchies: </h5>
+        <div style={{ height: '40vh', overflow: 'auto' }}>
+          <Input css="" value={search} onChange={this.onSearchChange} placeholder="search..." />
+          <br />
+
+          {asset.hierarchy.map(h => {
+            return (
+              <AssetHierarchyList
+                hierarchy={{ name: h.label, id: h.value }}
+                asset={asset}
+                search={search}
+                cache={this.props.cache}
+                onInspect={this.onSetAssetId}
+                onSelect={this.onAssetSelected}
+              />
+            );
+          })}
+        </div>
+      </>
+    );
   };
 
   render() {
@@ -125,7 +133,7 @@ export class BrowseHierarchy extends Component<Props, State> {
       <>
         {asset ? (
           <>
-            <AssetListItem current={true} asset={asset} onSelect={() => this.onAssetSelected(asset?.id)} />
+            <AssetListItem asset={asset} onSelect={() => this.onAssetSelected(asset?.id)} />
             {this.renderParents()}
           </>
         ) : (
@@ -143,10 +151,7 @@ export class BrowseHierarchy extends Component<Props, State> {
           />
         )}
         <br />
-        <div style={{ height: '60vh', overflow: 'auto' }}>
-          <h5> Asset Hierarchies: </h5>
-          <this.renderHierarchies />
-        </div>
+        {this.renderHierarchies()}
       </>
     );
   }
