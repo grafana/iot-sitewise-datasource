@@ -77,11 +77,7 @@ export class BrowseModels extends Component<Props, State> {
           <br />
           <h4>Assets:</h4>
           {selectedModel && assets ? (
-            <AssetList
-              assets={assets.toArray()}
-              listInfo={{ name: selectedModel.label, id: selectedModel.value, description: selectedModel.description }}
-              onSelect={this.onAssetChanged}
-            />
+            <AssetList assets={assets.toArray()} onSelect={this.onAssetChanged} />
           ) : (
             <>
               <p />

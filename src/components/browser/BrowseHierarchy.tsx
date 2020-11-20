@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { assetSummaryToAssetInfo, SitewiseCache } from '../../sitewiseCache';
 import { AssetInfo } from '../../types';
 import { SelectableValue } from '@grafana/data';
-import { Button, Label, Select } from '@grafana/ui';
+import { Select } from '@grafana/ui';
 import { AssetHierarchyList } from './hierarchy/AssetHierarchyList';
 import { AssetList } from './hierarchy/AssetList';
+import { AssetListItem } from './hierarchy/AssetListItem';
 
 // const UNSET_VAL = { value: undefined, description: undefined };
 
@@ -127,32 +128,33 @@ export class BrowseHierarchy extends Component<Props, State> {
     }
 
     return (
-      <div style={{ height: '60vh', overflow: 'auto' }}>
-        <Button name="copy" size="md" variant="secondary" onClick={_ => this.onAssetSelected(asset?.id)}>
-          Select
-        </Button>
-        <p />
-        <p />
-        <Label description="asset to select">Asset:</Label>
-        <Select
-          options={assets}
-          value={current}
-          onChange={this.onAssetChange}
-          placeholder="Select an asset"
-          allowCustomValue={true}
-          isClearable={true}
-          isSearchable={true}
-          onCreateOption={this.onSetAssetId}
-          formatCreateLabel={txt => `Asset ID: ${txt}`}
-          menuPlacement="bottom"
-        />
-        <p />
-        <this.renderParents />
-        <p />
-        <p />
-        <h5> Asset Hierarchies: </h5>
-        <this.renderHierarchies />
-      </div>
+      <>
+        {asset ? (
+          <>
+            <h5>Asset:</h5>
+            <AssetListItem current={true} asset={asset} onSelect={() => this.onAssetSelected(asset?.id)} />
+            <h5>Parents:</h5>
+            [show dropdown]
+          </>
+        ) : (
+          <Select
+            options={assets}
+            value={current}
+            onChange={this.onAssetChange}
+            placeholder="Select an asset"
+            allowCustomValue={true}
+            isClearable={true}
+            isSearchable={true}
+            onCreateOption={this.onSetAssetId}
+            formatCreateLabel={txt => `Asset ID: ${txt}`}
+            menuPlacement="bottom"
+          />
+        )}
+        <div style={{ height: '60vh', overflow: 'auto' }}>
+          <h5> Asset Hierarchies: </h5>
+          <this.renderHierarchies />
+        </div>
+      </>
     );
   }
 }
