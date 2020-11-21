@@ -2,16 +2,15 @@ import React, { Component } from 'react';
 import { assetSummaryToAssetInfo, SitewiseCache } from '../../sitewiseCache';
 import { AssetInfo } from '../../types';
 import { SelectableValue } from '@grafana/data';
-import { Button, Label, Select } from '@grafana/ui';
+import { Input, Select } from '@grafana/ui';
 import { AssetHierarchyList } from './hierarchy/AssetHierarchyList';
-import { AssetList } from './hierarchy/AssetList';
-
-// const UNSET_VAL = { value: undefined, description: undefined };
+import { AssetListItem } from './hierarchy/AssetListItem';
 
 export interface State {
   assets: Array<SelectableValue<string>>;
   asset?: AssetInfo;
   parents?: AssetInfo[];
+  search?: string;
 }
 
 export interface Props {
@@ -65,57 +64,61 @@ export class BrowseHierarchy extends Component<Props, State> {
   };
 
   onAssetSelected = async (assetId?: string) => {
-    const { onAssetSelected } = this.props;
     if (assetId) {
-      onAssetSelected(assetId);
+      this.props.onAssetSelected(assetId);
     }
   };
 
-  renderParents = () => {
-    const { asset, parents } = this.state;
+  onSearchChange = (event: React.FormEvent<HTMLInputElement>) => {
+    this.setState({ search: event.currentTarget.value });
+  };
 
-    if (asset && parents && parents.length) {
+  renderParents() {
+    const { asset, parents } = this.state;
+    if (asset && parents?.length) {
       return (
-        <AssetList
-          assets={parents}
-          listInfo={{ name: 'Parents:', description: 'asset parent to select', id: asset?.id }}
-          onSelect={this.onAssetSelected}
-          onInspect={this.onSetAssetId}
+        <Select
+          options={parents.map(v => ({ label: v.name, value: v.id, description: v.id }))}
+          onChange={this.onAssetChange}
+          placeholder="Parent assets..."
+          menuPlacement="bottom"
         />
       );
     }
-
-    return <h6>No parents for asset.</h6>;
-  };
+    return;
+  }
 
   renderHierarchies = () => {
-    const { asset } = this.state;
-
-    if (asset) {
-      return (
-        <ul>
-          {asset.hierarchy.length ? (
-            asset.hierarchy.map(h => {
-              return (
-                <li key={h.label}>
-                  <AssetHierarchyList
-                    hierarchy={{ name: h.label, id: h.value }}
-                    asset={asset}
-                    cache={this.props.cache}
-                    onInspect={this.onSetAssetId}
-                    onSelect={this.onAssetSelected}
-                  />
-                </li>
-              );
-            })
-          ) : (
-            <h6>No hierarchies found for asset.</h6>
-          )}
-        </ul>
-      );
+    const { asset, search } = this.state;
+    if (!asset) {
+      return;
+    }
+    if (!asset.hierarchy.length) {
+      return <h6>No hierarchies found for asset.</h6>;
     }
 
-    return <></>;
+    return (
+      <>
+        <h5> Asset Hierarchies: </h5>
+        <div style={{ height: '40vh', overflow: 'auto' }}>
+          <Input css="" value={search} onChange={this.onSearchChange} placeholder="search..." />
+          <br />
+
+          {asset.hierarchy.map(h => {
+            return (
+              <AssetHierarchyList
+                hierarchy={{ name: h.label, id: h.value }}
+                asset={asset}
+                search={search}
+                cache={this.props.cache}
+                onInspect={this.onSetAssetId}
+                onSelect={this.onAssetSelected}
+              />
+            );
+          })}
+        </div>
+      </>
+    );
   };
 
   render() {
@@ -127,32 +130,29 @@ export class BrowseHierarchy extends Component<Props, State> {
     }
 
     return (
-      <div style={{ height: '60vh', overflow: 'auto' }}>
-        <Button name="copy" size="md" variant="secondary" onClick={_ => this.onAssetSelected(asset?.id)}>
-          Select
-        </Button>
-        <p />
-        <p />
-        <Label description="asset to select">Asset:</Label>
-        <Select
-          options={assets}
-          value={current}
-          onChange={this.onAssetChange}
-          placeholder="Select an asset"
-          allowCustomValue={true}
-          isClearable={true}
-          isSearchable={true}
-          onCreateOption={this.onSetAssetId}
-          formatCreateLabel={txt => `Asset ID: ${txt}`}
-          menuPlacement="bottom"
-        />
-        <p />
-        <this.renderParents />
-        <p />
-        <p />
-        <h5> Asset Hierarchies: </h5>
-        <this.renderHierarchies />
-      </div>
+      <>
+        {asset ? (
+          <>
+            <AssetListItem asset={asset} onSelect={() => this.onAssetSelected(asset?.id)} />
+            {this.renderParents()}
+          </>
+        ) : (
+          <Select
+            options={assets}
+            value={current}
+            onChange={this.onAssetChange}
+            placeholder="Select an asset"
+            allowCustomValue={true}
+            isClearable={true}
+            isSearchable={true}
+            onCreateOption={this.onSetAssetId}
+            formatCreateLabel={txt => `Asset ID: ${txt}`}
+            menuPlacement="bottom"
+          />
+        )}
+        <br />
+        {this.renderHierarchies()}
+      </>
     );
   }
 }

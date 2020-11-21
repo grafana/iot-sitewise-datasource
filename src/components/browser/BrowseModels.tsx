@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Select, Spinner } from '@grafana/ui';
+import { Input, Select, Spinner } from '@grafana/ui';
 import { AssetInfo } from '../../types';
 import { SitewiseCache } from 'sitewiseCache';
 import { DataFrameView, SelectableValue } from '@grafana/data';
@@ -16,6 +16,7 @@ interface State {
   modelId?: string;
   models?: DataFrameView<AssetModelSummary>;
   assets?: DataFrameView<AssetSummary>;
+  search?: string;
 }
 
 export class BrowseModels extends Component<Props, State> {
@@ -43,8 +44,12 @@ export class BrowseModels extends Component<Props, State> {
     }
   };
 
+  onSearchChange = (event: React.FormEvent<HTMLInputElement>) => {
+    this.setState({ search: event.currentTarget.value });
+  };
+
   render() {
-    const { models, assets, modelId } = this.state;
+    const { models, assets, modelId, search } = this.state;
     if (!models) {
       return (
         <div>
@@ -77,11 +82,15 @@ export class BrowseModels extends Component<Props, State> {
           <br />
           <h4>Assets:</h4>
           {selectedModel && assets ? (
-            <AssetList
-              assets={assets.toArray()}
-              listInfo={{ name: selectedModel.label, id: selectedModel.value, description: selectedModel.description }}
-              onSelect={this.onAssetChanged}
-            />
+            <>
+              {assets.length > 2 && (
+                <>
+                  <Input css="" value={search} onChange={this.onSearchChange} placeholder="search..." />
+                  <br />
+                </>
+              )}
+              <AssetList search={search} assets={assets.toArray()} onSelect={this.onAssetChanged} />
+            </>
           ) : (
             <>
               <p />

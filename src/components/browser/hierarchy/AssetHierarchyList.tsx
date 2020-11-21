@@ -31,6 +31,7 @@ export interface Props {
   hierarchy: HierarchyInfo;
   children?: AssetSummary[];
   cache?: SitewiseCache;
+  search?: string;
   onSelect: (assetId: string) => void;
   onInspect: (assetId: string) => void;
 }
@@ -40,6 +41,7 @@ export const AssetHierarchyList: FunctionComponent<Props> = ({
   hierarchy,
   children,
   cache,
+  search,
   onSelect,
   onInspect,
 }) => {
@@ -60,8 +62,9 @@ export const AssetHierarchyList: FunctionComponent<Props> = ({
   }, [currentChildren, asset, cache, hierarchy.id]);
 
   return (
-    <div className={style.container}>
+    <div key={hierarchy.id} className={style.container}>
       <AssetList
+        search={search}
         assets={currentChildren}
         listInfo={{ id: hierarchy.id, description: hierarchy.id, name: hierarchy.name }}
         onSelect={onSelect}

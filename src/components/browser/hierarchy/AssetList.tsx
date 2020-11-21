@@ -25,44 +25,56 @@ export interface ListInfo {
 }
 
 export interface Props {
-  listInfo: ListInfo;
+  listInfo?: ListInfo;
+  search?: string;
   assets?: Array<AssetInfo | AssetSummary>;
   onSelect: (assetId: string) => void;
   onInspect?: (assetId: string) => void;
 }
 
-export const AssetList: FunctionComponent<Props> = ({ listInfo, assets, onSelect, onInspect }) => {
+export const AssetList: FunctionComponent<Props> = ({ listInfo, assets, search, onSelect, onInspect }) => {
   const theme = useTheme();
   const style = getStyles(theme);
 
-  const label = ((<Label description={listInfo.description}>{listInfo.name}</Label>) as unknown) as string;
+  const label = listInfo
+    ? (((<Label description={listInfo.description}>{listInfo.name}</Label>) as unknown) as string)
+    : '';
 
   const renderChildren = () => {
     if (!assets) {
       return (
-        <>
+        <div key={listInfo?.id}>
           <Spinner />
           Loading assets...
-        </>
+        </div>
       );
+    }
+    if (!assets.length) {
+      return <></>; // nothing
+    }
+
+    const lowerSearch = search ? search.toLowerCase() : '';
+    const filtered = search ? assets.filter(a => a.name.toLowerCase().indexOf(lowerSearch) >= 0) : assets;
+    if (!filtered.length && search) {
+      return <div key={listInfo?.id}>No assets match: {search}</div>;
     }
 
     return (
-      <ul key={listInfo.id}>
-        {assets.map(c => {
-          return (
-            <li key={c.name} className={style.listItem}>
-              <AssetListItem asset={c} onInspect={onInspect} onSelect={onSelect} />
-            </li>
-          );
+      <div key={listInfo?.id}>
+        {filtered.map(c => {
+          return <AssetListItem asset={c} key={c.id} onInspect={onInspect} onSelect={onSelect} />;
         })}
-      </ul>
+      </div>
     );
   };
 
+  if (!listInfo) {
+    return renderChildren();
+  }
+
   return (
     <div className={style.container}>
-      <CollapsableSection label={label} isOpen={false}>
+      <CollapsableSection label={label} isOpen={true}>
         {renderChildren()}
       </CollapsableSection>
     </div>
