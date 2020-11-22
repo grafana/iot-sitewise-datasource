@@ -73,21 +73,6 @@ export class BrowseHierarchy extends Component<Props, State> {
     this.setState({ search: event.currentTarget.value });
   };
 
-  renderParents() {
-    const { asset, parents } = this.state;
-    if (asset && parents?.length) {
-      return (
-        <Select
-          options={parents.map(v => ({ label: v.name, value: v.id, description: v.id }))}
-          onChange={this.onAssetChange}
-          placeholder="Parent assets..."
-          menuPlacement="bottom"
-        />
-      );
-    }
-    return;
-  }
-
   renderHierarchies = () => {
     const { asset, search } = this.state;
     if (!asset) {
@@ -122,7 +107,7 @@ export class BrowseHierarchy extends Component<Props, State> {
   };
 
   render() {
-    const { asset, assets } = this.state;
+    const { asset, assets, parents } = this.state;
 
     let current = asset ? assets.find(v => v.value === asset.id) : undefined;
     if (!current && asset) {
@@ -133,8 +118,16 @@ export class BrowseHierarchy extends Component<Props, State> {
       <>
         {asset ? (
           <>
+            {parents &&
+              parents.map(p => (
+                <AssetListItem
+                  key={p.id}
+                  asset={p}
+                  onInspect={this.onSetAssetId}
+                  onSelect={() => this.onAssetSelected(p.id)}
+                />
+              ))}
             <AssetListItem asset={asset} onSelect={() => this.onAssetSelected(asset?.id)} />
-            {this.renderParents()}
           </>
         ) : (
           <Select
