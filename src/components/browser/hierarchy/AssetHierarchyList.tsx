@@ -59,7 +59,7 @@ export const AssetHierarchyList: FunctionComponent<Props> = ({
       };
       fetchData();
     }
-  }, [children, asset, hierarchy.id]);
+  }, [children, asset, cache, hierarchy.id]);
 
   return (
     <div key={hierarchy.id} className={style.container}>
