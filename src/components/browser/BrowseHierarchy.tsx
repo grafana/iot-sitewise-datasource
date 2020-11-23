@@ -141,7 +141,7 @@ export class BrowseHierarchy extends Component<Props, State> {
         {asset ? (
           <>
             <this.renderParents />
-            <p/>
+            <p />
             <h5> Selected Asset: </h5>
             <AssetListItem asset={asset} onSelect={() => this.onAssetSelected(asset?.id)} />
           </>
