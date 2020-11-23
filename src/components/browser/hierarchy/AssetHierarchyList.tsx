@@ -52,14 +52,14 @@ export const AssetHierarchyList: FunctionComponent<Props> = ({
 
   useEffect(() => {
     // try to load children if none passed in
-    if (!currentChildren && asset && cache) {
+    if (!children && asset && cache) {
       const fetchData = async () => {
         const results = await cache.getAssociatedAssets(asset.id, hierarchy.id);
         setChildren(results.toArray());
       };
       fetchData();
     }
-  }, [currentChildren, asset, cache, hierarchy.id]);
+  }, [children, asset, hierarchy.id]);
 
   return (
     <div key={hierarchy.id} className={style.container}>
