@@ -5,6 +5,7 @@ import { SelectableValue } from '@grafana/data';
 import { Input, Select } from '@grafana/ui';
 import { AssetHierarchyList } from './hierarchy/AssetHierarchyList';
 import { AssetListItem } from './hierarchy/AssetListItem';
+import { AssetList } from './hierarchy/AssetList';
 
 export interface State {
   assets: Array<SelectableValue<string>>;
@@ -73,21 +74,6 @@ export class BrowseHierarchy extends Component<Props, State> {
     this.setState({ search: event.currentTarget.value });
   };
 
-  renderParents() {
-    const { asset, parents } = this.state;
-    if (asset && parents?.length) {
-      return (
-        <Select
-          options={parents.map(v => ({ label: v.name, value: v.id, description: v.id }))}
-          onChange={this.onAssetChange}
-          placeholder="Parent assets..."
-          menuPlacement="bottom"
-        />
-      );
-    }
-    return;
-  }
-
   renderHierarchies = () => {
     const { asset, search } = this.state;
     if (!asset) {
@@ -121,6 +107,27 @@ export class BrowseHierarchy extends Component<Props, State> {
     );
   };
 
+  renderParents = () => {
+    const { parents } = this.state;
+
+    return (
+      <>
+        <h5> Parents: </h5>
+        {parents ? (
+          <AssetList
+            listInfo={{ id: '', name: 'Show Parents', description: '' }}
+            assets={parents}
+            onSelect={this.onAssetSelected}
+            onInspect={this.onSetAssetId}
+            open={false}
+          />
+        ) : (
+          <h6>No parents found.</h6>
+        )}
+      </>
+    );
+  };
+
   render() {
     const { asset, assets } = this.state;
 
@@ -133,8 +140,10 @@ export class BrowseHierarchy extends Component<Props, State> {
       <>
         {asset ? (
           <>
+            <this.renderParents />
+            <p />
+            <h5> Selected Asset: </h5>
             <AssetListItem asset={asset} onSelect={() => this.onAssetSelected(asset?.id)} />
-            {this.renderParents()}
           </>
         ) : (
           <Select

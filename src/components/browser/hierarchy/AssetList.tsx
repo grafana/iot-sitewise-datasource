@@ -30,9 +30,10 @@ export interface Props {
   assets?: Array<AssetInfo | AssetSummary>;
   onSelect: (assetId: string) => void;
   onInspect?: (assetId: string) => void;
+  open?: boolean;
 }
 
-export const AssetList: FunctionComponent<Props> = ({ listInfo, assets, search, onSelect, onInspect }) => {
+export const AssetList: FunctionComponent<Props> = ({ listInfo, assets, search, onSelect, onInspect, open = true }) => {
   const theme = useTheme();
   const style = getStyles(theme);
 
@@ -74,7 +75,7 @@ export const AssetList: FunctionComponent<Props> = ({ listInfo, assets, search, 
 
   return (
     <div className={style.container}>
-      <CollapsableSection label={label} isOpen={true}>
+      <CollapsableSection label={label} isOpen={open}>
         {renderChildren()}
       </CollapsableSection>
     </div>
