@@ -137,7 +137,7 @@ export class BrowseHierarchy extends Component<Props, State> {
     }
 
     return (
-      <>
+      <div style={{ height: '60vh' }}>
         {asset ? (
           <>
             <this.renderParents />
@@ -161,7 +161,7 @@ export class BrowseHierarchy extends Component<Props, State> {
         )}
         <br />
         {this.renderHierarchies()}
-      </>
+      </div>
     );
   }
 }
