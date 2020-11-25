@@ -1,6 +1,6 @@
 {
   "name": "grafana-iot-sitewise-datasource",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "View IoT Sitewise data in grafana",
   "scripts": {
     "build": "rm -rf dist && grafana-toolkit plugin:build && mage build:backend",
