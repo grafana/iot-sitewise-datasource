@@ -228,7 +228,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
   }
 
   render() {
-    const { query } = this.props;
+    const { query, datasource } = this.props;
     const { loading, asset, assets } = this.state;
 
     let current = query.assetId ? assets.find(v => v.value === query.assetId) : undefined;
@@ -261,6 +261,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         <div className="gf-form">
           <InlineField label="Asset" labelWidth={firstLabelWith} grow={true}>
             <Select
+              key={query.region ? query.region : 'default'}
               isLoading={loading}
               options={assets}
               value={current}
@@ -274,7 +275,12 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
               menuPlacement="bottom"
             />
           </InlineField>
-          <AssetBrowser {...this.props} assetId={query.assetId} onAssetChanged={this.onSetAssetId} />
+          <AssetBrowser
+            datasource={datasource}
+            region={query.region}
+            assetId={query.assetId}
+            onAssetChanged={this.onSetAssetId}
+          />
         </div>
         {showProp && (
           <>

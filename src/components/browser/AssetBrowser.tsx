@@ -40,16 +40,24 @@ export class AssetBrowser extends Component<Props, State> {
   }
 
   async componentDidUpdate(oldProps: Props) {
+    let update: State = { ...this.state };
+    let shouldUpdate = false;
+
     if (this.props.region !== oldProps.region) {
-      const cache = this.props.datasource.getCache(this.props.region);
-      this.setState({ cache });
+      shouldUpdate = true;
+      update.cache = this.props.datasource.getCache(this.props.region);
     }
+
     if (this.props.assetId !== oldProps.assetId) {
       const { cache } = this.state;
       const { assetId } = this.props;
+      shouldUpdate = true;
       // Asset changed from the parent... reset state
-      const asset = assetId ? await cache!.getAssetInfo(assetId) : undefined;
-      this.setState({ asset });
+      update.asset = assetId ? await cache!.getAssetInfo(assetId) : undefined;
+    }
+
+    if (shouldUpdate) {
+      this.setState(update);
     }
   }
 

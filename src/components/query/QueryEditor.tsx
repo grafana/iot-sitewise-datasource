@@ -26,7 +26,7 @@ export class QueryEditor extends PureComponent<Props> {
 
   onRegionChange = (sel: SelectableValue<string>) => {
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, region: sel.value });
+    onChange({ ...query, assetId: undefined, propertyId: undefined, region: sel.value });
     onRunQuery();
   };
 

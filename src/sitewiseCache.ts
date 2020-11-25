@@ -110,6 +110,7 @@ export class SitewiseCache {
       refId: 'associatedAssets',
       assetId: assetId,
       hierarchyId: hierarchyId,
+      region: this.region,
     };
 
     return this.ds
