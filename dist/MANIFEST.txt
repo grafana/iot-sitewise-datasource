@@ -1,0 +1,36 @@
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+{
+  "manifestVersion": "2.0.0",
+  "signatureType": "grafana",
+  "signedByOrg": "grafana",
+  "signedByOrgName": "Grafana Labs",
+  "plugin": "grafana-iot-sitewise-datasource",
+  "version": "0.1.0",
+  "time": 1606343743292,
+  "keyId": "7e4d0c6a708866e7",
+  "files": {
+    "img/sitewise.svg": "ca70b9ac04ec0f6bb7019b6f9cfe42680913fba45596ed3b27751f30d7f751d1",
+    "module.js.LICENSE.txt": "0d8f66cd4afb566cb5b7e1540c68f43b939d3eba12ace290f18abc4f4cb53ed0",
+    "gpx_iot_sitewise_linux_arm64": "e6d82f3bb5a04b7f44a927a1f958e67251fdbeb32daea6e3f0453abe07e45b61",
+    "module.js.map": "7e2ac4d0a80695a4587feb0f0c8207f97c7023c3fd25dca4ccd1c090c8d4b244",
+    "module.js": "2be91687614d28baed329c522429ad997b013648b7dc4a5968dfd2a42c6032b7",
+    "gpx_iot_sitewise_darwin_amd64": "68fb168cd5555670c7ae11b00c2dcfa60df5db4f6cef157cabdd6d203d0f5000",
+    "README.md": "30559e2031133def936dc9bd620af8988a74b86da1384d1b55b925171d719a28",
+    "LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "gpx_iot_sitewise_linux_arm": "112eb45bed3bc93f5d69746493c4ecb7826cf11bf0b5100d78ef4c7acc855fc5",
+    "plugin.json": "270a6a3e9bfcc7103455b25a0ecd2a53dce60e87fe39e090b658890db997a44c"
+  }
+}
+-----BEGIN PGP SIGNATURE-----
+Version: OpenPGP.js v4.10.1
+Comment: https://openpgpjs.org
+
+wqEEARMKAAYFAl++3D8ACgkQfk0ManCIZuci4QIJASoAxAK7JGnkb65N1Pkh
+AiN6dDeqc9In6nh2jJV0sAdiOGtWUtBIiJV4LwFv7uhTufidP4tVIh2bRp2R
+ovrihV1YAgiy9gobglmEv1z/1imn19g9tz8MTeaGtyBSXIJGMR5EjeVfkPSg
+NwLYE+V2Ps65t06Pqfk8E/mGlh/lKcXKKM7XXQ==
+=A0qb
+-----END PGP SIGNATURE-----
