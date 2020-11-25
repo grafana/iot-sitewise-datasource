@@ -47,7 +47,7 @@ export class AssetBrowser extends Component<Props, State> {
       shouldUpdate = true;
       update.cache = this.props.datasource.getCache(this.props.region);
     }
-    
+
     if (this.props.assetId !== oldProps.assetId) {
       const { cache } = this.state;
       const { assetId } = this.props;
