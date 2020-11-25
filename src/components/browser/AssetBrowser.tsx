@@ -40,8 +40,7 @@ export class AssetBrowser extends Component<Props, State> {
   }
 
   async componentDidUpdate(oldProps: Props) {
-
-    let update: State = {...this.state}
+    let update: State = { ...this.state };
     let shouldUpdate = false;
 
     if (this.props.region !== oldProps.region) {
@@ -59,7 +58,7 @@ export class AssetBrowser extends Component<Props, State> {
     }
 
     if (shouldUpdate) {
-      this.setState(update)
+      this.setState(update);
     }
   }
 

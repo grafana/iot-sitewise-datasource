@@ -77,8 +77,6 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const { query } = this.props;
     const assetChanged = query?.assetId !== oldProps?.query?.assetId;
     const propChanged = query?.propertyId !== oldProps?.query?.propertyId;
-    console.log(`assetChanged: ${assetChanged}, propChanged: ${propChanged}`);
-    console.log(`${JSON.stringify(query, undefined, 2)}`)
     if (assetChanged || propChanged) {
       if (!query.assetId) {
         this.setState({ asset: undefined, property: undefined, loading: false });
@@ -277,7 +275,12 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
               menuPlacement="bottom"
             />
           </InlineField>
-          <AssetBrowser datasource={datasource} region={query.region} assetId={query.assetId} onAssetChanged={this.onSetAssetId} />
+          <AssetBrowser
+            datasource={datasource}
+            region={query.region}
+            assetId={query.assetId}
+            onAssetChanged={this.onSetAssetId}
+          />
         </div>
         {showProp && (
           <>
