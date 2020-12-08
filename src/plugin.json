@@ -28,8 +28,8 @@
         "url": "https://aws.amazon.com/iot-sitewise/"
       },
       {
-        "name": "Plugin",
-        "url": "https://github.com/grafana/iot-sitewise-datasource"
+        "name": "Issue Tracker",
+        "url": "https://github.com/grafana/iot-sitewise-datasource/issues"
       }
     ],
     "screenshots": [],
