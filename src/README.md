@@ -53,13 +53,12 @@ Once authentication is configured, click "Save and Test" to verify the service i
 
 ## Query editor
 
-TODO: query editor docs
-
 ![query-editor](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/editor.png)
 
 
 ### Alerting
 
+Standard grafana alertings is support with this plugin, however note that alert queries may not include template variables.
 See the [Alerting](https://grafana.com/docs/grafana/latest/alerting/alerts-overview/) documentation for more on Grafana alerts.
 
 ## Configure the data source with provisioning
