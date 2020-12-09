@@ -9,51 +9,25 @@ This datasource supports reading data from [AWS IoT SiteWise](https://aws.amazon
 1. Click the **Add data source** button.
 1. Select **IoT sitewise** in the **Industrial & IoT** section.
 
-| Name                     | Description                                                                                                             |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
-| Name                     | The data source name. This is how you refer to the data source in panels and queries.                                   |
-| Auth Provider            | Specify the provider to get credentials.                                                                                |
-| Default Region           | Used in query editor to set region. (can be changed on per query basis)                                                 |
-| Credentials profile name | Specify the name of the profile to use (if you use `~/.aws/credentials` file), leave blank for default.                 |
-| Assume Role Arn          | Specify the ARN of the role to assume.                                                                                  |
-
 
 ## Authentication
 
-In this section we will go through the different type of authentication you can use for IoT sitewise data source.
+The IoT SiteWise plugin authentication matches the standard Cloudwatch plugin system.  See the [grafana cloudwatch documentation](https://grafana.com/docs/grafana/latest/datasources/cloudwatch/#authentication) for authentication options and setup.
 
-### Example AWS credentials
-
-If the Auth Provider is `Credentials file`, then Grafana tries to get credentials in the following order:
-
-- Hard-code credentials
-- Environment variables (`AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`)
-- Existing default config files
-- ~/.aws/credentials
-- IAM role for Amazon EC2
-
-Refer to [Configuring the AWS SDK for Go](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html) in the AWS documentation for more information.
-
-### AWS credentials file
-
-Create a file at `~/.aws/credentials`. That is the `HOME` path for user running grafana-server.
-
-> **Note:** If the credentials file in the right place, but it is not working, then try moving your .aws file to '/usr/share/grafana/'. Make sure your credentials file has at most 0644 permissions.
-
-Example credential file:
-
-```bash
-[default]
-aws_access_key_id = <your access key>
-aws_secret_access_key = <your access key>
-region = us-west-2
-```
 
 Once authentication is configured, click "Save and Test" to verify the service is working. Once this is configured, you can specify default values for the configuration.
 
+
 ## Query editor
 
+Use the "query type" selector to pick an appropriate query.
 ![query-editor](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/editor.png)
+
+Click on the "Explore" button to open an asset/model navigation interface:
+![query-editor](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/explorer.png)
+
+Multiple aggregations can be showin for a single property:
+![query-editor](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/editor2.png)
 
 
 ### Alerting
