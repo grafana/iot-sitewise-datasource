@@ -11,7 +11,8 @@ const getStyles = stylesFactory((theme: GrafanaTheme) => {
   return {
     container: css`
       width: 100%;
-      height: 60vh;
+      height: auto;
+      margin-top: 10px;
     `,
     listItem: css`
       ${styleMixins.listItem(theme)}
