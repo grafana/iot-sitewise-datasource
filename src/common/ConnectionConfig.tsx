@@ -10,7 +10,8 @@ import {
   SelectableValue,
 } from '@grafana/data';
 
-import { AwsDataSourceJsonData, AwsDataSourceSecureJsonData, awsAuthProviderOptions, standardRegions } from './types';
+import { AwsDataSourceJsonData, AwsDataSourceSecureJsonData, awsAuthProviderOptions } from './types';
+import { standardRegions } from './regions';
 
 export interface Props extends DataSourcePluginOptionsEditorProps<AwsDataSourceJsonData, AwsDataSourceSecureJsonData> {
   loadRegions?: () => Promise<string[]>;
@@ -42,9 +43,14 @@ export default class ConnectionConfig extends PureComponent<Props, State> {
     const { regions } = this.state;
     const { options } = this.props;
     const secureJsonData = (options.secureJsonData || {}) as AwsDataSourceSecureJsonData;
-    let profile = options.jsonData.profile;
+    const { jsonData } = options;
+    let profile = jsonData.profile;
     if (profile === undefined) {
       profile = options.database;
+    }
+    let region = regions.find(v => v.value === jsonData.defaultRegion);
+    if (!region && jsonData.defaultRegion) {
+      region = { value: jsonData.defaultRegion, label: jsonData.defaultRegion };
     }
 
     return (
@@ -208,10 +214,12 @@ export default class ConnectionConfig extends PureComponent<Props, State> {
               </InlineFormLabel>
               <Select
                 className="width-30"
-                value={regions.find(region => region.value === options.jsonData.defaultRegion)}
+                value={region}
                 options={regions}
                 defaultValue={options.jsonData.defaultRegion}
                 onChange={onUpdateDatasourceJsonDataOptionSelect(this.props, 'defaultRegion')}
+                allowCustomValue={true}
+                formatCreateLabel={t => `Region: ${t}`}
               />
             </div>
           </div>
