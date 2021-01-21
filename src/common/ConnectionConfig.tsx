@@ -1,17 +1,18 @@
 import React, { PureComponent } from 'react';
-import { InlineFormLabel, LegacyForms, Button } from '@grafana/ui';
-const { Select, Input } = LegacyForms;
+import { Button, InlineFormLabel, LegacyForms } from '@grafana/ui';
 import {
   DataSourcePluginOptionsEditorProps,
+  onUpdateDatasourceJsonDataOption,
   onUpdateDatasourceJsonDataOptionSelect,
   onUpdateDatasourceResetOption,
-  onUpdateDatasourceJsonDataOption,
   onUpdateDatasourceSecureJsonDataOption,
   SelectableValue,
 } from '@grafana/data';
 
-import { AwsDataSourceJsonData, AwsDataSourceSecureJsonData, awsAuthProviderOptions } from './types';
+import { awsAuthProviderOptions, AwsDataSourceJsonData, AwsDataSourceSecureJsonData } from './types';
 import { standardRegions } from './regions';
+
+const { Select, Input } = LegacyForms;
 
 export interface Props extends DataSourcePluginOptionsEditorProps<AwsDataSourceJsonData, AwsDataSourceSecureJsonData> {
   loadRegions?: () => Promise<string[]>;
@@ -38,10 +39,14 @@ export default class ConnectionConfig extends PureComponent<Props, State> {
   //     this.loadRegionsPromise.cancel();
   //   }
   // }
+  // OnCertificateChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   updateDatasourcePluginSecureJsonDataOption(this.props, 'cert', event.target.value);
+  // };
 
   render() {
     const { regions } = this.state;
     const { options } = this.props;
+
     const secureJsonData = (options.secureJsonData || {}) as AwsDataSourceSecureJsonData;
     const { jsonData } = options;
     let profile = jsonData.profile;
