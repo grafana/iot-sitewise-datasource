@@ -26,7 +26,7 @@ type Datasource struct {
 }
 
 func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, error) {
-	cfg := awsds.AWSDatasourceSettings{}
+	cfg := client.AWSSiteWiseDataSourceSetting{}
 	err := cfg.Load(settings)
 	if err != nil {
 		return nil, err

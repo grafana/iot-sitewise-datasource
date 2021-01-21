@@ -18,6 +18,7 @@ export interface AwsDataSourceJsonData extends DataSourceJsonData {
 export interface AwsDataSourceSecureJsonData {
   accessKey?: string;
   secretKey?: string;
+  cert?: string;
 }
 
 export const awsAuthProviderOptions = [
@@ -52,6 +53,7 @@ export const standardRegions: Array<SelectableValue<string>> = [
   'us-isob-east-1',
   'us-west-1',
   'us-west-2',
+  'Edge',
 ].map(r => {
   return { value: r, label: r };
 });
