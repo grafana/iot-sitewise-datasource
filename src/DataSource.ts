@@ -6,6 +6,7 @@ import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta, isPropertyQueryType
 import { Observable } from 'rxjs';
 import { getRequestLooper, MultiRequestTracker } from 'requestLooper';
 import { appendMatchingFrames } from 'appendFrames';
+import { SitewiseVariableSupport } from 'variables';
 
 export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
@@ -15,6 +16,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   constructor(instanceSettings: DataSourceInstanceSettings<SitewiseOptions>) {
     super(instanceSettings);
     this.options = instanceSettings.jsonData;
+    this.variables = new SitewiseVariableSupport(this);
   }
 
   /**
