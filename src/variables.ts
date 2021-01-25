@@ -1,9 +1,4 @@
-import {
-  CustomVariableSupport,
-  DataFrameView,
-  DataQueryRequest,
-  MetricFindValue,
-} from '@grafana/data';
+import { CustomVariableSupport, DataFrameView, DataQueryRequest, MetricFindValue } from '@grafana/data';
 import { QueryEditor } from 'components/query/QueryEditor';
 import { HierarchyInfo } from './queryResponseTypes';
 
@@ -27,7 +22,7 @@ export class SitewiseVariableSupport extends CustomVariableSupport<DataSource, S
         return this.datasource.query(request).pipe(
           mergeMap((rsp) => {
             const assets = new DataFrameView<HierarchyInfo>(rsp.data[0]);
-            const data: MetricFindValue[] = assets.map( a => ({
+            const data: MetricFindValue[] = assets.map((a) => ({
               text: a.name,
               value: a.id,
             }));
