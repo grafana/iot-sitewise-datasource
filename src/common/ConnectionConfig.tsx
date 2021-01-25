@@ -7,10 +7,10 @@ import {
   onUpdateDatasourceResetOption,
   onUpdateDatasourceSecureJsonDataOption,
   SelectableValue,
-  updateDatasourcePluginSecureJsonDataOption,
 } from '@grafana/data';
 
-import { awsAuthProviderOptions, AwsDataSourceJsonData, AwsDataSourceSecureJsonData, standardRegions } from './types';
+import { awsAuthProviderOptions, AwsDataSourceJsonData, AwsDataSourceSecureJsonData } from './types';
+import { standardRegions } from './regions';
 
 const { Select, Input } = LegacyForms;
 
@@ -48,9 +48,14 @@ export default class ConnectionConfig extends PureComponent<Props, State> {
     const { options } = this.props;
 
     const secureJsonData = (options.secureJsonData || {}) as AwsDataSourceSecureJsonData;
-    let profile = options.jsonData.profile;
+    const { jsonData } = options;
+    let profile = jsonData.profile;
     if (profile === undefined) {
       profile = options.database;
+    }
+    let region = regions.find(v => v.value === jsonData.defaultRegion);
+    if (!region && jsonData.defaultRegion) {
+      region = { value: jsonData.defaultRegion, label: jsonData.defaultRegion };
     }
 
     return (
@@ -214,10 +219,12 @@ export default class ConnectionConfig extends PureComponent<Props, State> {
               </InlineFormLabel>
               <Select
                 className="width-30"
-                value={regions.find(region => region.value === options.jsonData.defaultRegion)}
+                value={region}
                 options={regions}
                 defaultValue={options.jsonData.defaultRegion}
                 onChange={onUpdateDatasourceJsonDataOptionSelect(this.props, 'defaultRegion')}
+                allowCustomValue={true}
+                formatCreateLabel={t => `Region: ${t}`}
               />
             </div>
           </div>
@@ -236,39 +243,6 @@ export default class ConnectionConfig extends PureComponent<Props, State> {
               </div>
             </div>
           </div>
-          {options.jsonData.defaultRegion === 'Edge' && (
-            <div className="gf-form-inline">
-              <div className="gf-form gf-form--v-stretch">
-                <label className="gf-form-label width-14">Certification</label>
-              </div>
-
-              {options.secureJsonFields?.cert ? (
-                <div className="gf-form">
-                  <div className="max-width-30 gf-form-inline">
-                    <Button
-                      variant="secondary"
-                      type="button"
-                      onClick={onUpdateDatasourceResetOption(this.props as any, 'cert')}
-                    >
-                      Reset
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="gf-form gf-form--grow">
-                  <textarea
-                    rows={7}
-                    className="gf-form-input gf-form-textarea width-30"
-                    onChange={event => {
-                      updateDatasourcePluginSecureJsonDataOption(this.props, 'cert', event.target.value);
-                    }}
-                    placeholder="Begins with -----BEGIN CERTIFICATE------"
-                    required
-                  />
-                </div>
-              )}
-            </div>
-          )}
         </div>
       </>
     );

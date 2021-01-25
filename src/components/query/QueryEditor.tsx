@@ -5,7 +5,7 @@ import { DataSource } from 'DataSource';
 import { SitewiseQuery, SitewiseOptions, QueryType, ListAssetsQuery } from 'types';
 import { Icon, InlineField, LinkButton, Select } from '@grafana/ui';
 import { QueryTypeInfo, siteWisteQueryTypes, changeQueryType } from 'queryInfo';
-import { standardRegions } from 'common/types';
+import { standardRegions } from 'common/regions';
 import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
 import { PropertyQueryEditor } from './PropertyQueryEditor';
 
