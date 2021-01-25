@@ -90,9 +90,10 @@ export class BrowseHierarchy extends Component<Props, State> {
           <Input css="" value={search} onChange={this.onSearchChange} placeholder="search..." />
           <br />
 
-          {asset.hierarchy.map(h => {
+          {asset.hierarchy.map((h) => {
             return (
               <AssetHierarchyList
+                key={h.label + '/' + h.value}
                 hierarchy={{ name: h.label, id: h.value }}
                 asset={asset}
                 search={search}
@@ -131,7 +132,7 @@ export class BrowseHierarchy extends Component<Props, State> {
   render() {
     const { asset, assets } = this.state;
 
-    let current = asset ? assets.find(v => v.value === asset.id) : undefined;
+    let current = asset ? assets.find((v) => v.value === asset.id) : undefined;
     if (!current && asset) {
       current = { label: asset.name, value: asset.id, description: asset.arn };
     }
@@ -155,7 +156,7 @@ export class BrowseHierarchy extends Component<Props, State> {
             isClearable={true}
             isSearchable={true}
             onCreateOption={this.onSetAssetId}
-            formatCreateLabel={txt => `Asset ID: ${txt}`}
+            formatCreateLabel={(txt) => `Asset ID: ${txt}`}
             menuPlacement="bottom"
           />
         )}

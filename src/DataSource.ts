@@ -59,7 +59,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       txt += ' / ' + info.name;
 
       if (query.propertyId && info.properties) {
-        const p = info.properties.find(v => v.Id === query.propertyId);
+        const p = info.properties.find((v) => v.Id === query.propertyId);
         if (p) {
           txt += ' / ' + p.Name;
         } else {
@@ -98,7 +98,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
           for (const frame of rsp.data as DataFrame[]) {
             const meta = frame.meta?.custom as SitewiseCustomMeta;
             if (meta && meta.nextToken) {
-              const query = request.targets.find(t => t.refId === frame.refId);
+              const query = request.targets.find((t) => t.refId === frame.refId);
               if (query) {
                 next.push({
                   ...query,

@@ -48,10 +48,10 @@ export class AggregatePicker extends PureComponent<Props> {
 
     const current = aggReg.list(stats);
     if (current.length !== stats.length) {
-      const found = current.map(v => v.id);
+      const found = current.map((v) => v.id);
       const notFound = difference(stats, found);
       console.warn('Unknown stats', notFound, stats);
-      onChange(current.map(stat => stat.id));
+      onChange(current.map((stat) => stat.id));
     }
 
     // Make sure there is only one
@@ -69,7 +69,7 @@ export class AggregatePicker extends PureComponent<Props> {
   onSelectionChange = (item: SelectableValue<AggregateType>) => {
     const { onChange } = this.props;
     if (Array.isArray(item)) {
-      onChange(item.map(v => v.value));
+      onChange(item.map((v) => v.value));
     } else {
       onChange(item && item.value ? [item.value] : []);
     }
@@ -80,7 +80,7 @@ export class AggregatePicker extends PureComponent<Props> {
 
     const select = aggReg.selectOptions(stats);
     if (assetPropInfo && assetPropInfo.DataType === 'STRING') {
-      select.options = aggReg.list().filter(a => a.isValid(assetPropInfo));
+      select.options = aggReg.list().filter((a) => a.isValid(assetPropInfo));
     }
     return (
       <Select

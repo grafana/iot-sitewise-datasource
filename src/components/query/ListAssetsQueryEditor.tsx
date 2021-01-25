@@ -47,13 +47,13 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
     const { query } = this.props;
     const { models } = this.state;
     const modelIds = models
-      ? models.map(m => ({
+      ? models.map((m) => ({
           value: m.id,
           label: m.name,
           description: m.description,
         }))
       : [];
-    let currentModel = modelIds.find(m => m.value === query.modelId);
+    let currentModel = modelIds.find((m) => m.value === query.modelId);
     if (query.modelId && !currentModel) {
       currentModel = {
         value: query.modelId,
@@ -75,7 +75,7 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
               allowCustomValue={true}
               isClearable={true}
               isSearchable={true}
-              formatCreateLabel={txt => `Model ID: ${txt}`}
+              formatCreateLabel={(txt) => `Model ID: ${txt}`}
               menuPlacement="bottom"
             />
           </InlineField>
@@ -84,7 +84,7 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
           <InlineField label="Filter" labelWidth={firstLabelWith} grow={true}>
             <Select
               options={filters}
-              value={filters.find(v => v.value === query.filter) || filters[0]}
+              value={filters.find((v) => v.value === query.filter) || filters[0]}
               onChange={this.onFilterChange}
               placeholder="Select a property"
               menuPlacement="bottom"
