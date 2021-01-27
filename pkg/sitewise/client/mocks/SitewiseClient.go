@@ -796,84 +796,6 @@ func (_m *SitewiseClient) CreatePortalWithContext(_a0 context.Context, _a1 *iots
 	return r0, r1
 }
 
-// CreatePresignedPortalUrl provides a mock function with given fields: _a0
-func (_m *SitewiseClient) CreatePresignedPortalUrl(_a0 *iotsitewise.CreatePresignedPortalUrlInput) (*iotsitewise.CreatePresignedPortalUrlOutput, error) {
-	ret := _m.Called(_a0)
-
-	var r0 *iotsitewise.CreatePresignedPortalUrlOutput
-	if rf, ok := ret.Get(0).(func(*iotsitewise.CreatePresignedPortalUrlInput) *iotsitewise.CreatePresignedPortalUrlOutput); ok {
-		r0 = rf(_a0)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*iotsitewise.CreatePresignedPortalUrlOutput)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(*iotsitewise.CreatePresignedPortalUrlInput) error); ok {
-		r1 = rf(_a0)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// CreatePresignedPortalUrlRequest provides a mock function with given fields: _a0
-func (_m *SitewiseClient) CreatePresignedPortalUrlRequest(_a0 *iotsitewise.CreatePresignedPortalUrlInput) (*request.Request, *iotsitewise.CreatePresignedPortalUrlOutput) {
-	ret := _m.Called(_a0)
-
-	var r0 *request.Request
-	if rf, ok := ret.Get(0).(func(*iotsitewise.CreatePresignedPortalUrlInput) *request.Request); ok {
-		r0 = rf(_a0)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*request.Request)
-		}
-	}
-
-	var r1 *iotsitewise.CreatePresignedPortalUrlOutput
-	if rf, ok := ret.Get(1).(func(*iotsitewise.CreatePresignedPortalUrlInput) *iotsitewise.CreatePresignedPortalUrlOutput); ok {
-		r1 = rf(_a0)
-	} else {
-		if ret.Get(1) != nil {
-			r1 = ret.Get(1).(*iotsitewise.CreatePresignedPortalUrlOutput)
-		}
-	}
-
-	return r0, r1
-}
-
-// CreatePresignedPortalUrlWithContext provides a mock function with given fields: _a0, _a1, _a2
-func (_m *SitewiseClient) CreatePresignedPortalUrlWithContext(_a0 context.Context, _a1 *iotsitewise.CreatePresignedPortalUrlInput, _a2 ...request.Option) (*iotsitewise.CreatePresignedPortalUrlOutput, error) {
-	_va := make([]interface{}, len(_a2))
-	for _i := range _a2 {
-		_va[_i] = _a2[_i]
-	}
-	var _ca []interface{}
-	_ca = append(_ca, _a0, _a1)
-	_ca = append(_ca, _va...)
-	ret := _m.Called(_ca...)
-
-	var r0 *iotsitewise.CreatePresignedPortalUrlOutput
-	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.CreatePresignedPortalUrlInput, ...request.Option) *iotsitewise.CreatePresignedPortalUrlOutput); ok {
-		r0 = rf(_a0, _a1, _a2...)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*iotsitewise.CreatePresignedPortalUrlOutput)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.CreatePresignedPortalUrlInput, ...request.Option) error); ok {
-		r1 = rf(_a0, _a1, _a2...)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
 // CreateProject provides a mock function with given fields: _a0
 func (_m *SitewiseClient) CreateProject(_a0 *iotsitewise.CreateProjectInput) (*iotsitewise.CreateProjectOutput, error) {
 	ret := _m.Called(_a0)
@@ -1880,6 +1802,84 @@ func (_m *SitewiseClient) DescribeDashboardWithContext(_a0 context.Context, _a1 
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.DescribeDashboardInput, ...request.Option) error); ok {
+		r1 = rf(_a0, _a1, _a2...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// DescribeDefaultEncryptionConfiguration provides a mock function with given fields: _a0
+func (_m *SitewiseClient) DescribeDefaultEncryptionConfiguration(_a0 *iotsitewise.DescribeDefaultEncryptionConfigurationInput) (*iotsitewise.DescribeDefaultEncryptionConfigurationOutput, error) {
+	ret := _m.Called(_a0)
+
+	var r0 *iotsitewise.DescribeDefaultEncryptionConfigurationOutput
+	if rf, ok := ret.Get(0).(func(*iotsitewise.DescribeDefaultEncryptionConfigurationInput) *iotsitewise.DescribeDefaultEncryptionConfigurationOutput); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.DescribeDefaultEncryptionConfigurationOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*iotsitewise.DescribeDefaultEncryptionConfigurationInput) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// DescribeDefaultEncryptionConfigurationRequest provides a mock function with given fields: _a0
+func (_m *SitewiseClient) DescribeDefaultEncryptionConfigurationRequest(_a0 *iotsitewise.DescribeDefaultEncryptionConfigurationInput) (*request.Request, *iotsitewise.DescribeDefaultEncryptionConfigurationOutput) {
+	ret := _m.Called(_a0)
+
+	var r0 *request.Request
+	if rf, ok := ret.Get(0).(func(*iotsitewise.DescribeDefaultEncryptionConfigurationInput) *request.Request); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*request.Request)
+		}
+	}
+
+	var r1 *iotsitewise.DescribeDefaultEncryptionConfigurationOutput
+	if rf, ok := ret.Get(1).(func(*iotsitewise.DescribeDefaultEncryptionConfigurationInput) *iotsitewise.DescribeDefaultEncryptionConfigurationOutput); ok {
+		r1 = rf(_a0)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(*iotsitewise.DescribeDefaultEncryptionConfigurationOutput)
+		}
+	}
+
+	return r0, r1
+}
+
+// DescribeDefaultEncryptionConfigurationWithContext provides a mock function with given fields: _a0, _a1, _a2
+func (_m *SitewiseClient) DescribeDefaultEncryptionConfigurationWithContext(_a0 context.Context, _a1 *iotsitewise.DescribeDefaultEncryptionConfigurationInput, _a2 ...request.Option) (*iotsitewise.DescribeDefaultEncryptionConfigurationOutput, error) {
+	_va := make([]interface{}, len(_a2))
+	for _i := range _a2 {
+		_va[_i] = _a2[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _a0, _a1)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *iotsitewise.DescribeDefaultEncryptionConfigurationOutput
+	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.DescribeDefaultEncryptionConfigurationInput, ...request.Option) *iotsitewise.DescribeDefaultEncryptionConfigurationOutput); ok {
+		r0 = rf(_a0, _a1, _a2...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.DescribeDefaultEncryptionConfigurationOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.DescribeDefaultEncryptionConfigurationInput, ...request.Option) error); ok {
 		r1 = rf(_a0, _a1, _a2...)
 	} else {
 		r1 = ret.Error(1)
@@ -2932,6 +2932,119 @@ func (_m *SitewiseClient) ListAssetModelsWithContext(_a0 context.Context, _a1 *i
 	return r0, r1
 }
 
+// ListAssetRelationships provides a mock function with given fields: _a0
+func (_m *SitewiseClient) ListAssetRelationships(_a0 *iotsitewise.ListAssetRelationshipsInput) (*iotsitewise.ListAssetRelationshipsOutput, error) {
+	ret := _m.Called(_a0)
+
+	var r0 *iotsitewise.ListAssetRelationshipsOutput
+	if rf, ok := ret.Get(0).(func(*iotsitewise.ListAssetRelationshipsInput) *iotsitewise.ListAssetRelationshipsOutput); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.ListAssetRelationshipsOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*iotsitewise.ListAssetRelationshipsInput) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// ListAssetRelationshipsPages provides a mock function with given fields: _a0, _a1
+func (_m *SitewiseClient) ListAssetRelationshipsPages(_a0 *iotsitewise.ListAssetRelationshipsInput, _a1 func(*iotsitewise.ListAssetRelationshipsOutput, bool) bool) error {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*iotsitewise.ListAssetRelationshipsInput, func(*iotsitewise.ListAssetRelationshipsOutput, bool) bool) error); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// ListAssetRelationshipsPagesWithContext provides a mock function with given fields: _a0, _a1, _a2, _a3
+func (_m *SitewiseClient) ListAssetRelationshipsPagesWithContext(_a0 context.Context, _a1 *iotsitewise.ListAssetRelationshipsInput, _a2 func(*iotsitewise.ListAssetRelationshipsOutput, bool) bool, _a3 ...request.Option) error {
+	_va := make([]interface{}, len(_a3))
+	for _i := range _a3 {
+		_va[_i] = _a3[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _a0, _a1, _a2)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.ListAssetRelationshipsInput, func(*iotsitewise.ListAssetRelationshipsOutput, bool) bool, ...request.Option) error); ok {
+		r0 = rf(_a0, _a1, _a2, _a3...)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// ListAssetRelationshipsRequest provides a mock function with given fields: _a0
+func (_m *SitewiseClient) ListAssetRelationshipsRequest(_a0 *iotsitewise.ListAssetRelationshipsInput) (*request.Request, *iotsitewise.ListAssetRelationshipsOutput) {
+	ret := _m.Called(_a0)
+
+	var r0 *request.Request
+	if rf, ok := ret.Get(0).(func(*iotsitewise.ListAssetRelationshipsInput) *request.Request); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*request.Request)
+		}
+	}
+
+	var r1 *iotsitewise.ListAssetRelationshipsOutput
+	if rf, ok := ret.Get(1).(func(*iotsitewise.ListAssetRelationshipsInput) *iotsitewise.ListAssetRelationshipsOutput); ok {
+		r1 = rf(_a0)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(*iotsitewise.ListAssetRelationshipsOutput)
+		}
+	}
+
+	return r0, r1
+}
+
+// ListAssetRelationshipsWithContext provides a mock function with given fields: _a0, _a1, _a2
+func (_m *SitewiseClient) ListAssetRelationshipsWithContext(_a0 context.Context, _a1 *iotsitewise.ListAssetRelationshipsInput, _a2 ...request.Option) (*iotsitewise.ListAssetRelationshipsOutput, error) {
+	_va := make([]interface{}, len(_a2))
+	for _i := range _a2 {
+		_va[_i] = _a2[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _a0, _a1)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *iotsitewise.ListAssetRelationshipsOutput
+	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.ListAssetRelationshipsInput, ...request.Option) *iotsitewise.ListAssetRelationshipsOutput); ok {
+		r0 = rf(_a0, _a1, _a2...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.ListAssetRelationshipsOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.ListAssetRelationshipsInput, ...request.Option) error); ok {
+		r1 = rf(_a0, _a1, _a2...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // ListAssets provides a mock function with given fields: _a0
 func (_m *SitewiseClient) ListAssets(_a0 *iotsitewise.ListAssetsInput) (*iotsitewise.ListAssetsOutput, error) {
 	ret := _m.Called(_a0)
@@ -3793,6 +3906,84 @@ func (_m *SitewiseClient) ListTagsForResourceWithContext(_a0 context.Context, _a
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.ListTagsForResourceInput, ...request.Option) error); ok {
+		r1 = rf(_a0, _a1, _a2...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// PutDefaultEncryptionConfiguration provides a mock function with given fields: _a0
+func (_m *SitewiseClient) PutDefaultEncryptionConfiguration(_a0 *iotsitewise.PutDefaultEncryptionConfigurationInput) (*iotsitewise.PutDefaultEncryptionConfigurationOutput, error) {
+	ret := _m.Called(_a0)
+
+	var r0 *iotsitewise.PutDefaultEncryptionConfigurationOutput
+	if rf, ok := ret.Get(0).(func(*iotsitewise.PutDefaultEncryptionConfigurationInput) *iotsitewise.PutDefaultEncryptionConfigurationOutput); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.PutDefaultEncryptionConfigurationOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*iotsitewise.PutDefaultEncryptionConfigurationInput) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// PutDefaultEncryptionConfigurationRequest provides a mock function with given fields: _a0
+func (_m *SitewiseClient) PutDefaultEncryptionConfigurationRequest(_a0 *iotsitewise.PutDefaultEncryptionConfigurationInput) (*request.Request, *iotsitewise.PutDefaultEncryptionConfigurationOutput) {
+	ret := _m.Called(_a0)
+
+	var r0 *request.Request
+	if rf, ok := ret.Get(0).(func(*iotsitewise.PutDefaultEncryptionConfigurationInput) *request.Request); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*request.Request)
+		}
+	}
+
+	var r1 *iotsitewise.PutDefaultEncryptionConfigurationOutput
+	if rf, ok := ret.Get(1).(func(*iotsitewise.PutDefaultEncryptionConfigurationInput) *iotsitewise.PutDefaultEncryptionConfigurationOutput); ok {
+		r1 = rf(_a0)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(*iotsitewise.PutDefaultEncryptionConfigurationOutput)
+		}
+	}
+
+	return r0, r1
+}
+
+// PutDefaultEncryptionConfigurationWithContext provides a mock function with given fields: _a0, _a1, _a2
+func (_m *SitewiseClient) PutDefaultEncryptionConfigurationWithContext(_a0 context.Context, _a1 *iotsitewise.PutDefaultEncryptionConfigurationInput, _a2 ...request.Option) (*iotsitewise.PutDefaultEncryptionConfigurationOutput, error) {
+	_va := make([]interface{}, len(_a2))
+	for _i := range _a2 {
+		_va[_i] = _a2[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _a0, _a1)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *iotsitewise.PutDefaultEncryptionConfigurationOutput
+	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.PutDefaultEncryptionConfigurationInput, ...request.Option) *iotsitewise.PutDefaultEncryptionConfigurationOutput); ok {
+		r0 = rf(_a0, _a1, _a2...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.PutDefaultEncryptionConfigurationOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.PutDefaultEncryptionConfigurationInput, ...request.Option) error); ok {
 		r1 = rf(_a0, _a1, _a2...)
 	} else {
 		r1 = ret.Error(1)
