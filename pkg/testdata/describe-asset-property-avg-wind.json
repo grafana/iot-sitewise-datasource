@@ -1,15 +1,15 @@
 {
-    "AssetId": "a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b",
-    "AssetModelId": "587d4e0e-045c-49ff-9fcc-c3032cb73309",
+    "AssetId": "e64c9075-9d89-47cb-8ee5-d3251bd253f4",
+    "AssetModelId": "1f95cf92-34ff-4975-91a9-e9f2af35b6a5",
     "AssetName": "Demo Turbine Asset 1",
     "AssetProperty": {
         "Alias": null,
         "DataType": "DOUBLE",
-        "Id": "1e1e256e-e32a-4666-8aeb-22b4131192eb",
+        "Id": "e6c52ea3-d746-46df-b843-d0459540d584",
         "Name": "Average Wind Speed",
         "Notification": {
             "State": "DISABLED",
-            "Topic": "$aws/sitewise/asset-models/587d4e0e-045c-49ff-9fcc-c3032cb73309/assets/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b/properties/1e1e256e-e32a-4666-8aeb-22b4131192eb"
+            "Topic": "$aws/sitewise/asset-models/1f95cf92-34ff-4975-91a9-e9f2af35b6a5/assets/e64c9075-9d89-47cb-8ee5-d3251bd253f4/properties/e6c52ea3-d746-46df-b843-d0459540d584"
         },
         "Type": {
             "Attribute": null,
@@ -21,7 +21,7 @@
                         "Name": "windspeed",
                         "Value": {
                             "HierarchyId": null,
-                            "PropertyId": "bfaa662d-0eb2-49d2-a24d-2dad5a75bfde"
+                            "PropertyId": "3627f45d-710a-47c8-ae6c-4b71f7c9f5eb"
                         }
                     }
                 ],
@@ -34,5 +34,6 @@
             "Transform": null
         },
         "Unit": "m/s"
-    }
+    },
+    "CompositeModel": null
 }

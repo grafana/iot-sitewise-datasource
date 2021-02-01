@@ -29,8 +29,8 @@ var getPropertyValueHistoryHappyCase testServerScenarioFn = func(t *testing.T) *
 	query := models.AssetPropertyValueQuery{
 		BaseQuery: models.BaseQuery{
 			AwsRegion:  "us-west-2",
-			AssetId:    testdata.TestAssetId,
-			PropertyId: testdata.TestPropIdAvgWind,
+			AssetId:    testdata.DemoTurbineAsset1,
+			PropertyId: testdata.TurbinePropAvgWindSpeed,
 		},
 	}
 

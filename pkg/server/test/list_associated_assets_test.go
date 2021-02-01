@@ -33,15 +33,15 @@ var listAssociatedAssetsChildrenHappyCase testServerScenarioFn = func(t *testing
 		if assetId == nil || hierarchyId == nil || traversal == nil {
 			return false
 		}
-		return testdata.TestTopLevelAssetId == *assetId &&
-			testdata.TestTopLevelAssetHierarchyId == *hierarchyId
+		return testdata.DemoWindFarmAssetId == *assetId &&
+			testdata.TurbineAssetModelHierarchyId == *hierarchyId
 	})
 
 	mockSw.On("ListAssociatedAssetsWithContext", mock.Anything, argMatcher).Return(&assets, nil)
 
 	query := models.ListAssociatedAssetsQuery{}
-	query.AssetId = testdata.TestTopLevelAssetId
-	query.HierarchyId = testdata.TestTopLevelAssetHierarchyId
+	query.AssetId = testdata.DemoWindFarmAssetId
+	query.HierarchyId = testdata.TurbineAssetModelHierarchyId
 
 	return &testScenario{
 		name: "ListAssociatedAssetsChildHappyCase",
@@ -73,14 +73,14 @@ var listAssociatedAssetsParentHappyCase testServerScenarioFn = func(t *testing.T
 		if assetId == nil || traversal == nil {
 			return false
 		}
-		return testdata.TestAssetId == *assetId &&
+		return testdata.DemoTurbineAsset1 == *assetId &&
 			"PARENT" == *traversal
 	})
 
 	mockSw.On("ListAssociatedAssetsWithContext", mock.Anything, argMatcher).Return(&assets, nil)
 
 	query := models.ListAssociatedAssetsQuery{}
-	query.AssetId = testdata.TestAssetId
+	query.AssetId = testdata.DemoTurbineAsset1
 
 	return &testScenario{
 		name: "ListAssociatedAssetsParentHappyCase",
