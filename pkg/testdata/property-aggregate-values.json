@@ -1,701 +1,1133 @@
 {
-    "AggregatedValues": [
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:03:00Z",
-            "Value": {
-                "Average": 33.66048662735337,
-                "Count": 60,
-                "Maximum": 33.94548342140149,
-                "Minimum": 33.119203866849375,
-                "StandardDeviation": 0.20357832514253085,
-                "Sum": 2019.6291976412022
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:04:00Z",
-            "Value": {
-                "Average": 33.19809932312455,
-                "Count": 60,
-                "Maximum": 33.272655343651174,
-                "Minimum": 33.09205931932671,
-                "StandardDeviation": 0.048660754596755174,
-                "Sum": 1991.8859593874731
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:05:00Z",
-            "Value": {
-                "Average": 33.05675037246861,
-                "Count": 59,
-                "Maximum": 33.11430425326713,
-                "Minimum": 32.73449329865176,
-                "StandardDeviation": 0.051957629034006414,
-                "Sum": 1950.348271975648
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:06:00Z",
-            "Value": {
-                "Average": 32.352502505398675,
-                "Count": 60,
-                "Maximum": 32.97251226373514,
-                "Minimum": 31.559949039275665,
-                "StandardDeviation": 0.42106294359960383,
-                "Sum": 1941.1501503239203
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:07:00Z",
-            "Value": {
-                "Average": 31.104925069568846,
-                "Count": 60,
-                "Maximum": 31.635897199079473,
-                "Minimum": 30.543604802821097,
-                "StandardDeviation": 0.31969944792951716,
-                "Sum": 1866.2955041741309
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:08:00Z",
-            "Value": {
-                "Average": 30.694766174198026,
-                "Count": 60,
-                "Maximum": 31.256229937192046,
-                "Minimum": 30.547424915496745,
-                "StandardDeviation": 0.1190518366381484,
-                "Sum": 1841.6859704518815
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:09:00Z",
-            "Value": {
-                "Average": 31.137138857015998,
-                "Count": 60,
-                "Maximum": 31.504723329598278,
-                "Minimum": 30.80656331502094,
-                "StandardDeviation": 0.20288537752464908,
-                "Sum": 1868.2283314209599
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:10:00Z",
-            "Value": {
-                "Average": 31.49444098812534,
-                "Count": 60,
-                "Maximum": 31.523583198734872,
-                "Minimum": 30.993700484931498,
-                "StandardDeviation": 0.06788427321412317,
-                "Sum": 1889.6664592875204
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:11:00Z",
-            "Value": {
-                "Average": 31.22828678387508,
-                "Count": 59,
-                "Maximum": 31.51406377864383,
-                "Minimum": 30.909275358075746,
-                "StandardDeviation": 0.1823202251079153,
-                "Sum": 1842.4689202486297
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:12:00Z",
-            "Value": {
-                "Average": 30.959133773988576,
-                "Count": 60,
-                "Maximum": 31.011772862673922,
-                "Minimum": 30.872757420711746,
-                "StandardDeviation": 0.033077731908776,
-                "Sum": 1857.5480264393145
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:13:00Z",
-            "Value": {
-                "Average": 30.67825932728902,
-                "Count": 59,
-                "Maximum": 31.000348771071288,
-                "Minimum": 30.134087044353173,
-                "StandardDeviation": 0.20537226042784956,
-                "Sum": 1810.0173003100522
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:14:00Z",
-            "Value": {
-                "Average": 30.068064712679547,
-                "Count": 60,
-                "Maximum": 30.341830644880254,
-                "Minimum": 29.697575363316666,
-                "StandardDeviation": 0.17417688899348693,
-                "Sum": 1804.083882760773
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:15:00Z",
-            "Value": {
-                "Average": 29.643471788780353,
-                "Count": 60,
-                "Maximum": 29.697903886803097,
-                "Minimum": 29.153821486381954,
-                "StandardDeviation": 0.07805382862540292,
-                "Sum": 1778.6083073268212
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:16:00Z",
-            "Value": {
-                "Average": 29.33940966896914,
-                "Count": 60,
-                "Maximum": 29.584608569908482,
-                "Minimum": 29.061328097726623,
-                "StandardDeviation": 0.15646623219570263,
-                "Sum": 1760.3645801381483
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:17:00Z",
-            "Value": {
-                "Average": 29.48040125468919,
-                "Count": 60,
-                "Maximum": 29.907113132276066,
-                "Minimum": 29.064819061950782,
-                "StandardDeviation": 0.2624812909766975,
-                "Sum": 1768.8240752813515
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:18:00Z",
-            "Value": {
-                "Average": 29.178820584144397,
-                "Count": 60,
-                "Maximum": 29.8848858595302,
-                "Minimum": 28.459249049338162,
-                "StandardDeviation": 0.4027754760478223,
-                "Sum": 1750.729235048664
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:19:00Z",
-            "Value": {
-                "Average": 28.481740230210832,
-                "Count": 60,
-                "Maximum": 28.60106519241,
-                "Minimum": 28.415970619181167,
-                "StandardDeviation": 0.041695992851638795,
-                "Sum": 1708.9044138126499
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:20:00Z",
-            "Value": {
-                "Average": 28.544835710693693,
-                "Count": 60,
-                "Maximum": 28.64806756349793,
-                "Minimum": 27.89101062312005,
-                "StandardDeviation": 0.10728544546617454,
-                "Sum": 1712.6901426416216
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:21:00Z",
-            "Value": {
-                "Average": 28.072374937010363,
-                "Count": 59,
-                "Maximum": 28.621412198791703,
-                "Minimum": 27.584978268472497,
-                "StandardDeviation": 0.2883608185985237,
-                "Sum": 1656.2701212836114
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:22:00Z",
-            "Value": {
-                "Average": 28.0074983112008,
-                "Count": 59,
-                "Maximum": 28.4139163758263,
-                "Minimum": 27.593657270377722,
-                "StandardDeviation": 0.2360786542476271,
-                "Sum": 1652.4424003608472
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:23:00Z",
-            "Value": {
-                "Average": 27.372913987519304,
-                "Count": 60,
-                "Maximum": 28.421286403249994,
-                "Minimum": 26.582987606621547,
-                "StandardDeviation": 0.547466703805551,
-                "Sum": 1642.3748392511582
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:24:00Z",
-            "Value": {
-                "Average": 26.636514245996196,
-                "Count": 60,
-                "Maximum": 26.72065631970086,
-                "Minimum": 25.963211763916167,
-                "StandardDeviation": 0.11976920927382942,
-                "Sum": 1598.1908547597718
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:25:00Z",
-            "Value": {
-                "Average": 26.121411943219,
-                "Count": 60,
-                "Maximum": 26.7154802088953,
-                "Minimum": 25.60845744115935,
-                "StandardDeviation": 0.32548626217154747,
-                "Sum": 1567.28471659314
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:26:00Z",
-            "Value": {
-                "Average": 25.657781833333974,
-                "Count": 60,
-                "Maximum": 26.099160528783838,
-                "Minimum": 25.59984941545966,
-                "StandardDeviation": 0.07573416305777116,
-                "Sum": 1539.4669100000385
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:27:00Z",
-            "Value": {
-                "Average": 26.145205419124455,
-                "Count": 60,
-                "Maximum": 26.54747998046828,
-                "Minimum": 25.718350741087104,
-                "StandardDeviation": 0.23759103230621417,
-                "Sum": 1568.7123251474673
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:28:00Z",
-            "Value": {
-                "Average": 26.546231022194597,
-                "Count": 59,
-                "Maximum": 27.40399994393606,
-                "Minimum": 26.51418848380225,
-                "StandardDeviation": 0.11313084700922361,
-                "Sum": 1566.2276303094811
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:29:00Z",
-            "Value": {
-                "Average": 26.999463323317173,
-                "Count": 60,
-                "Maximum": 27.490378288550296,
-                "Minimum": 26.523904604177115,
-                "StandardDeviation": 0.2764412977544635,
-                "Sum": 1619.9677993990304
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:30:00Z",
-            "Value": {
-                "Average": 26.90963295892285,
-                "Count": 59,
-                "Maximum": 27.483634441667363,
-                "Minimum": 26.44213584862078,
-                "StandardDeviation": 0.2656197590428569,
-                "Sum": 1587.6683445764481
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:31:00Z",
-            "Value": {
-                "Average": 26.69018279993373,
-                "Count": 60,
-                "Maximum": 26.948193848321708,
-                "Minimum": 25.00750567505591,
-                "StandardDeviation": 0.2656519752401551,
-                "Sum": 1601.4109679960238
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:32:00Z",
-            "Value": {
-                "Average": 26.041025883511413,
-                "Count": 59,
-                "Maximum": 26.934114630075566,
-                "Minimum": 25.04947121988136,
-                "StandardDeviation": 0.576453484367327,
-                "Sum": 1536.4205271271733
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:33:00Z",
-            "Value": {
-                "Average": 25.968151532569042,
-                "Count": 60,
-                "Maximum": 26.763587511959386,
-                "Minimum": 25.03433283406599,
-                "StandardDeviation": 0.5058133893372867,
-                "Sum": 1558.0890919541425
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:34:00Z",
-            "Value": {
-                "Average": 26.75958633796038,
-                "Count": 60,
-                "Maximum": 26.8072534074966,
-                "Minimum": 26.63844305147661,
-                "StandardDeviation": 0.03369396909657281,
-                "Sum": 1605.5751802776226
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:35:00Z",
-            "Value": {
-                "Average": 26.125029450809013,
-                "Count": 60,
-                "Maximum": 26.78720423773811,
-                "Minimum": 25.618209132857036,
-                "StandardDeviation": 0.34761853127725617,
-                "Sum": 1567.5017670485408
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:36:00Z",
-            "Value": {
-                "Average": 25.90727548187882,
-                "Count": 60,
-                "Maximum": 26.166107129837066,
-                "Minimum": 25.618896948347192,
-                "StandardDeviation": 0.1426959377317364,
-                "Sum": 1554.4365289127293
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:37:00Z",
-            "Value": {
-                "Average": 26.14906339060131,
-                "Count": 60,
-                "Maximum": 26.166796119636185,
-                "Minimum": 25.684725046141327,
-                "StandardDeviation": 0.06453182403300307,
-                "Sum": 1568.9438034360785
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:38:00Z",
-            "Value": {
-                "Average": 25.764380156355518,
-                "Count": 59,
-                "Maximum": 26.160906590951644,
-                "Minimum": 25.420035905422772,
-                "StandardDeviation": 0.2241027436213363,
-                "Sum": 1520.0984292249755
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:39:00Z",
-            "Value": {
-                "Average": 25.79791904149603,
-                "Count": 60,
-                "Maximum": 26.98801855675526,
-                "Minimum": 25.420633807833887,
-                "StandardDeviation": 0.2794483546521949,
-                "Sum": 1547.8751424897619
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:40:00Z",
-            "Value": {
-                "Average": 26.638567414508046,
-                "Count": 60,
-                "Maximum": 27.145498904627487,
-                "Minimum": 26.154484505230027,
-                "StandardDeviation": 0.2919318161308447,
-                "Sum": 1598.3140448704828
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:41:00Z",
-            "Value": {
-                "Average": 27.09151496915898,
-                "Count": 60,
-                "Maximum": 27.152626169214724,
-                "Minimum": 26.960383460970217,
-                "StandardDeviation": 0.040638732233553,
-                "Sum": 1625.4908981495387
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:42:00Z",
-            "Value": {
-                "Average": 26.937615816336955,
-                "Count": 60,
-                "Maximum": 27.020632829911104,
-                "Minimum": 26.724719048734062,
-                "StandardDeviation": 0.057848855035247615,
-                "Sum": 1616.2569489802172
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:43:00Z",
-            "Value": {
-                "Average": 26.709773371328502,
-                "Count": 60,
-                "Maximum": 26.869557480483838,
-                "Minimum": 26.417581108742645,
-                "StandardDeviation": 0.10043917963041202,
-                "Sum": 1602.5864022797102
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:44:00Z",
-            "Value": {
-                "Average": 26.377595302749473,
-                "Count": 60,
-                "Maximum": 26.532425239143237,
-                "Minimum": 26.246486359374277,
-                "StandardDeviation": 0.07950394723727983,
-                "Sum": 1582.6557181649684
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:45:00Z",
-            "Value": {
-                "Average": 26.491643213350105,
-                "Count": 60,
-                "Maximum": 26.7351203535136,
-                "Minimum": 26.253485633265562,
-                "StandardDeviation": 0.1415099365777511,
-                "Sum": 1589.4985928010062
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:46:00Z",
-            "Value": {
-                "Average": 26.717331365309153,
-                "Count": 60,
-                "Maximum": 27.553359543783323,
-                "Minimum": 26.674032229723615,
-                "StandardDeviation": 0.11030084494065905,
-                "Sum": 1603.039881918549
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:47:00Z",
-            "Value": {
-                "Average": 27.10841836867003,
-                "Count": 59,
-                "Maximum": 27.580633350977294,
-                "Minimum": 26.601807205432188,
-                "StandardDeviation": 0.2873453143881951,
-                "Sum": 1599.3966837515318
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:48:00Z",
-            "Value": {
-                "Average": 26.369824131605167,
-                "Count": 60,
-                "Maximum": 26.92636080649153,
-                "Minimum": 25.939659648277594,
-                "StandardDeviation": 0.27418152954677183,
-                "Sum": 1582.18944789631
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:49:00Z",
-            "Value": {
-                "Average": 26.487995669857288,
-                "Count": 60,
-                "Maximum": 26.943540494980976,
-                "Minimum": 25.95367751708075,
-                "StandardDeviation": 0.2926821854645751,
-                "Sum": 1589.2797401914372
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:50:00Z",
-            "Value": {
-                "Average": 26.440552381378623,
-                "Count": 60,
-                "Maximum": 27.07507995676863,
-                "Minimum": 25.92528929114329,
-                "StandardDeviation": 0.30862619133793556,
-                "Sum": 1586.4331428827174
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:51:00Z",
-            "Value": {
-                "Average": 27.13083744527956,
-                "Count": 60,
-                "Maximum": 27.43050943668659,
-                "Minimum": 26.95430530820239,
-                "StandardDeviation": 0.10915189572026797,
-                "Sum": 1627.8502467167737
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:52:00Z",
-            "Value": {
-                "Average": 27.521779389803072,
-                "Count": 59,
-                "Maximum": 27.764037775349202,
-                "Minimum": 27.310590458444686,
-                "StandardDeviation": 0.12472210645149144,
-                "Sum": 1623.7849839983812
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:53:00Z",
-            "Value": {
-                "Average": 27.840339281707227,
-                "Count": 60,
-                "Maximum": 28.626722871917764,
-                "Minimum": 27.75917776385948,
-                "StandardDeviation": 0.13708504146536502,
-                "Sum": 1670.4203569024337
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:54:00Z",
-            "Value": {
-                "Average": 28.42001248490054,
-                "Count": 60,
-                "Maximum": 28.921432284451626,
-                "Minimum": 27.926778968682203,
-                "StandardDeviation": 0.2664307994774507,
-                "Sum": 1705.2007490940323
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:55:00Z",
-            "Value": {
-                "Average": 28.25263472797419,
-                "Count": 59,
-                "Maximum": 28.9134622895014,
-                "Minimum": 27.25344977314869,
-                "StandardDeviation": 0.3855461146224144,
-                "Sum": 1666.9054489504772
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:56:00Z",
-            "Value": {
-                "Average": 27.154696067303423,
-                "Count": 60,
-                "Maximum": 27.92121793500116,
-                "Minimum": 26.729784924166584,
-                "StandardDeviation": 0.28754712259358434,
-                "Sum": 1629.2817640382054
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:57:00Z",
-            "Value": {
-                "Average": 27.307448976181107,
-                "Count": 60,
-                "Maximum": 28.251796921027196,
-                "Minimum": 26.725697320634957,
-                "StandardDeviation": 0.39597805990795304,
-                "Sum": 1638.4469385708665
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:58:00Z",
-            "Value": {
-                "Average": 28.106994447690486,
-                "Count": 60,
-                "Maximum": 28.414469590816267,
-                "Minimum": 27.959104800744672,
-                "StandardDeviation": 0.09471188665615737,
-                "Sum": 1686.419666861429
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T17:59:00Z",
-            "Value": {
-                "Average": 28.58326640876932,
-                "Count": 59,
-                "Maximum": 29.010740380864316,
-                "Minimum": 28.259704932557657,
-                "StandardDeviation": 0.2298140670955124,
-                "Sum": 1686.4127181173899
-            }
-        },
-        {
-            "Quality": "GOOD",
-            "Timestamp": "2020-10-23T18:00:00Z",
-            "Value": {
-                "Average": 28.728007978592967,
-                "Count": 60,
-                "Maximum": 28.781034555120574,
-                "Minimum": 28.66288367284222,
-                "StandardDeviation": 0.03236449557947345,
-                "Sum": 1723.680478715578
-            }
-        }
-    ],
-    "NextToken": "P7cee790a1e2d61a930e7bd6beba0d580=AYADeLiULc/hCpb0UJ4Q/SsGArcAXwABABVhd3MtY3J5cHRvLXB1YmxpYy1rZXkAREFodU1mZ1Z5emIybFBJQ0lSZWUzZHdqUWlYUzZUMEpSOEFFWHZ1WHlqTDVvd3NvQVhoZlRsRVBOOW9RSTJLN2V6dz09AAEAA0FTTQA0N2NlZTc5MGExZTJkNjFhOTMwZTdiZDZiZWJhMGQ1ODAAAACAAAAADG4EobkUMrGt76336AAwTlSPax60vAIZh1+x6nlr4/NDhw4soHKt2OIESLFk9jvlao225YBEyvtUUymB3NSpAgAAAAAMAAAQAAAAAAAAAAAAAAAAAIMIxLgkrrgP9weWEUCd2MX/////AAAAAQAAAAAAAAAAAAAAAQAAArFYhAgD71d8WnBs/r4ErVXnC20LtZAjfGQ42xPwk18x5sKQRwSEWfuFjDFexKwzm3bVXxrIIgiPMirfVMTFTbX/ZjT6JMT0X0guNIfWL1AbggEhHpbwPqmEHyw2fZy8Mc0L27bPtMwxbOk7pg6VM+Z/EiG+fR1rd72YqPYdsYA8gXyHztiTHm3t06WUKAevnjDTVfsyIUndFo+BC0s2LfggIQQGq4xStR4Tyj76yBTIrx48LodqglhCDP2vXv3FuQNB6KwrPV1iJEKbMeRnuzftc7jn9z2VUJY3n0WeDIFy90QS02PoFTd/aJfQQUGSUC2PcHqKqLAQuUAnQ5Yxw2bigCUpxTf1a0o02CcDhftpVt6eU1Gq64R8kISu0wb1xTVlY4vTUeB5aet20HHD8TxSBD+r03s3oW+Z9whcq5qJjt3VR/RCj2tCPkzUSr7PQ+eVbVtj574dhIAK/b6OsL8IkfYDYjDE9a+T5eAexJvEKE9LWGCbAgQewHmThI7OQ9eSz46oaQFbqjNbcPcyCXzxufo+OFzWdkidrWpPDZfzLqQVaDPeuewBJBhO2a3fbzwAxB8rEqnj1iF5qnf4VbwnNyge9k/kodKwar0tXCMrEm5B7D+LpUVb5FuHMAjWhVxj5uCZpX1xrYuwhDYuZHDeqBVWNTOLDMitlOmA//VYcTvPT4cIyJ0hVAErO4SiSCbxZPHItHlR8N2MSpnLW771ReADBVvbltfk1leVt2ro/4awH8gPkkD4540cgdUzVpWpC0sQew3FyzTAvxvw5jLoFKT/kT0tfD+4dohKwlN3jrnny/FD/CWBzd2hWC42jMr/V8ynFMfTAEDWnYcEjlLVSiOgbc9qZUHCyF5mWdP6nZmQdkhsKfExMx+ghuw/Kt/LDlLOImR1SmCunn7qd0p1jmRzXnUAk2z27GsFgTUA48sAZzBlAjAcKFECFWB6rY1UlVPKnRkYBFex3yxw0LaM1mHOMSUpxWWBM5Ngq7nf+dwlOr7rAr0CMQCGsmeEbZXi/UB1NMPdHcdN9gf7GOAXeAR5Nhrt3C/VMX0m+3Mzc1ahVY6O02hPHp8="
+  "AggregatedValues": [
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:27:00Z",
+      "Value": {
+        "Average": 28.143901789303943,
+        "Count": 60,
+        "Maximum": 28.267828267190303,
+        "Minimum": 28.027858828275807,
+        "StandardDeviation": 0.06742737023607694,
+        "Sum": 1688.6341073582366
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:28:00Z",
+      "Value": {
+        "Average": 28.25676100638458,
+        "Count": 60,
+        "Maximum": 28.586291164675707,
+        "Minimum": 28.03059044520338,
+        "StandardDeviation": 0.1544243293184975,
+        "Sum": 1695.4056603830747
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:29:00Z",
+      "Value": {
+        "Average": 28.53645601949994,
+        "Count": 60,
+        "Maximum": 28.60055326845465,
+        "Minimum": 28.262134651859817,
+        "StandardDeviation": 0.050917294522206724,
+        "Sum": 1712.1873611699964
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:30:00Z",
+      "Value": {
+        "Average": 28.405769511580736,
+        "Count": 60,
+        "Maximum": 28.60235724764092,
+        "Minimum": 28.23815737344583,
+        "StandardDeviation": 0.10532487533086206,
+        "Sum": 1704.3461706948442
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:31:00Z",
+      "Value": {
+        "Average": 28.226314447815984,
+        "Count": 60,
+        "Maximum": 28.28257043159991,
+        "Minimum": 28.197163556766814,
+        "StandardDeviation": 0.019540433734448477,
+        "Sum": 1693.578866868959
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:32:00Z",
+      "Value": {
+        "Average": 28.286116577254294,
+        "Count": 60,
+        "Maximum": 28.554956125300247,
+        "Minimum": 28.206265998037114,
+        "StandardDeviation": 0.06353431474882687,
+        "Sum": 1697.1669946352577
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:33:00Z",
+      "Value": {
+        "Average": 28.46708622866816,
+        "Count": 60,
+        "Maximum": 28.55724063115585,
+        "Minimum": 28.367183321696437,
+        "StandardDeviation": 0.058669317912260335,
+        "Sum": 1708.0251737200895
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:34:00Z",
+      "Value": {
+        "Average": 28.394816156365888,
+        "Count": 60,
+        "Maximum": 28.55845590538762,
+        "Minimum": 28.203613175480168,
+        "StandardDeviation": 0.09394267255094323,
+        "Sum": 1703.6889693819533
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:35:00Z",
+      "Value": {
+        "Average": 28.35147803770108,
+        "Count": 60,
+        "Maximum": 28.51221993772424,
+        "Minimum": 28.211219208598006,
+        "StandardDeviation": 0.0873704227755666,
+        "Sum": 1701.0886822620648
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:36:00Z",
+      "Value": {
+        "Average": 28.457090495410444,
+        "Count": 60,
+        "Maximum": 28.518724411942777,
+        "Minimum": 28.334211159997423,
+        "StandardDeviation": 0.03780824874647961,
+        "Sum": 1707.4254297246266
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:37:00Z",
+      "Value": {
+        "Average": 28.349263078951743,
+        "Count": 60,
+        "Maximum": 28.683702989766722,
+        "Minimum": 28.282271926716003,
+        "StandardDeviation": 0.05742550810973238,
+        "Sum": 1700.9557847371045
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:38:00Z",
+      "Value": {
+        "Average": 28.58299169501653,
+        "Count": 60,
+        "Maximum": 28.89346779700623,
+        "Minimum": 28.292002693464315,
+        "StandardDeviation": 0.17710479253550082,
+        "Sum": 1714.979501700992
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:39:00Z",
+      "Value": {
+        "Average": 28.823680441795947,
+        "Count": 60,
+        "Maximum": 28.896730576939202,
+        "Minimum": 28.550597083363737,
+        "StandardDeviation": 0.0556608131943023,
+        "Sum": 1729.4208265077568
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:40:00Z",
+      "Value": {
+        "Average": 28.663549932103873,
+        "Count": 60,
+        "Maximum": 28.749431570658608,
+        "Minimum": 28.547720020533465,
+        "StandardDeviation": 0.0625542030850771,
+        "Sum": 1719.8129959262324
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:41:00Z",
+      "Value": {
+        "Average": 28.56784206101308,
+        "Count": 60,
+        "Maximum": 28.58801555721429,
+        "Minimum": 28.534940340055353,
+        "StandardDeviation": 0.013406622640680573,
+        "Sum": 1714.0705236607848
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:42:00Z",
+      "Value": {
+        "Average": 28.565337101159766,
+        "Count": 60,
+        "Maximum": 28.830830714522868,
+        "Minimum": 28.53489387124262,
+        "StandardDeviation": 0.038210436437134274,
+        "Sum": 1713.920226069586
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:43:00Z",
+      "Value": {
+        "Average": 28.7660720968461,
+        "Count": 60,
+        "Maximum": 29.1672780875351,
+        "Minimum": 28.548853576109167,
+        "StandardDeviation": 0.13820892856456454,
+        "Sum": 1725.964325810766
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:44:00Z",
+      "Value": {
+        "Average": 29.063829951490845,
+        "Count": 60,
+        "Maximum": 29.169153155420805,
+        "Minimum": 28.705824481733263,
+        "StandardDeviation": 0.07989948488619035,
+        "Sum": 1743.8297970894507
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:45:00Z",
+      "Value": {
+        "Average": 28.935074352016912,
+        "Count": 60,
+        "Maximum": 29.173614399806834,
+        "Minimum": 28.683993892005244,
+        "StandardDeviation": 0.15738209216102156,
+        "Sum": 1736.1044611210148
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:46:00Z",
+      "Value": {
+        "Average": 28.964620352259463,
+        "Count": 60,
+        "Maximum": 29.166649958345186,
+        "Minimum": 28.505288204416548,
+        "StandardDeviation": 0.14279207267979932,
+        "Sum": 1737.8772211355677
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:47:00Z",
+      "Value": {
+        "Average": 28.57206120112839,
+        "Count": 60,
+        "Maximum": 28.707539736358893,
+        "Minimum": 28.434129601298896,
+        "StandardDeviation": 0.09023175168553878,
+        "Sum": 1714.3236720677032
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:48:00Z",
+      "Value": {
+        "Average": 28.540524691515667,
+        "Count": 60,
+        "Maximum": 28.799648478447967,
+        "Minimum": 28.430229740044343,
+        "StandardDeviation": 0.07108288984877141,
+        "Sum": 1712.43148149094
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:49:00Z",
+      "Value": {
+        "Average": 28.77892358249908,
+        "Count": 60,
+        "Maximum": 28.915422656427626,
+        "Minimum": 28.643380731917887,
+        "StandardDeviation": 0.07891364820122306,
+        "Sum": 1726.7354149499447
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:50:00Z",
+      "Value": {
+        "Average": 28.876042649160674,
+        "Count": 60,
+        "Maximum": 28.924084468885084,
+        "Minimum": 28.83045672004821,
+        "StandardDeviation": 0.027962825583444897,
+        "Sum": 1732.5625589496403
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:51:00Z",
+      "Value": {
+        "Average": 28.8741027519189,
+        "Count": 60,
+        "Maximum": 28.974932373929757,
+        "Minimum": 28.83206251930535,
+        "StandardDeviation": 0.030572257411157773,
+        "Sum": 1732.4461651151341
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:52:00Z",
+      "Value": {
+        "Average": 28.897264926157167,
+        "Count": 60,
+        "Maximum": 29.003901674356584,
+        "Minimum": 28.599032670942233,
+        "StandardDeviation": 0.07054882014904416,
+        "Sum": 1733.83589556943
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:53:00Z",
+      "Value": {
+        "Average": 28.616687086226886,
+        "Count": 60,
+        "Maximum": 28.71299729738765,
+        "Minimum": 28.584574702508004,
+        "StandardDeviation": 0.021600603425407178,
+        "Sum": 1717.0012251736132
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:54:00Z",
+      "Value": {
+        "Average": 28.67916723312222,
+        "Count": 60,
+        "Maximum": 28.813383051845594,
+        "Minimum": 28.58585147929924,
+        "StandardDeviation": 0.0607379693805736,
+        "Sum": 1720.7500339873334
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:55:00Z",
+      "Value": {
+        "Average": 29.011749250522772,
+        "Count": 60,
+        "Maximum": 29.652999588224635,
+        "Minimum": 28.76335962556089,
+        "StandardDeviation": 0.1898132410583936,
+        "Sum": 1740.7049550313664
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:56:00Z",
+      "Value": {
+        "Average": 29.517192224604063,
+        "Count": 60,
+        "Maximum": 29.86878393695039,
+        "Minimum": 29.284220437546278,
+        "StandardDeviation": 0.14828690305782063,
+        "Sum": 1771.0315334762438
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:57:00Z",
+      "Value": {
+        "Average": 29.83177908090933,
+        "Count": 60,
+        "Maximum": 29.870328208446242,
+        "Minimum": 29.77806087013011,
+        "StandardDeviation": 0.022634713879038815,
+        "Sum": 1789.90674485456
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:58:00Z",
+      "Value": {
+        "Average": 29.812758926314764,
+        "Count": 60,
+        "Maximum": 29.86841311994753,
+        "Minimum": 29.461399037851212,
+        "StandardDeviation": 0.060675352275813416,
+        "Sum": 1788.7655355788859
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T16:59:00Z",
+      "Value": {
+        "Average": 29.602206792981374,
+        "Count": 60,
+        "Maximum": 29.745343514732774,
+        "Minimum": 29.428734784196187,
+        "StandardDeviation": 0.09276989067337607,
+        "Sum": 1776.1324075788825
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:00:00Z",
+      "Value": {
+        "Average": 29.586405007210594,
+        "Count": 60,
+        "Maximum": 29.759169181942298,
+        "Minimum": 29.43357769646327,
+        "StandardDeviation": 0.09319507703582011,
+        "Sum": 1775.1843004326356
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:01:00Z",
+      "Value": {
+        "Average": 29.535435391162697,
+        "Count": 60,
+        "Maximum": 29.609642723875666,
+        "Minimum": 29.455036346786866,
+        "StandardDeviation": 0.05332401806252726,
+        "Sum": 1772.1261234697618
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:02:00Z",
+      "Value": {
+        "Average": 29.528764597495144,
+        "Count": 60,
+        "Maximum": 29.849023131585994,
+        "Minimum": 29.45586618871289,
+        "StandardDeviation": 0.0606168383967218,
+        "Sum": 1771.7258758497087
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:03:00Z",
+      "Value": {
+        "Average": 29.637707868045037,
+        "Count": 60,
+        "Maximum": 29.890264801227524,
+        "Minimum": 29.34430344466658,
+        "StandardDeviation": 0.1552234679754001,
+        "Sum": 1778.2624720827023
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:04:00Z",
+      "Value": {
+        "Average": 29.569111965876882,
+        "Count": 60,
+        "Maximum": 29.89861314622286,
+        "Minimum": 29.29598647751721,
+        "StandardDeviation": 0.1772506275710677,
+        "Sum": 1774.146717952613
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:05:00Z",
+      "Value": {
+        "Average": 29.25037319339087,
+        "Count": 60,
+        "Maximum": 29.33188007105711,
+        "Minimum": 29.186072998274437,
+        "StandardDeviation": 0.04527844894297367,
+        "Sum": 1755.0223916034522
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:06:00Z",
+      "Value": {
+        "Average": 29.28022967181863,
+        "Count": 60,
+        "Maximum": 29.36129172195147,
+        "Minimum": 29.258713607937594,
+        "StandardDeviation": 0.017110512353701555,
+        "Sum": 1756.8137803091179
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:07:00Z",
+      "Value": {
+        "Average": 29.431758016832152,
+        "Count": 60,
+        "Maximum": 29.569048634414695,
+        "Minimum": 29.259491045315343,
+        "StandardDeviation": 0.09197760158119068,
+        "Sum": 1765.9054810099292
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:08:00Z",
+      "Value": {
+        "Average": 29.449790747837692,
+        "Count": 60,
+        "Maximum": 29.56398778640164,
+        "Minimum": 29.17878702422745,
+        "StandardDeviation": 0.08409872302729861,
+        "Sum": 1766.9874448702615
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:09:00Z",
+      "Value": {
+        "Average": 29.23095624312462,
+        "Count": 60,
+        "Maximum": 29.32985158279729,
+        "Minimum": 29.125829421312538,
+        "StandardDeviation": 0.05948979083153585,
+        "Sum": 1753.8573745874771
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:10:00Z",
+      "Value": {
+        "Average": 29.22235051406203,
+        "Count": 60,
+        "Maximum": 29.33163327434339,
+        "Minimum": 29.042076370002544,
+        "StandardDeviation": 0.06339379213082956,
+        "Sum": 1753.3410308437217
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:11:00Z",
+      "Value": {
+        "Average": 29.05507035475477,
+        "Count": 60,
+        "Maximum": 29.187571971404452,
+        "Minimum": 29.00457185686655,
+        "StandardDeviation": 0.037228677448698295,
+        "Sum": 1743.304221285286
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:12:00Z",
+      "Value": {
+        "Average": 29.055956766057598,
+        "Count": 60,
+        "Maximum": 29.21101538990077,
+        "Minimum": 27.64853491948997,
+        "StandardDeviation": 0.2675840915571331,
+        "Sum": 1743.357405963456
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:13:00Z",
+      "Value": {
+        "Average": 27.60719065931514,
+        "Count": 60,
+        "Maximum": 27.718526001654105,
+        "Minimum": 27.46048672184137,
+        "StandardDeviation": 0.06551053573163365,
+        "Sum": 1656.4314395589083
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:14:00Z",
+      "Value": {
+        "Average": 27.47266377864809,
+        "Count": 60,
+        "Maximum": 27.501197201927628,
+        "Minimum": 27.44920188002218,
+        "StandardDeviation": 0.015510687713041588,
+        "Sum": 1648.3598267188854
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:15:00Z",
+      "Value": {
+        "Average": 27.49295388617381,
+        "Count": 60,
+        "Maximum": 27.537206718756238,
+        "Minimum": 27.451049059651318,
+        "StandardDeviation": 0.02644705001328137,
+        "Sum": 1649.5772331704286
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:16:00Z",
+      "Value": {
+        "Average": 27.500474180174574,
+        "Count": 60,
+        "Maximum": 27.538645494483944,
+        "Minimum": 27.344625343668195,
+        "StandardDeviation": 0.029436979626760576,
+        "Sum": 1650.0284508104744
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:17:00Z",
+      "Value": {
+        "Average": 27.393296090086935,
+        "Count": 60,
+        "Maximum": 27.5186627324301,
+        "Minimum": 27.303204319378693,
+        "StandardDeviation": 0.04948761796545767,
+        "Sum": 1643.597765405216
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:18:00Z",
+      "Value": {
+        "Average": 27.50538050062051,
+        "Count": 60,
+        "Maximum": 27.719272278320386,
+        "Minimum": 27.31747668230375,
+        "StandardDeviation": 0.1150382743103677,
+        "Sum": 1650.3228300372307
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:19:00Z",
+      "Value": {
+        "Average": 27.581873773231866,
+        "Count": 60,
+        "Maximum": 27.727529559149218,
+        "Minimum": 27.09284253319915,
+        "StandardDeviation": 0.11583862759092824,
+        "Sum": 1654.912426393912
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:20:00Z",
+      "Value": {
+        "Average": 27.165880390520144,
+        "Count": 60,
+        "Maximum": 27.411041514232714,
+        "Minimum": 26.94693704290393,
+        "StandardDeviation": 0.14129870430864241,
+        "Sum": 1629.9528234312086
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:21:00Z",
+      "Value": {
+        "Average": 27.036527660620532,
+        "Count": 60,
+        "Maximum": 27.103141894094687,
+        "Minimum": 26.933086471628013,
+        "StandardDeviation": 0.04651260756418725,
+        "Sum": 1622.1916596372319
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:22:00Z",
+      "Value": {
+        "Average": 26.946502410958317,
+        "Count": 60,
+        "Maximum": 27.097104166463218,
+        "Minimum": 26.409347101038005,
+        "StandardDeviation": 0.111970957195549,
+        "Sum": 1616.790144657499
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:23:00Z",
+      "Value": {
+        "Average": 26.533076698187394,
+        "Count": 60,
+        "Maximum": 26.794708096368346,
+        "Minimum": 26.17661344963481,
+        "StandardDeviation": 0.16177994775305915,
+        "Sum": 1591.9846018912435
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:24:00Z",
+      "Value": {
+        "Average": 26.2119271549577,
+        "Count": 60,
+        "Maximum": 26.307092932569276,
+        "Minimum": 26.099693920787725,
+        "StandardDeviation": 0.06021587346001217,
+        "Sum": 1572.7156292974619
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:25:00Z",
+      "Value": {
+        "Average": 26.08137397763237,
+        "Count": 60,
+        "Maximum": 26.26669790818327,
+        "Minimum": 26.035496593305535,
+        "StandardDeviation": 0.04094137824421407,
+        "Sum": 1564.8824386579422
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:26:00Z",
+      "Value": {
+        "Average": 26.170649047968602,
+        "Count": 60,
+        "Maximum": 26.559210862102407,
+        "Minimum": 26.044237332174212,
+        "StandardDeviation": 0.09745691925115973,
+        "Sum": 1570.2389428781162
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:27:00Z",
+      "Value": {
+        "Average": 26.527734456953837,
+        "Count": 60,
+        "Maximum": 26.73204921427975,
+        "Minimum": 26.310305506311966,
+        "StandardDeviation": 0.12117703497309223,
+        "Sum": 1591.6640674172302
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:28:00Z",
+      "Value": {
+        "Average": 26.561162640156812,
+        "Count": 60,
+        "Maximum": 26.726435354663575,
+        "Minimum": 26.199863628530835,
+        "StandardDeviation": 0.10529287805092666,
+        "Sum": 1593.6697584094088
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:29:00Z",
+      "Value": {
+        "Average": 26.273193917065484,
+        "Count": 60,
+        "Maximum": 26.395106576381416,
+        "Minimum": 26.090801442143068,
+        "StandardDeviation": 0.0639269943152629,
+        "Sum": 1576.391635023929
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:30:00Z",
+      "Value": {
+        "Average": 26.144502291832104,
+        "Count": 60,
+        "Maximum": 26.485814168500575,
+        "Minimum": 26.091820236965564,
+        "StandardDeviation": 0.052850235669576404,
+        "Sum": 1568.6701375099262
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:31:00Z",
+      "Value": {
+        "Average": 26.33018570159419,
+        "Count": 60,
+        "Maximum": 26.574416790086488,
+        "Minimum": 26.089305548284123,
+        "StandardDeviation": 0.14064874735153163,
+        "Sum": 1579.8111420956513
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:32:00Z",
+      "Value": {
+        "Average": 26.472706206459204,
+        "Count": 60,
+        "Maximum": 26.584625961683553,
+        "Minimum": 26.24892169172571,
+        "StandardDeviation": 0.07340465784998168,
+        "Sum": 1588.3623723875523
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:33:00Z",
+      "Value": {
+        "Average": 26.258358451240362,
+        "Count": 60,
+        "Maximum": 26.354385335583235,
+        "Minimum": 26.158002822519347,
+        "StandardDeviation": 0.05921366598356254,
+        "Sum": 1575.5015070744216
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:34:00Z",
+      "Value": {
+        "Average": 26.25391973953453,
+        "Count": 60,
+        "Maximum": 26.35200273463424,
+        "Minimum": 26.15947193693803,
+        "StandardDeviation": 0.05867441146908195,
+        "Sum": 1575.235184372072
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:35:00Z",
+      "Value": {
+        "Average": 26.238697102825128,
+        "Count": 60,
+        "Maximum": 26.289866402449046,
+        "Minimum": 26.08125270988088,
+        "StandardDeviation": 0.036428786965979065,
+        "Sum": 1574.3218261695076
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:36:00Z",
+      "Value": {
+        "Average": 26.086225089064,
+        "Count": 60,
+        "Maximum": 26.17995432516496,
+        "Minimum": 25.98944082972588,
+        "StandardDeviation": 0.05753251540898441,
+        "Sum": 1565.1735053438401
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:37:00Z",
+      "Value": {
+        "Average": 26.11136076931956,
+        "Count": 60,
+        "Maximum": 26.21862258617313,
+        "Minimum": 25.996908494195182,
+        "StandardDeviation": 0.06688566061478736,
+        "Sum": 1566.6816461591736
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:38:00Z",
+      "Value": {
+        "Average": 26.106683862631403,
+        "Count": 60,
+        "Maximum": 26.239228404109824,
+        "Minimum": 25.987884207939846,
+        "StandardDeviation": 0.06954579264223129,
+        "Sum": 1566.401031757884
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:39:00Z",
+      "Value": {
+        "Average": 26.22457932663169,
+        "Count": 60,
+        "Maximum": 26.31296494960918,
+        "Minimum": 25.950766101173038,
+        "StandardDeviation": 0.06400839658554967,
+        "Sum": 1573.4747595979015
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:40:00Z",
+      "Value": {
+        "Average": 26.02116897565469,
+        "Count": 59,
+        "Maximum": 26.30905597489026,
+        "Minimum": 25.614562214106453,
+        "StandardDeviation": 0.1600632758998373,
+        "Sum": 1535.2489695636266
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:41:00Z",
+      "Value": {
+        "Average": 25.486738481740986,
+        "Count": 59,
+        "Maximum": 25.77270086075637,
+        "Minimum": 24.829792272967456,
+        "StandardDeviation": 0.1694307115015275,
+        "Sum": 1503.7175704227182
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:42:00Z",
+      "Value": {
+        "Average": 24.836391879388025,
+        "Count": 60,
+        "Maximum": 25.25152848715223,
+        "Minimum": 24.490930228269434,
+        "StandardDeviation": 0.22379309292420146,
+        "Sum": 1490.1835127632814
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:43:00Z",
+      "Value": {
+        "Average": 24.663581362765612,
+        "Count": 60,
+        "Maximum": 25.103503342556543,
+        "Minimum": 24.475711181211125,
+        "StandardDeviation": 0.1426733506308915,
+        "Sum": 1479.8148817659367
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:44:00Z",
+      "Value": {
+        "Average": 25.09407279572082,
+        "Count": 60,
+        "Maximum": 25.327764440446913,
+        "Minimum": 24.885589766941763,
+        "StandardDeviation": 0.13040312700986326,
+        "Sum": 1505.6443677432492
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:45:00Z",
+      "Value": {
+        "Average": 25.359782666071485,
+        "Count": 60,
+        "Maximum": 25.522364556564693,
+        "Minimum": 25.305926793757624,
+        "StandardDeviation": 0.036711678173279284,
+        "Sum": 1521.586959964289
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:46:00Z",
+      "Value": {
+        "Average": 25.462949996321516,
+        "Count": 60,
+        "Maximum": 25.53296171645743,
+        "Minimum": 25.398207311767507,
+        "StandardDeviation": 0.042862949369708296,
+        "Sum": 1527.776999779291
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:47:00Z",
+      "Value": {
+        "Average": 25.469070228891812,
+        "Count": 60,
+        "Maximum": 25.713586092722398,
+        "Minimum": 25.398524071727984,
+        "StandardDeviation": 0.05260248534291159,
+        "Sum": 1528.1442137335086
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:48:00Z",
+      "Value": {
+        "Average": 25.619796486476897,
+        "Count": 60,
+        "Maximum": 25.78428105347951,
+        "Minimum": 25.47369314981907,
+        "StandardDeviation": 0.08019303378414487,
+        "Sum": 1537.1877891886138
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:49:00Z",
+      "Value": {
+        "Average": 25.768498204133742,
+        "Count": 60,
+        "Maximum": 25.864595477391934,
+        "Minimum": 25.734793121407304,
+        "StandardDeviation": 0.025739621411564627,
+        "Sum": 1546.1098922480246
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:50:00Z",
+      "Value": {
+        "Average": 25.917369510761986,
+        "Count": 60,
+        "Maximum": 26.444500091560663,
+        "Minimum": 25.807262141154446,
+        "StandardDeviation": 0.10460159523433595,
+        "Sum": 1555.0421706457191
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:51:00Z",
+      "Value": {
+        "Average": 26.228796149154096,
+        "Count": 60,
+        "Maximum": 26.567860381981287,
+        "Minimum": 26.007931320232483,
+        "StandardDeviation": 0.1540579619360725,
+        "Sum": 1573.7277689492457
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:52:00Z",
+      "Value": {
+        "Average": 26.602191645961316,
+        "Count": 60,
+        "Maximum": 26.67419967601885,
+        "Minimum": 26.533552162432212,
+        "StandardDeviation": 0.042100875993213986,
+        "Sum": 1596.1314987576789
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:53:00Z",
+      "Value": {
+        "Average": 26.59174592305212,
+        "Count": 60,
+        "Maximum": 26.661761360983757,
+        "Minimum": 26.526800794166455,
+        "StandardDeviation": 0.04236462088600399,
+        "Sum": 1595.504755383127
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:54:00Z",
+      "Value": {
+        "Average": 26.56358519898491,
+        "Count": 60,
+        "Maximum": 26.63622568610115,
+        "Minimum": 26.464705321754167,
+        "StandardDeviation": 0.0523058579734666,
+        "Sum": 1593.8151119390945
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:55:00Z",
+      "Value": {
+        "Average": 26.47539368920663,
+        "Count": 60,
+        "Maximum": 26.498121691169803,
+        "Minimum": 26.106438120002476,
+        "StandardDeviation": 0.04949776259055579,
+        "Sum": 1588.5236213523979
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:56:00Z",
+      "Value": {
+        "Average": 26.203548083518243,
+        "Count": 60,
+        "Maximum": 26.490696023438062,
+        "Minimum": 25.955888226412785,
+        "StandardDeviation": 0.16026009956290171,
+        "Sum": 1572.2128850110946
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:57:00Z",
+      "Value": {
+        "Average": 26.201141013006048,
+        "Count": 60,
+        "Maximum": 26.40181173579554,
+        "Minimum": 25.987550561811705,
+        "StandardDeviation": 0.11303241324931566,
+        "Sum": 1572.0684607803628
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:58:00Z",
+      "Value": {
+        "Average": 26.210713717762893,
+        "Count": 60,
+        "Maximum": 26.51637893210597,
+        "Minimum": 25.962309243934232,
+        "StandardDeviation": 0.14866106358474754,
+        "Sum": 1572.6428230657737
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T17:59:00Z",
+      "Value": {
+        "Average": 26.48794548869676,
+        "Count": 60,
+        "Maximum": 26.51905796014669,
+        "Minimum": 26.414863765203815,
+        "StandardDeviation": 0.020209235350218912,
+        "Sum": 1589.2767293218055
+      }
+    },
+    {
+      "Quality": "GOOD",
+      "Timestamp": "2021-02-01T18:00:00Z",
+      "Value": {
+        "Average": 26.323993822149976,
+        "Count": 60,
+        "Maximum": 26.504943790616256,
+        "Minimum": 26.14805232827736,
+        "StandardDeviation": 0.10022742092003858,
+        "Sum": 1579.4396293289985
+      }
+    }
+  ],
+  "NextToken": "Pbb7bb96ab41b718aabab1b1f0c64327b=AYADeEhsb/CNkFHmzaVMewZvIzUAXwABABVhd3MtY3J5cHRvLXB1YmxpYy1rZXkAREF3U2pCbnI0aWJSczhES05McUdoMVdGVEVFU1BOMUQzZmxOLzBLMUEwWnFBUXdQY3Jab25mZmxMZWtnYkdKZnNWZz09AAEAA0FTTQA0YmI3YmI5NmFiNDFiNzE4YWFiYWIxYjFmMGM2NDMyN2IAAACAAAAADB8WXnM7VjhaB5/QIQAwVrqkP3Z3210py/B8F9wPsdFv9Lja7PAhWiLSdpoA3ejPGACbZ8uPt6otukNYV607AgAAAAAMAAAQAAAAAAAAAAAAAAAAAM2cAITzrrofJlVBsHfLl9D/////AAAAAQAAAAAAAAAAAAAAAQAAArGunNpIP7QEUmwfQzDhQ5eq/RnaTtm1BCHifxpR3oqYpRXy5kBR25bwJIsneC7u2Pun8wnCl5ayCHgxWopOQFDiu7S6/cjdL3xPlDSujxnuFRZTBqI32mSHc/Hr9aKcZjGKoWPNLjKDQnW43QVFcUEzH/RS97U180KhnZc4UiDSxKvtDY+osJgiksl3pjrk1wqF0ftP8z8e5YsPogsujJEfcCcCVXlzcSiVUSwwn0TCsZXtS/FEml6UlARJOdJUN7uGaeEUMqboQzb8Ax2cvdBwXqYEhfKp4LTGLv3qBHm28qylphVL88pWgSqlDAtlwvs3KAZQGaFjyGXBdNruJZRdqosk4SDE95SzuL9zFdjnbR37UHe99yuUE4iN1VYX+MHE+XoxGBOhgTWFdSchLIj8+8xdlyfjwnMFw/F0PcuUCQZEJtkjfiLmbN+gzKs7Lwpyy/FnBBmtbRmmh0RbNh+gJ7Rt4k8FFkUPrshmg4mjdb1eu/Ufbifkpz4ZBZqWeEvSWiCo5N7OBl7TiPu9c2SReBFHPJsPh1PqVg5aILatfY3YeJOfoQfKsH1mX8jp0QQKWo3Fz4UZ1rUSK4IOfJq2tUybGILAkc9IUPvcHGA/3VFimpvqnHwkKgzFFLb4qNNyks1M9WCT7q2yq0c1ujEqRg8mMB1ENBhcofGsrJeav77/mLPV75qaevwpLOPmHwSXvS6zc5V3E/abG8p6u/+oJkNFdGsWfGRhqxrAVB/rmEPvppEEn+PGpZRlyrT13VWfuiENIujoMDSCJl3K90YhT0uOLSP91VJA+9gI8LFXi4jq7hk4YmloF09MLKgdIE+4IWaddrManMCUuW4N+rmjbs7jCa/6IqSBoR1cLSrdP61UXriSvcGRvZD4L/X+vwETdTt6/ImYeUHZ7HctZi/TZ2ZJrScZtSJRfwiQw8HDY7MAZzBlAjBap+46gGu5sWmQ2Y9r1SBt3UTrF2Jqw8tE1u8CAQ1zxNfy5E+bE15pgN8OgfH6svUCMQDt4wVCf9vbc44MTFQYmoiIe1VBizp0lHMUptYC/oFWzfy/yhDQ4XDdTBXSbA9gZK4="
 }

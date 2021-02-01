@@ -77,8 +77,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const { query } = this.props;
     const assetChanged = query?.assetId !== oldProps?.query?.assetId;
     const propChanged = query?.propertyId !== oldProps?.query?.propertyId;
-    if (assetChanged || propChanged) {
-      if (!query.assetId) {
+    const regionChanged = query?.region !== oldProps?.query?.region;
+    if (assetChanged || propChanged || regionChanged) {
+      if (!query.assetId && !regionChanged) {
         this.setState({ asset: undefined, property: undefined, loading: false });
       } else {
         this.setState({ loading: true });
