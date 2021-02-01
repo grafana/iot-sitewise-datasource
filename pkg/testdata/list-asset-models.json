@@ -1,11 +1,11 @@
 {
     "AssetModelSummaries": [
         {
-            "Arn": "arn:aws:iotsitewise:us-east-1:341474261430:asset-model/587d4e0e-045c-49ff-9fcc-c3032cb73309",
-            "CreationDate": "2020-09-17T17:00:41Z",
+            "Arn": "arn:aws:iotsitewise:us-east-1:526544423884:asset-model/1f95cf92-34ff-4975-91a9-e9f2af35b6a5",
+            "CreationDate": "2020-11-24T02:17:49Z",
             "Description": "This is an asset model used in the IoT SiteWise Demo for representing a turbine in a wind farm. It will be deleted at the end of the demo.",
-            "Id": "587d4e0e-045c-49ff-9fcc-c3032cb73309",
-            "LastUpdateDate": "2020-09-17T17:00:46Z",
+            "Id": "1f95cf92-34ff-4975-91a9-e9f2af35b6a5",
+            "LastUpdateDate": "2020-11-24T02:17:54Z",
             "Name": "Demo Turbine Asset Model",
             "Status": {
                 "Error": null,
@@ -13,11 +13,11 @@
             }
         },
         {
-            "Arn": "arn:aws:iotsitewise:us-east-1:341474261430:asset-model/78e4b177-b189-4538-96bc-f11d9c5517db",
-            "CreationDate": "2020-09-17T17:00:56Z",
+            "Arn": "arn:aws:iotsitewise:us-east-1:526544423884:asset-model/cec092ac-b034-4d4b-bbd8-1eca007c5750",
+            "CreationDate": "2020-11-24T02:18:01Z",
             "Description": "This is an asset model used in the IoT SiteWise Demo for representing a wind farm. It will be deleted at the end of the demo.",
-            "Id": "78e4b177-b189-4538-96bc-f11d9c5517db",
-            "LastUpdateDate": "2020-09-17T17:01:02Z",
+            "Id": "cec092ac-b034-4d4b-bbd8-1eca007c5750",
+            "LastUpdateDate": "2020-11-24T02:18:06Z",
             "Name": "Demo Wind Farm Asset Model",
             "Status": {
                 "Error": null,

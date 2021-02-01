@@ -32,7 +32,7 @@ var listAssetsHappyCase testServerScenarioFn = func(t *testing.T) *testScenario 
 		if req.AssetModelId == nil {
 			return false
 		}
-		return *req.AssetModelId == testdata.TestAssetModelId && *req.Filter == "ALL"
+		return *req.AssetModelId == testdata.DemoTurbineAssetModelId && *req.Filter == "ALL"
 	})).Return(&childAssets, nil)
 
 	queryTopLevel := models.ListAssetsQuery{
@@ -41,7 +41,7 @@ var listAssetsHappyCase testServerScenarioFn = func(t *testing.T) *testScenario 
 	}
 
 	queryChild := models.ListAssetsQuery{
-		ModelId: testdata.TestAssetModelId,
+		ModelId: testdata.DemoTurbineAssetModelId,
 		Filter:  "ALL",
 	}
 

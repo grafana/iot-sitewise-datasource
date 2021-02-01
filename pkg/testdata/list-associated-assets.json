@@ -1,25 +1,12 @@
 {
     "AssetSummaries": [
         {
-            "Arn": "arn:aws:iotsitewise:us-east-1:341474261430:asset/07412cb4-0a8b-4939-af9c-5dcb3b2933e5",
-            "AssetModelId": "587d4e0e-045c-49ff-9fcc-c3032cb73309",
-            "CreationDate": "2020-09-17T17:01:12Z",
+            "Arn": "arn:aws:iotsitewise:us-east-1:526544423884:asset/0d17e113-526b-4535-83e9-07694eaecbce",
+            "AssetModelId": "1f95cf92-34ff-4975-91a9-e9f2af35b6a5",
+            "CreationDate": "2020-11-24T02:18:14Z",
             "Hierarchies": [],
-            "Id": "07412cb4-0a8b-4939-af9c-5dcb3b2933e5",
-            "LastUpdateDate": "2020-09-17T17:01:12Z",
-            "Name": "Demo Turbine Asset 2",
-            "Status": {
-                "Error": null,
-                "State": "ACTIVE"
-            }
-        },
-        {
-            "Arn": "arn:aws:iotsitewise:us-east-1:341474261430:asset/2a1e95f2-d49b-4f36-bee2-95cda2ac9654",
-            "AssetModelId": "587d4e0e-045c-49ff-9fcc-c3032cb73309",
-            "CreationDate": "2020-09-17T17:01:14Z",
-            "Hierarchies": [],
-            "Id": "2a1e95f2-d49b-4f36-bee2-95cda2ac9654",
-            "LastUpdateDate": "2020-09-17T17:01:14Z",
+            "Id": "0d17e113-526b-4535-83e9-07694eaecbce",
+            "LastUpdateDate": "2020-11-24T02:18:14Z",
             "Name": "Demo Turbine Asset 4",
             "Status": {
                 "Error": null,
@@ -27,12 +14,25 @@
             }
         },
         {
-            "Arn": "arn:aws:iotsitewise:us-east-1:341474261430:asset/a999c93c-a2ed-4a31-b832-533a922440f9",
-            "AssetModelId": "587d4e0e-045c-49ff-9fcc-c3032cb73309",
-            "CreationDate": "2020-09-17T17:01:12Z",
+            "Arn": "arn:aws:iotsitewise:us-east-1:526544423884:asset/917e7b5d-11cc-48c3-ad4f-7b65fb925ad2",
+            "AssetModelId": "1f95cf92-34ff-4975-91a9-e9f2af35b6a5",
+            "CreationDate": "2020-11-24T02:18:14Z",
             "Hierarchies": [],
-            "Id": "a999c93c-a2ed-4a31-b832-533a922440f9",
-            "LastUpdateDate": "2020-09-17T17:01:12Z",
+            "Id": "917e7b5d-11cc-48c3-ad4f-7b65fb925ad2",
+            "LastUpdateDate": "2020-11-24T02:18:14Z",
+            "Name": "Demo Turbine Asset 2",
+            "Status": {
+                "Error": null,
+                "State": "ACTIVE"
+            }
+        },
+        {
+            "Arn": "arn:aws:iotsitewise:us-east-1:526544423884:asset/a50e237b-ce6b-4ec4-ac9a-f4dcf920dde6",
+            "AssetModelId": "1f95cf92-34ff-4975-91a9-e9f2af35b6a5",
+            "CreationDate": "2020-11-24T02:18:14Z",
+            "Hierarchies": [],
+            "Id": "a50e237b-ce6b-4ec4-ac9a-f4dcf920dde6",
+            "LastUpdateDate": "2020-11-24T02:18:14Z",
             "Name": "Demo Turbine Asset 3",
             "Status": {
                 "Error": null,
@@ -40,12 +40,12 @@
             }
         },
         {
-            "Arn": "arn:aws:iotsitewise:us-east-1:341474261430:asset/a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b",
-            "AssetModelId": "587d4e0e-045c-49ff-9fcc-c3032cb73309",
-            "CreationDate": "2020-09-17T17:01:13Z",
+            "Arn": "arn:aws:iotsitewise:us-east-1:526544423884:asset/e64c9075-9d89-47cb-8ee5-d3251bd253f4",
+            "AssetModelId": "1f95cf92-34ff-4975-91a9-e9f2af35b6a5",
+            "CreationDate": "2020-11-24T02:18:13Z",
             "Hierarchies": [],
-            "Id": "a9fe4e4a-e028-4be2-bd15-2f8dd0bee23b",
-            "LastUpdateDate": "2020-09-17T17:01:13Z",
+            "Id": "e64c9075-9d89-47cb-8ee5-d3251bd253f4",
+            "LastUpdateDate": "2020-11-24T02:18:13Z",
             "Name": "Demo Turbine Asset 1",
             "Status": {
                 "Error": null,
