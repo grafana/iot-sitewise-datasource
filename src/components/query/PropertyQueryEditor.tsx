@@ -11,6 +11,7 @@ import {
   AssetPropertyInfo,
   ListAssociatedAssetsQuery,
   isListAssociatedAssetsQuery,
+  isDescribeAssetQuery,
 } from 'types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
@@ -244,7 +245,11 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     }
 
     const isAssociatedAssets = isListAssociatedAssetsQuery(query);
-    const showProp = !isAssociatedAssets && (query.propertyId || query.assetId);
+    let showProp = !isAssociatedAssets && (query.propertyId || query.assetId);
+    if (showProp && isDescribeAssetQuery(query)) {
+      showProp = false;
+    }
+
     const properties = showProp ? (asset ? asset.properties : []) : [];
     const showQuality =
       (query.propertyId && isAssetPropertyAggregatesQuery(query)) || isAssetPropertyValueHistoryQuery(query);

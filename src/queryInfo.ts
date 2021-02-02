@@ -13,6 +13,7 @@ import {
   AssetPropertyInfo,
   ListAssociatedAssetsQuery,
   isListAssociatedAssetsQuery,
+  DescribeAssetQuery,
 } from './types';
 
 export interface QueryTypeInfo extends SelectableValue<QueryType> {
@@ -71,6 +72,13 @@ export const siteWisteQueryTypes: QueryTypeInfo[] = [
     description: 'Retrieves a paginated list of associated assets.',
     defaultQuery: {} as ListAssociatedAssetsQuery,
     helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListAssociatedAssets.html',
+  },
+  {
+    label: 'Describe asset',
+    value: QueryType.DescribeAsset,
+    description: 'Retrieves information about an asset.',
+    defaultQuery: {} as DescribeAssetQuery,
+    helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeAsset.html',
   },
 ];
 
