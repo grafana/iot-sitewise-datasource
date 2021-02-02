@@ -13,7 +13,7 @@ import (
 )
 
 func TestHandlePropertyValueHistory(t *testing.T) {
-	//getPropertyValueHistoryHappyCase(t).run(t)
+	getPropertyValueHistoryHappyCase(t).run(t)
 	getPropertyValueBoolean(t).run(t)
 }
 
