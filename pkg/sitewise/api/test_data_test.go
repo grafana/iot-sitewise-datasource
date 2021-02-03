@@ -1,4 +1,4 @@
-package sitewise
+package api
 
 import (
 	"context"
@@ -224,7 +224,7 @@ func writeTestData(t *testing.T, filename string, tf testDataFunc, client client
 			t.Fatal(err)
 		}
 
-		f, err := os.Create("../testdata/" + filename)
+		f, err := os.Create("../../testdata/" + filename)
 
 		if err != nil {
 			t.Fatal(err)
