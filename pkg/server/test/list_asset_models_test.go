@@ -25,7 +25,6 @@ var listAssetModelsHappyCase testServerScenarioFn = func(t *testing.T) *testScen
 
 	query := models.ListAssetModelsQuery{
 		BaseQuery: models.BaseQuery{},
-		NextToken: "",
 	}
 
 	return &testScenario{
