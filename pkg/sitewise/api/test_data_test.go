@@ -1,4 +1,4 @@
-package sitewise
+package api
 
 import (
 	"context"
@@ -206,6 +206,19 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 
+	m["describe-asset-model.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
+		t.Skip("Integration Test") // comment line to run this
+
+		ctx := context.Background()
+		query := models.DescribeAssetModelQuery{}
+		query.AssetModelId = testdata.DemoTurbineAssetModelId
+		resp, err := DescribeAssetModel(ctx, client, query)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return resp
+	}
+
 	sw := client.NewSitewiseClientForRegion("us-east-1")
 
 	for k, v := range m {
@@ -224,7 +237,7 @@ func writeTestData(t *testing.T, filename string, tf testDataFunc, client client
 			t.Fatal(err)
 		}
 
-		f, err := os.Create("../testdata/" + filename)
+		f, err := os.Create("../../testdata/" + filename)
 
 		if err != nil {
 			t.Fatal(err)

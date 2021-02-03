@@ -1,4 +1,4 @@
-package sitewise
+package api
 
 import (
 	"github.com/aws/aws-sdk-go/aws"

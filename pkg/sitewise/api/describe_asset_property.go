@@ -1,4 +1,4 @@
-package sitewise
+package api
 
 import (
 	"context"
