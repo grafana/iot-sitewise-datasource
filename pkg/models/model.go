@@ -8,7 +8,11 @@ import (
 
 type ListAssetModelsQuery struct {
 	BaseQuery
-	NextToken string `json:"nextToken,omitempty"`
+}
+
+type DescribeAssetModelQuery struct {
+	BaseQuery
+	AssetModelId string `json:"assetModelId"`
 }
 
 func GetListAssetModelsQuery(dq *backend.DataQuery) (*ListAssetModelsQuery, error) {
@@ -20,6 +24,18 @@ func GetListAssetModelsQuery(dq *backend.DataQuery) (*ListAssetModelsQuery, erro
 
 	// add on the DataQuery params
 	query.MaxDataPoints = dq.MaxDataPoints
+	query.QueryType = dq.QueryType
+
+	return query, nil
+}
+
+func GetDescribeAssetModelQuery(dq *backend.DataQuery) (*DescribeAssetModelQuery, error) {
+	query := &DescribeAssetModelQuery{}
+	if err := json.Unmarshal(dq.JSON, query); err != nil {
+		return nil, err
+	}
+
+	// add on the DataQuery params
 	query.QueryType = dq.QueryType
 
 	return query, nil

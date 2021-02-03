@@ -105,3 +105,9 @@ func (ds *Datasource) HandleDescribeAssetQuery(ctx context.Context, req *backend
 		return api.DescribeAsset(ctx, sw, *query)
 	})
 }
+
+func (ds *Datasource) HandleDescribeAssetModelQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.DescribeAssetModelQuery) (data.Frames, error) {
+	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
+		return api.DescribeAssetModel(ctx, sw, *query)
+	})
+}

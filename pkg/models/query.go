@@ -14,6 +14,7 @@ const (
 	QueryTypeListAssets           = "ListAssets"
 	QueryTypeListAssociatedAssets = "ListAssociatedAssets"
 	QueryTypeDescribeAsset        = "DescribeAsset"
+	QueryTypeDescribeAssetModel   = "DescribeAssetModel"
 )
 
 const (

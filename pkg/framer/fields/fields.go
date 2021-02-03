@@ -63,6 +63,10 @@ func PropertiesField(length int) *data.Field {
 	return NewFieldWithName(Properties, data.FieldTypeString, length)
 }
 
+func CompositeModelsField(length int) *data.Field {
+	return NewFieldWithName(CompositeModels, data.FieldTypeString, length)
+}
+
 func PropertyValueField(property *iotsitewise.DescribeAssetPropertyOutput, length int) *data.Field {
 	valueField := NewFieldWithName(*property.AssetProperty.Name, FieldTypeForPropertyValue(property), length)
 	valueField.Config = &data.FieldConfig{
