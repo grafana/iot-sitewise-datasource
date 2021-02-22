@@ -14,7 +14,10 @@ type AssetPropertyValue iotsitewise.GetAssetPropertyValueOutput
 
 func (p AssetPropertyValue) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
 
-	length := 1
+	length := 0
+	if p.PropertyValue != nil {
+		length = 1
+	}
 
 	property, err := resources.Property(ctx)
 	if err != nil {
@@ -27,9 +30,11 @@ func (p AssetPropertyValue) Frames(ctx context.Context, resources resource.Resou
 
 	frame := data.NewFrame(*property.AssetName, timeField, valueField, qualityField)
 
-	timeField.Set(0, getTime(p.PropertyValue.Timestamp))
-	valueField.Set(0, getPropertyVariantValue(p.PropertyValue.Value))
-	qualityField.Set(0, *p.PropertyValue.Quality)
+	if p.PropertyValue != nil {
+		timeField.Set(0, getTime(p.PropertyValue.Timestamp))
+		valueField.Set(0, getPropertyVariantValue(p.PropertyValue.Value))
+		qualityField.Set(0, *p.PropertyValue.Quality)
+	}
 
 	return data.Frames{frame}, nil
 }

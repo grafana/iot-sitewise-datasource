@@ -3,6 +3,8 @@ package test
 import (
 	"testing"
 
+	"github.com/aws/aws-sdk-go/service/iotsitewise"
+
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/iot-sitewise-datasource/pkg/server"
 
@@ -15,6 +17,7 @@ import (
 
 func TestHandlePropertyValue(t *testing.T) {
 	getPropertyValueHappyCase(t).run(t)
+	getPropertyValueEmptyCase(t).run(t)
 }
 
 var getPropertyValueHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
@@ -47,6 +50,43 @@ var getPropertyValueHappyCase testServerScenarioFn = func(t *testing.T) *testSce
 		},
 		mockSw:         mockSw,
 		goldenFileName: "property-value",
+		handlerFn: func(srvr *server.Server) backend.QueryDataHandlerFunc {
+			return srvr.HandlePropertyValue
+		},
+		validationFn: nil,
+	}
+}
+
+var getPropertyValueEmptyCase testServerScenarioFn = func(t *testing.T) *testScenario {
+
+	mockSw := &mocks.SitewiseClient{}
+
+	propVal := iotsitewise.GetAssetPropertyValueOutput{} // empty prop value response
+	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-raw-wind.json"))
+
+	mockSw.On("GetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&propVal, nil)
+	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
+
+	query := models.AssetPropertyValueQuery{
+		BaseQuery: models.BaseQuery{
+			AwsRegion:  "us-west-2",
+			AssetId:    testdata.DemoTurbineAsset1,
+			PropertyId: testdata.TurbinePropWindSpeed,
+		},
+	}
+
+	return &testScenario{
+		name: "GetPropertyValueHappyCase",
+		queries: []backend.DataQuery{
+			{
+				RefID:     "A",
+				QueryType: models.QueryTypePropertyValue,
+				TimeRange: timeRange,
+				JSON:      testdata.SerializeStruct(t, query),
+			},
+		},
+		mockSw:         mockSw,
+		goldenFileName: "property-value-empty",
 		handlerFn: func(srvr *server.Server) backend.QueryDataHandlerFunc {
 			return srvr.HandlePropertyValue
 		},
