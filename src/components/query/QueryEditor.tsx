@@ -54,7 +54,7 @@ export class QueryEditor extends PureComponent<Props> {
 
     const defaultRegion = { label: `Default`, desctiption: datasource.options?.defaultRegion, value: undefined };
     const regions = query.region ? [defaultRegion, ...standardRegions] : standardRegions;
-    const currentQueryType = siteWisteQueryTypes.find(v => v.value === query.queryType);
+    const currentQueryType = siteWisteQueryTypes.find((v) => v.value === query.queryType);
     const queryTooltip = currentQueryType ? (
       <div>
         {currentQueryType.description} <br />
@@ -62,9 +62,7 @@ export class QueryEditor extends PureComponent<Props> {
           API Docs <Icon name="external-link-alt" />
         </LinkButton>
       </div>
-    ) : (
-      undefined
-    );
+    ) : undefined;
 
     return (
       <>
@@ -82,7 +80,7 @@ export class QueryEditor extends PureComponent<Props> {
             <Select
               width={18}
               options={regions}
-              value={standardRegions.find(v => v.value === query.region) || defaultRegion}
+              value={standardRegions.find((v) => v.value === query.region) || defaultRegion}
               onChange={this.onRegionChange}
               backspaceRemovesValue={true}
               allowCustomValue={true}

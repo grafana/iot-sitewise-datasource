@@ -99,7 +99,7 @@ export function getAssetProperty(asset?: AssetInfo, propId?: string): AssetPrope
   if (!asset?.properties || !propId) {
     return undefined;
   }
-  return asset.properties.find(p => p.Id === propId);
+  return asset.properties.find((p) => p.Id === propId);
 }
 
 export function getDefaultAggregate(prop?: AssetPropertyInfo): AggregateType {
