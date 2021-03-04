@@ -80,6 +80,13 @@ export const siteWisteQueryTypes: QueryTypeInfo[] = [
     defaultQuery: {} as DescribeAssetQuery,
     helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeAsset.html',
   },
+  {
+    label: 'Describe asset model',
+    value: QueryType.DescribeAssetModel,
+    description: 'Retrieves information about an asset model.',
+    defaultQuery: {} as DescribeAssetQuery,
+    helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeAssetModel.html',
+  },
 ];
 
 export function changeQueryType(q: SitewiseQuery, info: QueryTypeInfo): SitewiseQuery {

@@ -44,6 +44,7 @@ export class QueryEditor extends PureComponent<Props> {
       case QueryType.PropertyAggregate:
       case QueryType.PropertyValueHistory:
       case QueryType.DescribeAsset:
+      case QueryType.DescribeAssetModel:
         return <PropertyQueryEditor {...this.props} />;
     }
     return <div>Missing UI for query type: {query.queryType}</div>;
