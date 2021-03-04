@@ -32,7 +32,7 @@ export class SitewiseCache {
         1000
       )
       .pipe(
-        map(res => {
+        map((res) => {
           if (res.data.length) {
             const view = new DataFrameView<DescribeAssetResult>(res.data[0]);
             if (view && view.length) {
@@ -70,7 +70,7 @@ export class SitewiseCache {
         region: this.region,
       })
       .pipe(
-        map(res => {
+        map((res) => {
           if (res.data.length) {
             this.models = new DataFrameView<AssetModelSummary>(res.data[0]);
             return this.models;
@@ -93,7 +93,7 @@ export class SitewiseCache {
     return this.ds
       .runQuery(query, 1000)
       .pipe(
-        map(res => {
+        map((res) => {
           if (res.data.length) {
             this.topLevelAssets = new DataFrameView<AssetSummary>(res.data[0]);
             return this.topLevelAssets;
@@ -116,7 +116,7 @@ export class SitewiseCache {
     return this.ds
       .runQuery(query, 1000)
       .pipe(
-        map(res => {
+        map((res) => {
           if (res.data.length) {
             return new DataFrameView<AssetSummary>(res.data[0]);
           } else {
@@ -140,7 +140,7 @@ export class SitewiseCache {
     return this.ds
       .runQuery(query, 1000)
       .pipe(
-        map(res => {
+        map((res) => {
           if (res.data.length) {
             this.topLevelAssets = new DataFrameView<AssetSummary>(res.data[0]);
             return this.topLevelAssets;
@@ -201,7 +201,7 @@ export function frameToAssetInfo(res: DescribeAssetResult): AssetInfo {
   return {
     ...res,
     properties,
-    hierarchy: hierarchy.map(v => ({
+    hierarchy: hierarchy.map((v) => ({
       label: v.Name,
       value: v.Id,
     })),
@@ -217,7 +217,7 @@ export function assetSummaryToAssetInfo(res: DataFrameView<AssetSummary>): Asset
     results.push({
       ...info,
       properties,
-      hierarchy: hierarchy.map(v => ({
+      hierarchy: hierarchy.map((v) => ({
         label: v.Name,
         value: v.Id,
       })),

@@ -13,6 +13,7 @@ import {
   isListAssociatedAssetsQuery,
   isDescribeAssetQuery,
   isDescribeAssetModelQuery,
+  DescribeAssetModelQuery,
 } from 'types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
@@ -22,28 +23,17 @@ import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
 import { QualityAndOrderRow } from './QualityAndOrderRow';
 import { firstLabelWith } from './QueryEditor';
 
-type Props = SitewiseQueryEditorProps<SitewiseQuery | AssetPropertyAggregatesQuery | ListAssociatedAssetsQuery>;
-
-const resolutions: Array<SelectableValue<SiteWiseResolution>> = [
-  { value: SiteWiseResolution.Auto, label: 'Auto', description: 'Pick a resolution based on the time window' },
-  { value: SiteWiseResolution.Min, label: 'Minute', description: '1 point every minute' },
-  { value: SiteWiseResolution.Hour, label: 'Hour', description: '1 point every hour' },
-  { value: SiteWiseResolution.Day, label: 'Day', description: '1 point every day' },
-];
+type Props = SitewiseQueryEditorProps<DescribeAssetModelQuery>;
 
 interface State {
-  asset?: AssetInfo;
-  property?: AssetPropertyInfo;
-  assets: Array<SelectableValue<string>>;
+  models: Array<SelectableValue<string>>;
   loading: boolean;
-  openModal: boolean;
 }
 
-export class PropertyQueryEditor extends PureComponent<Props, State> {
+export class DescribeModelEditor extends PureComponent<Props, State> {
   state: State = {
-    assets: [],
+    models: [],
     loading: true,
-    openModal: false,
   };
 
   async updateInfo() {
@@ -55,18 +45,11 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const cache = datasource.getCache(query.region);
     if (query?.assetId) {
       try {
-        update.asset = await cache.getAssetInfo(query.assetId);
+        const m = await cache.getModels();
+        update.models = m.map( m => ({value:m.id, label: m.name}));
       } catch (err) {
         console.warn('error reading asset info', err);
-        update.property = undefined;
       }
-    }
-    update.property = getAssetProperty(update.asset, query.propertyId);
-
-    try {
-      update.assets = await cache.getAssetPickerOptions();
-    } catch (err) {
-      console.warn('error getting options', err);
     }
     this.setState(update);
   }

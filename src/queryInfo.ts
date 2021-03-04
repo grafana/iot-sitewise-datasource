@@ -13,6 +13,7 @@ import {
   AssetPropertyInfo,
   ListAssociatedAssetsQuery,
   isListAssociatedAssetsQuery,
+  DescribeAssetQuery,
 } from './types';
 
 export interface QueryTypeInfo extends SelectableValue<QueryType> {
@@ -72,6 +73,20 @@ export const siteWisteQueryTypes: QueryTypeInfo[] = [
     defaultQuery: {} as ListAssociatedAssetsQuery,
     helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListAssociatedAssets.html',
   },
+  {
+    label: 'Describe asset',
+    value: QueryType.DescribeAsset,
+    description: 'Retrieves information about an asset.',
+    defaultQuery: {} as DescribeAssetQuery,
+    helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeAsset.html',
+  },
+  {
+    label: 'Describe asset model',
+    value: QueryType.DescribeAssetModel,
+    description: 'Retrieves information about an asset model.',
+    defaultQuery: {} as DescribeAssetQuery,
+    helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_DescribeAssetModel.html',
+  },
 ];
 
 export function changeQueryType(q: SitewiseQuery, info: QueryTypeInfo): SitewiseQuery {
@@ -99,7 +114,7 @@ export function getAssetProperty(asset?: AssetInfo, propId?: string): AssetPrope
   if (!asset?.properties || !propId) {
     return undefined;
   }
-  return asset.properties.find(p => p.Id === propId);
+  return asset.properties.find((p) => p.Id === propId);
 }
 
 export function getDefaultAggregate(prop?: AssetPropertyInfo): AggregateType {

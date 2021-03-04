@@ -6,6 +6,7 @@ import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta, isPropertyQueryType
 import { Observable } from 'rxjs';
 import { getRequestLooper, MultiRequestTracker } from 'requestLooper';
 import { appendMatchingFrames } from 'appendFrames';
+import { SitewiseVariableSupport } from 'variables';
 
 export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
@@ -15,6 +16,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   constructor(instanceSettings: DataSourceInstanceSettings<SitewiseOptions>) {
     super(instanceSettings);
     this.options = instanceSettings.jsonData;
+    this.variables = new SitewiseVariableSupport(this);
   }
 
   /**
@@ -59,7 +61,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       txt += ' / ' + info.name;
 
       if (query.propertyId && info.properties) {
-        const p = info.properties.find(v => v.Id === query.propertyId);
+        const p = info.properties.find((v) => v.Id === query.propertyId);
         if (p) {
           txt += ' / ' + p.Name;
         } else {
@@ -98,7 +100,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
           for (const frame of rsp.data as DataFrame[]) {
             const meta = frame.meta?.custom as SitewiseCustomMeta;
             if (meta && meta.nextToken) {
-              const query = request.targets.find(t => t.refId === frame.refId);
+              const query = request.targets.find((t) => t.refId === frame.refId);
               if (query) {
                 next.push({
                   ...query,

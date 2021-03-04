@@ -54,7 +54,7 @@ export class ConfigEditor extends PureComponent<Props> {
                     <textarea
                       rows={7}
                       className="gf-form-input gf-form-textarea width-30"
-                      onChange={event => {
+                      onChange={(event) => {
                         updateDatasourcePluginSecureJsonDataOption(this.props, 'cert', event.target.value);
                       }}
                       placeholder="Begins with -----BEGIN CERTIFICATE------"

@@ -55,14 +55,14 @@ export const AssetList: FunctionComponent<Props> = ({ listInfo, assets, search, 
     }
 
     const lowerSearch = search ? search.toLowerCase() : '';
-    const filtered = search ? assets.filter(a => a.name.toLowerCase().indexOf(lowerSearch) >= 0) : assets;
+    const filtered = search ? assets.filter((a) => a.name.toLowerCase().indexOf(lowerSearch) >= 0) : assets;
     if (!filtered.length && search) {
       return <div key={listInfo?.id}>No assets match: {search}</div>;
     }
 
     return (
       <div key={listInfo?.id}>
-        {filtered.map(c => {
+        {filtered.map((c) => {
           return <AssetListItem asset={c} key={c.id} onInspect={onInspect} onSelect={onSelect} />;
         })}
       </div>

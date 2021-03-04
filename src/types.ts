@@ -7,6 +7,7 @@ export enum QueryType {
   ListAssets = 'ListAssets',
   ListAssociatedAssets = 'ListAssociatedAssets',
   DescribeAsset = 'DescribeAsset',
+  DescribeAssetModel = 'DescribeAssetModel',
   PropertyValue = 'PropertyValue',
   PropertyValueHistory = 'PropertyValueHistory',
   PropertyAggregate = 'PropertyAggregate',
@@ -103,6 +104,14 @@ export interface DescribeAssetQuery extends SitewiseQuery {
 
 export function isDescribeAssetQuery(q?: SitewiseQuery): q is ListAssetModelsQuery {
   return q?.queryType === QueryType.DescribeAsset;
+}
+
+export interface DescribeAssetModelQuery extends SitewiseQuery {
+  queryType: QueryType.DescribeAssetModel;
+}
+
+export function isDescribeAssetModelQuery(q?: SitewiseQuery): q is DescribeAssetModelQuery {
+  return q?.queryType === QueryType.DescribeAssetModel;
 }
 
 /**

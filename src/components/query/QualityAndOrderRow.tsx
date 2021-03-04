@@ -54,7 +54,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
             <Select
               width={20}
               options={qualities}
-              value={qualities.find(v => v.value === query.quality) ?? qualities[0]}
+              value={qualities.find((v) => v.value === query.quality) ?? qualities[0]}
               onChange={this.onQualityChange}
               isSearchable={true}
               menuPlacement="bottom"
@@ -63,7 +63,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
           <InlineField label="Time" labelWidth={8}>
             <Select
               options={ordering}
-              value={ordering.find(v => v.value === query.timeOrdering) ?? ordering[0]}
+              value={ordering.find((v) => v.value === query.timeOrdering) ?? ordering[0]}
               onChange={this.onOrderChange}
               isSearchable={true}
               menuPlacement="bottom"
