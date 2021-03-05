@@ -105,7 +105,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
           update.aggregates = [];
         }
         if (info) {
-          update.aggregates = update.aggregates.filter(a => aggReg.get(a).isValid(info));
+          update.aggregates = update.aggregates.filter((a) => aggReg.get(a).isValid(info));
         }
         if (!update.aggregates.length) {
           update.aggregates = [getDefaultAggregate(info)];
@@ -180,7 +180,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
           <Select
             width={18}
             options={resolutions}
-            value={resolutions.find(v => v.value === query.resolution) || resolutions[0]}
+            value={resolutions.find((v) => v.value === query.resolution) || resolutions[0]}
             onChange={this.onResolutionChange}
             menuPlacement="bottom"
           />
@@ -196,7 +196,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       hierarchies.push(...asset.hierarchy);
     }
 
-    let current = hierarchies.find(v => v.value === query.hierarchyId);
+    let current = hierarchies.find((v) => v.value === query.hierarchyId);
     if (!current) {
       if (query.hierarchyId) {
         current = { value: query.hierarchyId, label: 'ID: ' + query.hierarchyId };
@@ -220,7 +220,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             isClearable={true}
             isSearchable={true}
             onCreateOption={this.onSetHierarchyId}
-            formatCreateLabel={txt => `Hierarchy Id: ${txt}`}
+            formatCreateLabel={(txt) => `Hierarchy Id: ${txt}`}
             menuPlacement="bottom"
           />
         </InlineField>
@@ -232,7 +232,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const { query, datasource } = this.props;
     const { loading, asset, assets } = this.state;
 
-    let current = query.assetId ? assets.find(v => v.value === query.assetId) : undefined;
+    let current = query.assetId ? assets.find((v) => v.value === query.assetId) : undefined;
     if (!current && query.assetId) {
       if (loading) {
         current = { label: 'loading...', value: query.assetId };
@@ -249,7 +249,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const showQuality =
       (query.propertyId && isAssetPropertyAggregatesQuery(query)) || isAssetPropertyValueHistoryQuery(query);
 
-    let currentProperty = properties.find(p => p.Id === query.propertyId);
+    let currentProperty = properties.find((p) => p.Id === query.propertyId);
     if (!currentProperty && query.propertyId) {
       currentProperty = {
         value: query.propertyId,
@@ -272,7 +272,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
               isClearable={true}
               isSearchable={true}
               onCreateOption={this.onSetAssetId}
-              formatCreateLabel={txt => `Asset ID: ${txt}`}
+              formatCreateLabel={(txt) => `Asset ID: ${txt}`}
               menuPlacement="bottom"
             />
           </InlineField>
@@ -296,7 +296,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                   allowCustomValue={true}
                   isSearchable={true}
                   onCreateOption={this.onSetPropertyId}
-                  formatCreateLabel={txt => `Property ID: ${txt}`}
+                  formatCreateLabel={(txt) => `Property ID: ${txt}`}
                   menuPlacement="bottom"
                 />
               </InlineField>

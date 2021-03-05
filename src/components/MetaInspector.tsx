@@ -29,7 +29,7 @@ export class MetaInspector extends PureComponent<Props> {
         {custom.aggregates?.length && (
           <div>
             <h3>Aggregates</h3>
-            {custom.aggregates.map(agg => {
+            {custom.aggregates.map((agg) => {
               return (
                 <>
                   <Tag name={agg} key={agg} colorIndex={1} /> &nbsp;

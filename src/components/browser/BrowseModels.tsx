@@ -58,13 +58,13 @@ export class BrowseModels extends Component<Props, State> {
         </div>
       );
     }
-    const modelOptions = models.map(m => ({
+    const modelOptions = models.map((m) => ({
       value: m.id,
       label: m.name,
       description: m.description,
     }));
 
-    const selectedModel = modelOptions.find(v => v.value === modelId);
+    const selectedModel = modelOptions.find((v) => v.value === modelId);
 
     return (
       <>

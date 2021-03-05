@@ -94,7 +94,7 @@ export class AssetBrowser extends Component<Props, State> {
           variant="secondary"
           size="md"
           icon="folder-open"
-          onClick={event =>
+          onClick={(event) =>
             this.setState({ isOpen: true }, () => {
               console.log(this.state);
             })
