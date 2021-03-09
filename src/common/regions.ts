@@ -1,6 +1,4 @@
-import { SelectableValue } from '@grafana/data';
-
-export const standardRegions: Array<SelectableValue<string>> = [
+export const standardRegions = [
   'ap-east-1',
   'ap-northeast-1',
   'ap-northeast-2',
@@ -27,6 +25,4 @@ export const standardRegions: Array<SelectableValue<string>> = [
   'us-west-1',
   'us-west-2',
   'Edge',
-].map((r) => {
-  return { value: r, label: r };
-});
+];
