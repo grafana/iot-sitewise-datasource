@@ -3,7 +3,7 @@ import { onUpdateDatasourceResetOption, updateDatasourcePluginSecureJsonDataOpti
 import { SitewiseOptions, SitewiseSecureJsonData } from '../types';
 import { ConnectionConfig, ConnectionConfigProps } from '@grafana/aws-sdk';
 import { Alert, Button } from '@grafana/ui';
-import { standardRegions } from '../common/regions';
+import { standardRegions } from '../regions';
 
 export type Props = ConnectionConfigProps<SitewiseOptions, SitewiseSecureJsonData>;
 
