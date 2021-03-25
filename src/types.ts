@@ -1,5 +1,5 @@
 import { DataQuery, SelectableValue } from '@grafana/data';
-import { AwsDataSourceJsonData, AwsDataSourceSecureJsonData } from 'common/types';
+import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData } from '@grafana/aws-sdk';
 
 // Matches https://github.com/grafana/iot-sitewise-datasource/blob/main/pkg/models/query.go#L3
 export enum QueryType {
@@ -193,10 +193,10 @@ export interface SitewiseCustomMeta {
 /**
  * Global datasource options
  */
-export interface SitewiseOptions extends AwsDataSourceJsonData {
+export interface SitewiseOptions extends AwsAuthDataSourceJsonData {
   // nothing for now
 }
 
-export interface SitewiseSecureJsonData extends AwsDataSourceSecureJsonData {
+export interface SitewiseSecureJsonData extends AwsAuthDataSourceSecureJsonData {
   // nothing for now
 }

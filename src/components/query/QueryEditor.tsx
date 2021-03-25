@@ -5,7 +5,7 @@ import { DataSource } from 'DataSource';
 import { SitewiseQuery, SitewiseOptions, QueryType, ListAssetsQuery } from 'types';
 import { Icon, InlineField, LinkButton, Select } from '@grafana/ui';
 import { QueryTypeInfo, siteWisteQueryTypes, changeQueryType } from 'queryInfo';
-import { standardRegions } from 'common/regions';
+import { standardRegionOptions } from 'regions';
 import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
 import { PropertyQueryEditor } from './PropertyQueryEditor';
 
@@ -52,8 +52,12 @@ export class QueryEditor extends PureComponent<Props> {
     const { datasource } = this.props;
     const query = defaults(this.props.query, queryDefaults);
 
-    const defaultRegion = { label: `Default`, desctiption: datasource.options?.defaultRegion, value: undefined };
-    const regions = query.region ? [defaultRegion, ...standardRegions] : standardRegions;
+    const defaultRegion: SelectableValue<string> = {
+      label: `Default`,
+      desctiption: datasource.options?.defaultRegion,
+      value: undefined,
+    };
+    const regions = query.region ? [defaultRegion, ...standardRegionOptions] : standardRegionOptions;
     const currentQueryType = siteWisteQueryTypes.find((v) => v.value === query.queryType);
     const queryTooltip = currentQueryType ? (
       <div>
@@ -80,7 +84,7 @@ export class QueryEditor extends PureComponent<Props> {
             <Select
               width={18}
               options={regions}
-              value={standardRegions.find((v) => v.value === query.region) || defaultRegion}
+              value={standardRegionOptions.find((v) => v.value === query.region) || defaultRegion}
               onChange={this.onRegionChange}
               backspaceRemovesValue={true}
               allowCustomValue={true}

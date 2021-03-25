@@ -1,14 +1,11 @@
 import React, { PureComponent } from 'react';
-import {
-  DataSourcePluginOptionsEditorProps,
-  onUpdateDatasourceResetOption,
-  updateDatasourcePluginSecureJsonDataOption,
-} from '@grafana/data';
+import { onUpdateDatasourceResetOption, updateDatasourcePluginSecureJsonDataOption } from '@grafana/data';
 import { SitewiseOptions, SitewiseSecureJsonData } from '../types';
-import ConnectionConfig from '../common/ConnectionConfig';
+import { ConnectionConfig, ConnectionConfigProps } from '@grafana/aws-sdk';
 import { Alert, Button } from '@grafana/ui';
+import { standardRegions } from '../regions';
 
-export type Props = DataSourcePluginOptionsEditorProps<SitewiseOptions, SitewiseSecureJsonData>;
+export type Props = ConnectionConfigProps<SitewiseOptions, SitewiseSecureJsonData>;
 
 export class ConfigEditor extends PureComponent<Props> {
   constructor(props: Props) {
@@ -24,7 +21,7 @@ export class ConfigEditor extends PureComponent<Props> {
     return (
       <>
         <div>
-          <ConnectionConfig {...this.props} />
+          <ConnectionConfig {...this.props} standardRegions={standardRegions} />
 
           {defaultRegion === 'Edge' && (
             <div>
@@ -55,7 +52,7 @@ export class ConfigEditor extends PureComponent<Props> {
                       rows={7}
                       className="gf-form-input gf-form-textarea width-30"
                       onChange={(event) => {
-                        updateDatasourcePluginSecureJsonDataOption(this.props, 'cert', event.target.value);
+                        updateDatasourcePluginSecureJsonDataOption(this.props as any, 'cert', event.target.value);
                       }}
                       placeholder="Begins with -----BEGIN CERTIFICATE------"
                       required
