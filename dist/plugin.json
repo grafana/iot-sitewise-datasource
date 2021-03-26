@@ -1,0 +1,53 @@
+{
+  "type": "datasource",
+  "name": "AWS IoT SiteWise",
+  "id": "grafana-iot-sitewise-datasource",
+  "category": "iot",
+  "backend": true,
+  "executable": "gpx_iot_sitewise",
+  "metrics": true,
+  "alerting": true,
+  "annotations": true,
+  "info": {
+    "description": "A managed service to collect, store, organize and monitor data from industrial equipment",
+    "author": {
+      "name": "Grafana Labs",
+      "url": "https://grafana.com"
+    },
+    "keywords": [
+      "datasource",
+      "iot",
+      "aws"
+    ],
+    "logos": {
+      "small": "img/sitewise.svg",
+      "large": "img/sitewise.svg"
+    },
+    "links": [
+      {
+        "name": "Website",
+        "url": "https://aws.amazon.com/iot-sitewise/"
+      },
+      {
+        "name": "Issue Tracker",
+        "url": "https://github.com/grafana/iot-sitewise-datasource/issues"
+      }
+    ],
+    "screenshots": [],
+    "version": "1.2.0",
+    "updated": "2021-03-25",
+    "build": {
+      "time": 1616700011534,
+      "repo": "git@github.com:grafana/iot-sitewise-datasource.git",
+      "branch": "v1.2.x",
+      "hash": "66b7c2d3533403d627a055bc69fcef6868a8ba5d",
+      "pr": 86,
+      "number": 1423
+    }
+  },
+  "dependencies": {
+    "grafanaVersion": "7.4.0",
+    "grafanaDependency": ">=7.4.0",
+    "plugins": []
+  }
+}
