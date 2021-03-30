@@ -10,14 +10,14 @@
   "metrics": true,
   "alerting": true,
   "annotations": true,
-  
+
   "info": {
     "description": "A managed service to collect, store, organize and monitor data from industrial equipment",
     "author": {
       "name": "Grafana Labs",
       "url": "https://grafana.com"
     },
-    "keywords": ["datasource","iot","aws"],
+    "keywords": ["datasource", "iot", "aws"],
     "logos": {
       "small": "img/sitewise.svg",
       "large": "img/sitewise.svg"
@@ -37,8 +37,8 @@
     "updated": "%TODAY%"
   },
   "dependencies": {
-    "grafanaVersion": "7.4.0",
-    "grafanaDependency": ">=7.4.0",
+    "grafanaVersion": "7.5.0",
+    "grafanaDependency": ">=7.5.0",
     "plugins": []
   }
 }
