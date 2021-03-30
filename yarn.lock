@@ -927,10 +927,10 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@grafana/aws-sdk@0.0.293":
-  version "0.0.293"
-  resolved "https://registry.yarnpkg.com/@grafana/aws-sdk/-/aws-sdk-0.0.293.tgz#9a9e7956e399c7c779f15fc0926dafcbb3603d36"
-  integrity sha512-J0EU5+fQ2F4IpyhFuDvKGVBL6JCSOlwcrNiNeLtB75IOvGN9FedbCCplhEhgSZ5vcg5JudoVu3l41ztA9mzJkg==
+"@grafana/aws-sdk@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@grafana/aws-sdk/-/aws-sdk-0.0.3.tgz#bc632c6c77971a5474acbe45847420503679fc75"
+  integrity sha512-V0PJLk+oU1C33knurXp8BkT5N2ctDu9b21zpK16vkJAs5aOiH/OaOhQ/IP9ipxYhB+b9PFjr8RXagV/8XJ8xwg==
 
 "@grafana/data@7.4.0":
   version "7.4.0"
