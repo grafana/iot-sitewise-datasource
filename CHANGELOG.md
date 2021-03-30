@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.2.1
+- Updates shared aws configuration library
+- Bumps min version to 7.5
+
 ## v1.2.0
 - Shares auth confiuration with cloudwatch
 - Bumps min version to 7.4
