@@ -5,47 +5,75 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
-	"github.com/pkg/errors"
+	"github.com/patrickmn/go-cache"
 )
 
-// CacheDuration is a constant that defines how long to keep cached elements before they are refreshed
-const CacheDuration = time.Minute * 5
+// cacheDuration is a constant that defines how long to keep cached elements before they are refreshed
+const cacheDuration = time.Minute * 5
 
-// CacheCleanupInterval is the interval at which the internal cache is cleaned / garbage collected
-const CacheCleanupInterval = time.Minute * 10
-
-// ErrNoValue is returned when a cached value is not available in the local cache
-var ErrNoValue = errors.New("no cached value was found with that key")
+// cacheCleanupInterval is the interval at which the internal cache is cleaned / garbage collected
+const cacheCleanupInterval = time.Minute * 10
 
 type cachingProvider struct {
 	resources *SitewiseResources
-	cache     map[string]cachedResult
+	cache     *cache.Cache
 }
 
-// cachedResult is a value and a timestamp that defines when the cached value is no longer usable
-type cachedResult struct {
-	Result    interface{}
-	ExpiresAt time.Time
-}
-
-func newCachedResult(f interface{}) cachedResult {
-	return cachedResult{
-		ExpiresAt: time.Now().Add(CacheDuration),
-		Result:    f,
+func NewCachingProvider(resources *SitewiseResources) cachingProvider {
+	return cachingProvider{
+		resources: resources,
+		cache:     cache.New(cacheDuration, cacheCleanupInterval),
 	}
 }
 
 func (cp *cachingProvider) Asset(ctx context.Context, assetId string) (*iotsitewise.DescribeAssetOutput, error) {
+	val, ok := cp.cache.Get(assetId)
+	if ok {
+		a, ok := val.(iotsitewise.DescribeAssetOutput)
+		if ok {
+			return &a, nil
+		}
+	}
 
-	return nil, nil
+	a, err := cp.resources.Asset(ctx, assetId)
+	if err != nil {
+		return nil, err
+	}
+	cp.cache.Set(assetId, *a, -1)
+	return a, nil
 }
 
 func (cp *cachingProvider) Property(ctx context.Context, assetId string, propertyId string) (*iotsitewise.DescribeAssetPropertyOutput, error) {
+	key := assetId + "/" + propertyId
+	val, ok := cp.cache.Get(key)
+	if ok {
+		a, ok := val.(iotsitewise.DescribeAssetPropertyOutput)
+		if ok {
+			return &a, nil
+		}
+	}
 
-	return nil, nil
+	a, err := cp.resources.Property(ctx, assetId, propertyId)
+	if err != nil {
+		return nil, err
+	}
+	cp.cache.Set(key, *a, -1)
+	return a, nil
 }
 
 func (cp *cachingProvider) AssetModel(ctx context.Context, modelId string) (*iotsitewise.DescribeAssetModelOutput, error) {
-	// TODO: implement if needed
-	return nil, nil
+	val, ok := cp.cache.Get(modelId)
+	if ok {
+		a, ok := val.(iotsitewise.DescribeAssetModelOutput)
+		if ok {
+			return &a, nil
+		}
+	}
+
+	a, err := cp.resources.AssetModel(ctx, modelId)
+	if err != nil {
+		return nil, err
+	}
+	cp.cache.Set(modelId, *a, -1)
+	return a, nil
 }
