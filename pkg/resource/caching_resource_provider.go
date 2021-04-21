@@ -22,7 +22,7 @@ type cachingProvider struct {
 func NewCachingProvider(resources *SitewiseResources) cachingProvider {
 	return cachingProvider{
 		resources: resources,
-		cache:     cache.New(cacheDuration, cacheCleanupInterval),
+		cache:     cache.New(cacheDuration, cacheCleanupInterval), // max size not supported
 	}
 }
 

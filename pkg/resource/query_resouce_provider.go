@@ -14,9 +14,8 @@ type queryResourceProvider struct {
 }
 
 func NewQueryResourceProvider(client client.SitewiseClient, query models.BaseQuery) *queryResourceProvider {
-
 	return &queryResourceProvider{
-		resources: NewSitewiseResources(client),
+		resources: NewSitewiseResources(client), // wrap in a cache??
 		baseQuery: query,
 	}
 }
