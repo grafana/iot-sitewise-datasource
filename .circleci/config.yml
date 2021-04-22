@@ -118,7 +118,7 @@ jobs:
       - run:
           name: Build docs
           command: |
-            ./node_modules/.bin/grafana-toolkit plugin:ci-docs
+            npx ./node_modules/.bin/grafana-toolkit plugin:ci-docs
             [ -d "dist" ] || circleci-agent step halt
       - persist_to_workspace:
           root: .
@@ -138,8 +138,8 @@ jobs:
           command: |
             # hack for rxjs issue
             rm -rf ./node_modules/@grafana/data/node_modules/rxjs
-            ./node_modules/.bin/grafana-toolkit plugin:ci-build
-            ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
+            npx ./node_modules/.bin/grafana-toolkit plugin:ci-build
+            npx ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
       - persist_to_workspace:
           root: .
           paths:
@@ -166,7 +166,7 @@ jobs:
       - run:
           name: Move results to ci folder
           command: |
-            ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
+            npx ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
       - persist_to_workspace:
           root: .
           paths:
@@ -195,7 +195,7 @@ jobs:
             mv ci/jobs/build_backend/dist/${EXEC_PREFIX}_darwin_amd64 .
             mv ci/jobs/build_backend/dist/${EXEC_PREFIX}_windows_amd64.exe .
             #
-            ./node_modules/.bin/grafana-toolkit plugin:ci-package
+            npx ./node_modules/.bin/grafana-toolkit plugin:ci-package
             #
             #
             PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
@@ -232,7 +232,7 @@ jobs:
             ls -l ${EXEC_PREFIX}*
             mv ${EXEC_PREFIX}_windows_amd64.exe ci/jobs/build_backend/dist
             ls -l ci/jobs/build_backend/dist
-            ./node_modules/.bin/grafana-toolkit plugin:ci-package
+            npx ./node_modules/.bin/grafana-toolkit plugin:ci-package
             #
             # 5. rename zip
             #
@@ -261,7 +261,7 @@ jobs:
             mv ci/jobs/build_backend/dist/${EXEC_PREFIX}_windows_amd64.exe .
             mv ${EXEC_PREFIX}_darwin_amd64 ci/jobs/build_backend/dist
             ls -l ci/jobs/build_backend/dist
-            ./node_modules/.bin/grafana-toolkit plugin:ci-package
+            npx ./node_modules/.bin/grafana-toolkit plugin:ci-package
             #
             # 8. rename zip
             #
@@ -323,7 +323,7 @@ jobs:
       - run:
           name: Toolkit report
           command: |
-            ./node_modules/.bin/grafana-toolkit plugin:ci-report
+            npx ./node_modules/.bin/grafana-toolkit plugin:ci-report
 
   publish_gcs_release:
     executor: cloud_sdk_exec
