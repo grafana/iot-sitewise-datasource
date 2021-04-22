@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"github.com/patrickmn/go-cache"
 	"strings"
 	"testing"
 	"time"
@@ -67,6 +68,10 @@ func runTestScenario(t *testing.T, scenario *testScenario) {
 
 		srvr := &server.Server{
 			Datasource: mockedDatasource(scenario.mockSw),
+		}
+
+		sitewise.GetCache = func() *cache.Cache {
+			return cache.New(cache.DefaultExpiration, cache.NoExpiration)
 		}
 
 		qdr, err := scenario.handlerFn(srvr)(ctx, req)

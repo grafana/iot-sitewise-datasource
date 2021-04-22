@@ -2,32 +2,24 @@ package resource
 
 import (
 	"context"
-	"time"
-
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/patrickmn/go-cache"
 )
 
-// cacheDuration is a constant that defines how long to keep cached elements before they are refreshed
-const cacheDuration = time.Minute * 5
-
-// cacheCleanupInterval is the interval at which the internal cache is cleaned / garbage collected
-const cacheCleanupInterval = time.Minute * 10
-
-var gCache = cache.New(cacheDuration, cacheCleanupInterval) // max size not supported
-
-type cachingProvider struct {
+type cachingResourceProvider struct {
 	resources *SitewiseResources
+	cache     *cache.Cache
 }
 
-func NewCachingProvider(resources *SitewiseResources) *cachingProvider {
-	return &cachingProvider{
+func NewCachingResourceProvider(resources *SitewiseResources, c *cache.Cache) *cachingResourceProvider {
+	return &cachingResourceProvider{
 		resources: resources,
+		cache:     c,
 	}
 }
 
-func (cp *cachingProvider) Asset(ctx context.Context, assetId string) (*iotsitewise.DescribeAssetOutput, error) {
-	val, ok := gCache.Get(assetId)
+func (cp *cachingResourceProvider) Asset(ctx context.Context, assetId string) (*iotsitewise.DescribeAssetOutput, error) {
+	val, ok := cp.cache.Get(assetId)
 	if ok {
 		a, ok := val.(iotsitewise.DescribeAssetOutput)
 		if ok {
@@ -39,13 +31,13 @@ func (cp *cachingProvider) Asset(ctx context.Context, assetId string) (*iotsitew
 	if err != nil {
 		return nil, err
 	}
-	gCache.Set(assetId, *a, -1)
+	cp.cache.Set(assetId, *a, -1)
 	return a, nil
 }
 
-func (cp *cachingProvider) Property(ctx context.Context, assetId string, propertyId string) (*iotsitewise.DescribeAssetPropertyOutput, error) {
+func (cp *cachingResourceProvider) Property(ctx context.Context, assetId string, propertyId string) (*iotsitewise.DescribeAssetPropertyOutput, error) {
 	key := assetId + "/" + propertyId
-	val, ok := gCache.Get(key)
+	val, ok := cp.cache.Get(key)
 	if ok {
 		a, ok := val.(iotsitewise.DescribeAssetPropertyOutput)
 		if ok {
@@ -57,12 +49,12 @@ func (cp *cachingProvider) Property(ctx context.Context, assetId string, propert
 	if err != nil {
 		return nil, err
 	}
-	gCache.Set(key, *a, -1)
+	cp.cache.Set(key, *a, -1)
 	return a, nil
 }
 
-func (cp *cachingProvider) AssetModel(ctx context.Context, modelId string) (*iotsitewise.DescribeAssetModelOutput, error) {
-	val, ok := gCache.Get(modelId)
+func (cp *cachingResourceProvider) AssetModel(ctx context.Context, modelId string) (*iotsitewise.DescribeAssetModelOutput, error) {
+	val, ok := cp.cache.Get(modelId)
 	if ok {
 		a, ok := val.(iotsitewise.DescribeAssetModelOutput)
 		if ok {
@@ -74,6 +66,6 @@ func (cp *cachingProvider) AssetModel(ctx context.Context, modelId string) (*iot
 	if err != nil {
 		return nil, err
 	}
-	gCache.Set(modelId, *a, -1)
+	cp.cache.Set(modelId, *a, -1)
 	return a, nil
 }

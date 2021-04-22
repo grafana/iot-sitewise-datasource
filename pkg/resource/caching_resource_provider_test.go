@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
 	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
+	"github.com/patrickmn/go-cache"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"testing"
@@ -13,10 +14,10 @@ func tdpath(filename string) string {
 	return "../testdata/" + filename
 }
 
-func setupMocks(t *testing.T) (*mocks.SitewiseClient, *cachingProvider) {
+func setupMocks(t *testing.T) (*mocks.SitewiseClient, *cachingResourceProvider) {
 	client := &mocks.SitewiseClient{}
-	return client, NewCachingProvider(&SitewiseResources{client})
-
+	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
+	return client, NewCachingResourceProvider(&SitewiseResources{client}, c)
 }
 
 func TestCachingResourceProvider(t *testing.T) {
