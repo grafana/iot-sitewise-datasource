@@ -73,7 +73,7 @@ var getPropertyValueBoolean testServerScenarioFn = func(t *testing.T) *testScena
 	}
 
 	return &testScenario{
-		name:   "PropertyValueHistoryResponseHappyCase",
+		name:   "PropertyValueHistoryResponseBoolean",
 		mockSw: mockSw,
 		queries: []backend.DataQuery{
 			{

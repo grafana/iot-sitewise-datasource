@@ -1,6 +1,6 @@
 {
   "name": "grafana-iot-sitewise-datasource",
-  "version": "1.2.1-dev",
+  "version": "1.2.2-dev",
   "description": "View IoT Sitewise data in grafana",
   "scripts": {
     "build": "rm -rf dist && grafana-toolkit plugin:build && mage build:backend",
@@ -12,10 +12,10 @@
   "author": "Grafana Labs <team@grafana.com> (https://grafana.com)",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grafana/aws-sdk": "0.0.3",
-    "@grafana/data": "7.4.0",
-    "@grafana/runtime": "7.4.0",
-    "@grafana/ui": "7.4.0",
+    "@grafana/aws-sdk": "^0.0.3",
+    "@grafana/data": "7.5.0",
+    "@grafana/runtime": "7.5.0",
+    "@grafana/ui": "7.5.0",
     "@grafana/toolkit": "latest",
     "@types/lodash": "latest",
     "lodash": "latest"
