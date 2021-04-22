@@ -14,20 +14,20 @@ const cacheDuration = time.Minute * 5
 // cacheCleanupInterval is the interval at which the internal cache is cleaned / garbage collected
 const cacheCleanupInterval = time.Minute * 10
 
+var gCache = cache.New(cacheDuration, cacheCleanupInterval) // max size not supported
+
 type cachingProvider struct {
 	resources *SitewiseResources
-	cache     *cache.Cache
 }
 
-func NewCachingProvider(resources *SitewiseResources) cachingProvider {
-	return cachingProvider{
+func NewCachingProvider(resources *SitewiseResources) *cachingProvider {
+	return &cachingProvider{
 		resources: resources,
-		cache:     cache.New(cacheDuration, cacheCleanupInterval), // max size not supported
 	}
 }
 
 func (cp *cachingProvider) Asset(ctx context.Context, assetId string) (*iotsitewise.DescribeAssetOutput, error) {
-	val, ok := cp.cache.Get(assetId)
+	val, ok := gCache.Get(assetId)
 	if ok {
 		a, ok := val.(iotsitewise.DescribeAssetOutput)
 		if ok {
@@ -39,13 +39,13 @@ func (cp *cachingProvider) Asset(ctx context.Context, assetId string) (*iotsitew
 	if err != nil {
 		return nil, err
 	}
-	cp.cache.Set(assetId, *a, -1)
+	gCache.Set(assetId, *a, -1)
 	return a, nil
 }
 
 func (cp *cachingProvider) Property(ctx context.Context, assetId string, propertyId string) (*iotsitewise.DescribeAssetPropertyOutput, error) {
 	key := assetId + "/" + propertyId
-	val, ok := cp.cache.Get(key)
+	val, ok := gCache.Get(key)
 	if ok {
 		a, ok := val.(iotsitewise.DescribeAssetPropertyOutput)
 		if ok {
@@ -57,12 +57,12 @@ func (cp *cachingProvider) Property(ctx context.Context, assetId string, propert
 	if err != nil {
 		return nil, err
 	}
-	cp.cache.Set(key, *a, -1)
+	gCache.Set(key, *a, -1)
 	return a, nil
 }
 
 func (cp *cachingProvider) AssetModel(ctx context.Context, modelId string) (*iotsitewise.DescribeAssetModelOutput, error) {
-	val, ok := cp.cache.Get(modelId)
+	val, ok := gCache.Get(modelId)
 	if ok {
 		a, ok := val.(iotsitewise.DescribeAssetModelOutput)
 		if ok {
@@ -74,6 +74,6 @@ func (cp *cachingProvider) AssetModel(ctx context.Context, modelId string) (*iot
 	if err != nil {
 		return nil, err
 	}
-	cp.cache.Set(modelId, *a, -1)
+	gCache.Set(modelId, *a, -1)
 	return a, nil
 }

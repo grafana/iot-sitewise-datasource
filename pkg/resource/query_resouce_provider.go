@@ -9,13 +9,14 @@ import (
 )
 
 type queryResourceProvider struct {
-	resources *SitewiseResources
+	resources *cachingProvider
 	baseQuery models.BaseQuery
 }
 
 func NewQueryResourceProvider(client client.SitewiseClient, query models.BaseQuery) *queryResourceProvider {
+	cachingProvider := NewCachingProvider(NewSitewiseResources(client))
 	return &queryResourceProvider{
-		resources: NewSitewiseResources(client), // wrap in a cache??
+		resources: cachingProvider,
 		baseQuery: query,
 	}
 }
