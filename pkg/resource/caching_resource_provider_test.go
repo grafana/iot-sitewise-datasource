@@ -36,6 +36,7 @@ func testGetProperty(t *testing.T) {
 	newProp := testdata.GetIotSitewiseAssetProp(t, tdpath("describe-asset-property-raw-wind.json"))
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything, mock.Anything).Return(&newProp, nil)
 	prop2, err := cachingProvider.Property(context.Background(), mock.Anything, mock.Anything)
+	assert.NoError(t, err)
 
 	assert.NotEqual(t, prop2, newProp)
 	assert.Equal(t, prop1, prop2)
@@ -52,6 +53,7 @@ func testGetAsset(t *testing.T) {
 	newAsset := testdata.GetIoTSitewiseAssetDescription(t, tdpath("describe-asset-top-level.json"))
 	mockSw.On("DescribeAssetWithContext", mock.Anything, mock.Anything, mock.Anything).Return(&newAsset, nil)
 	asset2, err := cachingProvider.Asset(context.Background(), mock.Anything)
+	assert.NoError(t, err)
 
 	assert.NotEqual(t, asset2, newAsset)
 	assert.Equal(t, asset1, asset2)
