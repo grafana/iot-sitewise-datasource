@@ -2,9 +2,9 @@ package api
 
 import (
 	"context"
-	"time"
-
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api/propvals"
+	"time"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 
@@ -28,7 +28,12 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ge
 
 	resolution := query.Resolution
 	if resolution == "AUTO" {
-		resolution = getBestResolution(query.Interval)
+		resolution = propvals.Resolution(query.BaseQuery)
+		// returning ResolutionRaw instead of 1s, until 1s aggregates are supported
+		if resolution == propvals.ResolutionRaw {
+			// override with minute until 1s resolution is supported
+			resolution = propvals.ResolutionMinute
+		}
 	}
 
 	var (
