@@ -64,6 +64,12 @@ func (ds *Datasource) HealthCheck(ctx context.Context, req *backend.CheckHealthR
 	return errors.Wrap(err, "unable to test ListAssetModels")
 }
 
+func (ds *Datasource) HandleGetAssetPropertyValuesForTimeRange(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
+	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
+		return api.GetAssetPropertyValuesForTimeRange(ctx, sw, *query)
+	})
+}
+
 func (ds *Datasource) HandleGetAssetPropertyValueHistoryQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
 	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return api.GetAssetPropertyValues(ctx, sw, *query)

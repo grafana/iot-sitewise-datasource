@@ -32,7 +32,7 @@ var getPropertyValueHappyCase testServerScenarioFn = func(t *testing.T) *testSce
 
 	query := models.AssetPropertyValueQuery{
 		BaseQuery: models.BaseQuery{
-			AwsRegion:  "us-west-2",
+			AwsRegion:  testdata.AwsRegion,
 			AssetId:    testdata.DemoTurbineAsset1,
 			PropertyId: testdata.TurbinePropWindSpeed,
 		},
@@ -69,7 +69,7 @@ var getPropertyValueEmptyCase testServerScenarioFn = func(t *testing.T) *testSce
 
 	query := models.AssetPropertyValueQuery{
 		BaseQuery: models.BaseQuery{
-			AwsRegion:  "us-west-2",
+			AwsRegion:  testdata.AwsRegion,
 			AssetId:    testdata.DemoTurbineAsset1,
 			PropertyId: testdata.TurbinePropWindSpeed,
 		},

@@ -2,14 +2,12 @@ package framer
 
 import (
 	"context"
-
-	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
-
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/grafana/iot-sitewise-datasource/pkg/models"
-
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api/propvals"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 )
 
@@ -31,7 +29,8 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{
-			NextToken: aws.StringValue(p.NextToken),
+			NextToken:  aws.StringValue(p.NextToken),
+			Resolution: propvals.ResolutionRaw,
 		},
 	}
 

@@ -51,6 +51,7 @@ func DataResponseErrorRequestFailed(err error) backend.DataResponse {
 func GetQueryHandlers(s *Server) *datasource.QueryTypeMux {
 	mux := datasource.NewQueryTypeMux()
 
+	mux.HandleFunc(models.QueryTypePropertyValuesForTimeRange, s.HandlePropertyValuesForTimeRange)
 	mux.HandleFunc(models.QueryTypePropertyValueHistory, s.HandlePropertyValueHistory)
 	mux.HandleFunc(models.QueryTypePropertyAggregate, s.HandlePropertyAggregate)
 	mux.HandleFunc(models.QueryTypePropertyValue, s.HandlePropertyValue)

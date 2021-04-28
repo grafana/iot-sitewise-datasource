@@ -3,33 +3,9 @@ package propvals
 import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"time"
-)
-
-var (
-	now = time.Now()
-
-	twoHours = backend.TimeRange{
-		From: now.Add(-2 * time.Hour),
-		To:   now,
-	}
-
-	fiveMinutes = backend.TimeRange{
-		From: now.Add(-5 * time.Minute),
-		To:   now,
-	}
-
-	oneDay = backend.TimeRange{
-		From: now.Add(-24 * time.Hour),
-		To:   now,
-	}
-
-	oneMonth = backend.TimeRange{
-		From: now.Add(-24 * 31 * time.Hour),
-		To:   now,
-	}
 )
 
 type scenario struct {
@@ -43,7 +19,7 @@ var scenarios = []scenario{
 		// dps = 300, pages = 2
 		name: "selects '1s' resolution",
 		query: models.BaseQuery{
-			TimeRange:     fiveMinutes,
+			TimeRange:     backend.TimeRange{From: testdata.FiveMinutes, To: testdata.Now},
 			MaxDataPoints: 720,
 		},
 		expected: ResolutionSecond,
@@ -52,7 +28,7 @@ var scenarios = []scenario{
 		// dps = 120, pages = 1
 		name: "selects '1m' resolution",
 		query: models.BaseQuery{
-			TimeRange:     twoHours,
+			TimeRange:     backend.TimeRange{From: testdata.TwoHours, To: testdata.Now},
 			MaxDataPoints: 720,
 		},
 		expected: ResolutionMinute,
@@ -61,7 +37,7 @@ var scenarios = []scenario{
 		// dps = 24, pages = 1
 		name: "selects '1h' resolution",
 		query: models.BaseQuery{
-			TimeRange:     oneDay,
+			TimeRange:     backend.TimeRange{From: testdata.OneDay, To: testdata.Now},
 			MaxDataPoints: 720,
 		},
 		expected: ResolutionHour,
@@ -70,7 +46,7 @@ var scenarios = []scenario{
 		// dps = 31, pages = 1
 		name: "selects '1d' resolution",
 		query: models.BaseQuery{
-			TimeRange:     oneMonth,
+			TimeRange:     backend.TimeRange{From: testdata.OneMonth, To: testdata.Now},
 			MaxDataPoints: 720,
 		},
 		expected: ResolutionDay,
@@ -79,7 +55,7 @@ var scenarios = []scenario{
 		// dps = 300, pages = 2
 		name: "elevates '1s' to '1m' when MaxDataPoints is less than total data points",
 		query: models.BaseQuery{
-			TimeRange:     fiveMinutes,
+			TimeRange:     backend.TimeRange{From: testdata.FiveMinutes, To: testdata.Now},
 			MaxDataPoints: 299,
 		},
 		expected: ResolutionMinute,
