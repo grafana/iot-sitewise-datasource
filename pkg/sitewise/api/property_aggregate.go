@@ -17,9 +17,8 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ge
 	resolution := query.Resolution
 	if resolution == "AUTO" {
 		resolution = propvals.Resolution(query.BaseQuery)
-		// returning ResolutionRaw instead of 1s, until 1s aggregates are supported
 		if resolution == propvals.ResolutionSecond {
-			// override with minute until 1s resolution is supported
+			// override with 1m until 1s resolution is supported
 			resolution = propvals.ResolutionMinute
 		}
 	}
