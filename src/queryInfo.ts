@@ -12,7 +12,7 @@ import {
   AssetInfo,
   AssetPropertyInfo,
   ListAssociatedAssetsQuery,
-  isListAssociatedAssetsQuery,
+  isListAssociatedAssetsQuery, AssetPropertyValuesForTimeRange,
 } from './types';
 
 export interface QueryTypeInfo extends SelectableValue<QueryType> {
@@ -22,6 +22,17 @@ export interface QueryTypeInfo extends SelectableValue<QueryType> {
 }
 
 export const siteWisteQueryTypes: QueryTypeInfo[] = [
+  {
+    label: 'Get property values for the time range',
+    value: QueryType.PropertyValuesForTimeRange,
+    description: `Selects the best fit aggregate resolution or switches to GetAssetPropertyValueHistory based on the time range and number of data points`,
+    defaultQuery: {
+      resolution: SiteWiseResolution.Auto,
+      aggregates: [AggregateType.AVERAGE],
+      timeOrdering: 'ASCENDING',
+    } as AssetPropertyValuesForTimeRange,
+    helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyAggregates.html',
+  },
   {
     label: 'Get property value aggregates',
     value: QueryType.PropertyAggregate,
