@@ -12,7 +12,8 @@ import {
   AssetInfo,
   AssetPropertyInfo,
   ListAssociatedAssetsQuery,
-  isListAssociatedAssetsQuery, AssetPropertyValuesForTimeRange,
+  isListAssociatedAssetsQuery,
+  AssetPropertyValuesForTimeRange,
 } from './types';
 
 export interface QueryTypeInfo extends SelectableValue<QueryType> {

@@ -10,7 +10,9 @@ import {
   isAssetPropertyValueHistoryQuery,
   AssetPropertyInfo,
   ListAssociatedAssetsQuery,
-  isListAssociatedAssetsQuery, AssetPropertyValuesForTimeRange, QueryType,
+  isListAssociatedAssetsQuery,
+  AssetPropertyValuesForTimeRange,
+  QueryType,
 } from 'types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
@@ -176,18 +178,17 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             menuPlacement="bottom"
           />
         </InlineField>
-        {
-          query.queryType !== QueryType.PropertyValuesForTimeRange &&
+        {query.queryType !== QueryType.PropertyValuesForTimeRange && (
           <InlineField label="Resolution" labelWidth={10}>
             <Select
-                width={18}
-                options={resolutions}
-                value={resolutions.find((v) => v.value === query.resolution) || resolutions[0]}
-                onChange={this.onResolutionChange}
-                menuPlacement="bottom"
+              width={18}
+              options={resolutions}
+              value={resolutions.find((v) => v.value === query.resolution) || resolutions[0]}
+              onChange={this.onResolutionChange}
+              menuPlacement="bottom"
             />
           </InlineField>
-        }
+        )}
       </div>
     );
   }

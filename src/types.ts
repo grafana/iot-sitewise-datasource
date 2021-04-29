@@ -10,7 +10,7 @@ export enum QueryType {
   PropertyValue = 'PropertyValue',
   PropertyValueHistory = 'PropertyValueHistory',
   PropertyAggregate = 'PropertyAggregate',
-  PropertyValuesForTimeRange = 'PropertyValuesForTimeRange'
+  PropertyValuesForTimeRange = 'PropertyValuesForTimeRange',
 }
 
 export enum SiteWiseQuality {

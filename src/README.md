@@ -2,21 +2,17 @@
 
 This datasource supports reading data from [AWS IoT SiteWise](https://aws.amazon.com/iot-sitewise/) and showing it in a Grafana dashboard.
 
-
 ## Add the data source
 
 1. In the side menu under the **Configuration** link, click on **Data Sources**.
 1. Click the **Add data source** button.
 1. Select **IoT sitewise** in the **Industrial & IoT** section.
 
-
 ## Authentication
 
-The IoT SiteWise plugin authentication matches the standard Cloudwatch plugin system.  See the [grafana cloudwatch documentation](https://grafana.com/docs/grafana/latest/datasources/cloudwatch/#authentication) for authentication options and setup.
-
+The IoT SiteWise plugin authentication matches the standard Cloudwatch plugin system. See the [grafana cloudwatch documentation](https://grafana.com/docs/grafana/latest/datasources/cloudwatch/#authentication) for authentication options and setup.
 
 Once authentication is configured, click "Save and Test" to verify the service is working. Once this is configured, you can specify default values for the configuration.
-
 
 ## Query editor
 
@@ -28,7 +24,6 @@ Click on the "Explore" button to open an asset/model navigation interface:
 
 Multiple aggregations can be showin for a single property:
 ![query-editor](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/editor2.png)
-
 
 ### Alerting
 
