@@ -43,7 +43,6 @@ export class QueryEditor extends PureComponent<Props> {
       case QueryType.PropertyValue:
       case QueryType.PropertyAggregate:
       case QueryType.PropertyValueHistory:
-      case QueryType.PropertyValuesForTimeRange:
         return <PropertyQueryEditor {...this.props} />;
     }
     return <div>Missing UI for query type: {query.queryType}</div>;

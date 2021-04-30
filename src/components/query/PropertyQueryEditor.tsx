@@ -11,8 +11,6 @@ import {
   AssetPropertyInfo,
   ListAssociatedAssetsQuery,
   isListAssociatedAssetsQuery,
-  AssetPropertyValuesForTimeRange,
-  QueryType,
 } from 'types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
@@ -166,7 +164,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     onRunQuery();
   };
 
-  renderAggregateRow(query: AssetPropertyAggregatesQuery | AssetPropertyValuesForTimeRange) {
+  renderAggregateRow(query: AssetPropertyAggregatesQuery) {
     const { property } = this.state;
     return (
       <div className="gf-form">
@@ -178,17 +176,15 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             menuPlacement="bottom"
           />
         </InlineField>
-        {query.queryType !== QueryType.PropertyValuesForTimeRange && (
-          <InlineField label="Resolution" labelWidth={10}>
-            <Select
-              width={18}
-              options={resolutions}
-              value={resolutions.find((v) => v.value === query.resolution) || resolutions[0]}
-              onChange={this.onResolutionChange}
-              menuPlacement="bottom"
-            />
-          </InlineField>
-        )}
+        <InlineField label="Resolution" labelWidth={10}>
+          <Select
+            width={18}
+            options={resolutions}
+            value={resolutions.find((v) => v.value === query.resolution) || resolutions[0]}
+            onChange={this.onResolutionChange}
+            menuPlacement="bottom"
+          />
+        </InlineField>
       </div>
     );
   }

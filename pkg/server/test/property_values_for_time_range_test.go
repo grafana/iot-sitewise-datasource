@@ -14,9 +14,14 @@ import (
 )
 
 func TestHandlePropertyValuesForTimeRange(t *testing.T) {
-	var scenario = func(name string, query models.BaseQuery, expectedResolution string) *testScenario {
+	var scenario = func(name string, baseQuery models.BaseQuery, expectedResolution string) *testScenario {
 
-		query.QueryType = models.QueryTypePropertyValuesForTimeRange
+		baseQuery.QueryType = models.QueryTypePropertyAggregate
+		query := models.AssetPropertyValueQuery{
+			BaseQuery:      baseQuery,
+			AggregateTypes: []string{"avg"},
+			Resolution:     "AUTO",
+		}
 
 		mockSw := &mocks.SitewiseClient{}
 
@@ -33,17 +38,17 @@ func TestHandlePropertyValuesForTimeRange(t *testing.T) {
 			queries: []backend.DataQuery{
 				{
 					RefID:         "A",
-					QueryType:     models.QueryTypePropertyValuesForTimeRange,
-					MaxDataPoints: query.MaxDataPoints,
-					Interval:      query.Interval,
-					TimeRange:     query.TimeRange,
+					QueryType:     models.QueryTypePropertyAggregate,
+					MaxDataPoints: baseQuery.MaxDataPoints,
+					Interval:      baseQuery.Interval,
+					TimeRange:     baseQuery.TimeRange,
 					JSON:          testdata.SerializeStruct(t, query),
 				},
 			},
 			mockSw:         mockSw,
 			goldenFileName: "prop-val-for-time-range-" + strings.ReplaceAll(name, " ", "-"),
 			handlerFn: func(srvr *server.Server) backend.QueryDataHandlerFunc {
-				return srvr.HandlePropertyValuesForTimeRange
+				return srvr.HandlePropertyAggregate
 			},
 			validationFn: func(t *testing.T, dr *backend.QueryDataResponse) {
 				resp := dr.Responses["A"]

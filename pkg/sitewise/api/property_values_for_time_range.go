@@ -10,22 +10,23 @@ import (
 
 func GetAssetPropertyValuesForTimeRange(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (*framer.AssetPropertyValuesForTimeRange, error) {
 
-	resolution := propvals.Resolution(query.BaseQuery)
+	if query.Resolution == "AUTO" {
+		resolution := propvals.Resolution(query.BaseQuery)
 
-	// todo: remove propvals.ResolutionSecond condition once 1s aggregation is supported
-	if propvals.ResolutionRaw == resolution || propvals.ResolutionSecond == resolution {
-		history, err := GetAssetPropertyValues(ctx, client, query)
-		if err != nil {
-			return nil, err
+		// todo: remove propvals.ResolutionSecond condition once 1s aggregation is supported
+		if propvals.ResolutionRaw == resolution || propvals.ResolutionSecond == resolution {
+			history, err := GetAssetPropertyValues(ctx, client, query)
+			if err != nil {
+				return nil, err
+			}
+			return &framer.AssetPropertyValuesForTimeRange{History: history}, nil
 		}
-		return &framer.AssetPropertyValuesForTimeRange{History: history}, nil
+
 	}
 
-	query.Resolution = "AUTO"
 	aggregates, err := GetAssetPropertyAggregates(ctx, client, query)
 	if err != nil {
 		return nil, err
 	}
-
 	return &framer.AssetPropertyValuesForTimeRange{Aggregates: aggregates}, nil
 }

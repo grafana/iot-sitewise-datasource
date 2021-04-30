@@ -7,15 +7,14 @@ import (
 )
 
 const (
-	QueryTypePropertyValuesForTimeRange = "PropertyValuesForTimeRange"
-	QueryTypePropertyValueHistory       = "PropertyValueHistory"
-	QueryTypePropertyValue              = "PropertyValue"
-	QueryTypePropertyAggregate          = "PropertyAggregate"
-	QueryTypeListAssetModels            = "ListAssetModels"
-	QueryTypeListAssets                 = "ListAssets"
-	QueryTypeListAssociatedAssets       = "ListAssociatedAssets"
-	QueryTypeDescribeAsset              = "DescribeAsset"
-	QueryTypeDescribeAssetModel         = "DescribeAssetModel"
+	QueryTypePropertyValueHistory = "PropertyValueHistory"
+	QueryTypePropertyValue        = "PropertyValue"
+	QueryTypePropertyAggregate    = "PropertyAggregate"
+	QueryTypeListAssetModels      = "ListAssetModels"
+	QueryTypeListAssets           = "ListAssets"
+	QueryTypeListAssociatedAssets = "ListAssociatedAssets"
+	QueryTypeDescribeAsset        = "DescribeAsset"
+	QueryTypeDescribeAssetModel   = "DescribeAssetModel"
 )
 
 const (

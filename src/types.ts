@@ -10,7 +10,6 @@ export enum QueryType {
   PropertyValue = 'PropertyValue',
   PropertyValueHistory = 'PropertyValueHistory',
   PropertyAggregate = 'PropertyAggregate',
-  PropertyValuesForTimeRange = 'PropertyValuesForTimeRange',
 }
 
 export enum SiteWiseQuality {
@@ -145,17 +144,8 @@ export interface AssetPropertyAggregatesQuery extends SitewiseQuery {
   timeOrdering?: SiteWiseTimeOrder;
 }
 
-export interface AssetPropertyValuesForTimeRange extends SitewiseQuery {
-  queryType: QueryType.PropertyValuesForTimeRange;
-  resolution: SiteWiseResolution.Auto;
-
-  aggregates: AggregateType[]; // at least one - only evaluated for when aggregates are selected
-  quality?: SiteWiseQuality;
-  timeOrdering?: SiteWiseTimeOrder;
-}
-
 export function isAssetPropertyAggregatesQuery(q?: SitewiseQuery): q is AssetPropertyAggregatesQuery {
-  return q?.queryType === QueryType.PropertyAggregate || q?.queryType === QueryType.PropertyValuesForTimeRange;
+  return q?.queryType === QueryType.PropertyAggregate;
 }
 
 export function isPropertyQueryType(queryType?: QueryType): boolean {
