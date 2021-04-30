@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.2.3
+
+- Update `AUTO` aggregation to better select the resolution, and switch to the raw asset property value data when higher than 1m resolution is needed.
+
 ## v1.2.2
 
 - Adds resource cache for describe calls in the plugin back-end

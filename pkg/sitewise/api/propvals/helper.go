@@ -8,7 +8,7 @@ import (
 
 const (
 	maxResponseSize = 250
-	maxPagesToLoad  = 3 // TODO: how should this be optimized/selected?
+	maxPagesToLoad  = 5 // 100-200ms * 4 = 800ms max on average ?
 
 	ResolutionRaw    = "RAW"
 	ResolutionSecond = "1s"
