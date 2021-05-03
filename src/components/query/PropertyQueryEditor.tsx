@@ -23,7 +23,13 @@ import { firstLabelWith } from './QueryEditor';
 type Props = SitewiseQueryEditorProps<SitewiseQuery | AssetPropertyAggregatesQuery | ListAssociatedAssetsQuery>;
 
 const resolutions: Array<SelectableValue<SiteWiseResolution>> = [
-  { value: SiteWiseResolution.Auto, label: 'Auto', description: 'Pick a resolution based on the time window' },
+  {
+    value: SiteWiseResolution.Auto,
+    label: 'Auto',
+    description:
+      'Picks a resolution based on the time window. ' +
+      'Will switch to raw data if higher than 1m resolution is needed',
+  },
   { value: SiteWiseResolution.Min, label: 'Minute', description: '1 point every minute' },
   { value: SiteWiseResolution.Hour, label: 'Hour', description: '1 point every hour' },
   { value: SiteWiseResolution.Day, label: 'Day', description: '1 point every day' },

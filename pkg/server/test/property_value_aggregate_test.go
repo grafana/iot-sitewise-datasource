@@ -37,7 +37,7 @@ var propertyValueAggregateHappyCase testServerScenarioFn = func(t *testing.T) *t
 
 	query := models.AssetPropertyValueQuery{
 		BaseQuery: models.BaseQuery{
-			AwsRegion:  "us-west-2",
+			AwsRegion:  testdata.AwsRegion,
 			AssetId:    testdata.DemoTurbineAsset1,
 			PropertyId: testdata.TurbinePropWindSpeed},
 		AggregateTypes: []string{models.AggregateStdDev, models.AggregateMin, models.AggregateAvg, models.AggregateCount, models.AggregateMax, models.AggregateSum},

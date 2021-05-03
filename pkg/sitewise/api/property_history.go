@@ -59,7 +59,7 @@ func GetAssetPropertyValues(ctx context.Context, client client.SitewiseClient, q
 	}
 
 	return &framer.AssetPropertyValueHistory{
-		AssetPropertyValueHistory: resp.AssetPropertyValueHistory,
-		NextToken:                 resp.NextToken,
+		GetAssetPropertyValueHistoryOutput: resp,
+		Query:                              query,
 	}, nil
 }

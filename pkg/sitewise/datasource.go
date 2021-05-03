@@ -72,7 +72,7 @@ func (ds *Datasource) HandleGetAssetPropertyValueHistoryQuery(ctx context.Contex
 
 func (ds *Datasource) HandleGetAssetPropertyAggregateQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
 	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
-		return api.GetAssetPropertyAggregates(ctx, sw, *query)
+		return api.GetAssetPropertyValuesForTimeRange(ctx, sw, *query)
 	})
 }
 

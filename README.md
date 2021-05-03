@@ -1,6 +1,6 @@
 # AWS IoT Sitewise Datasource Development Guide
 
-Please add feedback to the [issues](https://github.com/grafana/iot-sitewise-datasource/issues) folder, and we will follow up shortly.  Be sure to include version information for both grafana and the installed plugin.
+Please add feedback to the [issues](https://github.com/grafana/iot-sitewise-datasource/issues) folder, and we will follow up shortly. Be sure to include version information for both grafana and the installed plugin.
 
 The production plugins can be downloaded from [the IoT sitewise plugin page](https://grafana.com/grafana/plugins/grafana-iot-sitewise-datasource/installation).
 
@@ -9,6 +9,7 @@ For configuration options, see: [src/README.md](src/README.md)
 ## Development builds
 
 To get the latest build artifacts for a branch:
+
 1. find the green checkbox after a build
 2. click link to the "package" details link
 3. open the "Artifacts" tab
@@ -21,30 +22,38 @@ To get the latest build artifacts for a branch:
   </tr>
 </table>
 
-
 ## Developer Guide
 
 ### Build
 
 #### Getting started
+
 1. Install dependencies
+
 ```BASH
 yarn install
 ```
+
 2. Build plugin in development mode or run in watch mode
+
 ```BASH
 yarn dev
 ```
+
 or
+
 ```BASH
 yarn watch
 ```
+
 3. Build plugin in production mode
+
 ```BASH
 yarn build
 ```
 
 4. Build backend for all platforms
+
 ```BASH
 mage buildAll
 ```
@@ -93,5 +102,5 @@ docker run -e GF_DEFAULT_APP_MODE=development -e AWS_SHARED_CREDENTIALS_FILE="/U
 docker restart grafana
 ```
 
-Access from `http://localhost:3000`. 
+Access from `http://localhost:3000`.
 First time login will be user:**admin** password:**admin**

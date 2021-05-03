@@ -29,7 +29,7 @@ var getPropertyValueHistoryHappyCase testServerScenarioFn = func(t *testing.T) *
 
 	query := models.AssetPropertyValueQuery{
 		BaseQuery: models.BaseQuery{
-			AwsRegion:  "us-west-2",
+			AwsRegion:  testdata.AwsRegion,
 			AssetId:    testdata.DemoTurbineAsset1,
 			PropertyId: testdata.TurbinePropAvgWindSpeed,
 		},
@@ -66,7 +66,7 @@ var getPropertyValueBoolean testServerScenarioFn = func(t *testing.T) *testScena
 
 	query := models.AssetPropertyValueQuery{
 		BaseQuery: models.BaseQuery{
-			AwsRegion:  "us-west-2",
+			AwsRegion:  testdata.AwsRegion,
 			AssetId:    testdata.DemoTurbineAsset1,
 			PropertyId: testdata.TurbinePropAvgWindSpeed,
 		},
