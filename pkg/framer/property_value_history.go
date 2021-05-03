@@ -10,7 +10,10 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 )
 
-type AssetPropertyValueHistory iotsitewise.GetAssetPropertyValueHistoryOutput
+type AssetPropertyValueHistory struct {
+	*iotsitewise.GetAssetPropertyValueHistoryOutput
+	Query models.AssetPropertyValueQuery
+}
 
 func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
 
@@ -21,7 +24,7 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 	}
 
 	timeField := fields.TimeField(length)
-	valueField := fields.PropertyValueField(property, length)
+	valueField := fields.PropertyValueFieldForQuery(p.Query, property, length)
 	qualityField := fields.QualityField(length)
 
 	frame := data.NewFrame(*property.AssetName, timeField, valueField, qualityField)

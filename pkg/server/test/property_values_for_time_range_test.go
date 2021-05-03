@@ -56,6 +56,9 @@ func TestHandlePropertyValuesForTimeRange(t *testing.T) {
 				actual, ok := frame.Meta.Custom.(models.SitewiseCustomMeta)
 				assert.True(t, ok, "unable to cast custom metadata")
 				assert.Equal(t, expectedResolution, actual.Resolution)
+				if expectedResolution == "RAW" {
+					assert.Equal(t, "raw", frame.Fields[1].Name)
+				}
 			},
 		}
 	}
