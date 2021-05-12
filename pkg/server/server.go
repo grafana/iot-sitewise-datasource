@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise"
 
@@ -18,6 +19,7 @@ type Server struct {
 	Datasource    Datasource
 	channelPrefix string
 	closeCh       chan struct{}
+	queryMux      *datasource.QueryTypeMux
 }
 
 // Make sure SampleDatasource implements required interfaces.
@@ -47,7 +49,7 @@ func DataResponseErrorRequestFailed(err error) backend.DataResponse {
 }
 
 // GetQueryHandlers creates the QueryTypeMux type for handling queries
-func GetQueryHandlers(s *Server) *datasource.QueryTypeMux {
+func getQueryHandlers(s *Server) *datasource.QueryTypeMux {
 	mux := datasource.NewQueryTypeMux()
 
 	mux.HandleFunc(models.QueryTypePropertyValueHistory, s.HandlePropertyValueHistory)
@@ -67,8 +69,11 @@ func NewServerInstance(settings backend.DataSourceInstanceSettings) (instancemgm
 		return nil, err
 	}
 	srvr := &Server{
-		Datasource: ds,
+		Datasource:    ds,
+		channelPrefix: fmt.Sprintf("ds/%d/", settings.ID),
+		closeCh:       make(chan struct{}),
 	}
+	srvr.queryMux = getQueryHandlers(srvr) // init once
 	return srvr, nil
 }
 
@@ -77,8 +82,7 @@ func NewServerInstance(settings backend.DataSourceInstanceSettings) (instancemgm
 // The QueryDataResponse contains a map of RefID to the response for each query, and each response
 // contains Frames ([]*Frame).
 func (s *Server) QueryData(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
-	m := GetQueryHandlers(s)
-	return m.QueryData(ctx, req)
+	return s.queryMux.QueryData(ctx, req)
 }
 
 // CheckHealth handles health checks sent from Grafana to the plugin.
