@@ -3,10 +3,11 @@ package test
 import (
 	"context"
 	"fmt"
-	"github.com/patrickmn/go-cache"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/patrickmn/go-cache"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/server"
 
