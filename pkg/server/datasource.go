@@ -20,9 +20,3 @@ type Datasource interface {
 	HandleListAssociatedAssetsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssociatedAssetsQuery) (data.Frames, error)
 	HandleDescribeAssetModelQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.DescribeAssetModelQuery) (data.Frames, error)
 }
-
-// HandleQueryData handles the `QueryData` request for the Sitewise Datasource
-func HandleQueryData(ctx context.Context, srvr *Server, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
-	m := GetQueryHandlers(srvr)
-	return m.QueryData(ctx, req)
-}

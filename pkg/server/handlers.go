@@ -7,18 +7,16 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
-func (s *Server) HandleHealthCheck(ctx context.Context, req *backend.CheckHealthRequest) (*backend.CheckHealthResult, error) {
-
-	if err := s.Datasource.HealthCheck(ctx, req); err != nil {
-		return &backend.CheckHealthResult{
-			Status:  backend.HealthStatusError,
-			Message: err.Error(),
-		}, nil
+func processQueries(ctx context.Context, req *backend.QueryDataRequest, handler QueryHandlerFunc) *backend.QueryDataResponse {
+	res := backend.Responses{}
+	for _, v := range req.Queries {
+		res[v.RefID] = handler(ctx, req, v)
 	}
-	return &backend.CheckHealthResult{
-		Status:  backend.HealthStatusOk,
-		Message: backend.HealthStatusOk.String(),
-	}, nil
+
+	return &backend.QueryDataResponse{
+		Responses: res,
+	}
+
 }
 
 func (s *Server) HandlePropertyValueHistory(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
