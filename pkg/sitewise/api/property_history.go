@@ -18,15 +18,8 @@ import (
 func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetAssetPropertyValueHistoryInput {
 
 	var (
-		propertyId *string
-		assetId    *string
-		nextToken  *string
-		qualities  []*string
+		qualities []*string
 	)
-
-	assetId = getAssetId(query.BaseQuery)
-	propertyId = getPropertyId(query.BaseQuery)
-	nextToken = getNextToken(query.BaseQuery)
 
 	if query.Quality != "" && query.Quality != "ANY" {
 		qualities = aws.StringSlice([]string{query.Quality})
@@ -35,13 +28,14 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetA
 	from, to := util.TimeRangeToUnix(query.TimeRange)
 
 	return &iotsitewise.GetAssetPropertyValueHistoryInput{
-		AssetId:    assetId,
-		StartDate:  from,
-		EndDate:    to,
-		MaxResults: aws.Int64(250), // should this even be configurable? 250 == max
-		NextToken:  nextToken,
-		PropertyId: propertyId,
-		Qualities:  qualities,
+		StartDate:     from,
+		EndDate:       to,
+		MaxResults:    aws.Int64(250), // should this even be configurable? 250 == max
+		NextToken:     getNextToken(query.BaseQuery),
+		AssetId:       getAssetId(query.BaseQuery),
+		PropertyId:    getPropertyId(query.BaseQuery),
+		PropertyAlias: getPropertyAlias(query.BaseQuery),
+		Qualities:     qualities,
 	}
 }
 
