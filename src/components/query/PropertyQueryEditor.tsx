@@ -12,7 +12,7 @@ import {
   ListAssociatedAssetsQuery,
   isListAssociatedAssetsQuery,
 } from 'types';
-import { InlineField, Select } from '@grafana/ui';
+import { InlineField, Select, Input } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetBrowser } from '../browser/AssetBrowser';
 import { AggregatePicker, aggReg } from '../AggregatePicker';
@@ -93,6 +93,12 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       }
     }
   }
+
+  onAliasChange = (evt: React.SyntheticEvent<HTMLInputElement>) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({ ...query, propertyAlias: evt.currentTarget.value });
+    onRunQuery();
+  };
 
   onAssetChange = (sel: SelectableValue<string>) => {
     const { onChange, query, onRunQuery } = this.props;
@@ -266,6 +272,16 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     return (
       <>
         <div className="gf-form">
+          <InlineField label="Property Alias" labelWidth={firstLabelWith} grow={true} tooltip="hello">
+            <Input
+              value={query.propertyAlias}
+              onChange={this.onAliasChange}
+              placeholder="optional alias that identifies the property, such as an OPC-UA server data stream path"
+            />
+          </InlineField>
+        </div>
+        { !Boolean(query.propertyAlias) && <>
+        <div className="gf-form">
           <InlineField label="Asset" labelWidth={firstLabelWith} grow={true}>
             <Select
               key={query.region ? query.region : 'default'}
@@ -290,7 +306,6 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
           />
         </div>
         {showProp && (
-          <>
             <div className="gf-form">
               <InlineField label="Property" labelWidth={firstLabelWith} grow={true}>
                 <Select
@@ -307,14 +322,15 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                 />
               </InlineField>
             </div>
-            {showQuality && (
+        )}
+        </>}
+        { (showProp || query.propertyAlias) && showQuality && (
               <>
                 {isAssetPropertyAggregatesQuery(query) && this.renderAggregateRow(query)}
                 <QualityAndOrderRow {...(this.props as any)} />
-              </>
-            )}
-          </>
-        )}
+              </> )
+        }
+
         {isAssociatedAssets && this.renderAssociatedAsset(query as ListAssociatedAssetsQuery)}
       </>
     );
