@@ -2,12 +2,13 @@ package resource
 
 import (
 	"context"
+	"testing"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
 	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
 	"github.com/patrickmn/go-cache"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"testing"
 )
 
 func tdpath(filename string) string {
@@ -31,12 +32,12 @@ func testGetProperty(t *testing.T) {
 	property := testdata.GetIotSitewiseAssetProp(t, tdpath("describe-asset-property-avg-wind.json"))
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything, mock.Anything).Return(&property, nil)
 
-	prop1, err := cachingProvider.Property(context.Background(), mock.Anything, mock.Anything)
+	prop1, err := cachingProvider.Property(context.Background(), mock.Anything, mock.Anything, mock.Anything)
 	assert.NoError(t, err)
 
 	newProp := testdata.GetIotSitewiseAssetProp(t, tdpath("describe-asset-property-raw-wind.json"))
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything, mock.Anything).Return(&newProp, nil)
-	prop2, err := cachingProvider.Property(context.Background(), mock.Anything, mock.Anything)
+	prop2, err := cachingProvider.Property(context.Background(), mock.Anything, mock.Anything, mock.Anything)
 	assert.NoError(t, err)
 
 	assert.NotEqual(t, prop2, newProp)
