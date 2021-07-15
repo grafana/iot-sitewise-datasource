@@ -25,6 +25,12 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetA
 		qualities = aws.StringSlice([]string{query.Quality})
 	}
 
+	//if propertyAlias is set make sure to set the assetId and propertyId to nil
+	if query.PropertyAlias != "" {
+		query.AssetId = ""
+		query.PropertyId = ""
+	}
+
 	from, to := util.TimeRangeToUnix(query.TimeRange)
 
 	return &iotsitewise.GetAssetPropertyValueHistoryInput{
