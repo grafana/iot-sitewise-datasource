@@ -43,7 +43,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       return false; // skip the query
     }
     if (isPropertyQueryType(query.queryType)) {
-      return !!(query.assetId && query.propertyId);
+      return Boolean((query.assetId && query.propertyId) || query.propertyAlias);
     }
     return true; // keep the query
   }

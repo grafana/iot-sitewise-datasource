@@ -13,17 +13,10 @@ import (
 
 func valueQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetAssetPropertyValueInput {
 
-	var (
-		propertyId *string
-		assetId    *string
-	)
-
-	assetId = getAssetId(query.BaseQuery)
-	propertyId = getPropertyId(query.BaseQuery)
-
 	return &iotsitewise.GetAssetPropertyValueInput{
-		AssetId:    assetId,
-		PropertyId: propertyId,
+		AssetId:       getAssetId(query.BaseQuery),
+		PropertyId:    getPropertyId(query.BaseQuery),
+		PropertyAlias: getPropertyAlias(query.BaseQuery),
 	}
 
 }

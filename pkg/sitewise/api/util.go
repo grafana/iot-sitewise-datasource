@@ -29,3 +29,10 @@ func getPropertyId(query models.BaseQuery) *string {
 	}
 	return aws.String(query.PropertyId)
 }
+
+func getPropertyAlias(query models.BaseQuery) *string {
+	if query.PropertyAlias == "" {
+		return nil
+	}
+	return aws.String(query.PropertyAlias)
+}

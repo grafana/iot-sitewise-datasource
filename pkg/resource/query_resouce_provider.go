@@ -25,7 +25,7 @@ func (rp *queryResourceProvider) Asset(ctx context.Context) (*iotsitewise.Descri
 }
 
 func (rp *queryResourceProvider) Property(ctx context.Context) (*iotsitewise.DescribeAssetPropertyOutput, error) {
-	return rp.resources.Property(ctx, rp.baseQuery.AssetId, rp.baseQuery.PropertyId)
+	return rp.resources.Property(ctx, rp.baseQuery.AssetId, rp.baseQuery.PropertyId, rp.baseQuery.PropertyAlias)
 }
 
 func (rp *queryResourceProvider) AssetModel(ctx context.Context) (*iotsitewise.DescribeAssetModelOutput, error) {

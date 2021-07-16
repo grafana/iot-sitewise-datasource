@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api/propvals"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
@@ -24,16 +25,9 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ge
 	}
 
 	var (
-		propertyId     *string
-		assetId        *string
-		nextToken      *string
 		aggregateTypes = aws.StringSlice(query.AggregateTypes)
 		qualities      []*string
 	)
-
-	assetId = getAssetId(query.BaseQuery)
-	propertyId = getPropertyId(query.BaseQuery)
-	nextToken = getNextToken(query.BaseQuery)
 
 	if query.Quality != "" && query.Quality != "ANY" {
 		qualities = aws.StringSlice([]string{query.Quality})
@@ -43,11 +37,12 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ge
 
 	return &iotsitewise.GetAssetPropertyAggregatesInput{
 		AggregateTypes: aggregateTypes,
-		AssetId:        assetId,
 		EndDate:        to,
 		MaxResults:     aws.Int64(250),
-		NextToken:      nextToken,
-		PropertyId:     propertyId,
+		NextToken:      getNextToken(query.BaseQuery),
+		AssetId:        getAssetId(query.BaseQuery),
+		PropertyId:     getPropertyId(query.BaseQuery),
+		PropertyAlias:  getPropertyAlias(query.BaseQuery),
 		Qualities:      qualities,
 		Resolution:     aws.String(resolution),
 		StartDate:      from,

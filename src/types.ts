@@ -47,6 +47,7 @@ export interface SitewiseQuery extends DataQuery {
   // Although these are not required everywhere, many queries use them
   assetId?: string;
   propertyId?: string;
+  propertyAlias?: string;
 
   maxPageAggregations?: number;
 }
