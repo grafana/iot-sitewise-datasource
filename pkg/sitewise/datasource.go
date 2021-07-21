@@ -2,6 +2,7 @@ package sitewise
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
@@ -27,6 +28,10 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 	err := cfg.Load(settings)
 	if err != nil {
 		return nil, err
+	}
+	if cfg.Region == "Edge" {
+		// TODO: refresh session every 4h since creds expire
+		fmt.Printf(cfg.EdgeAuthMode)
 	}
 	sessions := awsds.NewSessionCache()
 

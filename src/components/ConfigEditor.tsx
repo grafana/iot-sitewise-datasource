@@ -1,12 +1,17 @@
 import React, { PureComponent } from 'react';
-import { onUpdateDatasourceResetOption, updateDatasourcePluginSecureJsonDataOption } from '@grafana/data';
+import { onUpdateDatasourceResetOption, SelectableValue, updateDatasourcePluginJsonDataOption, updateDatasourcePluginOption, updateDatasourcePluginSecureJsonDataOption } from '@grafana/data';
 import { SitewiseOptions, SitewiseSecureJsonData } from '../types';
 import { ConnectionConfig, ConnectionConfigProps } from '@grafana/aws-sdk';
-import { Alert, Button } from '@grafana/ui';
+import { Alert, Button, InlineField, InlineFieldRow, Input, Select } from '@grafana/ui';
 import { standardRegions } from '../regions';
 
 export type Props = ConnectionConfigProps<SitewiseOptions, SitewiseSecureJsonData>;
 
+const edgeAuthMethods: Array<SelectableValue<string>> = [
+  {value: 'default', label: 'Default', description: 'default aws auth'},
+  {value: 'linux', label: 'Linux', description: 'default aws auth'},
+  {value: 'ldap', label: 'LDAP', description: 'default aws auth'}
+];
 export class ConfigEditor extends PureComponent<Props> {
   constructor(props: Props) {
     super(props);
@@ -17,6 +22,7 @@ export class ConfigEditor extends PureComponent<Props> {
     const { options } = this.props;
     const jsonData = options.jsonData;
     const { defaultRegion, endpoint } = jsonData;
+    const edgeAuthMode = edgeAuthMethods.find(f=>f.value === jsonData.edgeAuthMode) ?? edgeAuthMethods[0];
 
     return (
       <>
@@ -28,7 +34,13 @@ export class ConfigEditor extends PureComponent<Props> {
               {!endpoint && (
                 <Alert title="Edge region requires an explicit endpoint configured above" severity="warning" />
               )}
-
+              <InlineFieldRow>
+                <InlineField label="Auth Mode">
+                  <Select options={edgeAuthMethods} value={edgeAuthMode} onChange={(v) => {
+                        updateDatasourcePluginJsonDataOption(this.props as any, 'edgeAuthType', v.value);
+                      }}/>
+                </InlineField>
+              </InlineFieldRow>
               <div className="gf-form-inline">
                 <div className="gf-form gf-form--v-stretch">
                   <label className="gf-form-label width-14">Certification</label>

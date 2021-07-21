@@ -3,13 +3,17 @@ package client
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 )
 
 type AWSSiteWiseDataSourceSetting struct {
 	awsds.AWSDatasourceSettings
-	Cert string `json:"-"`
+	Cert         string `json:"-"`
+	EdgeAuthMode string `json:"edgeAuthMode"`
+	EdgeAuthUser string `json:"edgeAuthUser"`
+	EdgeAuthPass string `json:"-"`
 }
 
 func (s *AWSSiteWiseDataSourceSetting) Load(config backend.DataSourceInstanceSettings) error {
@@ -30,6 +34,7 @@ func (s *AWSSiteWiseDataSourceSetting) Load(config backend.DataSourceInstanceSet
 	s.AccessKey = config.DecryptedSecureJSONData["accessKey"]
 	s.SecretKey = config.DecryptedSecureJSONData["secretKey"]
 	s.Cert = config.DecryptedSecureJSONData["cert"]
+	s.EdgeAuthPass = config.DecryptedSecureJSONData["edgeAuthPass"]
 	return nil
 }
 
