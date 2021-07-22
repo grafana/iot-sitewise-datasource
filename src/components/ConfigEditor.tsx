@@ -7,7 +7,7 @@ import {
 } from '@grafana/data';
 import { SitewiseOptions, SitewiseSecureJsonData } from '../types';
 import { ConnectionConfig, ConnectionConfigProps } from '@grafana/aws-sdk';
-import { Alert, Button, InlineField, InlineFieldRow, Select } from '@grafana/ui';
+import { Alert, Button, InlineField, InlineFieldRow, Input, Select } from '@grafana/ui';
 import { standardRegions } from '../regions';
 
 export type Props = ConnectionConfigProps<SitewiseOptions, SitewiseSecureJsonData>;
@@ -24,10 +24,33 @@ export class ConfigEditor extends PureComponent<Props> {
   }
 
   render() {
-    const { options } = this.props;
+    const { options, onOptionsChange } = this.props;
     const jsonData = options.jsonData;
     const { defaultRegion, endpoint } = jsonData;
     const edgeAuthMode = edgeAuthMethods.find((f) => f.value === jsonData.edgeAuthMode) ?? edgeAuthMethods[0];
+
+    const onPasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
+      onOptionsChange({
+        ...options,
+        secureJsonData: {
+          edgeAuthPass: event.target.value,
+        },
+      });
+    };
+  
+    const onResetPassword = () => {
+      onOptionsChange({
+        ...options,
+        secureJsonFields: {
+          ...options.secureJsonFields,
+          password: false,
+        },
+        secureJsonData: {
+          ...options.secureJsonData,
+          edgeAuthPass: '',
+        },
+      });
+    };
 
     return (
       <>
@@ -40,7 +63,7 @@ export class ConfigEditor extends PureComponent<Props> {
                 <Alert title="Edge region requires an explicit endpoint configured above" severity="warning" />
               )}
               <InlineFieldRow>
-                <InlineField label="Auth Mode"
+                <InlineField label="Authentication Mode"
                 labelWidth={28}
                 tooltip="Specify which authentication method to use.">
                   <Select
@@ -51,6 +74,36 @@ export class ConfigEditor extends PureComponent<Props> {
                       updateDatasourcePluginJsonDataOption(this.props as any, 'edgeAuthMode' as never, v.value);
                     }}
                   />
+                </InlineField>
+              </InlineFieldRow>
+              <InlineFieldRow>
+                <InlineField label="Username"
+                labelWidth={28}
+                tooltip="Specify the username to use.">
+                  <Input
+                    name="username"
+                    value={jsonData.edgeAuthUser}
+                    autoComplete="off"
+                    width={30}
+                    onChange={(event) => {
+                      updateDatasourcePluginJsonDataOption(this.props as any, 'edgeAuthUser' as never, event.target.value);
+                    }}
+                  />
+                </InlineField>
+              </InlineFieldRow>
+              <InlineFieldRow>
+                <InlineField label="Password"
+                labelWidth={28}
+                tooltip="Specify the password to use.">
+                <Input
+                  type="password"
+                  name="password"
+                  autoComplete="off"
+                  placeholder={options.secureJsonFields?.edgeAuthPass ? 'configured' : ''}
+                  value={options.secureJsonData?.edgeAuthPass ?? ''}
+                  onChange={onPasswordChange}
+                  onReset={onResetPassword}
+                />
                 </InlineField>
               </InlineFieldRow>
               <InlineFieldRow>
