@@ -24,17 +24,21 @@ type Datasource struct {
 }
 
 func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, error) {
-	cfg := client.AWSSiteWiseDataSourceSetting{}
+	cfg := models.AWSSiteWiseDataSourceSetting{}
 	err := cfg.Load(settings)
+	if err == nil {
+		err = cfg.Validate()
+	}
 	if err != nil {
 		return nil, err
 	}
-	if cfg.Region == "Edge" {
+
+	if cfg.Region == models.EDGE_REGION && cfg.EdgeAuthMode != models.EDGE_AUTH_MODE_DEFAULT {
 		// TODO: refresh session every 4h since creds expire
 		fmt.Printf(cfg.EdgeAuthMode)
 	}
-	sessions := awsds.NewSessionCache()
 
+	sessions := awsds.NewSessionCache()
 	return &Datasource{
 		GetClient: func(region string) (swclient client.SitewiseClient, err error) {
 			swclient, err = client.GetClient(region, cfg, sessions.GetSession)
