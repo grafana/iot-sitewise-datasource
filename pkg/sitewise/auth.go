@@ -2,13 +2,13 @@ package sitewise
 
 import (
 	"bytes"
-	"context"
 	"crypto/tls"
 	"crypto/x509"
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
@@ -19,7 +19,7 @@ type EdgeAuthenticator struct {
 	Settings models.AWSSiteWiseDataSourceSetting
 }
 
-func (a *EdgeAuthenticator) Authorize(ctx context.Context) (models.AuthInfo, error) {
+func (a *EdgeAuthenticator) Authorize() (models.AuthInfo, error) {
 	reqBody := map[string]string{
 		"username":      a.Settings.EdgeAuthUser,
 		"password":      a.Settings.EdgeAuthPass,
@@ -93,24 +93,15 @@ func (a *EdgeAuthenticator) Authorize(ctx context.Context) (models.AuthInfo, err
 		return models.AuthInfo{}, err
 	}
 
-	log.DefaultLogger.Debug("edge auth response: %s", resp)
-
-	res := make(map[string]string)
-	json.NewDecoder(resp.Body).Decode(&res)
-
-	timeLayout := time.RFC3339
-	sessionExpiryTime, err := time.Parse(timeLayout, res["sessionExpiryTime"])
-	if err != nil {
-		return models.AuthInfo{}, err
+	if resp.StatusCode != 200 {
+		log.DefaultLogger.Debug("edge auth response not ok:", "response code:", strconv.Itoa(resp.StatusCode))
+		return models.AuthInfo{}, fmt.Errorf("request not ok. returned code: %v", resp.StatusCode)
 	}
 
-	authInfo := models.AuthInfo{
-		Username:          res["username"],
-		AccessKeyId:       res["accessKeyId"],
-		SecretAccessKey:   res["secretAccessKey"],
-		SessionToken:      res["sessionToken"],
-		SessionExpiryTime: sessionExpiryTime,
-		AuthMechanism:     res["authMechanism"],
-	}
+	log.DefaultLogger.Debug("edge auth response ok.")
+
+	authInfo := models.AuthInfo{}
+	json.NewDecoder(resp.Body).Decode(&authInfo)
+
 	return authInfo, nil
 }

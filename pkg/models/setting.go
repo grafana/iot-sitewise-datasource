@@ -83,6 +83,7 @@ func (s *AWSSiteWiseDataSourceSetting) ToAWSDatasourceSettings() awsds.AWSDataso
 		DefaultRegion: s.DefaultRegion,
 		AccessKey:     s.AccessKey,
 		SecretKey:     s.SecretKey,
+		SessionToken:  s.SessionToken,
 	}
 
 	return cfg
