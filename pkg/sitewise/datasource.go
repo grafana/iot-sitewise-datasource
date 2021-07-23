@@ -2,11 +2,13 @@ package sitewise
 
 import (
 	"context"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api"
@@ -41,15 +43,35 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 			Settings: cfg,
 		}
 
-		authInfo, err := edgeAuthenticator.Authorize()
+		var waitTime time.Duration
+
+		updateAuth := func() error {
+			authInfo, err := edgeAuthenticator.Authorize()
+			if err == nil {
+				cfg.AccessKey = authInfo.AccessKeyId
+				cfg.SecretKey = authInfo.SecretAccessKey
+				cfg.SessionToken = authInfo.SessionToken
+				cfg.AuthType = awsds.AuthTypeKeys
+				waitTime = time.Until(authInfo.SessionExpiryTime)
+				log.DefaultLogger.Debug("should wait for: ", "time:", waitTime)
+				waitTime = 10 * time.Second
+			}
+			return err
+		}
+
+		err = updateAuth()
 		if err != nil {
 			return &Datasource{}, err
 		}
 
-		cfg.AccessKey = authInfo.AccessKeyId
-		cfg.SecretKey = authInfo.SecretAccessKey
-		cfg.SessionToken = authInfo.SessionToken
-		cfg.AuthType = awsds.AuthTypeKeys
+		go func() {
+			for {
+				log.DefaultLogger.Debug("wait time until next credential fetch: ", "time:", waitTime)
+				<-time.After(waitTime)
+				log.DefaultLogger.Debug("updating edge auth credentials now")
+				updateAuth()
+			}
+		}()
 	}
 
 	sessions := awsds.NewSessionCache()
