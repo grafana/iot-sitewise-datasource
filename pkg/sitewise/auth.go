@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"context"
 	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
+	"encoding/pem"
 	"fmt"
 	"net/http"
 	"time"
@@ -27,9 +29,61 @@ func (a *EdgeAuthenticator) Authorize(ctx context.Context) (models.AuthInfo, err
 		return models.AuthInfo{}, err
 	}
 
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	pool, _ := x509.SystemCertPool()
+	if pool == nil {
+		pool = x509.NewCertPool()
 	}
+
+	if a.Settings.Cert == "" {
+		return models.AuthInfo{}, fmt.Errorf("certificate cannot be null")
+	}
+
+	block, _ := pem.Decode([]byte(a.Settings.Cert))
+	if block == nil || block.Type != "CERTIFICATE" || len(block.Headers) != 0 {
+		return models.AuthInfo{}, fmt.Errorf("decode certificate failed: %s", a.Settings.Cert)
+	}
+
+	cert, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		return models.AuthInfo{}, err
+	}
+	pool.AddCert(cert)
+
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: true, //Not actually skipping, check the cert in VerifyPeerCertificate
+			RootCAs:            pool,
+			VerifyPeerCertificate: func(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error {
+				// If this is the first handshake on a connection, process and
+				// (optionally) verify the server's certificates.
+				certs := make([]*x509.Certificate, len(rawCerts))
+				for i, asn1Data := range rawCerts {
+					cert, err := x509.ParseCertificate(asn1Data)
+					if err != nil {
+						return fmt.Errorf("tls: failed to parse certificate from server: " + err.Error())
+					}
+					certs[i] = cert
+				}
+
+				opts := x509.VerifyOptions{
+					Roots:         pool,
+					CurrentTime:   time.Now(),
+					DNSName:       "", // <- skip hostname verification
+					Intermediates: x509.NewCertPool(),
+				}
+
+				for i, cert := range certs {
+					if i == 0 {
+						continue
+					}
+					opts.Intermediates.AddCert(cert)
+				}
+				_, err := certs[0].Verify(opts)
+				return err
+			},
+		},
+	}
+
 	client := &http.Client{Transport: tr}
 
 	authEndpoint := a.Settings.AWSDatasourceSettings.Endpoint + "authenticate"

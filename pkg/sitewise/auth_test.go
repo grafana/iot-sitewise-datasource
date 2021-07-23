@@ -9,13 +9,15 @@ import (
 )
 
 func TestSimpleAuth(t *testing.T) {
+	t.Skip()
 	settings := models.AWSSiteWiseDataSourceSetting{
 		EdgeAuthMode: "linux",
-		EdgeAuthUser: "test-swe-admin",
+		EdgeAuthUser: "username",
 		EdgeAuthPass: "password",
 	}
 
-	settings.Endpoint = "https://54.213.46.117:443/"
+	settings.Endpoint = "https://localhost:80"
+	settings.Cert = ``
 
 	a := EdgeAuthenticator{Settings: settings}
 	info, err := a.Authorize(context.Background())
