@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
@@ -91,7 +92,8 @@ func (a *EdgeAuthenticator) Authorize(ctx context.Context) (models.AuthInfo, err
 	if err != nil {
 		return models.AuthInfo{}, err
 	}
-	fmt.Print(resp)
+
+	log.DefaultLogger.Debug("edge auth response: %s", resp)
 
 	res := make(map[string]string)
 	json.NewDecoder(resp.Body).Decode(&res)

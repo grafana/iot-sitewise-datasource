@@ -25,10 +25,13 @@ type Datasource struct {
 
 func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, error) {
 	cfg := models.AWSSiteWiseDataSourceSetting{}
+
 	err := cfg.Load(settings)
-	if err == nil {
-		err = cfg.Validate()
+	if err != nil {
+		return nil, err
 	}
+
+	err = cfg.Validate()
 	if err != nil {
 		return nil, err
 	}

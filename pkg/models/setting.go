@@ -37,10 +37,8 @@ func (s *AWSSiteWiseDataSourceSetting) Load(config backend.DataSourceInstanceSet
 	}
 
 	// Make sure to set an auth mode
-	if s.Region == EDGE_REGION {
-		if s.EdgeAuthMode == "" {
-			s.EdgeAuthMode = EDGE_AUTH_MODE_DEFAULT
-		}
+	if s.Region == EDGE_REGION && s.EdgeAuthMode == "" {
+		s.EdgeAuthMode = EDGE_AUTH_MODE_DEFAULT
 	}
 
 	s.AccessKey = config.DecryptedSecureJSONData["accessKey"]
@@ -51,23 +49,26 @@ func (s *AWSSiteWiseDataSourceSetting) Load(config backend.DataSourceInstanceSet
 }
 
 func (s *AWSSiteWiseDataSourceSetting) Validate() error {
-	if s.Region == EDGE_REGION {
-		if s.Endpoint == "" {
-			return fmt.Errorf("Edge region requires an explicit endpoint")
-		}
-		if s.Cert == "" {
-			return fmt.Errorf("Edge region requires an SSL certificate")
-		}
+	if s.Region != EDGE_REGION {
+		return nil
+	}
 
-		if s.EdgeAuthMode != EDGE_AUTH_MODE_DEFAULT {
-			if s.EdgeAuthUser == "" {
-				return fmt.Errorf("Missing edge auth user")
-			}
-			if s.EdgeAuthPass == "" {
-				return fmt.Errorf("Missing edge auth password")
-			}
+	if s.Endpoint == "" {
+		return fmt.Errorf("Edge region requires an explicit endpoint")
+	}
+	if s.Cert == "" {
+		return fmt.Errorf("Edge region requires an SSL certificate")
+	}
+
+	if s.EdgeAuthMode != EDGE_AUTH_MODE_DEFAULT {
+		if s.EdgeAuthUser == "" {
+			return fmt.Errorf("Missing edge auth user")
+		}
+		if s.EdgeAuthPass == "" {
+			return fmt.Errorf("Missing edge auth password")
 		}
 	}
+
 	return nil
 }
 
