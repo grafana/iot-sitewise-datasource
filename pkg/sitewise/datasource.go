@@ -54,7 +54,7 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 				cfg.AuthType = awsds.AuthTypeKeys
 				waitTime = time.Until(authInfo.SessionExpiryTime)
 				log.DefaultLogger.Debug("should wait for: ", "time:", waitTime)
-				waitTime = 10 * time.Second
+				//waitTime = 10 * time.Second
 			}
 			return err
 		}
