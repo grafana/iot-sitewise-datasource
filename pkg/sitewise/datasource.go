@@ -40,14 +40,19 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 		return nil, err
 	}
 
-	var mu sync.Mutex
 	done := make(chan struct{})
+	sessions := awsds.NewSessionCache()
+	clientGetter := func(region string) (swclient client.SitewiseClient, err error) {
+		swclient, err = client.GetClient(region, cfg, sessions.GetSession)
+		return
+	}
 
 	if cfg.Region == models.EDGE_REGION && cfg.EdgeAuthMode != models.EDGE_AUTH_MODE_DEFAULT {
 		edgeAuthenticator := EdgeAuthenticator{
 			Settings: cfg,
 		}
 
+		var mu sync.Mutex
 		var waitTime time.Duration
 
 		updateAuth := func() error {
@@ -78,24 +83,26 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 				select {
 				case <-time.After(waitTime):
 					log.DefaultLogger.Debug("updating edge auth credentials now")
-					updateAuth()
+					_ = updateAuth()
 				case <-done:
 					return
 				}
 			}
 		}()
-	}
 
-	sessions := awsds.NewSessionCache()
-	return &Datasource{
-		GetClient: func(region string) (swclient client.SitewiseClient, err error) {
+		clientGetter = func(region string) (swclient client.SitewiseClient, err error) {
+			// TODO (new PR?) check on demand
 			mu.Lock()
 			cfgCopy := cfg
 			mu.Unlock()
 			swclient, err = client.GetClient(region, cfgCopy, sessions.GetSession)
 			return
-		},
-		closeCh: done,
+		}
+	}
+
+	return &Datasource{
+		GetClient: clientGetter,
+		closeCh:   done,
 	}, nil
 }
 
