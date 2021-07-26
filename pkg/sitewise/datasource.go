@@ -48,7 +48,7 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 	}
 
 	if cfg.Region == models.EDGE_REGION && cfg.EdgeAuthMode != models.EDGE_AUTH_MODE_DEFAULT {
-		edgeAuthenticator := EdgeAuthenticator{
+		edgeAuthenticator := dummyAuthenticator{ //EdgeAuthenticator{
 			Settings: cfg,
 		}
 
@@ -62,7 +62,7 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 				cfg.AccessKey = authInfo.AccessKeyId
 				cfg.SecretKey = authInfo.SecretAccessKey
 				cfg.SessionToken = authInfo.SessionToken
-				cfg.AuthType = awsds.AuthTypeKeys
+				cfg.AuthType = awsds.AuthTypeKeys // Force key auth
 				mu.Unlock()
 				waitTime = time.Until(authInfo.SessionExpiryTime)
 				log.DefaultLogger.Debug("should wait for: ", "time:", waitTime)

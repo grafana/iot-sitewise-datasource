@@ -102,7 +102,19 @@ func (a *EdgeAuthenticator) Authenticate() (models.AuthInfo, error) {
 	log.DefaultLogger.Debug("edge auth response ok.")
 
 	authInfo := models.AuthInfo{}
-	json.NewDecoder(resp.Body).Decode(&authInfo)
+	err = json.NewDecoder(resp.Body).Decode(&authInfo)
 
-	return authInfo, nil
+	return authInfo, err
+}
+
+type dummyAuthenticator struct {
+	Settings models.AWSSiteWiseDataSourceSetting
+}
+
+func (a *dummyAuthenticator) Authenticate() (models.AuthInfo, error) {
+	return models.AuthInfo{
+		AccessKeyId:       a.Settings.AccessKey,
+		SecretAccessKey:   a.Settings.SecretKey,
+		SessionExpiryTime: time.Now().Add(20 * time.Second),
+	}, nil
 }
