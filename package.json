@@ -23,8 +23,5 @@
   },
   "resolutions": {
     "rxjs": "6.6.3"
-  },
-  "engines": {
-    "node": ">=14"
   }
 }
