@@ -16,7 +16,7 @@ import (
 )
 
 type Server struct {
-	Datasource    Datasource
+	Datasource    *sitewise.Datasource
 	channelPrefix string
 	closeCh       chan struct{}
 	queryMux      *datasource.QueryTypeMux
@@ -104,4 +104,5 @@ func (s *Server) CheckHealth(ctx context.Context, req *backend.CheckHealthReques
 
 func (s *Server) Dispose() {
 	close(s.closeCh)
+	s.Datasource.Dispose()
 }

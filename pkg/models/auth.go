@@ -14,6 +14,6 @@ type AuthInfo struct {
 	AuthMechanism     string    `json:"authMechanism,omitempty"`
 }
 
-type Authorizer interface {
-	Authorize(ctx context.Context) (AuthInfo, error)
+type Authenticator interface {
+	Authenticate(ctx context.Context) (AuthInfo, error)
 }

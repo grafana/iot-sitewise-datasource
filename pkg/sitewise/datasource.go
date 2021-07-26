@@ -2,6 +2,7 @@ package sitewise
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -22,6 +23,8 @@ type invokerFunc func(ctx context.Context, sw client.SitewiseClient) (framer.Fra
 
 type Datasource struct {
 	GetClient clientGetterFunc
+	closeCh   chan struct{}
+	closeOnce sync.Once
 }
 
 func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, error) {
@@ -37,8 +40,10 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 		return nil, err
 	}
 
+	var mu sync.Mutex
+	done := make(chan struct{})
+
 	if cfg.Region == models.EDGE_REGION && cfg.EdgeAuthMode != models.EDGE_AUTH_MODE_DEFAULT {
-		// TODO: refresh session every 4h since creds expire
 		edgeAuthenticator := EdgeAuthenticator{
 			Settings: cfg,
 		}
@@ -46,15 +51,18 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 		var waitTime time.Duration
 
 		updateAuth := func() error {
-			authInfo, err := edgeAuthenticator.Authorize()
+			authInfo, err := edgeAuthenticator.Authenticate()
 			if err == nil {
+				mu.Lock()
 				cfg.AccessKey = authInfo.AccessKeyId
 				cfg.SecretKey = authInfo.SecretAccessKey
 				cfg.SessionToken = authInfo.SessionToken
 				cfg.AuthType = awsds.AuthTypeKeys
+				mu.Unlock()
 				waitTime = time.Until(authInfo.SessionExpiryTime)
 				log.DefaultLogger.Debug("should wait for: ", "time:", waitTime)
-				//waitTime = 10 * time.Second
+			} else {
+				waitTime = waitTime + time.Second*10
 			}
 			return err
 		}
@@ -67,9 +75,13 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 		go func() {
 			for {
 				log.DefaultLogger.Debug("wait time until next credential fetch: ", "time:", waitTime)
-				<-time.After(waitTime)
-				log.DefaultLogger.Debug("updating edge auth credentials now")
-				updateAuth()
+				select {
+				case <-time.After(waitTime):
+					log.DefaultLogger.Debug("updating edge auth credentials now")
+					updateAuth()
+				case <-done:
+					return
+				}
 			}
 		}()
 	}
@@ -77,9 +89,13 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 	sessions := awsds.NewSessionCache()
 	return &Datasource{
 		GetClient: func(region string) (swclient client.SitewiseClient, err error) {
-			swclient, err = client.GetClient(region, cfg, sessions.GetSession)
+			mu.Lock()
+			cfgCopy := cfg
+			mu.Unlock()
+			swclient, err = client.GetClient(region, cfgCopy, sessions.GetSession)
 			return
 		},
+		closeCh: done,
 	}, nil
 }
 
@@ -95,6 +111,12 @@ func (ds *Datasource) invoke(ctx context.Context, req *backend.QueryDataRequest,
 	}
 
 	return frameResponse(ctx, baseQuery, fr, sw)
+}
+
+func (ds *Datasource) Dispose() {
+	ds.closeOnce.Do(func() {
+		close(ds.closeCh)
+	})
 }
 
 func (ds *Datasource) HealthCheck(ctx context.Context, req *backend.CheckHealthRequest) error {

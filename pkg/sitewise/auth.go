@@ -19,7 +19,7 @@ type EdgeAuthenticator struct {
 	Settings models.AWSSiteWiseDataSourceSetting
 }
 
-func (a *EdgeAuthenticator) Authorize() (models.AuthInfo, error) {
+func (a *EdgeAuthenticator) Authenticate() (models.AuthInfo, error) {
 	reqBody := map[string]string{
 		"username":      a.Settings.EdgeAuthUser,
 		"password":      a.Settings.EdgeAuthPass,
@@ -66,6 +66,7 @@ func (a *EdgeAuthenticator) Authorize() (models.AuthInfo, error) {
 					certs[i] = cert
 				}
 
+				// see: https://github.com/golang/go/issues/21971
 				opts := x509.VerifyOptions{
 					Roots:         pool,
 					CurrentTime:   time.Now(),
@@ -85,7 +86,7 @@ func (a *EdgeAuthenticator) Authorize() (models.AuthInfo, error) {
 		},
 	}
 
-	client := &http.Client{Transport: tr}
+	client := &http.Client{Transport: tr, Timeout: time.Second * 5}
 
 	authEndpoint := a.Settings.AWSDatasourceSettings.Endpoint + "authenticate"
 	resp, err := client.Post(authEndpoint, "application/json", bytes.NewBuffer(reqBodyJson))
