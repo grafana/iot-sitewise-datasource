@@ -55,7 +55,7 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 		var mu sync.Mutex
 		authInfo, err := edgeAuthenticator.Authenticate()
 		if err != nil {
-			return nil, fmt.Errorf("Error getting edge credentials")
+			return nil, fmt.Errorf("Error getting initial edge credentials (%s)", err.Error())
 		}
 		cfg.AuthType = awsds.AuthTypeKeys // Force key auth
 		cfg.AccessKey = authInfo.AccessKeyId
@@ -65,9 +65,10 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 		clientGetter = func(region string) (swclient client.SitewiseClient, err error) {
 			mu.Lock()
 			if time.Now().After(authInfo.SessionExpiryTime) {
-				authInfo, err := edgeAuthenticator.Authenticate()
+				authInfo, err = edgeAuthenticator.Authenticate()
 				if err != nil {
-					return nil, fmt.Errorf("Error getting edge credentials")
+					mu.Unlock()
+					return nil, fmt.Errorf("Error updating edge credentials (%s)", err.Error())
 				}
 				cfg.AccessKey = authInfo.AccessKeyId
 				cfg.SecretKey = authInfo.SecretAccessKey

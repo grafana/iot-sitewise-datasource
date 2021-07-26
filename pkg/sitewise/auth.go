@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"strconv"
 	"time"
@@ -112,6 +113,10 @@ type dummyAuthenticator struct {
 }
 
 func (a *dummyAuthenticator) Authenticate() (models.AuthInfo, error) {
+	if rand.Float64() > .8 {
+		return models.AuthInfo{}, fmt.Errorf("dummy auth failed (20\%) chance of that")
+	}
+
 	return models.AuthInfo{
 		AccessKeyId:       a.Settings.AccessKey,
 		SecretAccessKey:   a.Settings.SecretKey,
