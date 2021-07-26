@@ -2,6 +2,7 @@ package sitewise
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"time"
 
@@ -9,7 +10,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
-	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api"
@@ -53,46 +53,26 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 		}
 
 		var mu sync.Mutex
-		var waitTime time.Duration
+		authInfo, err := edgeAuthenticator.Authenticate()
+		if err != nil {
+			return nil, fmt.Errorf("Error getting edge credentials")
+		}
+		cfg.AuthType = awsds.AuthTypeKeys // Force key auth
+		cfg.AccessKey = authInfo.AccessKeyId
+		cfg.SecretKey = authInfo.SecretAccessKey
+		cfg.SessionToken = authInfo.SessionToken
 
-		updateAuth := func() error {
-			authInfo, err := edgeAuthenticator.Authenticate()
-			if err == nil {
-				mu.Lock()
+		clientGetter = func(region string) (swclient client.SitewiseClient, err error) {
+			mu.Lock()
+			if time.Now().After(authInfo.SessionExpiryTime) {
+				authInfo, err := edgeAuthenticator.Authenticate()
+				if err != nil {
+					return nil, fmt.Errorf("Error getting edge credentials")
+				}
 				cfg.AccessKey = authInfo.AccessKeyId
 				cfg.SecretKey = authInfo.SecretAccessKey
 				cfg.SessionToken = authInfo.SessionToken
-				cfg.AuthType = awsds.AuthTypeKeys // Force key auth
-				mu.Unlock()
-				waitTime = time.Until(authInfo.SessionExpiryTime)
-				log.DefaultLogger.Debug("should wait for: ", "time:", waitTime)
-			} else {
-				waitTime = waitTime + time.Second*10
 			}
-			return err
-		}
-
-		err = updateAuth()
-		if err != nil {
-			return &Datasource{}, err
-		}
-
-		go func() {
-			for {
-				log.DefaultLogger.Debug("wait time until next credential fetch: ", "time:", waitTime)
-				select {
-				case <-time.After(waitTime):
-					log.DefaultLogger.Debug("updating edge auth credentials now")
-					_ = updateAuth()
-				case <-done:
-					return
-				}
-			}
-		}()
-
-		clientGetter = func(region string) (swclient client.SitewiseClient, err error) {
-			// TODO (new PR?) check on demand
-			mu.Lock()
 			cfgCopy := cfg
 			mu.Unlock()
 			swclient, err = client.GetClient(region, cfgCopy, sessions.GetSession)
