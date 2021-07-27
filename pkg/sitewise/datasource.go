@@ -48,7 +48,7 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 	}
 
 	if cfg.Region == models.EDGE_REGION && cfg.EdgeAuthMode != models.EDGE_AUTH_MODE_DEFAULT {
-		edgeAuthenticator := dummyAuthenticator{ //EdgeAuthenticator{
+		edgeAuthenticator := EdgeAuthenticator{ //dummyAuthenticator{
 			Settings: cfg,
 		}
 
