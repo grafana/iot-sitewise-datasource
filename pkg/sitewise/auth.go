@@ -114,7 +114,7 @@ type dummyAuthenticator struct {
 
 func (a *dummyAuthenticator) Authenticate() (models.AuthInfo, error) {
 	if rand.Float64() > .8 {
-		return models.AuthInfo{}, fmt.Errorf("dummy auth failed (20\%) chance of that")
+		return models.AuthInfo{}, fmt.Errorf("dummy auth failed (1/5) chance of that")
 	}
 
 	return models.AuthInfo{
