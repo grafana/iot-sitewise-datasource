@@ -108,11 +108,11 @@ func (a *EdgeAuthenticator) Authenticate() (models.AuthInfo, error) {
 	return authInfo, err
 }
 
-type dummyAuthenticator struct {
+type DummyAuthenticator struct {
 	Settings models.AWSSiteWiseDataSourceSetting
 }
 
-func (a *dummyAuthenticator) Authenticate() (models.AuthInfo, error) {
+func (a *DummyAuthenticator) Authenticate() (models.AuthInfo, error) {
 	if rand.Float64() > .8 {
 		return models.AuthInfo{}, fmt.Errorf("dummy auth failed (1/5) chance of that")
 	}
