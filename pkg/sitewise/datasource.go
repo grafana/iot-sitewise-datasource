@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api"
@@ -45,14 +46,14 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 	}
 
 	if cfg.Region == models.EDGE_REGION && cfg.EdgeAuthMode != models.EDGE_AUTH_MODE_DEFAULT {
-		edgeAuthenticator := EdgeAuthenticator{ //dummyAuthenticator{
+		edgeAuthenticator := EdgeAuthenticator{ //DummyAuthenticator{
 			Settings: cfg,
 		}
 
 		var mu sync.Mutex
 		authInfo, err := edgeAuthenticator.Authenticate()
 		if err != nil {
-			return nil, fmt.Errorf("Error getting initial edge credentials (%s)", err.Error())
+			return nil, fmt.Errorf("error getting initial edge credentials (%s)", err.Error())
 		}
 		cfg.AuthType = awsds.AuthTypeKeys // Force key auth
 		cfg.AccessKey = authInfo.AccessKeyId
@@ -62,10 +63,11 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 		clientGetter = func(region string) (swclient client.SitewiseClient, err error) {
 			mu.Lock()
 			if time.Now().After(authInfo.SessionExpiryTime) {
+				log.DefaultLogger.Debug("edge credentials expired. updating credentials now.")
 				authInfo, err = edgeAuthenticator.Authenticate()
 				if err != nil {
 					mu.Unlock()
-					return nil, fmt.Errorf("Error updating edge credentials (%s)", err.Error())
+					return nil, fmt.Errorf("error updating edge credentials (%s)", err.Error())
 				}
 				cfg.AccessKey = authInfo.AccessKeyId
 				cfg.SecretKey = authInfo.SecretAccessKey

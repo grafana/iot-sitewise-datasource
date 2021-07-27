@@ -120,6 +120,7 @@ func (a *DummyAuthenticator) Authenticate() (models.AuthInfo, error) {
 	return models.AuthInfo{
 		AccessKeyId:       a.Settings.AccessKey,
 		SecretAccessKey:   a.Settings.SecretKey,
+		SessionToken:      "",
 		SessionExpiryTime: time.Now().Add(20 * time.Second),
 	}, nil
 }
