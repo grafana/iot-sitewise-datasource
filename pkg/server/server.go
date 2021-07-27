@@ -104,5 +104,4 @@ func (s *Server) CheckHealth(ctx context.Context, req *backend.CheckHealthReques
 
 func (s *Server) Dispose() {
 	close(s.closeCh)
-	s.Datasource.Dispose()
 }

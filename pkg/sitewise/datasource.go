@@ -23,8 +23,6 @@ type invokerFunc func(ctx context.Context, sw client.SitewiseClient) (framer.Fra
 
 type Datasource struct {
 	GetClient clientGetterFunc
-	closeCh   chan struct{}
-	closeOnce sync.Once
 }
 
 func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, error) {
@@ -40,7 +38,6 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 		return nil, err
 	}
 
-	done := make(chan struct{})
 	sessions := awsds.NewSessionCache()
 	clientGetter := func(region string) (swclient client.SitewiseClient, err error) {
 		swclient, err = client.GetClient(region, cfg, sessions.GetSession)
@@ -83,7 +80,6 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 
 	return &Datasource{
 		GetClient: clientGetter,
-		closeCh:   done,
 	}, nil
 }
 
@@ -99,12 +95,6 @@ func (ds *Datasource) invoke(ctx context.Context, req *backend.QueryDataRequest,
 	}
 
 	return frameResponse(ctx, baseQuery, fr, sw)
-}
-
-func (ds *Datasource) Dispose() {
-	ds.closeOnce.Do(func() {
-		close(ds.closeCh)
-	})
 }
 
 func (ds *Datasource) HealthCheck(ctx context.Context, req *backend.CheckHealthRequest) error {
