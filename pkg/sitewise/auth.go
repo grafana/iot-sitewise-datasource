@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
+	"net/url"
+	"path"
 	"strconv"
 	"time"
 
@@ -89,14 +91,21 @@ func (a *EdgeAuthenticator) Authenticate() (models.AuthInfo, error) {
 
 	client := &http.Client{Transport: tr, Timeout: time.Second * 5}
 
-	authEndpoint := a.Settings.AWSDatasourceSettings.Endpoint + "authenticate"
+	u, err := url.Parse(a.Settings.AWSDatasourceSettings.Endpoint)
+	if err != nil {
+		log.DefaultLogger.Error("error parsing edge endpoint url.", "endpoint url:", a.Settings.AWSDatasourceSettings.Endpoint)
+		return models.AuthInfo{}, fmt.Errorf("cannot parse edge endpoint url. url: %v", a.Settings.AWSDatasourceSettings.Endpoint)
+	}
+	u.Path = path.Join(u.Path, "authenticate")
+	authEndpoint := u.String()
+
 	resp, err := client.Post(authEndpoint, "application/json", bytes.NewBuffer(reqBodyJson))
 	if err != nil {
 		return models.AuthInfo{}, err
 	}
 
 	if resp.StatusCode != 200 {
-		log.DefaultLogger.Debug("edge auth response not ok:", "response code:", strconv.Itoa(resp.StatusCode))
+		log.DefaultLogger.Error("edge auth response not ok:", "response code:", strconv.Itoa(resp.StatusCode))
 		return models.AuthInfo{}, fmt.Errorf("request not ok. returned code: %v", resp.StatusCode)
 	}
 
