@@ -11,7 +11,7 @@ import (
 )
 
 func TestSimpleAuth(t *testing.T) {
-	//t.Skip()
+	t.Skip()
 	// This test is only meant for the testing of the edge authentication
 	// during dev work, hence is skipped. To test with this, enter the
 	// appropriate authMode, username, password, endpoint and cert
@@ -51,6 +51,8 @@ cciS5hf80XzIFqwhzaVS9gmiyM8=
 }
 
 func TestAuthWithServer(t *testing.T) {
+	// TODO: Finish the implementation with cert support
+	t.Skip()
 	ts := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, "Hello, client")
 	}))
