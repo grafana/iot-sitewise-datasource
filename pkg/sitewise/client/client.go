@@ -20,6 +20,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/aws/aws-sdk-go/service/iotsitewise/iotsitewiseiface"
 	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
 type SitewiseClient interface {
@@ -90,8 +91,8 @@ func (c *sitewiseClient) GetAssetPropertyAggregatesPageAggregation(ctx context.C
 	}, nil
 }
 
-func GetClient(region string, settings AWSSiteWiseDataSourceSetting, provider awsds.AmazonSessionProvider) (client SitewiseClient, err error) {
-	sess, err := provider(region, settings.toAWSDatasourceSettings())
+func GetClient(region string, settings models.AWSSiteWiseDataSourceSetting, provider awsds.AmazonSessionProvider) (client SitewiseClient, err error) {
+	sess, err := provider(region, settings.ToAWSDatasourceSettings())
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +102,7 @@ func GetClient(region string, settings AWSSiteWiseDataSourceSetting, provider aw
 		swcfg.Endpoint = aws.String(settings.Endpoint)
 	}
 
-	if settings.Region == "Edge" {
+	if settings.Region == models.EDGE_REGION {
 		pool, _ := x509.SystemCertPool()
 		if pool == nil {
 			pool = x509.NewCertPool()

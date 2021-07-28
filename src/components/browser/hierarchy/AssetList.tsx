@@ -38,7 +38,7 @@ export const AssetList: FunctionComponent<Props> = ({ listInfo, assets, search, 
   const style = getStyles(theme);
 
   const label = listInfo
-    ? (((<Label description={listInfo.description}>{listInfo.name}</Label>) as unknown) as string)
+    ? ((<Label description={listInfo.description}>{listInfo.name}</Label>) as unknown as string)
     : '';
 
   const renderChildren = () => {
