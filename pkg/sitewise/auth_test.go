@@ -101,23 +101,32 @@ func TestAuthWithServer(t *testing.T) {
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		// dummy /authenticate endpoint
 		if r.Method == "POST" && r.RequestURI == "/authenticate" {
+			authReq := AuthRequest{}
+			err := json.NewDecoder(r.Body).Decode(&authReq)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+
+			// dummy response
 			w.WriteHeader(http.StatusOK)
 			w.Header().Set("Content-Type", "application/json")
-			// dummy response
 			resp := make(map[string]string)
-			resp["username"] = "username"
+			resp["username"] = authReq.Username
 			resp["accessKeyId"] = "YEWZb5yVBl9llM9TQvn10hD4wmXKlUCNgXeCQY5YmssV55FzAFZgcta2FUw8lIcz"
 			resp["secretAccessKey"] = "2wH5XvUVv2FKIxvvj3YNCblvMJkI67KbXZV6ZHiy2w16LPXZboZkYvCZymsyLFiW"
 			resp["sessionToken"] = "glPPiSJwMx3iDuLm5BsVJVA0t5wXVhMNHFyaOkh68yz48V9rcRjRke6nJG4ErwFh"
 			resp["sessionExpiryTime"] = "2019-07-29T20:29:41.176Z"
-			resp["authMechanism"] = "linux"
+			resp["authMechanism"] = authReq.AuthMechanism
 			jsonResp, err := json.Marshal(resp)
 			if err != nil {
-				t.Fatal(fmt.Errorf("Error happened in JSON marshal. Err: %s", err))
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
 			}
 			_, err = w.Write(jsonResp)
 			if err != nil {
-				t.Fatal(fmt.Errorf("Error writing JSON response. Err: %s", err))
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
 			}
 			return
 		}
@@ -151,6 +160,12 @@ func TestAuthWithServer(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, settings.EdgeAuthMode, info.AuthMechanism)
 	require.Equal(t, settings.EdgeAuthUser, info.Username)
+}
+
+type AuthRequest struct {
+	Username      string `json:"username,omitempty"`
+	Password      string `json:"password,omitempty"`
+	AuthMechanism string `json:"authMechanism,omitempty"`
 }
 
 // helper function to create a certificate template with a serial number and other required fields
