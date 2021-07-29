@@ -115,7 +115,10 @@ func TestAuthWithServer(t *testing.T) {
 			if err != nil {
 				t.Fatal(fmt.Errorf("Error happened in JSON marshal. Err: %s", err))
 			}
-			w.Write(jsonResp)
+			_, err = w.Write(jsonResp)
+			if err != nil {
+				t.Fatal(fmt.Errorf("Error writing JSON response. Err: %s", err))
+			}
 			return
 		}
 
