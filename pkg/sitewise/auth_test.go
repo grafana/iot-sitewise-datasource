@@ -9,7 +9,6 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
-	"log"
 	"math/big"
 	"net"
 	"net/http"
@@ -65,13 +64,13 @@ func TestAuthWithServer(t *testing.T) {
 	// generate a new key-pair for the test server TLS
 	rootKey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
-		log.Fatalf("generating random key: %v", err)
+		t.Fatal(fmt.Errorf("generating random key: %v", err))
 	}
 
 	// generate a certificate template for the test server TLS
 	rootCertTmpl, err := CertTemplate()
 	if err != nil {
-		log.Fatalf("creating cert template: %v", err)
+		t.Fatal(fmt.Errorf("creating cert template: %v", err))
 	}
 
 	// set the certificate to be used for TLS handshake authentication
@@ -83,7 +82,7 @@ func TestAuthWithServer(t *testing.T) {
 	// create a self-signed certificate for the test server TLS
 	_, rootCertPEM, err := CreateCert(rootCertTmpl, rootCertTmpl, &rootKey.PublicKey, rootKey)
 	if err != nil {
-		log.Fatalf("error creating cert: %v", err)
+		t.Fatal(fmt.Errorf("error creating cert: %v", err))
 	}
 
 	// PEM encode the private key for TLS server handshake
@@ -94,7 +93,7 @@ func TestAuthWithServer(t *testing.T) {
 	// Create a TLS certificate using the private key and certificate
 	rootTLSCert, err := tls.X509KeyPair(rootCertPEM, rootKeyPEM)
 	if err != nil {
-		log.Fatalf("invalid key pair: %v", err)
+		t.Fatal(fmt.Errorf("invalid key pair: %v", err))
 	}
 
 	// https request handler
