@@ -22,13 +22,19 @@ type EdgeAuthenticator struct {
 	Settings models.AWSSiteWiseDataSourceSetting
 }
 
+type AuthRequest struct {
+	Username      string `json:"username,omitempty"`
+	Password      string `json:"password,omitempty"`
+	AuthMechanism string `json:"authMechanism,omitempty"`
+}
+
 func (a *EdgeAuthenticator) Authenticate() (models.AuthInfo, error) {
-	reqBody := map[string]string{
-		"username":      a.Settings.EdgeAuthUser,
-		"password":      a.Settings.EdgeAuthPass,
-		"authMechanism": a.Settings.EdgeAuthMode,
-	}
-	reqBodyJson, err := json.Marshal(reqBody)
+	reqBodyJson, err := json.Marshal(
+		&AuthRequest{
+			Username:      a.Settings.EdgeAuthUser,
+			Password:      a.Settings.EdgeAuthPass,
+			AuthMechanism: a.Settings.EdgeAuthMode,
+		})
 	if err != nil {
 		return models.AuthInfo{}, err
 	}

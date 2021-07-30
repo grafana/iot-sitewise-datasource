@@ -62,86 +62,20 @@ cciS5hf80XzIFqwhzaVS9gmiyM8=
 }
 
 func TestAuthWithServer(t *testing.T) {
-	// generate a new key-pair for the test server TLS
-	rootKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	ts := httptest.NewUnstartedServer(http.HandlerFunc(dummyHandler))
+
+	// https TLS cert
+	rootCertPEM, rootTLSCert, err := createTLSCert()
 	if err != nil {
-		t.Fatal(fmt.Errorf("generating random key: %v", err))
+		t.Fatal(fmt.Errorf("generating TLS certificate: %v", err))
 	}
-
-	// generate a certificate template for the test server TLS
-	rootCertTmpl, err := CertTemplate()
-	if err != nil {
-		t.Fatal(fmt.Errorf("creating cert template: %v", err))
-	}
-
-	// set the certificate to be used for TLS handshake authentication
-	rootCertTmpl.IsCA = true
-	rootCertTmpl.KeyUsage = x509.KeyUsageCertSign | x509.KeyUsageDigitalSignature
-	rootCertTmpl.ExtKeyUsage = []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth}
-	rootCertTmpl.IPAddresses = []net.IP{net.ParseIP("127.0.0.1")} // set the host address here
-
-	// create a self-signed certificate for the test server TLS
-	_, rootCertPEM, err := CreateCert(rootCertTmpl, rootCertTmpl, &rootKey.PublicKey, rootKey)
-	if err != nil {
-		t.Fatal(fmt.Errorf("error creating cert: %v", err))
-	}
-
-	// PEM encode the private key for TLS server handshake
-	rootKeyPEM := pem.EncodeToMemory(&pem.Block{
-		Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(rootKey),
-	})
-
-	// Create a TLS certificate using the private key and certificate
-	rootTLSCert, err := tls.X509KeyPair(rootCertPEM, rootKeyPEM)
-	if err != nil {
-		t.Fatal(fmt.Errorf("invalid key pair: %v", err))
-	}
-
-	// https request handler
-	handler := func(w http.ResponseWriter, r *http.Request) {
-		// dummy /authenticate endpoint
-		if r.Method == "POST" && r.RequestURI == "/authenticate" {
-			authReq := AuthRequest{}
-			err := json.NewDecoder(r.Body).Decode(&authReq)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
-
-			// dummy response
-			w.WriteHeader(http.StatusOK)
-			w.Header().Set("Content-Type", "application/json")
-			resp := make(map[string]string)
-			resp["username"] = authReq.Username
-			resp["accessKeyId"] = "YEWZb5yVBl9llM9TQvn10hD4wmXKlUCNgXeCQY5YmssV55FzAFZgcta2FUw8lIcz"
-			resp["secretAccessKey"] = "2wH5XvUVv2FKIxvvj3YNCblvMJkI67KbXZV6ZHiy2w16LPXZboZkYvCZymsyLFiW"
-			resp["sessionToken"] = "glPPiSJwMx3iDuLm5BsVJVA0t5wXVhMNHFyaOkh68yz48V9rcRjRke6nJG4ErwFh"
-			resp["sessionExpiryTime"] = "2019-07-29T20:29:41.176Z"
-			resp["authMechanism"] = authReq.AuthMechanism
-			jsonResp, err := json.Marshal(resp)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			_, err = w.Write(jsonResp)
-			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
-				return
-			}
-			return
-		}
-
-		w.WriteHeader(http.StatusNotImplemented)
-	}
-
-	ts := httptest.NewUnstartedServer(http.HandlerFunc(handler))
 
 	// Configure the server to present the TLS certificate we created
 	ts.TLS = &tls.Config{
 		Certificates: []tls.Certificate{rootTLSCert},
 	}
 
-	ts.Start()
+	ts.StartTLS()
 	defer ts.Close()
 
 	// test client
@@ -152,7 +86,7 @@ func TestAuthWithServer(t *testing.T) {
 	}
 
 	settings.Endpoint = ts.URL
-	settings.Cert = fmt.Sprintf("%s\n", rootCertPEM)
+	settings.Cert = string(rootCertPEM)
 
 	a := EdgeAuthenticator{Settings: settings}
 	info, err := a.Authenticate()
@@ -162,14 +96,45 @@ func TestAuthWithServer(t *testing.T) {
 	require.Equal(t, settings.EdgeAuthUser, info.Username)
 }
 
-type AuthRequest struct {
-	Username      string `json:"username,omitempty"`
-	Password      string `json:"password,omitempty"`
-	AuthMechanism string `json:"authMechanism,omitempty"`
+// helper function for the https request handler
+func dummyHandler(w http.ResponseWriter, r *http.Request) {
+	// dummy /authenticate endpoint
+	if r.Method == "POST" && r.RequestURI == "/authenticate" {
+		authReq := AuthRequest{}
+		err := json.NewDecoder(r.Body).Decode(&authReq)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		// dummy response
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json")
+		resp := make(map[string]string)
+		resp["username"] = authReq.Username
+		resp["accessKeyId"] = "dummyAccessKeyIdYEWZb5yVBl9llM9TQvn10hD4wmXKlUCNgXeCQY5YmssV55Fz"
+		resp["secretAccessKey"] = "dummySecretAccessKey2wH5XvUVv2FKIxvvj3YNCblvMJkI67KbXZV6ZHiy2w16"
+		resp["sessionToken"] = "dummySessionTokenglPPiSJwMx3iDuLm5BsVJVA0t5wXVhMNHFyaOkh68yz48V9"
+		resp["sessionExpiryTime"] = "2019-07-29T20:29:41.176Z"
+		resp["authMechanism"] = authReq.AuthMechanism
+		jsonResp, err := json.Marshal(resp)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		_, err = w.Write(jsonResp)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		return
+	}
+
+	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // helper function to create a certificate template with a serial number and other required fields
-func CertTemplate() (*x509.Certificate, error) {
+func certTemplate() (*x509.Certificate, error) {
 	// generate a random serial number (a real cert authority would have some logic behind this)
 	serialNumberLimit := new(big.Int).Lsh(big.NewInt(1), 128)
 	serialNumber, err := rand.Int(rand.Reader, serialNumberLimit)
@@ -189,7 +154,7 @@ func CertTemplate() (*x509.Certificate, error) {
 }
 
 //helper function to create a certificate from a template and public key plus a parent certificate and private key
-func CreateCert(template, parent *x509.Certificate, pub interface{}, parentPriv interface{}) (
+func createCert(template, parent *x509.Certificate, pub interface{}, parentPriv interface{}) (
 	*x509.Certificate, []byte, error) {
 
 	certDER, err := x509.CreateCertificate(rand.Reader, template, parent, pub, parentPriv)
@@ -208,4 +173,44 @@ func CreateCert(template, parent *x509.Certificate, pub interface{}, parentPriv 
 	certPEM := pem.EncodeToMemory(&b)
 
 	return cert, certPEM, err
+}
+
+// helper function to create a TLS Certificate and Root Key Combination
+func createTLSCert() ([]byte, tls.Certificate, error) {
+	// generate a new key-pair for the test server TLS
+	rootKey, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		return nil, tls.Certificate{}, fmt.Errorf("generating random key: %v", err)
+	}
+
+	// generate a certificate template for the test server TLS
+	rootCertTmpl, err := certTemplate()
+	if err != nil {
+		return nil, tls.Certificate{}, fmt.Errorf("creating cert template: %v", err)
+	}
+
+	// set the certificate to be used for TLS handshake authentication
+	rootCertTmpl.IsCA = true
+	rootCertTmpl.KeyUsage = x509.KeyUsageCertSign | x509.KeyUsageDigitalSignature
+	rootCertTmpl.ExtKeyUsage = []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth}
+	rootCertTmpl.IPAddresses = []net.IP{net.ParseIP("127.0.0.1")} // set the host address here
+
+	// create a self-signed certificate for the test server TLS
+	_, rootCertPEM, err := createCert(rootCertTmpl, rootCertTmpl, &rootKey.PublicKey, rootKey)
+	if err != nil {
+		return nil, tls.Certificate{}, fmt.Errorf("error creating cert: %v", err)
+	}
+
+	// PEM encode the private key for TLS server handshake
+	rootKeyPEM := pem.EncodeToMemory(&pem.Block{
+		Type: "RSA PRIVATE KEY", Bytes: x509.MarshalPKCS1PrivateKey(rootKey),
+	})
+
+	// Create a TLS certificate using the private key and certificate
+	rootTLSCert, err := tls.X509KeyPair(rootCertPEM, rootKeyPEM)
+	if err != nil {
+		return nil, tls.Certificate{}, fmt.Errorf("invalid key pair: %v", err)
+	}
+
+	return rootCertPEM, rootTLSCert, nil
 }
