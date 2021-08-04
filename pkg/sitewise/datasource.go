@@ -2,11 +2,15 @@ package sitewise
 
 import (
 	"context"
+	"fmt"
+	"sync"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api"
@@ -23,18 +27,61 @@ type Datasource struct {
 }
 
 func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, error) {
-	cfg := client.AWSSiteWiseDataSourceSetting{}
+	cfg := models.AWSSiteWiseDataSourceSetting{}
+
 	err := cfg.Load(settings)
 	if err != nil {
 		return nil, err
 	}
+
+	err = cfg.Validate()
+	if err != nil {
+		return nil, err
+	}
+
 	sessions := awsds.NewSessionCache()
+	clientGetter := func(region string) (swclient client.SitewiseClient, err error) {
+		swclient, err = client.GetClient(region, cfg, sessions.GetSession)
+		return
+	}
+
+	if cfg.Region == models.EDGE_REGION && cfg.EdgeAuthMode != models.EDGE_AUTH_MODE_DEFAULT {
+		edgeAuthenticator := EdgeAuthenticator{ //DummyAuthenticator{
+			Settings: cfg,
+		}
+
+		var mu sync.Mutex
+		authInfo, err := edgeAuthenticator.Authenticate()
+		if err != nil {
+			return nil, fmt.Errorf("error getting initial edge credentials (%s)", err.Error())
+		}
+		cfg.AuthType = awsds.AuthTypeKeys // Force key auth
+		cfg.AccessKey = authInfo.AccessKeyId
+		cfg.SecretKey = authInfo.SecretAccessKey
+		cfg.SessionToken = authInfo.SessionToken
+
+		clientGetter = func(region string) (swclient client.SitewiseClient, err error) {
+			mu.Lock()
+			if time.Now().After(authInfo.SessionExpiryTime) {
+				log.DefaultLogger.Debug("edge credentials expired. updating credentials now.")
+				authInfo, err = edgeAuthenticator.Authenticate()
+				if err != nil {
+					mu.Unlock()
+					return nil, fmt.Errorf("error updating edge credentials (%s)", err.Error())
+				}
+				cfg.AccessKey = authInfo.AccessKeyId
+				cfg.SecretKey = authInfo.SecretAccessKey
+				cfg.SessionToken = authInfo.SessionToken
+			}
+			cfgCopy := cfg
+			mu.Unlock()
+			swclient, err = client.GetClient(region, cfgCopy, sessions.GetSession)
+			return
+		}
+	}
 
 	return &Datasource{
-		GetClient: func(region string) (swclient client.SitewiseClient, err error) {
-			swclient, err = client.GetClient(region, cfg, sessions.GetSession)
-			return
-		},
+		GetClient: clientGetter,
 	}, nil
 }
 

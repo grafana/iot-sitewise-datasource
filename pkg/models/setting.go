@@ -1,15 +1,24 @@
-package client
+package models
 
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 )
 
+const EDGE_REGION string = "Edge"
+const EDGE_AUTH_MODE_DEFAULT string = "default"
+const EDGE_AUTH_MODE_LDAP string = "ldap"
+const EDGE_AUTH_MODE_LINUX string = "linux"
+
 type AWSSiteWiseDataSourceSetting struct {
 	awsds.AWSDatasourceSettings
-	Cert string `json:"-"`
+	Cert         string `json:"-"`
+	EdgeAuthMode string `json:"edgeAuthMode"`
+	EdgeAuthUser string `json:"edgeAuthUser"`
+	EdgeAuthPass string `json:"-"`
 }
 
 func (s *AWSSiteWiseDataSourceSetting) Load(config backend.DataSourceInstanceSettings) error {
@@ -27,13 +36,43 @@ func (s *AWSSiteWiseDataSourceSetting) Load(config backend.DataSourceInstanceSet
 		s.Profile = config.Database // legacy support (only for cloudwatch?)
 	}
 
+	// Make sure to set an auth mode
+	if s.Region == EDGE_REGION && s.EdgeAuthMode == "" {
+		s.EdgeAuthMode = EDGE_AUTH_MODE_DEFAULT
+	}
+
 	s.AccessKey = config.DecryptedSecureJSONData["accessKey"]
 	s.SecretKey = config.DecryptedSecureJSONData["secretKey"]
 	s.Cert = config.DecryptedSecureJSONData["cert"]
+	s.EdgeAuthPass = config.DecryptedSecureJSONData["edgeAuthPass"]
 	return nil
 }
 
-func (s *AWSSiteWiseDataSourceSetting) toAWSDatasourceSettings() awsds.AWSDatasourceSettings {
+func (s *AWSSiteWiseDataSourceSetting) Validate() error {
+	if s.Region != EDGE_REGION {
+		return nil
+	}
+
+	if s.Endpoint == "" {
+		return fmt.Errorf("Edge region requires an explicit endpoint")
+	}
+	if s.Cert == "" {
+		return fmt.Errorf("Edge region requires an SSL certificate")
+	}
+
+	if s.EdgeAuthMode != EDGE_AUTH_MODE_DEFAULT {
+		if s.EdgeAuthUser == "" {
+			return fmt.Errorf("Missing edge auth user")
+		}
+		if s.EdgeAuthPass == "" {
+			return fmt.Errorf("Missing edge auth password")
+		}
+	}
+
+	return nil
+}
+
+func (s *AWSSiteWiseDataSourceSetting) ToAWSDatasourceSettings() awsds.AWSDatasourceSettings {
 	cfg := awsds.AWSDatasourceSettings{
 		Profile:       s.Profile,
 		Region:        s.Region,
@@ -44,6 +83,7 @@ func (s *AWSSiteWiseDataSourceSetting) toAWSDatasourceSettings() awsds.AWSDataso
 		DefaultRegion: s.DefaultRegion,
 		AccessKey:     s.AccessKey,
 		SecretKey:     s.SecretKey,
+		SessionToken:  s.SessionToken,
 	}
 
 	return cfg

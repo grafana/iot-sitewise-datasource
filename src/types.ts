@@ -196,8 +196,12 @@ export interface SitewiseCustomMeta {
  */
 export interface SitewiseOptions extends AwsAuthDataSourceJsonData {
   // nothing for now
+  edgeAuthMode?: string;
+  edgeAuthUser?: string;
 }
 
 export interface SitewiseSecureJsonData extends AwsAuthDataSourceSecureJsonData {
   // nothing for now
+  edgeAuthPass?: string;
+  cert?: string;
 }

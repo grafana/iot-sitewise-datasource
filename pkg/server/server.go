@@ -16,7 +16,7 @@ import (
 )
 
 type Server struct {
-	Datasource    Datasource
+	Datasource    *sitewise.Datasource
 	channelPrefix string
 	closeCh       chan struct{}
 	queryMux      *datasource.QueryTypeMux

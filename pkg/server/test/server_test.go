@@ -3,10 +3,11 @@ package test
 import (
 	"context"
 	"fmt"
-	"github.com/patrickmn/go-cache"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/patrickmn/go-cache"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/server"
 
@@ -67,7 +68,7 @@ func runTestScenario(t *testing.T, scenario *testScenario) {
 		}
 
 		srvr := &server.Server{
-			Datasource: mockedDatasource(scenario.mockSw),
+			Datasource: mockedDatasource(scenario.mockSw).(*sitewise.Datasource),
 		}
 
 		sitewise.GetCache = func() *cache.Cache {

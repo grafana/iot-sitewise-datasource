@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.2.4
+
+- Add linux/LDAP based authentication for Edge region.
+
 ## v1.2.3
 
 - Update `AUTO` aggregation to better select the resolution, and switch to the raw asset property value data when higher than 1m resolution is needed.
