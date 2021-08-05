@@ -39,6 +39,27 @@ func getPropertyVariantValue(variant *iotsitewise.Variant) interface{} {
 	return nil
 }
 
+func getPropertyVariantValueType(variant *iotsitewise.Variant) string {
+
+	if val := variant.BooleanValue; val != nil {
+		return "BOOLEAN"
+	}
+
+	if val := variant.DoubleValue; val != nil {
+		return "DOUBLE"
+	}
+
+	if val := variant.IntegerValue; val != nil {
+		return "INTEGER"
+	}
+
+	if val := variant.StringValue; val != nil {
+		return "STRING"
+	}
+
+	return ""
+}
+
 func getErrorDescription(details *iotsitewise.ErrorDetails) (*string, error) {
 
 	if details == nil {
