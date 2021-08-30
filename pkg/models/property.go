@@ -24,6 +24,12 @@ func GetAssetPropertyValueQuery(dq *backend.DataQuery) (*AssetPropertyValueQuery
 		return nil, err
 	}
 
+	//if propertyAlias is set make sure to set the assetId and propertyId to nil
+	if query.PropertyAlias != "" {
+		query.AssetId = ""
+		query.PropertyId = ""
+	}
+
 	// default to 1 if unset
 	if query.MaxPageAggregations < 1 {
 		query.MaxPageAggregations = 1

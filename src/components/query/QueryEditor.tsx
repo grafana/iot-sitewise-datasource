@@ -15,7 +15,7 @@ const queryDefaults: Partial<SitewiseQuery> = {
   maxPageAggregations: 1,
 };
 
-export const firstLabelWith = 14;
+export const firstLabelWith = 15;
 
 export class QueryEditor extends PureComponent<Props> {
   onQueryTypeChange = (sel: SelectableValue<QueryType>) => {
@@ -71,7 +71,7 @@ export class QueryEditor extends PureComponent<Props> {
     return (
       <>
         <div className="gf-form">
-          <InlineField label="Query type" labelWidth={14} grow={true} tooltip={queryTooltip}>
+          <InlineField label="Query type" labelWidth={firstLabelWith} grow={true} tooltip={queryTooltip}>
             <Select
               options={siteWisteQueryTypes}
               value={currentQueryType}

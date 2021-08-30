@@ -12,7 +12,7 @@ import {
   ListAssociatedAssetsQuery,
   isListAssociatedAssetsQuery,
 } from 'types';
-import { InlineField, Select } from '@grafana/ui';
+import { InlineField, LinkButton, Select, Input, Icon } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetBrowser } from '../browser/AssetBrowser';
 import { AggregatePicker, aggReg } from '../AggregatePicker';
@@ -93,6 +93,12 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       }
     }
   }
+
+  onAliasChange = (evt: React.SyntheticEvent<HTMLInputElement>) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({ ...query, propertyAlias: evt.currentTarget.value });
+    onRunQuery();
+  };
 
   onAssetChange = (sel: SelectableValue<string>) => {
     const { onChange, query, onRunQuery } = this.props;
@@ -262,59 +268,82 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         label: 'ID: ' + query.propertyId,
       } as AssetPropertyInfo;
     }
+    const queryTooltip = (
+      <div>
+        Setting an alias for an asset property. <br />
+        <LinkButton
+          href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html"
+          target="_blank"
+        >
+          API Docs <Icon name="external-link-alt" />
+        </LinkButton>
+      </div>
+    );
 
     return (
       <>
         <div className="gf-form">
-          <InlineField label="Asset" labelWidth={firstLabelWith} grow={true}>
-            <Select
-              key={query.region ? query.region : 'default'}
-              isLoading={loading}
-              options={assets}
-              value={current}
-              onChange={this.onAssetChange}
-              placeholder="Select an asset"
-              allowCustomValue={true}
-              isClearable={true}
-              isSearchable={true}
-              onCreateOption={this.onSetAssetId}
-              formatCreateLabel={(txt) => `Asset ID: ${txt}`}
-              menuPlacement="bottom"
+          <InlineField label="Property Alias" labelWidth={firstLabelWith} grow={true} tooltip={queryTooltip}>
+            <Input
+              value={query.propertyAlias}
+              onChange={this.onAliasChange}
+              placeholder="optional alias that identifies the property, such as an OPC-UA server data stream path"
             />
           </InlineField>
-          <AssetBrowser
-            datasource={datasource}
-            region={query.region}
-            assetId={query.assetId}
-            onAssetChanged={this.onSetAssetId}
-          />
         </div>
-        {showProp && (
+        {!Boolean(query.propertyAlias) && (
           <>
             <div className="gf-form">
-              <InlineField label="Property" labelWidth={firstLabelWith} grow={true}>
+              <InlineField label="Asset" labelWidth={firstLabelWith} grow={true}>
                 <Select
+                  key={query.region ? query.region : 'default'}
                   isLoading={loading}
-                  options={properties}
-                  value={currentProperty}
-                  onChange={this.onPropertyChange}
-                  placeholder="Select a property"
+                  options={assets}
+                  value={current}
+                  onChange={this.onAssetChange}
+                  placeholder="Select an asset"
                   allowCustomValue={true}
+                  isClearable={true}
                   isSearchable={true}
-                  onCreateOption={this.onSetPropertyId}
-                  formatCreateLabel={(txt) => `Property ID: ${txt}`}
+                  onCreateOption={this.onSetAssetId}
+                  formatCreateLabel={(txt) => `Asset ID: ${txt}`}
                   menuPlacement="bottom"
                 />
               </InlineField>
+              <AssetBrowser
+                datasource={datasource}
+                region={query.region}
+                assetId={query.assetId}
+                onAssetChanged={this.onSetAssetId}
+              />
             </div>
-            {showQuality && (
-              <>
-                {isAssetPropertyAggregatesQuery(query) && this.renderAggregateRow(query)}
-                <QualityAndOrderRow {...(this.props as any)} />
-              </>
+            {showProp && (
+              <div className="gf-form">
+                <InlineField label="Property" labelWidth={firstLabelWith} grow={true}>
+                  <Select
+                    isLoading={loading}
+                    options={properties}
+                    value={currentProperty}
+                    onChange={this.onPropertyChange}
+                    placeholder="Select a property"
+                    allowCustomValue={true}
+                    isSearchable={true}
+                    onCreateOption={this.onSetPropertyId}
+                    formatCreateLabel={(txt) => `Property ID: ${txt}`}
+                    menuPlacement="bottom"
+                  />
+                </InlineField>
+              </div>
             )}
           </>
         )}
+        {(showProp || query.propertyAlias) && showQuality && (
+          <>
+            {isAssetPropertyAggregatesQuery(query) && this.renderAggregateRow(query)}
+            <QualityAndOrderRow {...(this.props as any)} />
+          </>
+        )}
+
         {isAssociatedAssets && this.renderAssociatedAsset(query as ListAssociatedAssetsQuery)}
       </>
     );

@@ -30,6 +30,7 @@ type BaseQuery struct {
 	AwsRegion           string `json:"region,omitempty"`
 	AssetId             string `json:"assetId,omitempty"`
 	PropertyId          string `json:"propertyId,omitempty"`
+	PropertyAlias       string `json:"propertyAlias,omitempty"`
 	NextToken           string `json:"nextToken,omitempty"`
 	MaxPageAggregations int    `json:"maxPageAggregations,omitempty"`
 
