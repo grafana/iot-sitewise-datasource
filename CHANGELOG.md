@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.2.5
+
+- Fixes issue with asset explorer.
+
 ## v1.2.4
 
 - Add linux/LDAP based authentication for Edge region.
