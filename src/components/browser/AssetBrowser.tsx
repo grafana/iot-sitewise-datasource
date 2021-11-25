@@ -107,17 +107,11 @@ export class AssetBrowser extends Component<Props, State> {
             <div>
               <TabsBar>
                 <Tab
-                  css
                   label={'Hierarchy'}
                   active={'Hierarchy' === tab}
                   onChangeTab={() => this.setState({ tab: 'Hierarchy' })}
                 />
-                <Tab
-                  css
-                  label={'By Model'}
-                  active={'Modal' === tab}
-                  onChangeTab={() => this.setState({ tab: 'Modal' })}
-                />
+                <Tab label={'By Model'} active={'Modal' === tab} onChangeTab={() => this.setState({ tab: 'Modal' })} />
               </TabsBar>
               <TabContent style={{ maxHeight: '90vh' }}>
                 <div>{this.renderBody()}</div>

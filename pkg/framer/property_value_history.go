@@ -2,6 +2,7 @@ package framer
 
 import (
 	"context"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
@@ -21,6 +22,11 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 	property, err := resources.Property(ctx)
 	if err != nil {
 		return nil, err
+	}
+	// TODO: make this work with the API instead of ad-hoc dataType inference
+	// https://github.com/grafana/iot-sitewise-datasource/issues/98#issuecomment-892947756
+	if *property.AssetProperty.DataType == *aws.String("?") {
+		property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(p.AssetPropertyValueHistory[0].Value))
 	}
 
 	timeField := fields.TimeField(length)

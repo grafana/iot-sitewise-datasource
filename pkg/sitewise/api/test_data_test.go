@@ -58,6 +58,28 @@ func TestGenerateTestData(t *testing.T) {
 
 		return resp
 	}
+	m["property-history-values-with-alias.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
+		t.Skip("Integration Test") // comment line to run this
+		ctx := context.Background()
+
+		// hard coded values from my account
+		query := models.AssetPropertyValueQuery{}
+		query.AssetId = "709e2e02-7b28-4b41-b669-3fb501a11853"
+		//query.PropertyId = "5ff66b29-5b79-427a-978b-29f8dfc2757a"
+		query.PropertyAlias = "/amazon/renton/1/rpm"
+		query.TimeRange = backend.TimeRange{
+			From: time.Now().Add(time.Hour * -3), // return 3 hours of data. 60*3/5 = 36 points
+			To:   time.Now(),
+		}
+		query.MaxPageAggregations = 1
+
+		resp, err := GetAssetPropertyValues(ctx, client, query)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		return resp
+	}
 	m["property-value.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()

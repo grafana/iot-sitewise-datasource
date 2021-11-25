@@ -1,12 +1,12 @@
 import { AssetInfo } from '../../../types';
 import { AssetSummary } from '../../../queryResponseTypes';
 import React, { FunctionComponent } from 'react';
-import { GrafanaTheme } from '@grafana/data';
-import { CollapsableSection, Label, Spinner, styleMixins, stylesFactory, useTheme } from '@grafana/ui';
-import { css } from 'emotion';
+import { GrafanaTheme2 } from '@grafana/data';
+import { CollapsableSection, Label, Spinner, styleMixins, stylesFactory, useTheme2 } from '@grafana/ui';
+import { css } from '@emotion/css';
 import { AssetListItem } from './AssetListItem';
 
-const getStyles = stylesFactory((theme: GrafanaTheme) => {
+const getStyles = stylesFactory((theme: GrafanaTheme2) => {
   return {
     container: css`
       width: 100%;
@@ -34,7 +34,7 @@ export interface Props {
 }
 
 export const AssetList: FunctionComponent<Props> = ({ listInfo, assets, search, onSelect, onInspect, open = true }) => {
-  const theme = useTheme();
+  const theme = useTheme2();
   const style = getStyles(theme);
 
   const label = listInfo

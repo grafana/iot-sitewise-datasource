@@ -2,6 +2,7 @@ package resource
 
 import (
 	"context"
+
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/patrickmn/go-cache"
 )
@@ -35,8 +36,11 @@ func (cp *cachingResourceProvider) Asset(ctx context.Context, assetId string) (*
 	return a, nil
 }
 
-func (cp *cachingResourceProvider) Property(ctx context.Context, assetId string, propertyId string) (*iotsitewise.DescribeAssetPropertyOutput, error) {
+func (cp *cachingResourceProvider) Property(ctx context.Context, assetId string, propertyId string, propertyAlias string) (*iotsitewise.DescribeAssetPropertyOutput, error) {
 	key := assetId + "/" + propertyId
+	if propertyAlias != "" {
+		key = propertyAlias
+	}
 	val, ok := cp.cache.Get(key)
 	if ok {
 		a, ok := val.(iotsitewise.DescribeAssetPropertyOutput)
@@ -45,7 +49,7 @@ func (cp *cachingResourceProvider) Property(ctx context.Context, assetId string,
 		}
 	}
 
-	a, err := cp.resources.Property(ctx, assetId, propertyId)
+	a, err := cp.resources.Property(ctx, assetId, propertyId, propertyAlias)
 	if err != nil {
 		return nil, err
 	}

@@ -87,7 +87,7 @@ export class BrowseHierarchy extends Component<Props, State> {
       <>
         <h5> Asset Hierarchies: </h5>
         <div style={{ height: '40vh', overflow: 'auto' }}>
-          <Input css="" value={search} onChange={this.onSearchChange} placeholder="search..." />
+          <Input value={search} onChange={this.onSearchChange} placeholder="search..." />
           <br />
 
           {asset.hierarchy.map((h) => {

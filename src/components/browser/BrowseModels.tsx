@@ -85,7 +85,7 @@ export class BrowseModels extends Component<Props, State> {
             <>
               {assets.length > 2 && (
                 <>
-                  <Input css="" value={search} onChange={this.onSearchChange} placeholder="search..." />
+                  <Input value={search} onChange={this.onSearchChange} placeholder="search..." />
                   <br />
                 </>
               )}
