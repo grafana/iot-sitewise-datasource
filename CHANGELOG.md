@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## v1.2.5
 
 - Fixes issue with asset explorer.
+- Adds support for query by property alias.
 
 ## v1.2.4
 
