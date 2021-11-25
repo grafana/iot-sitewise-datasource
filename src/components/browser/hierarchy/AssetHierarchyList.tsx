@@ -1,13 +1,13 @@
 import React, { FunctionComponent, useState, useEffect } from 'react';
-import { css } from 'emotion';
-import { GrafanaTheme } from '@grafana/data';
+import { css } from '@emotion/css';
+import { GrafanaTheme2 } from '@grafana/data';
 import { AssetSummary } from '../../../queryResponseTypes';
-import { styleMixins, stylesFactory, useTheme } from '@grafana/ui';
+import { styleMixins, stylesFactory, useTheme2 } from '@grafana/ui';
 import { AssetInfo } from '../../../types';
 import { SitewiseCache } from '../../../sitewiseCache';
 import { AssetList } from './AssetList';
 
-const getStyles = stylesFactory((theme: GrafanaTheme) => {
+const getStyles = stylesFactory((theme: GrafanaTheme2) => {
   return {
     container: css`
       width: 100%;
@@ -48,7 +48,7 @@ export const AssetHierarchyList: FunctionComponent<Props> = ({
 }) => {
   const [currentChildren, setChildren] = useState<AssetSummary[] | undefined>(children);
 
-  const theme = useTheme();
+  const theme = useTheme2();
   const style = getStyles(theme);
 
   useEffect(() => {
