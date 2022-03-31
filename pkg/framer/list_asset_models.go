@@ -28,7 +28,7 @@ func (a AssetModels) Frames(_ context.Context, _ resource.ResourceProvider) (dat
 	for i, asset := range a.AssetModelSummaries {
 		fName.Set(i, *asset.Name)
 		fArn.Set(i, *asset.Arn)
-		fDescription.Set(i, *asset.Description)
+		fDescription.Set(i, asset.Description)
 		fId.Set(i, *asset.Id)
 		fCreationDate.Set(i, *asset.CreationDate)
 		fLastUpdate.Set(i, *asset.LastUpdateDate)

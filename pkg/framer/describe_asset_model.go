@@ -62,7 +62,7 @@ func (a AssetModelDescription) Frames(_ context.Context, _ resource.ResourceProv
 
 	assetModelFields.Name.Set(0, *a.AssetModelName)
 	assetModelFields.Arn.Set(0, *a.AssetModelArn)
-	assetModelFields.Description.Set(0, *a.AssetModelDescription)
+	assetModelFields.Description.Set(0, a.AssetModelDescription)
 	assetModelFields.Id.Set(0, *a.AssetModelId)
 	assetModelFields.CreationDate.Set(0, *a.AssetModelCreationDate)
 	assetModelFields.LastUpdate.Set(0, *a.AssetModelLastUpdateDate)

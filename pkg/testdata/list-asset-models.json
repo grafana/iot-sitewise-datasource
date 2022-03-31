@@ -23,6 +23,18 @@
                 "Error": null,
                 "State": "ACTIVE"
             }
+        },
+        {
+            "Arn": "arn:aws:iotsitewise:us-east-1:dummy",
+            "CreationDate": "2020-11-24T02:18:01Z",
+            "Description": null,
+            "Id": "cec092ac-dummy",
+            "LastUpdateDate": "2020-11-24T02:18:06Z",
+            "Name": "Asset with missing description",
+            "Status": {
+                "Error": null,
+                "State": "ACTIVE"
+            }
         }
     ],
     "NextToken": null
