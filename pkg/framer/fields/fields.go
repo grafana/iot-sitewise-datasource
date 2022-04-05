@@ -28,8 +28,9 @@ func ModelIdField(length int) *data.Field {
 	return NewFieldWithName(ModelId, data.FieldTypeString, length)
 }
 
+// Description fields are optional
 func DescriptionField(length int) *data.Field {
-	return NewFieldWithName(Description, data.FieldTypeString, length)
+	return NewFieldWithName(Description, data.FieldTypeNullableString, length)
 }
 
 func StatusErrorField(length int) *data.Field {
