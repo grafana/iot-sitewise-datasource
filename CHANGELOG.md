@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.2.6
+
+- Make asset/model descriptions optional.
+
 ## v1.2.5
 
 - Fixes issue with asset explorer.
