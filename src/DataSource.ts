@@ -1,4 +1,12 @@
-import { DataSourceInstanceSettings, ScopedVars, DataQueryResponse, DataQueryRequest, DataFrame } from '@grafana/data';
+import {
+  DataSourceInstanceSettings,
+  ScopedVars,
+  DataQueryResponse,
+  DataQueryRequest,
+  DataFrame,
+  MetricFindValue,
+  DataFrameView,
+} from '@grafana/data';
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 import { SitewiseCache } from 'sitewiseCache';
 
@@ -35,6 +43,43 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   // This will support annotation queries for 7.2+
   annotations = {};
 
+  async metricFindQuery(query: SitewiseQuery, options: any): Promise<MetricFindValue[]> {
+    const request = {
+      targets: [
+        {
+          ...query,
+          refId: 'metricFindQuery',
+          // format: FormatOption.Table,
+        },
+      ],
+      range: options.range,
+      rangeRaw: options.rangeRaw,
+    } as DataQueryRequest<SitewiseQuery>;
+
+    let res: DataQueryResponse;
+
+    try {
+      res = await this.query(request).toPromise();
+    } catch (err) {
+      return Promise.reject(err);
+    }
+
+    if (!res || !res.data || res.data.length <= 0) {
+      return [];
+    }
+    const view = new DataFrameView(res.data[0] as DataFrame);
+    return view.map((item) => {
+      if (Object.keys(item).length === 2) {
+        return {
+          text: item[1],
+          value: item[0],
+        };
+      }
+      return {
+        text: item[0],
+      };
+    });
+  }
   /**
    * Do not execute queries that do not exist yet
    */
