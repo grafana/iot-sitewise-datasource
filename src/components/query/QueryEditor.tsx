@@ -19,7 +19,10 @@ export const firstLabelWith = 15;
 
 export class QueryEditor extends PureComponent<Props> {
   onQueryTypeChange = (sel: SelectableValue<QueryType>) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
+    // hack to use QueryEditor as VariableQueryEditor
+    let { onRunQuery } = this.props;
+    if (!onRunQuery) onRunQuery = () => {};
     onChange(changeQueryType(query, sel as QueryTypeInfo));
     onRunQuery();
   };
