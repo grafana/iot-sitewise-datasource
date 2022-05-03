@@ -1,4 +1,11 @@
-import { DataSourceInstanceSettings, ScopedVars, DataQueryResponse, DataQueryRequest, DataFrame } from '@grafana/data';
+import {
+  DataSourceInstanceSettings,
+  ScopedVars,
+  DataQueryResponse,
+  DataQueryRequest,
+  DataFrame,
+  MetricFindValue,
+} from '@grafana/data';
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 import { SitewiseCache } from 'sitewiseCache';
 
@@ -6,6 +13,7 @@ import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta, isPropertyQueryType
 import { Observable } from 'rxjs';
 import { getRequestLooper, MultiRequestTracker } from 'requestLooper';
 import { appendMatchingFrames } from 'appendFrames';
+import { frameToMetricFindValues } from 'utils';
 
 export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
@@ -34,6 +42,32 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
 
   // This will support annotation queries for 7.2+
   annotations = {};
+
+  async metricFindQuery(query: SitewiseQuery, options: any): Promise<MetricFindValue[]> {
+    const request = {
+      targets: [
+        {
+          ...query,
+          refId: 'metricFindQuery',
+        },
+      ],
+      range: options.range,
+      rangeRaw: options.rangeRaw,
+    } as DataQueryRequest<SitewiseQuery>;
+
+    let res: DataQueryResponse;
+
+    try {
+      res = await this.query(request).toPromise();
+    } catch (err) {
+      return Promise.reject(err);
+    }
+
+    if (!res || !res.data || res.data.length <= 0) {
+      return [];
+    }
+    return frameToMetricFindValues(res.data[0] as DataFrame);
+  }
 
   /**
    * Do not execute queries that do not exist yet
