@@ -15,7 +15,7 @@ const queryDefaults: Partial<SitewiseQuery> = {
   maxPageAggregations: 1,
 };
 
-export const firstLabelWith = 15;
+export const firstLabelWith = 20;
 
 export class QueryEditor extends PureComponent<Props> {
   onQueryTypeChange = (sel: SelectableValue<QueryType>) => {
