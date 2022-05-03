@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.2.7
+
+- Add query type option when defining a variable
+
 ## v1.2.6
 
 - Make asset/model descriptions optional.
