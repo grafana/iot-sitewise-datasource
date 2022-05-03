@@ -49,7 +49,6 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
         {
           ...query,
           refId: 'metricFindQuery',
-          // format: FormatOption.Table,
         },
       ],
       range: options.range,

@@ -22,7 +22,9 @@ export class QueryEditor extends PureComponent<Props> {
     const { onChange, query } = this.props;
     // hack to use QueryEditor as VariableQueryEditor
     let { onRunQuery } = this.props;
-    if (!onRunQuery) onRunQuery = () => {};
+    if (!onRunQuery) {
+      onRunQuery = () => {};
+    }
     onChange(changeQueryType(query, sel as QueryTypeInfo));
     onRunQuery();
   };
