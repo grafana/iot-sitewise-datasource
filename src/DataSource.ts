@@ -14,6 +14,7 @@ import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta, isPropertyQueryType
 import { Observable } from 'rxjs';
 import { getRequestLooper, MultiRequestTracker } from 'requestLooper';
 import { appendMatchingFrames } from 'appendFrames';
+import { frameToMetricFindValues } from 'utils';
 
 export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
@@ -66,19 +67,9 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
     if (!res || !res.data || res.data.length <= 0) {
       return [];
     }
-    const view = new DataFrameView(res.data[0] as DataFrame);
-    return view.map((item) => {
-      if (Object.keys(item).length === 2) {
-        return {
-          text: item[1],
-          value: item[0],
-        };
-      }
-      return {
-        text: item[0],
-      };
-    });
+    return frameToMetricFindValues(res.data[0] as DataFrame);
   }
+
   /**
    * Do not execute queries that do not exist yet
    */
