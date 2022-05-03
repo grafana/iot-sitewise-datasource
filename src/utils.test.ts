@@ -1,156 +1,145 @@
-import { DataFrame, dataFrameFromJSON, DataFrameJSON, toDataFrame } from '@grafana/data';
+import { dataFrameFromJSON, DataFrameJSON } from '@grafana/data';
 
 import { frameToMetricFindValues } from './utils';
 
 describe('Test utils', () => {
   it('convert simple values', () => {
     const df = dataFrameFromJSON(listAssetsResponse as DataFrameJSON);
-    expect(frameToMetricFindValues(df)).toMatchInlineSnapshot(`Array []`); /
+    expect(frameToMetricFindValues(df)).toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "text": "WaterTankSimulatorAsset1",
+          "value": "3091bd85-8371-4842-8c82-8ece1bf992bb",
+        },
+        Object {
+          "text": "3091bd85-8371-4842-8c82-8ece1bf992bb",
+          "value": "3091bd85-8371-4842-8c82-8ece1bf992bb",
+        },
+      ]
+    `);
+    const dfPropertyValue = dataFrameFromJSON(getPropertyValueResponse as DataFrameJSON);
+    expect(frameToMetricFindValues(dfPropertyValue)).toMatchInlineSnapshot(`Array []`);
   });
 });
 
-// TODO real response!!!
 const listAssetsResponse = {
   schema: {
     refId: 'A',
-    name: 'js_libraries.csv',
+    meta: {
+      custom: {},
+    },
     fields: [
       {
-        name: 'Library',
+        name: 'name',
+        type: 'string',
+        typeInfo: {
+          frame: 'string',
+        },
+      },
+      {
+        name: 'id',
+        type: 'string',
+        typeInfo: {
+          frame: 'string',
+        },
+      },
+      {
+        name: 'model_id',
+        type: 'string',
+        typeInfo: {
+          frame: 'string',
+        },
+      },
+      {
+        name: 'arn',
+        type: 'string',
+        typeInfo: {
+          frame: 'string',
+        },
+      },
+      {
+        name: 'creation_date',
+        type: 'time',
+        typeInfo: {
+          frame: 'time.Time',
+        },
+      },
+      {
+        name: 'last_update',
+        type: 'time',
+        typeInfo: {
+          frame: 'time.Time',
+        },
+      },
+      {
+        name: 'state',
+        type: 'string',
+        typeInfo: {
+          frame: 'string',
+        },
+      },
+      {
+        name: 'error',
         type: 'string',
         typeInfo: {
           frame: 'string',
           nullable: true,
         },
-        config: {
-          custom: {
-            align: 'auto',
-            displayMode: 'auto',
-            inspect: false,
-          },
-          color: {
-            mode: 'thresholds',
-          },
-          mappings: [],
-          thresholds: {
-            mode: 'absolute',
-            steps: [
-              {
-                value: null,
-                color: 'green',
-              },
-              {
-                value: 80,
-                color: 'red',
-              },
-            ],
-          },
-        },
       },
       {
-        name: 'Github Stars',
-        type: 'number',
+        name: 'hierarchies',
+        type: 'string',
         typeInfo: {
-          frame: 'int64',
-          nullable: true,
-        },
-        config: {
-          custom: {
-            align: 'auto',
-            displayMode: 'auto',
-            inspect: false,
-          },
-          color: {
-            mode: 'thresholds',
-          },
-          mappings: [],
-          thresholds: {
-            mode: 'absolute',
-            steps: [
-              {
-                value: null,
-                color: 'green',
-              },
-              {
-                value: 80,
-                color: 'red',
-              },
-            ],
-          },
-        },
-      },
-      {
-        name: 'Forks',
-        type: 'number',
-        typeInfo: {
-          frame: 'int64',
-          nullable: true,
-        },
-        config: {
-          custom: {
-            align: 'auto',
-            displayMode: 'auto',
-            inspect: false,
-          },
-          color: {
-            mode: 'thresholds',
-          },
-          mappings: [],
-          thresholds: {
-            mode: 'absolute',
-            steps: [
-              {
-                value: null,
-                color: 'green',
-              },
-              {
-                value: 80,
-                color: 'red',
-              },
-            ],
-          },
-        },
-      },
-      {
-        name: 'Watchers',
-        type: 'number',
-        typeInfo: {
-          frame: 'int64',
-          nullable: true,
-        },
-        config: {
-          custom: {
-            align: 'auto',
-            displayMode: 'auto',
-            inspect: false,
-          },
-          color: {
-            mode: 'thresholds',
-          },
-          mappings: [],
-          thresholds: {
-            mode: 'absolute',
-            steps: [
-              {
-                value: null,
-                color: 'green',
-              },
-              {
-                value: 80,
-                color: 'red',
-              },
-            ],
-          },
+          frame: 'string',
         },
       },
     ],
   },
   data: {
     values: [
-      ['React.js', 'Vue', 'Angular', 'JQuery', 'Meteor', 'Aurelia'],
-      [169000, 184000, 73400, 54900, 42400, 11600],
-      [34000, 29100, 19300, 20000, 5200, 684],
-      [6700, 6300, 3200, 3300, 1700, 442],
+      ['WaterTankSimulatorAsset1'],
+      ['3091bd85-8371-4842-8c82-8ece1bf992bb'],
+      ['a54eec1f-5433-4a7d-863b-0a7a252bbdd8'],
+      ['arn:aws:iotsitewise:us-east-1:166800769179:asset/3091bd85-8371-4842-8c82-8ece1bf992bb'],
+      [1636079884000],
+      [1636079884000],
+      ['ACTIVE'],
+      [null],
+      ['[]'],
     ],
+  },
+};
+
+const getPropertyValueResponse = {
+  schema: {
+    name: 'WaterTankSimulatorAsset1',
+    refId: 'A',
+    fields: [
+      {
+        name: 'time',
+        type: 'time',
+        typeInfo: {
+          frame: 'time.Time',
+        },
+      },
+      {
+        name: 'min_temp',
+        type: 'number',
+        typeInfo: {
+          frame: 'float64',
+        },
+        config: {},
+      },
+      {
+        name: 'quality',
+        type: 'string',
+        typeInfo: {
+          frame: 'string',
+        },
+      },
+    ],
+  },
+  data: {
+    values: [[1636069024000], [275.83007612612244], ['GOOD']],
   },
 };

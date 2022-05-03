@@ -5,7 +5,6 @@ import {
   DataQueryRequest,
   DataFrame,
   MetricFindValue,
-  DataFrameView,
 } from '@grafana/data';
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 import { SitewiseCache } from 'sitewiseCache';
