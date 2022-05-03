@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.2.7
+## v1.2.7-pre
 
 - Add query type option when defining a variable
 
