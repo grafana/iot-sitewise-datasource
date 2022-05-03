@@ -11,10 +11,6 @@ describe('Test utils', () => {
           "text": "WaterTankSimulatorAsset1",
           "value": "3091bd85-8371-4842-8c82-8ece1bf992bb",
         },
-        Object {
-          "text": "3091bd85-8371-4842-8c82-8ece1bf992bb",
-          "value": "3091bd85-8371-4842-8c82-8ece1bf992bb",
-        },
       ]
     `);
     const dfPropertyValue = dataFrameFromJSON(getPropertyValueResponse as DataFrameJSON);
