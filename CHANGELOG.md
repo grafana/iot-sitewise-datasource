@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.2.7 (not yet released)
+
+- Add support to define template variables using iot-sitewise datasource queries
+
 ## v1.2.6
 
 - Make asset/model descriptions optional.
