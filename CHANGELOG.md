@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## v1.2.7 (not yet released)
 
-- Add query type option when defining a variable
+- Add support to define template variables using iot-sitewise datasource queries
 
 ## v1.2.6
 
