@@ -10,6 +10,7 @@ export enum QueryType {
   PropertyValue = 'PropertyValue',
   PropertyValueHistory = 'PropertyValueHistory',
   PropertyAggregate = 'PropertyAggregate',
+  PropertyInterpolated = 'PropertyInterpolated',
 }
 
 export enum SiteWiseQuality {
@@ -26,7 +27,10 @@ export enum SiteWiseTimeOrder {
 
 export enum SiteWiseResolution {
   Auto = 'AUTO', // or missing!
+  Sec = '1s',
+  TenSec = '10s',
   Min = '1m',
+  TenMin = '10m',
   Hour = '1h',
   Day = '1d',
 }
@@ -48,6 +52,7 @@ export interface SitewiseQuery extends DataQuery {
   assetId?: string;
   propertyId?: string;
   propertyAlias?: string;
+  quality?: SiteWiseQuality;
 
   maxPageAggregations?: number;
 }
@@ -124,7 +129,6 @@ export function isAssetPropertyValueQuery(q?: SitewiseQuery): q is AssetProperty
 export interface AssetPropertyValueHistoryQuery extends SitewiseQuery {
   queryType: QueryType.PropertyValueHistory;
 
-  quality?: SiteWiseQuality;
   timeOrdering?: SiteWiseTimeOrder;
 }
 
@@ -141,7 +145,6 @@ export interface AssetPropertyAggregatesQuery extends SitewiseQuery {
   resolution?: SiteWiseResolution;
   aggregates: AggregateType[]; // at least one
 
-  quality?: SiteWiseQuality;
   timeOrdering?: SiteWiseTimeOrder;
 }
 
@@ -149,11 +152,25 @@ export function isAssetPropertyAggregatesQuery(q?: SitewiseQuery): q is AssetPro
   return q?.queryType === QueryType.PropertyAggregate;
 }
 
+/**
+ * {@link https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetInterpolatedAssetPropertyValues.html}
+ */
+export interface AssetPropertyInterpolatedQuery extends SitewiseQuery {
+  queryType: QueryType.PropertyInterpolated;
+  timeOrdering?: SiteWiseTimeOrder;
+  resolution?: SiteWiseResolution;
+}
+
+export function isAssetPropertyInterpolatedQuery(q?: SitewiseQuery): q is AssetPropertyInterpolatedQuery {
+  return q?.queryType === QueryType.PropertyInterpolated;
+}
+
 export function isPropertyQueryType(queryType?: QueryType): boolean {
   return (
     queryType === QueryType.PropertyAggregate ||
     queryType === QueryType.PropertyValue ||
-    queryType === QueryType.PropertyValueHistory
+    queryType === QueryType.PropertyValueHistory ||
+    queryType === QueryType.PropertyInterpolated
   );
 }
 

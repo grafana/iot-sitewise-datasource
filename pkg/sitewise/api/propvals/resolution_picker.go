@@ -1,20 +1,23 @@
 package propvals
 
 import (
+	"math"
+
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
-	"math"
 )
 
 const (
 	maxResponseSize = 250
 	maxPagesToLoad  = 4 // 100-200ms * 4 = 800ms max on average ?
 
-	ResolutionRaw    = "RAW"
-	ResolutionSecond = "1s"
-	ResolutionMinute = "1m"
-	ResolutionHour   = "1h"
-	ResolutionDay    = "1d"
+	ResolutionRaw        = "RAW"
+	ResolutionSecond     = "1s"
+	ResolutionTenSeconds = "10s"
+	ResolutionMinute     = "1m"
+	ResolutionTenMinutes = "10m"
+	ResolutionHour       = "1h"
+	ResolutionDay        = "1d"
 )
 
 func roundUp(num float64) int64 {
@@ -24,8 +27,12 @@ func roundUp(num float64) int64 {
 func durationForTimeRange(resolution string, timeRange backend.TimeRange) float64 {
 	if ResolutionSecond == resolution {
 		return timeRange.Duration().Seconds()
+	} else if ResolutionTenSeconds == resolution {
+		return timeRange.Duration().Seconds() * 10
 	} else if ResolutionMinute == resolution {
 		return timeRange.Duration().Minutes()
+	} else if ResolutionTenMinutes == resolution {
+		return timeRange.Duration().Minutes() * 10
 	} else if ResolutionHour == resolution {
 		return timeRange.Duration().Hours()
 	} else {

@@ -46,7 +46,6 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetA
 }
 
 func GetAssetPropertyValues(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (*framer.AssetPropertyValueHistory, error) {
-
 	var (
 		maxDps = int(query.MaxDataPoints)
 	)

@@ -4,6 +4,7 @@ import {
   SitewiseQuery,
   AggregateType,
   AssetPropertyAggregatesQuery,
+  AssetPropertyInterpolatedQuery,
   ListAssetsQuery,
   ListAssetModelsQuery,
   AssetPropertyValueQuery,
@@ -32,6 +33,15 @@ export const siteWisteQueryTypes: QueryTypeInfo[] = [
       timeOrdering: 'ASCENDING',
     } as AssetPropertyAggregatesQuery,
     helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyAggregates.html',
+  },
+  {
+    label: 'Get interpolated property values',
+    value: QueryType.PropertyInterpolated,
+    description: `Gets interpolated values for an asset property.`,
+    defaultQuery: {
+      timeOrdering: 'ASCENDING',
+    } as AssetPropertyInterpolatedQuery,
+    helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetInterpolatedAssetPropertyValues.html',
   },
   {
     label: 'Get property value history',

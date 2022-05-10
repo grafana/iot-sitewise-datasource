@@ -21,6 +21,10 @@ func processQueries(ctx context.Context, req *backend.QueryDataRequest, handler 
 
 }
 
+func (s *Server) HandleInterpolatedPropertyValue(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
+	return processQueries(ctx, req, s.handleInterpolatedPropertyValueQuery), nil
+}
+
 func (s *Server) HandlePropertyValueHistory(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
 	return processQueries(ctx, req, s.handlePropertyValueHistoryQuery), nil
 }
@@ -51,6 +55,23 @@ func (s *Server) HandleListAssociatedAssets(ctx context.Context, req *backend.Qu
 
 func (s *Server) HandleDescribeAssetModel(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
 	return processQueries(ctx, req, s.handleDescribeAssetModelQuery), nil
+}
+
+func (s *Server) handleInterpolatedPropertyValueQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
+	query, err := models.GetAssetPropertyValueQuery(&q)
+	if err != nil {
+		return DataResponseErrorUnmarshal(err)
+	}
+
+	frames, err := s.Datasource.HandleInterpolatedPropertyValueQuery(ctx, req, query)
+	if err != nil {
+		return DataResponseErrorRequestFailed(err)
+	}
+
+	return backend.DataResponse{
+		Frames: frames,
+		Error:  nil,
+	}
 }
 
 func (s *Server) handlePropertyValueHistoryQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {

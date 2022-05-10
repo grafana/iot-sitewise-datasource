@@ -27,6 +27,7 @@ type SitewiseClient interface {
 	iotsitewiseiface.IoTSiteWiseAPI
 	GetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyValueHistoryOutput, error)
 	GetAssetPropertyAggregatesPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyAggregatesInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyAggregatesOutput, error)
+	GetInterpolatedAssetPropertyValuesPageAggregation(ctx context.Context, req *iotsitewise.GetInterpolatedAssetPropertyValuesInput, maxPages int, maxResults int) (*iotsitewise.GetInterpolatedAssetPropertyValuesOutput, error)
 }
 
 type sitewiseClient struct {
@@ -66,6 +67,30 @@ func (c *sitewiseClient) GetAssetPropertyValueHistoryPageAggregation(ctx context
 	}, nil
 }
 
+func (c *sitewiseClient) GetInterpolatedAssetPropertyValuesPageAggregation(ctx context.Context, req *iotsitewise.GetInterpolatedAssetPropertyValuesInput, maxPages int, maxResults int) (*iotsitewise.GetInterpolatedAssetPropertyValuesOutput, error) {
+	var (
+		numPages  = 0
+		values    []*iotsitewise.InterpolatedAssetPropertyValue
+		nextToken *string
+	)
+
+	err := c.GetInterpolatedAssetPropertyValuesPagesWithContext(ctx, req, func(output *iotsitewise.GetInterpolatedAssetPropertyValuesOutput, b bool) bool {
+		numPages++
+		values = append(values, output.InterpolatedAssetPropertyValues...)
+		nextToken = output.NextToken
+		return numPages < maxPages && len(values) <= maxResults
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &iotsitewise.GetInterpolatedAssetPropertyValuesOutput{
+		InterpolatedAssetPropertyValues: values,
+		NextToken:                       nextToken,
+	}, nil
+}
+
 func (c *sitewiseClient) GetAssetPropertyAggregatesPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyAggregatesInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyAggregatesOutput, error) {
 
 	var (
@@ -91,8 +116,10 @@ func (c *sitewiseClient) GetAssetPropertyAggregatesPageAggregation(ctx context.C
 	}, nil
 }
 
-func GetClient(region string, settings models.AWSSiteWiseDataSourceSetting, provider awsds.AmazonSessionProvider) (client SitewiseClient, err error) {
-	sess, err := provider(region, settings.ToAWSDatasourceSettings())
+type AmazonSessionProvider func(c awsds.SessionConfig) (*session.Session, error)
+
+func GetClient(region string, settings models.AWSSiteWiseDataSourceSetting, provider AmazonSessionProvider) (client SitewiseClient, err error) {
+	sess, err := provider(awsds.SessionConfig{Settings: settings.ToAWSDatasourceSettings()})
 	if err != nil {
 		return nil, err
 	}
