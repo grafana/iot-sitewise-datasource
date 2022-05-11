@@ -45,7 +45,7 @@ apiVersion: 1
 
 datasources:
   - name: IoT Sitewise
-    type: datasource
+    type: grafana-iot-sitewise-datasource
     jsonData:
       authType: credentials
       defaultRegion: us-east-1
@@ -58,7 +58,7 @@ apiVersion: 1
 
 datasources:
   - name: IoT Sitewise
-    type: datasource
+    type: grafana-iot-sitewise-datasource
     jsonData:
       authType: keys
       defaultRegion: us-east-1
