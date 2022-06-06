@@ -156,9 +156,9 @@ export class SitewiseCache {
     const options: Array<SelectableValue<string>> = getTemplateSrv()
       .getVariables()
       .map((variable) => ({
-        label: `$${variable.label ?? variable.name}`,
-        value: `$${variable.name}`,
-        description: `${variable.type} variable`,
+        label: '${' + (variable.label ?? variable.name) + '}',
+        value: '${' + variable.name + '}',
+        icon: 'arrow-right',
       }));
     try {
       const topLevel = await this.getTopLevelAssets();
@@ -206,15 +206,18 @@ export function frameToAssetInfo(res: DescribeAssetResult): AssetInfo {
   }
   const options: AssetPropertyInfo[] = getTemplateSrv()
     .getVariables()
-    .map((variable) => ({
-      Id: '$' + variable.name,
-      Name: '$' + variable.name,
-      DataType: 'string',
-      Unit: '',
-      label: '$' + variable.label ?? variable.name,
-      value: '$' + variable.name,
-      description: `${variable.type} variable`,
-    }));
+    .map((variable) => {
+      const name = '${' + variable.name + '}';
+      return {
+        Id: name,
+        Name: name,
+        DataType: 'string',
+        Unit: '',
+        label: name,
+        value: name,
+        icon: 'arrow-right',
+      };
+    });
 
   return {
     ...res,
