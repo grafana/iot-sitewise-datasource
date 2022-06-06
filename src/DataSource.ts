@@ -111,6 +111,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
     const templateSrv = getTemplateSrv();
     return {
       ...query,
+      propertyAlias: templateSrv.replace(query.propertyAlias, scopedVars),
       region: templateSrv.replace(query.region || '', scopedVars),
       assetId: templateSrv.replace(query.assetId || '', scopedVars),
       propertyId: templateSrv.replace(query.propertyId || '', scopedVars),
