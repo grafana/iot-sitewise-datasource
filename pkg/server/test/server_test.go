@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"strings"
 	"testing"
 	"time"
 
@@ -57,7 +56,6 @@ func mockedDatasource(swmock *mocks.SitewiseClient) server.Datasource {
 }
 
 func runTestScenario(t *testing.T, scenario *testScenario) {
-
 	t.Run(scenario.name, func(t *testing.T) {
 
 		ctx := context.Background()
@@ -88,20 +86,8 @@ func runTestScenario(t *testing.T, scenario *testScenario) {
 
 		// write out the golden for all data responses
 		for i, dr := range qdr.Responses {
-			fname := fmt.Sprintf(testDataRelativePath("%s-%s.golden.txt"), scenario.goldenFileName, i)
-
-			// temporary fix for golden files https://github.com/grafana/grafana-plugin-sdk-go/issues/213
-			for _, fr := range dr.Frames {
-				if fr.Meta != nil {
-					fr.Meta.Custom = nil
-				}
-			}
-
-			if err := experimental.CheckGoldenDataResponse(fname, &dr, true); err != nil {
-				if !strings.Contains(err.Error(), "no such file or directory") {
-					t.Fatal(err)
-				}
-			}
+			fname := fmt.Sprintf("%s-%s.golden", scenario.goldenFileName, i)
+			experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
 		}
 	})
 }

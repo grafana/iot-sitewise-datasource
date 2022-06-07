@@ -187,8 +187,8 @@ github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB7
 github.com/grafana/grafana-aws-sdk v0.7.1-0.20210726232133-e3ac285039ee h1:ZjGhsCeNtUOql7kO5O6cAmamdM3tLQwjv++d8lDPOEg=
 github.com/grafana/grafana-aws-sdk v0.7.1-0.20210726232133-e3ac285039ee/go.mod h1:+pPo5U+pX0zWimR7YBc7ASeSQfbRkcTyQYqMiAj7G5U=
 github.com/grafana/grafana-plugin-sdk-go v0.79.0/go.mod h1:NvxLzGkVhnoBKwzkst6CFfpMFKwAdIUZ1q8ssuLeF60=
-github.com/grafana/grafana-plugin-sdk-go v0.134.0 h1:8j8vsvhU3GabRPWB1EnFKSWt60yQVFPEE/5P1QV2gFw=
-github.com/grafana/grafana-plugin-sdk-go v0.134.0/go.mod h1:jmrxelOJKrIK0yrsIzcotS8pbqPZozbmJgGy7k3hK1k=
+github.com/grafana/grafana-plugin-sdk-go v0.136.0 h1:DSw/RLUI8pr/zunJUhbTjHyaRzf0IoOZgu2PjLsJ6Wc=
+github.com/grafana/grafana-plugin-sdk-go v0.136.0/go.mod h1:jmrxelOJKrIK0yrsIzcotS8pbqPZozbmJgGy7k3hK1k=
 github.com/grpc-ecosystem/go-grpc-middleware v1.2.0/go.mod h1:mJzapYve32yjrKlk9GbyCZHuPgZsrbyIbyKhSzOpg6s=
 github.com/grpc-ecosystem/go-grpc-middleware v1.3.0 h1:+9834+KizmvFV7pXQGSXQTsaWhq2GjuNUt0aUU0YBYw=
 github.com/grpc-ecosystem/go-grpc-middleware v1.3.0/go.mod h1:z0ButlSOZa5vEBq9m2m2hlwIgKw+rp3sdCBRoJY+30Y=

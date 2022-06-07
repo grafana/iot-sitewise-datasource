@@ -1,0 +1,155 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "custom": {}
+//  }
+//  Name: 
+//  Dimensions: 9 Fields by 4 Rows
+//  +----------------------+--------------------------------------+--------------------------------------+---------------------------------------------------------------------------------------+-------------------------------+-------------------------------+----------------+-----------------+-------------------+
+//  | Name: name           | Name: id                             | Name: model_id                       | Name: arn                                                                             | Name: creation_date           | Name: last_update             | Name: state    | Name: error     | Name: hierarchies |
+//  | Labels:              | Labels:                              | Labels:                              | Labels:                                                                               | Labels:                       | Labels:                       | Labels:        | Labels:         | Labels:           |
+//  | Type: []string       | Type: []string                       | Type: []string                       | Type: []string                                                                        | Type: []time.Time             | Type: []time.Time             | Type: []string | Type: []*string | Type: []string    |
+//  +----------------------+--------------------------------------+--------------------------------------+---------------------------------------------------------------------------------------+-------------------------------+-------------------------------+----------------+-----------------+-------------------+
+//  | Demo Turbine Asset 4 | 0d17e113-526b-4535-83e9-07694eaecbce | 1f95cf92-34ff-4975-91a9-e9f2af35b6a5 | arn:aws:iotsitewise:us-east-1:526544423884:asset/0d17e113-526b-4535-83e9-07694eaecbce | 2020-11-24 02:18:14 +0000 UTC | 2020-11-24 02:18:14 +0000 UTC | ACTIVE         | null            | []                |
+//  | Demo Turbine Asset 2 | 917e7b5d-11cc-48c3-ad4f-7b65fb925ad2 | 1f95cf92-34ff-4975-91a9-e9f2af35b6a5 | arn:aws:iotsitewise:us-east-1:526544423884:asset/917e7b5d-11cc-48c3-ad4f-7b65fb925ad2 | 2020-11-24 02:18:14 +0000 UTC | 2020-11-24 02:18:14 +0000 UTC | ACTIVE         | null            | []                |
+//  | Demo Turbine Asset 3 | a50e237b-ce6b-4ec4-ac9a-f4dcf920dde6 | 1f95cf92-34ff-4975-91a9-e9f2af35b6a5 | arn:aws:iotsitewise:us-east-1:526544423884:asset/a50e237b-ce6b-4ec4-ac9a-f4dcf920dde6 | 2020-11-24 02:18:14 +0000 UTC | 2020-11-24 02:18:14 +0000 UTC | ACTIVE         | null            | []                |
+//  | Demo Turbine Asset 1 | e64c9075-9d89-47cb-8ee5-d3251bd253f4 | 1f95cf92-34ff-4975-91a9-e9f2af35b6a5 | arn:aws:iotsitewise:us-east-1:526544423884:asset/e64c9075-9d89-47cb-8ee5-d3251bd253f4 | 2020-11-24 02:18:13 +0000 UTC | 2020-11-24 02:18:13 +0000 UTC | ACTIVE         | null            | []                |
+//  +----------------------+--------------------------------------+--------------------------------------+---------------------------------------------------------------------------------------+-------------------------------+-------------------------------+----------------+-----------------+-------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "custom": {}
+        },
+        "fields": [
+          {
+            "name": "name",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "model_id",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "arn",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "creation_date",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "last_update",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "state",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "hierarchies",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            "Demo Turbine Asset 4",
+            "Demo Turbine Asset 2",
+            "Demo Turbine Asset 3",
+            "Demo Turbine Asset 1"
+          ],
+          [
+            "0d17e113-526b-4535-83e9-07694eaecbce",
+            "917e7b5d-11cc-48c3-ad4f-7b65fb925ad2",
+            "a50e237b-ce6b-4ec4-ac9a-f4dcf920dde6",
+            "e64c9075-9d89-47cb-8ee5-d3251bd253f4"
+          ],
+          [
+            "1f95cf92-34ff-4975-91a9-e9f2af35b6a5",
+            "1f95cf92-34ff-4975-91a9-e9f2af35b6a5",
+            "1f95cf92-34ff-4975-91a9-e9f2af35b6a5",
+            "1f95cf92-34ff-4975-91a9-e9f2af35b6a5"
+          ],
+          [
+            "arn:aws:iotsitewise:us-east-1:526544423884:asset/0d17e113-526b-4535-83e9-07694eaecbce",
+            "arn:aws:iotsitewise:us-east-1:526544423884:asset/917e7b5d-11cc-48c3-ad4f-7b65fb925ad2",
+            "arn:aws:iotsitewise:us-east-1:526544423884:asset/a50e237b-ce6b-4ec4-ac9a-f4dcf920dde6",
+            "arn:aws:iotsitewise:us-east-1:526544423884:asset/e64c9075-9d89-47cb-8ee5-d3251bd253f4"
+          ],
+          [
+            1606184294000,
+            1606184294000,
+            1606184294000,
+            1606184293000
+          ],
+          [
+            1606184294000,
+            1606184294000,
+            1606184294000,
+            1606184293000
+          ],
+          [
+            "ACTIVE",
+            "ACTIVE",
+            "ACTIVE",
+            "ACTIVE"
+          ],
+          [
+            null,
+            null,
+            null,
+            null
+          ],
+          [
+            "[]",
+            "[]",
+            "[]",
+            "[]"
+          ]
+        ]
+      }
+    }
+  ]
+}

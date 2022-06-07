@@ -1,0 +1,134 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "custom": {}
+//  }
+//  Name: 
+//  Dimensions: 8 Fields by 3 Rows
+//  +--------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+---------------------------------------------------------------------------------------------+-----------------+----------------+-------------------------------+-------------------------------+
+//  | Name: name                     | Name: description                                                                                                                          | Name: id                             | Name: arn                                                                                   | Name: error     | Name: state    | Name: creation_date           | Name: last_update             |
+//  | Labels:                        | Labels:                                                                                                                                    | Labels:                              | Labels:                                                                                     | Labels:         | Labels:        | Labels:                       | Labels:                       |
+//  | Type: []string                 | Type: []*string                                                                                                                            | Type: []string                       | Type: []string                                                                              | Type: []*string | Type: []string | Type: []time.Time             | Type: []time.Time             |
+//  +--------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+---------------------------------------------------------------------------------------------+-----------------+----------------+-------------------------------+-------------------------------+
+//  | Demo Turbine Asset Model       | This is an asset model used in the IoT SiteWise Demo for representing a turbine in a wind farm. It will be deleted at the end of the demo. | 1f95cf92-34ff-4975-91a9-e9f2af35b6a5 | arn:aws:iotsitewise:us-east-1:526544423884:asset-model/1f95cf92-34ff-4975-91a9-e9f2af35b6a5 | null            | ACTIVE         | 2020-11-24 02:17:49 +0000 UTC | 2020-11-24 02:17:54 +0000 UTC |
+//  | Demo Wind Farm Asset Model     | This is an asset model used in the IoT SiteWise Demo for representing a wind farm. It will be deleted at the end of the demo.              | cec092ac-b034-4d4b-bbd8-1eca007c5750 | arn:aws:iotsitewise:us-east-1:526544423884:asset-model/cec092ac-b034-4d4b-bbd8-1eca007c5750 | null            | ACTIVE         | 2020-11-24 02:18:01 +0000 UTC | 2020-11-24 02:18:06 +0000 UTC |
+//  | Asset with missing description | null                                                                                                                                       | cec092ac-dummy                       | arn:aws:iotsitewise:us-east-1:dummy                                                         | null            | ACTIVE         | 2020-11-24 02:18:01 +0000 UTC | 2020-11-24 02:18:06 +0000 UTC |
+//  +--------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------+---------------------------------------------------------------------------------------------+-----------------+----------------+-------------------------------+-------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "custom": {}
+        },
+        "fields": [
+          {
+            "name": "name",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "description",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "arn",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "state",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "creation_date",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "last_update",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            "Demo Turbine Asset Model",
+            "Demo Wind Farm Asset Model",
+            "Asset with missing description"
+          ],
+          [
+            "This is an asset model used in the IoT SiteWise Demo for representing a turbine in a wind farm. It will be deleted at the end of the demo.",
+            "This is an asset model used in the IoT SiteWise Demo for representing a wind farm. It will be deleted at the end of the demo.",
+            null
+          ],
+          [
+            "1f95cf92-34ff-4975-91a9-e9f2af35b6a5",
+            "cec092ac-b034-4d4b-bbd8-1eca007c5750",
+            "cec092ac-dummy"
+          ],
+          [
+            "arn:aws:iotsitewise:us-east-1:526544423884:asset-model/1f95cf92-34ff-4975-91a9-e9f2af35b6a5",
+            "arn:aws:iotsitewise:us-east-1:526544423884:asset-model/cec092ac-b034-4d4b-bbd8-1eca007c5750",
+            "arn:aws:iotsitewise:us-east-1:dummy"
+          ],
+          [
+            null,
+            null,
+            null
+          ],
+          [
+            "ACTIVE",
+            "ACTIVE",
+            "ACTIVE"
+          ],
+          [
+            1606184269000,
+            1606184281000,
+            1606184281000
+          ],
+          [
+            1606184274000,
+            1606184286000,
+            1606184286000
+          ]
+        ]
+      }
+    }
+  ]
+}

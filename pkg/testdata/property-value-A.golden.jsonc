@@ -1,0 +1,59 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "type": "timeseries-wide"
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 2 Fields by 1 Rows
+//  +-------------------------------+----------------------+
+//  | Name: time                    | Name: Wind Speed     |
+//  | Labels:                       | Labels: quality=GOOD |
+//  | Type: []time.Time             | Type: []*float64     |
+//  +-------------------------------+----------------------+
+//  | 2021-02-01 14:20:00 -0500 EST | 23.81007059955162    |
+//  +-------------------------------+----------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "frames": [
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "type": "timeseries-wide"
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64",
+              "nullable": true
+            },
+            "labels": {
+              "quality": "GOOD"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.81007059955162
+          ]
+        ]
+      }
+    }
+  ]
+}
