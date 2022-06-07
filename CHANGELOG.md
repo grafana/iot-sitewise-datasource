@@ -2,9 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.2.7 (not yet released)
+## v1.3.0
 
 - Add support to define template variables using iot-sitewise datasource queries
+- Add dashboard variable support in query editor
 
 ## v1.2.6
 

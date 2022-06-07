@@ -4,6 +4,7 @@ import { ListAssetsQuery, ListAssociatedAssetsQuery, QueryType } from 'types';
 import { AssetModelSummary, AssetSummary, DescribeAssetResult } from './queryResponseTypes';
 import { AssetInfo, AssetPropertyInfo } from './types';
 import { map } from 'rxjs/operators';
+import { getTemplateSrv } from '@grafana/runtime';
 
 /**
  * Keep a differnt cache for each region
@@ -152,7 +153,13 @@ export class SitewiseCache {
   }
 
   async getAssetPickerOptions(): Promise<Array<SelectableValue<string>>> {
-    const options: Array<SelectableValue<string>> = [];
+    const options: Array<SelectableValue<string>> = getTemplateSrv()
+      .getVariables()
+      .map((variable) => ({
+        label: '${' + (variable.label ?? variable.name) + '}',
+        value: '${' + variable.name + '}',
+        icon: 'arrow-right',
+      }));
     try {
       const topLevel = await this.getTopLevelAssets();
       for (const asset of topLevel) {
@@ -197,10 +204,24 @@ export function frameToAssetInfo(res: DescribeAssetResult): AssetInfo {
       }
     }
   }
+  const options: AssetPropertyInfo[] = getTemplateSrv()
+    .getVariables()
+    .map((variable) => {
+      const name = '${' + variable.name + '}';
+      return {
+        Id: name,
+        Name: name,
+        DataType: 'string',
+        Unit: '',
+        label: name,
+        value: name,
+        icon: 'arrow-right',
+      };
+    });
 
   return {
     ...res,
-    properties,
+    properties: [...options, ...properties],
     hierarchy: hierarchy.map((v) => ({
       label: v.Name,
       value: v.Id,
