@@ -1,0 +1,125 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "custom": {}
+//  }
+//  Name: 
+//  Dimensions: 9 Fields by 1 Rows
+//  +----------------------+--------------------------------------+--------------------------------------+---------------------------------------------------------------------------------------+-------------------------------+-------------------------------+----------------+-----------------+------------------------------------------------------------------------------+
+//  | Name: name           | Name: id                             | Name: model_id                       | Name: arn                                                                             | Name: creation_date           | Name: last_update             | Name: state    | Name: error     | Name: hierarchies                                                            |
+//  | Labels:              | Labels:                              | Labels:                              | Labels:                                                                               | Labels:                       | Labels:                       | Labels:        | Labels:         | Labels:                                                                      |
+//  | Type: []string       | Type: []string                       | Type: []string                       | Type: []string                                                                        | Type: []time.Time             | Type: []time.Time             | Type: []string | Type: []*string | Type: []string                                                               |
+//  +----------------------+--------------------------------------+--------------------------------------+---------------------------------------------------------------------------------------+-------------------------------+-------------------------------+----------------+-----------------+------------------------------------------------------------------------------+
+//  | Demo Wind Farm Asset | 6edf67ad-e647-45bd-b609-4974a86729ce | cec092ac-b034-4d4b-bbd8-1eca007c5750 | arn:aws:iotsitewise:us-east-1:526544423884:asset/6edf67ad-e647-45bd-b609-4974a86729ce | 2020-11-24 02:18:29 +0000 UTC | 2020-11-24 02:18:29 +0000 UTC | ACTIVE         | null            | [{"Id":"883165ce-ea4d-4bac-a223-783e79c5b271","Name":"Turbine Asset Model"}] |
+//  +----------------------+--------------------------------------+--------------------------------------+---------------------------------------------------------------------------------------+-------------------------------+-------------------------------+----------------+-----------------+------------------------------------------------------------------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "custom": {}
+        },
+        "fields": [
+          {
+            "name": "name",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "model_id",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "arn",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "creation_date",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "last_update",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "state",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "error",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "hierarchies",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            "Demo Wind Farm Asset"
+          ],
+          [
+            "6edf67ad-e647-45bd-b609-4974a86729ce"
+          ],
+          [
+            "cec092ac-b034-4d4b-bbd8-1eca007c5750"
+          ],
+          [
+            "arn:aws:iotsitewise:us-east-1:526544423884:asset/6edf67ad-e647-45bd-b609-4974a86729ce"
+          ],
+          [
+            1606184309000
+          ],
+          [
+            1606184309000
+          ],
+          [
+            "ACTIVE"
+          ],
+          [
+            null
+          ],
+          [
+            "[{\"Id\":\"883165ce-ea4d-4bac-a223-783e79c5b271\",\"Name\":\"Turbine Asset Model\"}]"
+          ]
+        ]
+      }
+    }
+  ]
+}

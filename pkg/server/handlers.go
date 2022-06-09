@@ -2,8 +2,10 @@ package server
 
 import (
 	"context"
+	"math"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
@@ -63,6 +65,11 @@ func (s *Server) handlePropertyValueHistoryQuery(ctx context.Context, req *backe
 		return DataResponseErrorRequestFailed(err)
 	}
 
+	wide, err := data.LongToWide(frames[0], &data.FillMissing{Mode: data.FillModeNull, Value: math.NaN()})
+	if err == nil {
+		frames[0] = wide
+	}
+
 	return backend.DataResponse{
 		Frames: frames,
 		Error:  nil,
@@ -81,6 +88,11 @@ func (s *Server) handlePropertyAggregateQuery(ctx context.Context, req *backend.
 		return DataResponseErrorRequestFailed(err)
 	}
 
+	wide, err := data.LongToWide(frames[0], &data.FillMissing{Mode: data.FillModeNull, Value: math.NaN()})
+	if err == nil {
+		frames = []*data.Frame{wide}
+	}
+
 	return backend.DataResponse{
 		Frames: frames,
 		Error:  nil,
@@ -97,6 +109,11 @@ func (s *Server) handlePropertyValueQuery(ctx context.Context, req *backend.Quer
 	frames, err := s.Datasource.HandleGetAssetPropertyValueQuery(ctx, req, query)
 	if err != nil {
 		return DataResponseErrorRequestFailed(err)
+	}
+
+	wide, err := data.LongToWide(frames[0], &data.FillMissing{Mode: data.FillModeNull, Value: math.NaN()})
+	if err == nil {
+		frames = []*data.Frame{wide}
 	}
 
 	return backend.DataResponse{
