@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api/propvals"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
@@ -19,8 +20,8 @@ var (
 func interpolatedQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetInterpolatedAssetPropertyValuesInput {
 	//if propertyAlias is set make sure to set the assetId and propertyId to nil
 	if query.PropertyAlias != "" {
-		query.AssetId = ""
 		query.PropertyId = ""
+		query.AssetId = ""
 	}
 
 	from, to := util.TimeRangeToUnix(query.TimeRange)
@@ -32,8 +33,9 @@ func interpolatedQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise
 		quality = "GOOD"
 	}
 
-	intervalInSeconds := int64(query.Interval.Seconds())
+	intervalInSeconds := int64(propvals.ResolutionToDuration(propvals.InterpolatedResolution(query)).Seconds())
 	if query.Resolution != "AUTO" && query.Resolution != "" {
+		intervalInSeconds = int64(propvals.ResolutionToDuration(query.Resolution).Seconds())
 	}
 
 	if intervalInSeconds < 1 {

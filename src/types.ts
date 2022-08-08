@@ -53,6 +53,7 @@ export interface SitewiseQuery extends DataQuery {
   propertyId?: string;
   propertyAlias?: string;
   quality?: SiteWiseQuality;
+  resolution?: SiteWiseResolution;
 
   maxPageAggregations?: number;
 }
@@ -158,7 +159,6 @@ export function isAssetPropertyAggregatesQuery(q?: SitewiseQuery): q is AssetPro
 export interface AssetPropertyInterpolatedQuery extends SitewiseQuery {
   queryType: QueryType.PropertyInterpolated;
   timeOrdering?: SiteWiseTimeOrder;
-  resolution?: SiteWiseResolution;
 }
 
 export function isAssetPropertyInterpolatedQuery(q?: SitewiseQuery): q is AssetPropertyInterpolatedQuery {

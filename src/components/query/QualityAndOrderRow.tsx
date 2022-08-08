@@ -26,9 +26,9 @@ const interpolatedResolutions: Array<SelectableValue<SiteWiseResolution>> = [
       'Will switch to raw data if higher than 1m resolution is needed',
   },
   { value: SiteWiseResolution.Sec, label: 'Second', description: '1 point every second' },
-  { value: SiteWiseResolution.Sec, label: '10 Seconds', description: '1 point every 10 seconds' },
+  { value: SiteWiseResolution.TenSec, label: '10 Seconds', description: '1 point every 10 seconds' },
   { value: SiteWiseResolution.Min, label: 'Minute', description: '1 point every minute' },
-  { value: SiteWiseResolution.Sec, label: '10 Minutes', description: '1 point every 10 minutes' },
+  { value: SiteWiseResolution.TenMin, label: '10 Minutes', description: '1 point every 10 minutes' },
   { value: SiteWiseResolution.Hour, label: 'Hour', description: '1 point every hour' },
   { value: SiteWiseResolution.Day, label: 'Day', description: '1 point every day' },
 ];
@@ -60,7 +60,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
 
   onResolutionChange = (sel: SelectableValue<SiteWiseResolution>) => {
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, resolution: sel.value } as any);
+    onChange({ ...query, resolution: sel.value });
     onRunQuery();
   };
 
