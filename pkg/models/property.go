@@ -12,9 +12,10 @@ import (
 // This is done simply due to lack of solid generics support in golang.
 type AssetPropertyValueQuery struct {
 	BaseQuery
-	AggregateTypes []string `json:"aggregates,omitempty"` // Not used for the history query
-	Quality        string   `json:"quality,omitempty"`
-	Resolution     string   `json:"resolution,omitempty"`
+	AggregateTypes  []string `json:"aggregates,omitempty"` // Not used for the history query
+	Quality         string   `json:"quality,omitempty"`
+	Resolution      string   `json:"resolution,omitempty"`
+	LastObservation bool     `json:"lastObservation,omitempty"`
 }
 
 func GetAssetPropertyValueQuery(dq *backend.DataQuery) (*AssetPropertyValueQuery, error) {

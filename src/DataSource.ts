@@ -9,7 +9,14 @@ import {
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 import { SitewiseCache } from 'sitewiseCache';
 
-import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta, isPropertyQueryType, SitewiseNextQuery } from './types';
+import {
+  SitewiseQuery,
+  SitewiseOptions,
+  SitewiseCustomMeta,
+  isPropertyQueryType,
+  SitewiseNextQuery,
+  QueryType,
+} from './types';
 import { Observable } from 'rxjs';
 import { getRequestLooper, MultiRequestTracker } from 'requestLooper';
 import { appendMatchingFrames } from 'appendFrames';
@@ -140,6 +147,14 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
                   nextToken: meta.nextToken,
                 });
               }
+            }
+            const query = request.targets.find((t) => t.refId === frame.refId);
+            if (query && isPropertyQueryType(query.queryType) && frame.length == 0 && !meta?.nextToken) {
+              next.push({
+                ...query,
+                queryType: QueryType.PropertyInterpolated,
+                lastObservation: true,
+              });
             }
           }
           if (next.length) {

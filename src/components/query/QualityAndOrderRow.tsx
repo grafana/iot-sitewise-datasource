@@ -97,6 +97,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
               menuPlacement="bottom"
             />
           </InlineField>
+
           {isAssetPropertyInterpolatedQuery(query) && (
             <InlineField label="Resolution" labelWidth={10}>
               <Select

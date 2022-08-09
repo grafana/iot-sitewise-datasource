@@ -13,7 +13,7 @@ import {
   isListAssociatedAssetsQuery,
   isAssetPropertyInterpolatedQuery,
 } from 'types';
-import { InlineField, LinkButton, Select, Input, Icon } from '@grafana/ui';
+import { InlineField, LinkButton, Select, Input, Icon, InlineSwitch } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetBrowser } from '../browser/AssetBrowser';
 import { AggregatePicker, aggReg } from '../AggregatePicker';
@@ -168,6 +168,12 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
   onAggregateChange = (aggregates: AggregateType[]) => {
     const { onChange, query, onRunQuery } = this.props;
     onChange({ ...query, aggregates } as any);
+    onRunQuery();
+  };
+
+  onLastObservationChange = () => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({ ...query, lastObservation: !query.lastObservation });
     onRunQuery();
   };
 
@@ -335,6 +341,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                     formatCreateLabel={(txt) => `Property ID: ${txt}`}
                     menuPlacement="bottom"
                   />
+                </InlineField>
+                <InlineField label="Last Observation" tooltip="Carry last known observation forward">
+                  <InlineSwitch value={query.lastObservation} onChange={this.onLastObservationChange} />
                 </InlineField>
               </div>
             )}
