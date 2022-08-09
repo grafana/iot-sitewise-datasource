@@ -30,6 +30,7 @@ const interpolatedResolutions: Array<SelectableValue<SiteWiseResolution>> = [
   { value: SiteWiseResolution.Min, label: 'Minute', description: '1 point every minute' },
   { value: SiteWiseResolution.TenMin, label: '10 Minutes', description: '1 point every 10 minutes' },
   { value: SiteWiseResolution.Hour, label: 'Hour', description: '1 point every hour' },
+  { value: SiteWiseResolution.TenHour, label: '10 Hours', description: '1 point every 10 hours' },
   { value: SiteWiseResolution.Day, label: 'Day', description: '1 point every day' },
 ];
 

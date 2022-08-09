@@ -21,6 +21,7 @@ const (
 	ResolutionMinute     = "1m"
 	ResolutionTenMinutes = "10m"
 	ResolutionHour       = "1h"
+	ResolutionTenHours   = "10h"
 	ResolutionDay        = "1d"
 )
 
@@ -39,6 +40,8 @@ func durationForTimeRange(resolution string, timeRange backend.TimeRange) float6
 		return timeRange.Duration().Minutes() / 10
 	} else if ResolutionHour == resolution {
 		return timeRange.Duration().Hours()
+	} else if ResolutionTenHours == resolution {
+		return timeRange.Duration().Hours() / 10
 	} else {
 		return timeRange.Duration().Hours() / 24
 	}
@@ -76,7 +79,7 @@ func InterpolatedResolution(query models.AssetPropertyValueQuery) string {
 	timeRange := query.TimeRange
 	maxDp := query.MaxDataPoints
 
-	for _, resolution := range []string{ResolutionSecond, ResolutionTenSeconds, ResolutionMinute, ResolutionTenMinutes, ResolutionHour} {
+	for _, resolution := range []string{ResolutionSecond, ResolutionTenSeconds, ResolutionMinute, ResolutionTenMinutes, ResolutionHour, ResolutionTenHours} {
 		pages := pagesForResolution(resolution, timeRange, maxInterpolatedResponseSize)
 		dps := dataPointsForResolution(resolution, timeRange)
 		if dps <= maxDp && pages <= maxInterpolatedPagesToLoad {
@@ -99,6 +102,8 @@ func ResolutionToDuration(resolution string) time.Duration {
 		return 10 * time.Minute
 	case ResolutionHour:
 		return time.Hour
+	case ResolutionTenHours:
+		return 10 * time.Hour
 	case ResolutionDay:
 		fallthrough
 	default:
