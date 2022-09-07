@@ -10,6 +10,7 @@ const (
 	QueryTypePropertyValueHistory = "PropertyValueHistory"
 	QueryTypePropertyValue        = "PropertyValue"
 	QueryTypePropertyAggregate    = "PropertyAggregate"
+	QueryTypePropertyInterpolated = "PropertyInterpolated"
 	QueryTypeListAssetModels      = "ListAssetModels"
 	QueryTypeListAssets           = "ListAssets"
 	QueryTypeListAssociatedAssets = "ListAssociatedAssets"
