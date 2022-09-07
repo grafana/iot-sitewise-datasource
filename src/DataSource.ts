@@ -149,7 +149,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
               }
             }
             const query = request.targets.find((t) => t.refId === frame.refId);
-            if (query && isPropertyQueryType(query.queryType) && frame.length == 0 && !meta?.nextToken) {
+            if (query && isPropertyQueryType(query.queryType) && !frame.length && !meta?.nextToken) {
               next.push({
                 ...query,
                 queryType: QueryType.PropertyInterpolated,
