@@ -175,6 +175,14 @@ export function isPropertyQueryType(queryType?: QueryType): boolean {
   );
 }
 
+export function shouldShowLastObserved(queryType?: QueryType): boolean {
+  return (
+    queryType === QueryType.PropertyAggregate ||
+    queryType === QueryType.PropertyValueHistory ||
+    queryType === QueryType.PropertyInterpolated
+  );
+}
+
 // matches native sitewise API with capitals
 export interface AssetPropertyInfo extends SelectableValue<string> {
   Id: string;

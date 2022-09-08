@@ -12,6 +12,7 @@ import {
   ListAssociatedAssetsQuery,
   isListAssociatedAssetsQuery,
   isAssetPropertyInterpolatedQuery,
+  shouldShowLastObserved,
 } from 'types';
 import { InlineField, LinkButton, Select, Input, Icon, InlineSwitch } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
@@ -342,9 +343,11 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                     menuPlacement="bottom"
                   />
                 </InlineField>
-                <InlineField label="Last Observation" tooltip="Carry last known observation forward">
-                  <InlineSwitch value={query.lastObservation} onChange={this.onLastObservationChange} />
-                </InlineField>
+                {shouldShowLastObserved(query.queryType) && (
+                  <InlineField label="Last Observation" tooltip="Carry last known observation forward">
+                    <InlineSwitch value={query.lastObservation} onChange={this.onLastObservationChange} />
+                  </InlineField>
+                )}
               </div>
             )}
           </>
