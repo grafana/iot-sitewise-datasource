@@ -56,7 +56,6 @@ export interface SitewiseQuery extends DataQuery {
   quality?: SiteWiseQuality;
   resolution?: SiteWiseResolution;
   lastObservation?: boolean;
-
   maxPageAggregations?: number;
 }
 
