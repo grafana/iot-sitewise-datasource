@@ -10,8 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
-	"runtime"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -194,12 +192,7 @@ func GetClient(region string, settings models.AWSSiteWiseDataSourceSetting, prov
 	c := iotsitewise.New(sess, swcfg)
 
 	c.Handlers.Send.PushFront(func(r *request.Request) {
-		r.HTTPRequest.Header.Set("User-Agent", userAgentString())
+		r.HTTPRequest.Header.Set("User-Agent", awsds.GetUserAgentString("grafana-iot-sitewise-datasource"))
 	})
 	return &sitewiseClient{c}, nil
-}
-
-// TODO, move to https://github.com/grafana/grafana-plugin-sdk-go
-func userAgentString() string {
-	return fmt.Sprintf("%s/%s (%s; %s) Grafana/%s", aws.SDKName, aws.SDKVersion, runtime.Version(), runtime.GOOS, os.Getenv("GF_VERSION"))
 }
