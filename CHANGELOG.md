@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.4.0
+
+- Add support for interpolated property value queries
+- Add support for last observed value in property value queries
+- Switch from long to wide series to support alerting
+
 ## v1.3.0
 
 - Add support to define template variables using iot-sitewise datasource queries
