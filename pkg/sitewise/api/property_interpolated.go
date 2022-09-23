@@ -40,6 +40,10 @@ func interpolatedQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise
 		intervalInSeconds = int64(propvals.ResolutionToDuration(query.Resolution).Seconds())
 	}
 
+	if intervalInSeconds > (endTimeInSeconds - startTimeInSeconds) {
+		intervalInSeconds = endTimeInSeconds - startTimeInSeconds
+	}
+
 	if intervalInSeconds < 1 {
 		intervalInSeconds = 1
 	}

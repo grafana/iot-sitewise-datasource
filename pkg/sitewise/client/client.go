@@ -76,7 +76,7 @@ func (c *sitewiseClient) GetInterpolatedAssetPropertyValuesPageAggregation(ctx c
 		numPages++
 		values = append(values, output.InterpolatedAssetPropertyValues...)
 		nextToken = output.NextToken
-		return numPages < maxPages && len(values) <= maxResults
+		return numPages < maxPages
 	})
 
 	if err != nil {
