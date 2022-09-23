@@ -129,7 +129,7 @@ func (s *Server) lastValueQuery(ctx context.Context, query backend.DataQuery) (b
 	}
 
 	for refID, r := range res.Responses {
-		if refID == query.RefID && len(r.Frames) > 0 {
+		if refID == query.RefID && len(r.Frames) > 0 && r.Frames[0].Rows() > 0 {
 			firstRow := r.Frames[0].RowCopy(0)
 			firstRow[0] = query.TimeRange.To
 			r.Frames[0].AppendRow(firstRow...)
