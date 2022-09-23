@@ -33,14 +33,19 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetA
 
 	from, to := util.TimeRangeToUnix(query.TimeRange)
 
+	if query.MaxDataPoints < 1 || query.MaxDataPoints > 250 {
+		query.MaxDataPoints = 250
+	}
+
 	return &iotsitewise.GetAssetPropertyValueHistoryInput{
 		StartDate:     from,
 		EndDate:       to,
-		MaxResults:    aws.Int64(250), // should this even be configurable? 250 == max
+		MaxResults:    aws.Int64(query.MaxDataPoints),
 		NextToken:     getNextToken(query.BaseQuery),
 		AssetId:       getAssetId(query.BaseQuery),
 		PropertyId:    getPropertyId(query.BaseQuery),
 		PropertyAlias: getPropertyAlias(query.BaseQuery),
+		TimeOrdering:  aws.String(query.TimeOrdering),
 		Qualities:     qualities,
 	}
 }

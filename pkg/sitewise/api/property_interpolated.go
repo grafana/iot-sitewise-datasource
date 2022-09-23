@@ -33,6 +33,8 @@ func interpolatedQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise
 		quality = "GOOD"
 	}
 
+	interpolationType := LINEAR_INTERPOLATION
+
 	intervalInSeconds := int64(propvals.ResolutionToDuration(propvals.InterpolatedResolution(query)).Seconds())
 	if query.Resolution != "AUTO" && query.Resolution != "" {
 		intervalInSeconds = int64(propvals.ResolutionToDuration(query.Resolution).Seconds())
@@ -52,7 +54,7 @@ func interpolatedQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise
 		PropertyId:         getPropertyId(query.BaseQuery),
 		PropertyAlias:      getPropertyAlias(query.BaseQuery),
 		Quality:            &quality,
-		Type:               &LINEAR_INTERPOLATION,
+		Type:               &interpolationType,
 	}
 }
 

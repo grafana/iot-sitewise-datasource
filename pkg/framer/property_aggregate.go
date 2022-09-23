@@ -12,7 +12,6 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
-	"github.com/pkg/errors"
 )
 
 type AssetPropertyAggregates struct {
@@ -95,7 +94,7 @@ func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.
 	length := len(resp.AggregatedValues)
 
 	if length < 1 {
-		return nil, errors.New("no aggregation values found for query")
+		return data.Frames{}, nil
 	}
 
 	property, err := resources.Property(ctx)

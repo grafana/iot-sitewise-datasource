@@ -55,7 +55,7 @@ export interface SitewiseQuery extends DataQuery {
   propertyAlias?: string;
   quality?: SiteWiseQuality;
   resolution?: SiteWiseResolution;
-
+  lastObservation?: boolean;
   maxPageAggregations?: number;
 }
 
@@ -170,6 +170,14 @@ export function isPropertyQueryType(queryType?: QueryType): boolean {
   return (
     queryType === QueryType.PropertyAggregate ||
     queryType === QueryType.PropertyValue ||
+    queryType === QueryType.PropertyValueHistory ||
+    queryType === QueryType.PropertyInterpolated
+  );
+}
+
+export function shouldShowLastObserved(queryType?: QueryType): boolean {
+  return (
+    queryType === QueryType.PropertyAggregate ||
     queryType === QueryType.PropertyValueHistory ||
     queryType === QueryType.PropertyInterpolated
   );
