@@ -34,9 +34,6 @@ func interpolatedQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise
 	}
 
 	interpolationType := LINEAR_INTERPOLATION
-	if query.LastObservation {
-		interpolationType = LOCF_INTERPOLATION
-	}
 
 	intervalInSeconds := int64(propvals.ResolutionToDuration(propvals.InterpolatedResolution(query)).Seconds())
 	if query.Resolution != "AUTO" && query.Resolution != "" {

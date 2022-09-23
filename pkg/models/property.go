@@ -16,6 +16,7 @@ type AssetPropertyValueQuery struct {
 	Quality         string   `json:"quality,omitempty"`
 	Resolution      string   `json:"resolution,omitempty"`
 	LastObservation bool     `json:"lastObservation,omitempty"`
+	TimeOrdering    string   `json:"timeOrdering,omitempty"`
 }
 
 func GetAssetPropertyValueQuery(dq *backend.DataQuery) (*AssetPropertyValueQuery, error) {
@@ -29,6 +30,10 @@ func GetAssetPropertyValueQuery(dq *backend.DataQuery) (*AssetPropertyValueQuery
 	if query.PropertyAlias != "" {
 		query.AssetId = ""
 		query.PropertyId = ""
+	}
+
+	if query.TimeOrdering == "" {
+		query.TimeOrdering = "ASCENDING"
 	}
 
 	// default to 1 if unset
