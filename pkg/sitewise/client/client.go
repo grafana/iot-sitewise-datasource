@@ -20,6 +20,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/aws/aws-sdk-go/service/iotsitewise/iotsitewiseiface"
 	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
@@ -78,12 +79,14 @@ func (c *sitewiseClient) GetInterpolatedAssetPropertyValuesPageAggregation(ctx c
 		numPages++
 		values = append(values, output.InterpolatedAssetPropertyValues...)
 		nextToken = output.NextToken
-		return numPages < maxPages && len(values) <= maxResults
+		return numPages < maxPages
 	})
 
 	if err != nil {
 		return nil, err
 	}
+
+	log.DefaultLogger.Error("GetInterpolatedAssetPropertyValuesPageAggregation", "values", values)
 
 	return &iotsitewise.GetInterpolatedAssetPropertyValuesOutput{
 		InterpolatedAssetPropertyValues: values,
