@@ -5,7 +5,6 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
-	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
@@ -23,7 +22,6 @@ func (p InterpolatedAssetPropertyValue) Frames(ctx context.Context, resources re
 		return nil, err
 	}
 
-	log.DefaultLogger.Warn("InterpolatedAssetPropertyValue", "property", p.InterpolatedAssetPropertyValues)
 	// TODO: make this work with the API instead of ad-hoc dataType inference
 	// https://github.com/grafana/iot-sitewise-datasource/issues/98#issuecomment-892947756
 	if *property.AssetProperty.DataType == *aws.String("?") {

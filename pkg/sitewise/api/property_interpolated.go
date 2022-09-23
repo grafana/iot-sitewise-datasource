@@ -5,7 +5,6 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
-	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api/propvals"
@@ -48,8 +47,6 @@ func interpolatedQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise
 	if intervalInSeconds < 1 {
 		intervalInSeconds = 1
 	}
-
-	log.DefaultLogger.Error("Querying interpolated asset property values", "intervalInSeconds", intervalInSeconds, "startTimeInSeconds", startTimeInSeconds, "endTimeInSeconds", endTimeInSeconds, "quality", quality, "interpolationType", interpolationType)
 
 	return &iotsitewise.GetInterpolatedAssetPropertyValuesInput{
 		StartTimeInSeconds: &startTimeInSeconds,
