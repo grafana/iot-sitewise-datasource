@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/aws/aws-sdk-go v1.44.9
-	github.com/grafana/grafana-aws-sdk v0.10.4
+	github.com/grafana/grafana-aws-sdk v0.11.0
 	github.com/grafana/grafana-plugin-sdk-go v0.136.0
 	github.com/magefile/mage v1.13.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
