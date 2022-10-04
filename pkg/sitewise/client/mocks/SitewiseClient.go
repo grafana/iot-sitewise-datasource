@@ -981,6 +981,84 @@ func (_m *SitewiseClient) CreateAssetWithContext(_a0 context.Context, _a1 *iotsi
 	return r0, r1
 }
 
+// CreateBulkImportJob provides a mock function with given fields: _a0
+func (_m *SitewiseClient) CreateBulkImportJob(_a0 *iotsitewise.CreateBulkImportJobInput) (*iotsitewise.CreateBulkImportJobOutput, error) {
+	ret := _m.Called(_a0)
+
+	var r0 *iotsitewise.CreateBulkImportJobOutput
+	if rf, ok := ret.Get(0).(func(*iotsitewise.CreateBulkImportJobInput) *iotsitewise.CreateBulkImportJobOutput); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.CreateBulkImportJobOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*iotsitewise.CreateBulkImportJobInput) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// CreateBulkImportJobRequest provides a mock function with given fields: _a0
+func (_m *SitewiseClient) CreateBulkImportJobRequest(_a0 *iotsitewise.CreateBulkImportJobInput) (*request.Request, *iotsitewise.CreateBulkImportJobOutput) {
+	ret := _m.Called(_a0)
+
+	var r0 *request.Request
+	if rf, ok := ret.Get(0).(func(*iotsitewise.CreateBulkImportJobInput) *request.Request); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*request.Request)
+		}
+	}
+
+	var r1 *iotsitewise.CreateBulkImportJobOutput
+	if rf, ok := ret.Get(1).(func(*iotsitewise.CreateBulkImportJobInput) *iotsitewise.CreateBulkImportJobOutput); ok {
+		r1 = rf(_a0)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(*iotsitewise.CreateBulkImportJobOutput)
+		}
+	}
+
+	return r0, r1
+}
+
+// CreateBulkImportJobWithContext provides a mock function with given fields: _a0, _a1, _a2
+func (_m *SitewiseClient) CreateBulkImportJobWithContext(_a0 context.Context, _a1 *iotsitewise.CreateBulkImportJobInput, _a2 ...request.Option) (*iotsitewise.CreateBulkImportJobOutput, error) {
+	_va := make([]interface{}, len(_a2))
+	for _i := range _a2 {
+		_va[_i] = _a2[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _a0, _a1)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *iotsitewise.CreateBulkImportJobOutput
+	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.CreateBulkImportJobInput, ...request.Option) *iotsitewise.CreateBulkImportJobOutput); ok {
+		r0 = rf(_a0, _a1, _a2...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.CreateBulkImportJobOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.CreateBulkImportJobInput, ...request.Option) error); ok {
+		r1 = rf(_a0, _a1, _a2...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // CreateDashboard provides a mock function with given fields: _a0
 func (_m *SitewiseClient) CreateDashboard(_a0 *iotsitewise.CreateDashboardInput) (*iotsitewise.CreateDashboardOutput, error) {
 	ret := _m.Called(_a0)
@@ -2221,6 +2299,84 @@ func (_m *SitewiseClient) DescribeAssetWithContext(_a0 context.Context, _a1 *iot
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.DescribeAssetInput, ...request.Option) error); ok {
+		r1 = rf(_a0, _a1, _a2...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// DescribeBulkImportJob provides a mock function with given fields: _a0
+func (_m *SitewiseClient) DescribeBulkImportJob(_a0 *iotsitewise.DescribeBulkImportJobInput) (*iotsitewise.DescribeBulkImportJobOutput, error) {
+	ret := _m.Called(_a0)
+
+	var r0 *iotsitewise.DescribeBulkImportJobOutput
+	if rf, ok := ret.Get(0).(func(*iotsitewise.DescribeBulkImportJobInput) *iotsitewise.DescribeBulkImportJobOutput); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.DescribeBulkImportJobOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*iotsitewise.DescribeBulkImportJobInput) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// DescribeBulkImportJobRequest provides a mock function with given fields: _a0
+func (_m *SitewiseClient) DescribeBulkImportJobRequest(_a0 *iotsitewise.DescribeBulkImportJobInput) (*request.Request, *iotsitewise.DescribeBulkImportJobOutput) {
+	ret := _m.Called(_a0)
+
+	var r0 *request.Request
+	if rf, ok := ret.Get(0).(func(*iotsitewise.DescribeBulkImportJobInput) *request.Request); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*request.Request)
+		}
+	}
+
+	var r1 *iotsitewise.DescribeBulkImportJobOutput
+	if rf, ok := ret.Get(1).(func(*iotsitewise.DescribeBulkImportJobInput) *iotsitewise.DescribeBulkImportJobOutput); ok {
+		r1 = rf(_a0)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(*iotsitewise.DescribeBulkImportJobOutput)
+		}
+	}
+
+	return r0, r1
+}
+
+// DescribeBulkImportJobWithContext provides a mock function with given fields: _a0, _a1, _a2
+func (_m *SitewiseClient) DescribeBulkImportJobWithContext(_a0 context.Context, _a1 *iotsitewise.DescribeBulkImportJobInput, _a2 ...request.Option) (*iotsitewise.DescribeBulkImportJobOutput, error) {
+	_va := make([]interface{}, len(_a2))
+	for _i := range _a2 {
+		_va[_i] = _a2[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _a0, _a1)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *iotsitewise.DescribeBulkImportJobOutput
+	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.DescribeBulkImportJobInput, ...request.Option) *iotsitewise.DescribeBulkImportJobOutput); ok {
+		r0 = rf(_a0, _a1, _a2...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.DescribeBulkImportJobOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.DescribeBulkImportJobInput, ...request.Option) error); ok {
 		r1 = rf(_a0, _a1, _a2...)
 	} else {
 		r1 = ret.Error(1)
@@ -4130,6 +4286,119 @@ func (_m *SitewiseClient) ListAssociatedAssetsWithContext(_a0 context.Context, _
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.ListAssociatedAssetsInput, ...request.Option) error); ok {
+		r1 = rf(_a0, _a1, _a2...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// ListBulkImportJobs provides a mock function with given fields: _a0
+func (_m *SitewiseClient) ListBulkImportJobs(_a0 *iotsitewise.ListBulkImportJobsInput) (*iotsitewise.ListBulkImportJobsOutput, error) {
+	ret := _m.Called(_a0)
+
+	var r0 *iotsitewise.ListBulkImportJobsOutput
+	if rf, ok := ret.Get(0).(func(*iotsitewise.ListBulkImportJobsInput) *iotsitewise.ListBulkImportJobsOutput); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.ListBulkImportJobsOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*iotsitewise.ListBulkImportJobsInput) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// ListBulkImportJobsPages provides a mock function with given fields: _a0, _a1
+func (_m *SitewiseClient) ListBulkImportJobsPages(_a0 *iotsitewise.ListBulkImportJobsInput, _a1 func(*iotsitewise.ListBulkImportJobsOutput, bool) bool) error {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*iotsitewise.ListBulkImportJobsInput, func(*iotsitewise.ListBulkImportJobsOutput, bool) bool) error); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// ListBulkImportJobsPagesWithContext provides a mock function with given fields: _a0, _a1, _a2, _a3
+func (_m *SitewiseClient) ListBulkImportJobsPagesWithContext(_a0 context.Context, _a1 *iotsitewise.ListBulkImportJobsInput, _a2 func(*iotsitewise.ListBulkImportJobsOutput, bool) bool, _a3 ...request.Option) error {
+	_va := make([]interface{}, len(_a3))
+	for _i := range _a3 {
+		_va[_i] = _a3[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _a0, _a1, _a2)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.ListBulkImportJobsInput, func(*iotsitewise.ListBulkImportJobsOutput, bool) bool, ...request.Option) error); ok {
+		r0 = rf(_a0, _a1, _a2, _a3...)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// ListBulkImportJobsRequest provides a mock function with given fields: _a0
+func (_m *SitewiseClient) ListBulkImportJobsRequest(_a0 *iotsitewise.ListBulkImportJobsInput) (*request.Request, *iotsitewise.ListBulkImportJobsOutput) {
+	ret := _m.Called(_a0)
+
+	var r0 *request.Request
+	if rf, ok := ret.Get(0).(func(*iotsitewise.ListBulkImportJobsInput) *request.Request); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*request.Request)
+		}
+	}
+
+	var r1 *iotsitewise.ListBulkImportJobsOutput
+	if rf, ok := ret.Get(1).(func(*iotsitewise.ListBulkImportJobsInput) *iotsitewise.ListBulkImportJobsOutput); ok {
+		r1 = rf(_a0)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(*iotsitewise.ListBulkImportJobsOutput)
+		}
+	}
+
+	return r0, r1
+}
+
+// ListBulkImportJobsWithContext provides a mock function with given fields: _a0, _a1, _a2
+func (_m *SitewiseClient) ListBulkImportJobsWithContext(_a0 context.Context, _a1 *iotsitewise.ListBulkImportJobsInput, _a2 ...request.Option) (*iotsitewise.ListBulkImportJobsOutput, error) {
+	_va := make([]interface{}, len(_a2))
+	for _i := range _a2 {
+		_va[_i] = _a2[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _a0, _a1)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *iotsitewise.ListBulkImportJobsOutput
+	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.ListBulkImportJobsInput, ...request.Option) *iotsitewise.ListBulkImportJobsOutput); ok {
+		r0 = rf(_a0, _a1, _a2...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.ListBulkImportJobsOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.ListBulkImportJobsInput, ...request.Option) error); ok {
 		r1 = rf(_a0, _a1, _a2...)
 	} else {
 		r1 = ret.Error(1)
