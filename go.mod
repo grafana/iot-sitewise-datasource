@@ -3,13 +3,13 @@ module github.com/grafana/iot-sitewise-datasource
 go 1.17
 
 require (
-	github.com/aws/aws-sdk-go v1.44.9
+	github.com/aws/aws-sdk-go v1.44.110
 	github.com/grafana/grafana-aws-sdk v0.11.0
 	github.com/grafana/grafana-plugin-sdk-go v0.136.0
 	github.com/magefile/mage v1.13.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.7.2
 )
 
 require (
@@ -66,5 +66,5 @@ require (
 	google.golang.org/grpc v1.41.0 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
