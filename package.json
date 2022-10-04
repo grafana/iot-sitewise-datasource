@@ -15,7 +15,7 @@
     "@grafana/aws-sdk": "^0.0.37",
     "@grafana/data": "8.5.0",
     "@grafana/runtime": "8.5.0",
-    "@grafana/toolkit": "^8",
+    "@grafana/toolkit": "8.5.0",
     "@grafana/ui": "8.5.0",
     "@types/lodash": "latest",
     "lodash": "latest",
