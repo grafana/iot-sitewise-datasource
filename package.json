@@ -12,14 +12,14 @@
   "author": "Grafana Labs <team@grafana.com> (https://grafana.com)",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@grafana/aws-sdk": "^0.0.3",
-    "@grafana/data": "8.2.0",
-    "@grafana/runtime": "8.2.0",
-    "@grafana/ui": "8.2.0",
-    "@grafana/toolkit": "^8",
-    "tslib": "2.2.0",
+    "@grafana/aws-sdk": "^0.0.37",
+    "@grafana/data": "8.5.0",
+    "@grafana/runtime": "8.5.0",
+    "@grafana/toolkit": "8.5.0",
+    "@grafana/ui": "8.5.0",
     "@types/lodash": "latest",
-    "lodash": "latest"
+    "lodash": "latest",
+    "tslib": "2.2.0"
   },
   "resolutions": {
     "rxjs": "6.6.3"
