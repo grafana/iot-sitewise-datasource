@@ -3842,6 +3842,119 @@ func (_m *SitewiseClient) ListAccessPoliciesWithContext(_a0 context.Context, _a1
 	return r0, r1
 }
 
+// ListAssetModelProperties provides a mock function with given fields: _a0
+func (_m *SitewiseClient) ListAssetModelProperties(_a0 *iotsitewise.ListAssetModelPropertiesInput) (*iotsitewise.ListAssetModelPropertiesOutput, error) {
+	ret := _m.Called(_a0)
+
+	var r0 *iotsitewise.ListAssetModelPropertiesOutput
+	if rf, ok := ret.Get(0).(func(*iotsitewise.ListAssetModelPropertiesInput) *iotsitewise.ListAssetModelPropertiesOutput); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.ListAssetModelPropertiesOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*iotsitewise.ListAssetModelPropertiesInput) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// ListAssetModelPropertiesPages provides a mock function with given fields: _a0, _a1
+func (_m *SitewiseClient) ListAssetModelPropertiesPages(_a0 *iotsitewise.ListAssetModelPropertiesInput, _a1 func(*iotsitewise.ListAssetModelPropertiesOutput, bool) bool) error {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*iotsitewise.ListAssetModelPropertiesInput, func(*iotsitewise.ListAssetModelPropertiesOutput, bool) bool) error); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// ListAssetModelPropertiesPagesWithContext provides a mock function with given fields: _a0, _a1, _a2, _a3
+func (_m *SitewiseClient) ListAssetModelPropertiesPagesWithContext(_a0 context.Context, _a1 *iotsitewise.ListAssetModelPropertiesInput, _a2 func(*iotsitewise.ListAssetModelPropertiesOutput, bool) bool, _a3 ...request.Option) error {
+	_va := make([]interface{}, len(_a3))
+	for _i := range _a3 {
+		_va[_i] = _a3[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _a0, _a1, _a2)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.ListAssetModelPropertiesInput, func(*iotsitewise.ListAssetModelPropertiesOutput, bool) bool, ...request.Option) error); ok {
+		r0 = rf(_a0, _a1, _a2, _a3...)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// ListAssetModelPropertiesRequest provides a mock function with given fields: _a0
+func (_m *SitewiseClient) ListAssetModelPropertiesRequest(_a0 *iotsitewise.ListAssetModelPropertiesInput) (*request.Request, *iotsitewise.ListAssetModelPropertiesOutput) {
+	ret := _m.Called(_a0)
+
+	var r0 *request.Request
+	if rf, ok := ret.Get(0).(func(*iotsitewise.ListAssetModelPropertiesInput) *request.Request); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*request.Request)
+		}
+	}
+
+	var r1 *iotsitewise.ListAssetModelPropertiesOutput
+	if rf, ok := ret.Get(1).(func(*iotsitewise.ListAssetModelPropertiesInput) *iotsitewise.ListAssetModelPropertiesOutput); ok {
+		r1 = rf(_a0)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(*iotsitewise.ListAssetModelPropertiesOutput)
+		}
+	}
+
+	return r0, r1
+}
+
+// ListAssetModelPropertiesWithContext provides a mock function with given fields: _a0, _a1, _a2
+func (_m *SitewiseClient) ListAssetModelPropertiesWithContext(_a0 context.Context, _a1 *iotsitewise.ListAssetModelPropertiesInput, _a2 ...request.Option) (*iotsitewise.ListAssetModelPropertiesOutput, error) {
+	_va := make([]interface{}, len(_a2))
+	for _i := range _a2 {
+		_va[_i] = _a2[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _a0, _a1)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *iotsitewise.ListAssetModelPropertiesOutput
+	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.ListAssetModelPropertiesInput, ...request.Option) *iotsitewise.ListAssetModelPropertiesOutput); ok {
+		r0 = rf(_a0, _a1, _a2...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.ListAssetModelPropertiesOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.ListAssetModelPropertiesInput, ...request.Option) error); ok {
+		r1 = rf(_a0, _a1, _a2...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // ListAssetModels provides a mock function with given fields: _a0
 func (_m *SitewiseClient) ListAssetModels(_a0 *iotsitewise.ListAssetModelsInput) (*iotsitewise.ListAssetModelsOutput, error) {
 	ret := _m.Called(_a0)
@@ -3947,6 +4060,119 @@ func (_m *SitewiseClient) ListAssetModelsWithContext(_a0 context.Context, _a1 *i
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.ListAssetModelsInput, ...request.Option) error); ok {
+		r1 = rf(_a0, _a1, _a2...)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// ListAssetProperties provides a mock function with given fields: _a0
+func (_m *SitewiseClient) ListAssetProperties(_a0 *iotsitewise.ListAssetPropertiesInput) (*iotsitewise.ListAssetPropertiesOutput, error) {
+	ret := _m.Called(_a0)
+
+	var r0 *iotsitewise.ListAssetPropertiesOutput
+	if rf, ok := ret.Get(0).(func(*iotsitewise.ListAssetPropertiesInput) *iotsitewise.ListAssetPropertiesOutput); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.ListAssetPropertiesOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*iotsitewise.ListAssetPropertiesInput) error); ok {
+		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// ListAssetPropertiesPages provides a mock function with given fields: _a0, _a1
+func (_m *SitewiseClient) ListAssetPropertiesPages(_a0 *iotsitewise.ListAssetPropertiesInput, _a1 func(*iotsitewise.ListAssetPropertiesOutput, bool) bool) error {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(*iotsitewise.ListAssetPropertiesInput, func(*iotsitewise.ListAssetPropertiesOutput, bool) bool) error); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// ListAssetPropertiesPagesWithContext provides a mock function with given fields: _a0, _a1, _a2, _a3
+func (_m *SitewiseClient) ListAssetPropertiesPagesWithContext(_a0 context.Context, _a1 *iotsitewise.ListAssetPropertiesInput, _a2 func(*iotsitewise.ListAssetPropertiesOutput, bool) bool, _a3 ...request.Option) error {
+	_va := make([]interface{}, len(_a3))
+	for _i := range _a3 {
+		_va[_i] = _a3[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _a0, _a1, _a2)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.ListAssetPropertiesInput, func(*iotsitewise.ListAssetPropertiesOutput, bool) bool, ...request.Option) error); ok {
+		r0 = rf(_a0, _a1, _a2, _a3...)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// ListAssetPropertiesRequest provides a mock function with given fields: _a0
+func (_m *SitewiseClient) ListAssetPropertiesRequest(_a0 *iotsitewise.ListAssetPropertiesInput) (*request.Request, *iotsitewise.ListAssetPropertiesOutput) {
+	ret := _m.Called(_a0)
+
+	var r0 *request.Request
+	if rf, ok := ret.Get(0).(func(*iotsitewise.ListAssetPropertiesInput) *request.Request); ok {
+		r0 = rf(_a0)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*request.Request)
+		}
+	}
+
+	var r1 *iotsitewise.ListAssetPropertiesOutput
+	if rf, ok := ret.Get(1).(func(*iotsitewise.ListAssetPropertiesInput) *iotsitewise.ListAssetPropertiesOutput); ok {
+		r1 = rf(_a0)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(*iotsitewise.ListAssetPropertiesOutput)
+		}
+	}
+
+	return r0, r1
+}
+
+// ListAssetPropertiesWithContext provides a mock function with given fields: _a0, _a1, _a2
+func (_m *SitewiseClient) ListAssetPropertiesWithContext(_a0 context.Context, _a1 *iotsitewise.ListAssetPropertiesInput, _a2 ...request.Option) (*iotsitewise.ListAssetPropertiesOutput, error) {
+	_va := make([]interface{}, len(_a2))
+	for _i := range _a2 {
+		_va[_i] = _a2[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _a0, _a1)
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
+
+	var r0 *iotsitewise.ListAssetPropertiesOutput
+	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.ListAssetPropertiesInput, ...request.Option) *iotsitewise.ListAssetPropertiesOutput); ok {
+		r0 = rf(_a0, _a1, _a2...)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.ListAssetPropertiesOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.ListAssetPropertiesInput, ...request.Option) error); ok {
 		r1 = rf(_a0, _a1, _a2...)
 	} else {
 		r1 = ret.Error(1)
