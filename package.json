@@ -8,7 +8,7 @@
     "dev": "rm -rf node_modules/@grafana/data/node_modules; grafana-toolkit plugin:dev",
     "watch": "grafana-toolkit plugin:dev --watch"
   },
-  "repository": "github:grafana/timestream-datasource",
+  "repository": "github:grafana/iot-sitewise-datasource",
   "author": "Grafana Labs <team@grafana.com> (https://grafana.com)",
   "license": "Apache-2.0",
   "devDependencies": {
