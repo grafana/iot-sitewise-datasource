@@ -178,8 +178,7 @@ export function isPropertyQueryType(queryType?: QueryType): boolean {
 export function shouldShowLastObserved(queryType?: QueryType): boolean {
   return (
     queryType === QueryType.PropertyAggregate ||
-    queryType === QueryType.PropertyValueHistory ||
-    queryType === QueryType.PropertyInterpolated
+    queryType === QueryType.PropertyValueHistory
   );
 }
 
