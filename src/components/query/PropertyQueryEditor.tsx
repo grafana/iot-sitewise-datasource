@@ -344,7 +344,10 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                   />
                 </InlineField>
                 {shouldShowLastObserved(query.queryType) && (
-                  <InlineField label="Last Observation" tooltip="Carry last known observation forward">
+                  <InlineField
+                    label="Expand Time Range"
+                    tooltip="Expand query to include last observed value before the current time range, and next observed value after the time range. "
+                  >
                     <InlineSwitch value={query.lastObservation} onChange={this.onLastObservationChange} />
                   </InlineField>
                 )}

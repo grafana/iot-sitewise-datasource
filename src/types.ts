@@ -176,10 +176,7 @@ export function isPropertyQueryType(queryType?: QueryType): boolean {
 }
 
 export function shouldShowLastObserved(queryType?: QueryType): boolean {
-  return (
-    queryType === QueryType.PropertyAggregate ||
-    queryType === QueryType.PropertyValueHistory
-  );
+  return queryType === QueryType.PropertyAggregate || queryType === QueryType.PropertyValueHistory;
 }
 
 // matches native sitewise API with capitals
