@@ -27,6 +27,7 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ge
 	var (
 		aggregateTypes = aws.StringSlice(query.AggregateTypes)
 		qualities      []*string
+		timeOrdering   = aws.String("ASCENDING")
 	)
 
 	if query.Quality != "" && query.Quality != "ANY" {
@@ -35,10 +36,18 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ge
 
 	from, to := util.TimeRangeToUnix(query.TimeRange)
 
+	if query.TimeOrdering != "" {
+		timeOrdering = aws.String(query.TimeOrdering)
+	}
+
+	if query.MaxDataPoints < 1 || query.MaxDataPoints > 250 {
+		query.MaxDataPoints = 250
+	}
+
 	return &iotsitewise.GetAssetPropertyAggregatesInput{
 		AggregateTypes: aggregateTypes,
 		EndDate:        to,
-		MaxResults:     aws.Int64(250),
+		MaxResults:     aws.Int64(query.MaxDataPoints),
 		NextToken:      getNextToken(query.BaseQuery),
 		AssetId:        getAssetId(query.BaseQuery),
 		PropertyId:     getPropertyId(query.BaseQuery),
@@ -46,6 +55,7 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ge
 		Qualities:      qualities,
 		Resolution:     aws.String(resolution),
 		StartDate:      from,
+		TimeOrdering:   timeOrdering,
 	}
 }
 
