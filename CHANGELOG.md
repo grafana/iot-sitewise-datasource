@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.5.0
+
+- Renamed last observed value feature to 'Expand Time Range'
+- The expand time range toggle now queries for the previous known value before the start of the current time range, and the next known value after the current time range.
+
 ## v1.4.1
 
 - Update Grafana AWS SDK dependencies to the latest versions
