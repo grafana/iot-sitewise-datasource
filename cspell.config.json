@@ -45,6 +45,7 @@
     "kwatt",
     "magefile",
     "dserrors",
-    "querytype"
+    "querytype",
+    "timeseries"
   ]
 }
