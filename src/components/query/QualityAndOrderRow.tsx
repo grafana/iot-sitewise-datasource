@@ -48,8 +48,8 @@ const ordering: Array<SelectableValue<SiteWiseTimeOrder>> = [
 ];
 
 export const FORMAT_OPTIONS: Array<SelectableValue<SiteWiseResponseFormat>> = [
-  { label: 'Table', value: SiteWiseResponseFormat.Table},
-  { label: 'Time series', value: SiteWiseResponseFormat.TimeSeries},
+  { label: 'Table', value: SiteWiseResponseFormat.Table },
+  { label: 'Time series', value: SiteWiseResponseFormat.TimeSeries },
 ];
 
 export class QualityAndOrderRow extends PureComponent<Props> {
@@ -65,9 +65,9 @@ export class QualityAndOrderRow extends PureComponent<Props> {
     onRunQuery();
   };
 
-  onResponseFormatChange= (sel: SelectableValue<SiteWiseResponseFormat>) => {
+  onResponseFormatChange = (sel: SelectableValue<SiteWiseResponseFormat>) => {
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, responseFormat: sel.value});
+    onChange({ ...query, responseFormat: sel.value });
     onRunQuery();
   };
 
@@ -111,7 +111,11 @@ export class QualityAndOrderRow extends PureComponent<Props> {
           </InlineField>
 
           <InlineField label="Format" labelWidth={8}>
-            <Select value={query.responseFormat || SiteWiseResponseFormat.Table} onChange={this.onResponseFormatChange} options={FORMAT_OPTIONS} />
+            <Select
+              value={query.responseFormat || SiteWiseResponseFormat.Table}
+              onChange={this.onResponseFormatChange}
+              options={FORMAT_OPTIONS}
+            />
           </InlineField>
 
           {isAssetPropertyInterpolatedQuery(query) && (

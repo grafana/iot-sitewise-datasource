@@ -6,6 +6,7 @@
     "spellcheck": "cspell -c cspell.config.json \"**/*.{ts,tsx,js,go,md,mdx,yml,yaml,json,scss,css}\"",
     "build": "rm -rf dist && grafana-toolkit plugin:build && mage build:backend",
     "test": "grafana-toolkit plugin:test",
+    "lint": "grafana-toolkit plugin:lint",
     "dev": "rm -rf node_modules/@grafana/data/node_modules; grafana-toolkit plugin:dev",
     "watch": "grafana-toolkit plugin:dev --watch"
   },

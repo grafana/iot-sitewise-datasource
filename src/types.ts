@@ -22,7 +22,7 @@ export enum SiteWiseQuality {
 
 export enum SiteWiseResponseFormat {
   Table = 'table',
-  TimeSeries = 'timeseries'
+  TimeSeries = 'timeseries',
 }
 
 export enum SiteWiseTimeOrder {
