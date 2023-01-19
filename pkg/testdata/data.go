@@ -20,7 +20,7 @@ func SerializeStruct(t *testing.T, val interface{}) []byte {
 	return vbytes
 }
 
-func UnmarshallFileContents(path string, val interface{}) error {
+func UnmarshalFileContents(path string, val interface{}) error {
 	cwd, _ := os.Getwd()
 	fmt.Println(cwd)
 
@@ -37,7 +37,7 @@ func UnmarshallFileContents(path string, val interface{}) error {
 
 func GetIotSitewiseAssetProp(t *testing.T, path string) iotsitewise.DescribeAssetPropertyOutput {
 	property := iotsitewise.DescribeAssetPropertyOutput{}
-	err := UnmarshallFileContents(path, &property)
+	err := UnmarshalFileContents(path, &property)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -46,7 +46,7 @@ func GetIotSitewiseAssetProp(t *testing.T, path string) iotsitewise.DescribeAsse
 
 func GetPropVals(t *testing.T, path string) framer.AssetPropertyValue {
 	propVals := framer.AssetPropertyValue{}
-	err := UnmarshallFileContents(path, &propVals)
+	err := UnmarshalFileContents(path, &propVals)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -55,7 +55,7 @@ func GetPropVals(t *testing.T, path string) framer.AssetPropertyValue {
 
 func GetPropHistoryVals(t *testing.T, path string) framer.AssetPropertyValueHistory {
 	propVals := framer.AssetPropertyValueHistory{}
-	err := UnmarshallFileContents(path, &propVals)
+	err := UnmarshalFileContents(path, &propVals)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -64,7 +64,7 @@ func GetPropHistoryVals(t *testing.T, path string) framer.AssetPropertyValueHist
 
 func GetIoTSitewisePropHistoryVals(t *testing.T, path string) iotsitewise.GetAssetPropertyValueHistoryOutput {
 	propVals := iotsitewise.GetAssetPropertyValueHistoryOutput{}
-	err := UnmarshallFileContents(path, &propVals)
+	err := UnmarshalFileContents(path, &propVals)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -73,7 +73,7 @@ func GetIoTSitewisePropHistoryVals(t *testing.T, path string) iotsitewise.GetAss
 
 func GetIoTSitewisePropVal(t *testing.T, path string) iotsitewise.GetAssetPropertyValueOutput {
 	propVal := iotsitewise.GetAssetPropertyValueOutput{}
-	err := UnmarshallFileContents(path, &propVal)
+	err := UnmarshalFileContents(path, &propVal)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -82,7 +82,7 @@ func GetIoTSitewisePropVal(t *testing.T, path string) iotsitewise.GetAssetProper
 
 func GetIoTSitewisePropAggregateVals(t *testing.T, path string) iotsitewise.GetAssetPropertyAggregatesOutput {
 	propAggs := iotsitewise.GetAssetPropertyAggregatesOutput{}
-	err := UnmarshallFileContents(path, &propAggs)
+	err := UnmarshalFileContents(path, &propAggs)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -91,7 +91,7 @@ func GetIoTSitewisePropAggregateVals(t *testing.T, path string) iotsitewise.GetA
 
 func GetAssetPropAggregates(t *testing.T, path string) framer.AssetPropertyAggregates {
 	propVals := framer.AssetPropertyAggregates{}
-	err := UnmarshallFileContents(path, &propVals)
+	err := UnmarshalFileContents(path, &propVals)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -100,7 +100,7 @@ func GetAssetPropAggregates(t *testing.T, path string) framer.AssetPropertyAggre
 
 func GetIoTSitewiseAssetModels(t *testing.T, path string) iotsitewise.ListAssetModelsOutput {
 	assetModels := iotsitewise.ListAssetModelsOutput{}
-	err := UnmarshallFileContents(path, &assetModels)
+	err := UnmarshalFileContents(path, &assetModels)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -109,7 +109,7 @@ func GetIoTSitewiseAssetModels(t *testing.T, path string) iotsitewise.ListAssetM
 
 func GetIoTSitewiseAssets(t *testing.T, path string) iotsitewise.ListAssetsOutput {
 	assets := iotsitewise.ListAssetsOutput{}
-	err := UnmarshallFileContents(path, &assets)
+	err := UnmarshalFileContents(path, &assets)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -118,7 +118,7 @@ func GetIoTSitewiseAssets(t *testing.T, path string) iotsitewise.ListAssetsOutpu
 
 func GetIoTSitewiseAssetDescription(t *testing.T, path string) iotsitewise.DescribeAssetOutput {
 	asset := iotsitewise.DescribeAssetOutput{}
-	err := UnmarshallFileContents(path, &asset)
+	err := UnmarshalFileContents(path, &asset)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -127,7 +127,7 @@ func GetIoTSitewiseAssetDescription(t *testing.T, path string) iotsitewise.Descr
 
 func GetIoTSitewiseAssociatedAssets(t *testing.T, path string) iotsitewise.ListAssociatedAssetsOutput {
 	assets := iotsitewise.ListAssociatedAssetsOutput{}
-	err := UnmarshallFileContents(path, &assets)
+	err := UnmarshalFileContents(path, &assets)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -136,7 +136,7 @@ func GetIoTSitewiseAssociatedAssets(t *testing.T, path string) iotsitewise.ListA
 
 func GetIoTSitewiseAssetModelDescription(t *testing.T, path string) iotsitewise.DescribeAssetModelOutput {
 	assets := iotsitewise.DescribeAssetModelOutput{}
-	err := UnmarshallFileContents(path, &assets)
+	err := UnmarshalFileContents(path, &assets)
 	if err != nil {
 		t.Fatal(err)
 	}

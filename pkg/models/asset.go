@@ -23,7 +23,7 @@ type ListAssetsQuery struct {
 type ListAssociatedAssetsQuery struct {
 	BaseQuery
 	HierarchyId string `json:"hierarchyId,omitempty"`
-	// TraversalDirection is implied from the existance of HierarchyId
+	// TraversalDirection is implied from the existence of HierarchyId
 }
 
 func GetDescribeAssetQuery(dq *backend.DataQuery) (*DescribeAssetQuery, error) {

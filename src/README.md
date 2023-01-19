@@ -22,12 +22,12 @@ Use the "query type" selector to pick an appropriate query.
 Click on the "Explore" button to open an asset/model navigation interface:
 ![query-editor](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/explorer.png)
 
-Multiple aggregations can be showin for a single property:
+Multiple aggregations can be shown for a single property:
 ![query-editor](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/editor2.png)
 
 ### Alerting
 
-Standard grafana alertings is support with this plugin, however note that alert queries may not include template variables.
+Standard grafana alerting is support with this plugin, however note that alert queries may not include template variables.
 See the [Alerting](https://grafana.com/docs/grafana/latest/alerting/alerts-overview/) documentation for more on Grafana alerts.
 
 ## Configure the data source with provisioning

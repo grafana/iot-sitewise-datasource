@@ -22,7 +22,7 @@ export interface QueryTypeInfo extends SelectableValue<QueryType> {
   helpURL: string;
 }
 
-export const siteWisteQueryTypes: QueryTypeInfo[] = [
+export const siteWiseQueryTypes: QueryTypeInfo[] = [
   {
     label: 'Get property value aggregates',
     value: QueryType.PropertyAggregate,

@@ -51,7 +51,7 @@ All notable changes to this project will be documented in this file.
 
 ## v1.2.0
 
-- Shares auth confiuration with cloudwatch
+- Shares auth configuration with cloudwatch
 - Bumps min version to 7.4
 
 ## v1.1.0

@@ -140,7 +140,7 @@ export class ConfigEditor extends PureComponent<Props> {
                 <InlineField
                   label="Password"
                   labelWidth={labelWidth}
-                  tooltip="The password sent to local authenticaion proxy"
+                  tooltip="The password sent to local authentication proxy"
                 >
                   <Input
                     type="password"
