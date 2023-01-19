@@ -86,7 +86,7 @@ func (s *Server) handlePropertyValueHistoryQuery(ctx context.Context, req *backe
 		return DataResponseErrorRequestFailed(err)
 	}
 
-	if len(frames) > 0 {
+	if len(frames) > 0 && query.ResponseFormat == "timeseries" {
 		wide, err := data.LongToWide(frames[0], &data.FillMissing{Mode: data.FillModeNull, Value: math.NaN()})
 		if err == nil {
 			frames[0] = wide
@@ -111,7 +111,7 @@ func (s *Server) handlePropertyAggregateQuery(ctx context.Context, req *backend.
 		return DataResponseErrorRequestFailed(err)
 	}
 
-	if len(frames) > 0 {
+	if len(frames) > 0 && query.ResponseFormat == "timeseries" {
 		wide, err := data.LongToWide(frames[0], &data.FillMissing{Mode: data.FillModeNull, Value: math.NaN()})
 		if err == nil {
 			frames = []*data.Frame{wide}
@@ -136,7 +136,7 @@ func (s *Server) handlePropertyValueQuery(ctx context.Context, req *backend.Quer
 		return DataResponseErrorRequestFailed(err)
 	}
 
-	if len(frames) > 0 {
+	if len(frames) > 0 && query.ResponseFormat == "timeseries" {
 		wide, err := data.LongToWide(frames[0], &data.FillMissing{Mode: data.FillModeNull, Value: math.NaN()})
 		if err == nil {
 			frames = []*data.Frame{wide}

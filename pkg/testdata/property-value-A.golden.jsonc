@@ -1,17 +1,15 @@
 //  🌟 This was machine generated.  Do not edit. 🌟
 //  
-//  Frame[0] {
-//      "type": "timeseries-wide"
-//  }
+//  Frame[0] 
 //  Name: Demo Turbine Asset 1
-//  Dimensions: 2 Fields by 1 Rows
-//  +-------------------------------+----------------------+
-//  | Name: time                    | Name: Wind Speed     |
-//  | Labels:                       | Labels: quality=GOOD |
-//  | Type: []time.Time             | Type: []*float64     |
-//  +-------------------------------+----------------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.81007059955162    |
-//  +-------------------------------+----------------------+
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+-------------------+----------------+
+//  | Name: time                    | Name: Wind Speed  | Name: quality  |
+//  | Labels:                       | Labels:           | Labels:        |
+//  | Type: []time.Time             | Type: []float64   | Type: []string |
+//  +-------------------------------+-------------------+----------------+
+//  | 2021-02-01 14:20:00 -0500 EST | 23.81007059955162 | GOOD           |
+//  +-------------------------------+-------------------+----------------+
 //  
 //  
 //  🌟 This was machine generated.  Do not edit. 🌟
@@ -21,9 +19,6 @@
     {
       "schema": {
         "name": "Demo Turbine Asset 1",
-        "meta": {
-          "type": "timeseries-wide"
-        },
         "fields": [
           {
             "name": "time",
@@ -36,11 +31,17 @@
             "name": "Wind Speed",
             "type": "number",
             "typeInfo": {
-              "frame": "float64",
-              "nullable": true
+              "frame": "float64"
             },
-            "labels": {
-              "quality": "GOOD"
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
             }
           }
         ]
@@ -52,6 +53,9 @@
           ],
           [
             23.81007059955162
+          ],
+          [
+            "GOOD"
           ]
         ]
       }

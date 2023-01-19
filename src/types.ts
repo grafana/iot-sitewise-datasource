@@ -20,6 +20,11 @@ export enum SiteWiseQuality {
   UNCERTAIN = 'UNCERTAIN',
 }
 
+export enum SiteWiseResponseFormat {
+  Table = 'table',
+  TimeSeries = 'timeseries',
+}
+
 export enum SiteWiseTimeOrder {
   ASCENDING = 'ASCENDING',
   DESCENDING = 'DESCENDING',
@@ -48,6 +53,7 @@ export enum AggregateType {
 export interface SitewiseQuery extends DataQuery {
   queryType: QueryType;
   region?: string; // aws region string
+  responseFormat?: SiteWiseResponseFormat;
 
   // Although these are not required everywhere, many queries use them
   assetId?: string;
