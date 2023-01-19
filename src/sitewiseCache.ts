@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 import { getTemplateSrv } from '@grafana/runtime';
 
 /**
- * Keep a differnt cache for each region
+ * Keep a different cache for each region
  */
 export class SitewiseCache {
   private models?: DataFrameView<AssetModelSummary>;
@@ -170,7 +170,7 @@ export class SitewiseCache {
         });
       }
     } catch (err) {
-      console.log('Error reading top level assests', err);
+      console.log('Error reading top level assets', err);
     }
 
     // Also add recent values

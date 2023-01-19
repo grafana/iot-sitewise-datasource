@@ -4,7 +4,7 @@ import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from 'DataSource';
 import { SitewiseQuery, SitewiseOptions, QueryType, ListAssetsQuery } from 'types';
 import { Icon, InlineField, LinkButton, Select } from '@grafana/ui';
-import { QueryTypeInfo, siteWisteQueryTypes, changeQueryType } from 'queryInfo';
+import { QueryTypeInfo, siteWiseQueryTypes, changeQueryType } from 'queryInfo';
 import { standardRegionOptions } from 'regions';
 import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
 import { PropertyQueryEditor } from './PropertyQueryEditor';
@@ -57,11 +57,11 @@ export class QueryEditor extends PureComponent<Props> {
 
     const defaultRegion: SelectableValue<string> = {
       label: `Default`,
-      desctiption: datasource.options?.defaultRegion,
+      description: datasource.options?.defaultRegion,
       value: undefined,
     };
     const regions = query.region ? [defaultRegion, ...standardRegionOptions] : standardRegionOptions;
-    const currentQueryType = siteWisteQueryTypes.find((v) => v.value === query.queryType);
+    const currentQueryType = siteWiseQueryTypes.find((v) => v.value === query.queryType);
     const queryTooltip = currentQueryType ? (
       <div>
         {currentQueryType.description} <br />
@@ -76,7 +76,7 @@ export class QueryEditor extends PureComponent<Props> {
         <div className="gf-form">
           <InlineField label="Query type" labelWidth={firstLabelWith} grow={true} tooltip={queryTooltip}>
             <Select
-              options={siteWisteQueryTypes}
+              options={siteWiseQueryTypes}
               value={currentQueryType}
               onChange={this.onQueryTypeChange}
               placeholder="Select query type"
