@@ -2,7 +2,7 @@ import { AssetInfo } from '../../../types';
 import { AssetSummary } from '../../../queryResponseTypes';
 import React, { FunctionComponent } from 'react';
 import { GrafanaTheme2 } from '@grafana/data';
-import { CollapsableSection as CollapsibleSection, Label, Spinner, styleMixins, stylesFactory, useTheme2 } from '@grafana/ui';
+import { CollapsableSection, Label, Spinner, styleMixins, stylesFactory, useTheme2 } from '@grafana/ui';
 import { css } from '@emotion/css';
 import { AssetListItem } from './AssetListItem';
 
@@ -75,9 +75,9 @@ export const AssetList: FunctionComponent<Props> = ({ listInfo, assets, search, 
 
   return (
     <div className={style.container}>
-      <CollapsibleSection label={label} isOpen={open}>
+      <CollapsableSection label={label} isOpen={open}>
         {renderChildren()}
-      </CollapsibleSection>
+      </CollapsableSection>
     </div>
   );
 };
