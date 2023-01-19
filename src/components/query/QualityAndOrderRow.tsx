@@ -8,6 +8,7 @@ import {
   SiteWiseQuality,
   SiteWiseResolution,
   isAssetPropertyInterpolatedQuery,
+  SiteWiseResponseFormat,
 } from 'types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
@@ -46,6 +47,11 @@ const ordering: Array<SelectableValue<SiteWiseTimeOrder>> = [
   { value: SiteWiseTimeOrder.DESCENDING, label: 'DESCENDING' },
 ];
 
+export const FORMAT_OPTIONS: Array<SelectableValue<SiteWiseResponseFormat>> = [
+  { label: 'Table', value: SiteWiseResponseFormat.Table},
+  { label: 'Time series', value: SiteWiseResponseFormat.TimeSeries},
+];
+
 export class QualityAndOrderRow extends PureComponent<Props> {
   onQualityChange = (sel: SelectableValue<SiteWiseQuality>) => {
     const { onChange, query, onRunQuery } = this.props;
@@ -56,6 +62,12 @@ export class QualityAndOrderRow extends PureComponent<Props> {
   onOrderChange = (sel: SelectableValue<SiteWiseTimeOrder>) => {
     const { onChange, query, onRunQuery } = this.props;
     onChange({ ...query, timeOrdering: sel.value });
+    onRunQuery();
+  };
+
+  onResponseFormatChange= (sel: SelectableValue<SiteWiseResponseFormat>) => {
+    const { onChange, query, onRunQuery } = this.props;
+    onChange({ ...query, responseFormat: sel.value});
     onRunQuery();
   };
 
@@ -98,6 +110,10 @@ export class QualityAndOrderRow extends PureComponent<Props> {
             />
           </InlineField>
 
+          <InlineField label="Format" labelWidth={8}>
+            <Select value={query.responseFormat || SiteWiseResponseFormat.Table} onChange={this.onResponseFormatChange} options={FORMAT_OPTIONS} />
+          </InlineField>
+
           {isAssetPropertyInterpolatedQuery(query) && (
             <InlineField label="Resolution" labelWidth={10}>
               <Select
@@ -109,6 +125,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
               />
             </InlineField>
           )}
+
           {/*<InlineField label="Pages per Query" labelWidth={8}>*/}
           {/*  <Input*/}
           {/*    type="number"*/}
