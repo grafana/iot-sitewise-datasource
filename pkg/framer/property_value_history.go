@@ -12,13 +12,27 @@ import (
 )
 
 type AssetPropertyValueHistory struct {
-	*iotsitewise.GetAssetPropertyValueHistoryOutput
+	*iotsitewise.BatchGetAssetPropertyValueHistoryOutput
 	Query models.AssetPropertyValueQuery
 }
 
 func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
+	frames := make(data.Frames, 0, len(p.SuccessEntries))
 
-	length := len(p.AssetPropertyValueHistory)
+	for _, h := range p.SuccessEntries {
+		frame, err := p.Frame(ctx, resources, h.AssetPropertyValueHistory)
+		if err != nil {
+			return nil, err
+		}
+		frames = append(frames, frame)
+	}
+
+	return frames, nil
+}
+
+func (p AssetPropertyValueHistory) Frame(ctx context.Context, resources resource.ResourceProvider, h []*iotsitewise.AssetPropertyValue) (*data.Frame, error) {
+
+	length := len(h)
 	property, err := resources.Property(ctx)
 	if err != nil {
 		return nil, err
@@ -26,7 +40,7 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 	// TODO: make this work with the API instead of ad-hoc dataType inference
 	// https://github.com/grafana/iot-sitewise-datasource/issues/98#issuecomment-892947756
 	if *property.AssetProperty.DataType == *aws.String("?") {
-		property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(p.AssetPropertyValueHistory[0].Value))
+		property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(h[0].Value))
 	}
 
 	timeField := fields.TimeField(length)
@@ -42,11 +56,11 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 		},
 	}
 
-	for i, v := range p.AssetPropertyValueHistory {
+	for i, v := range h {
 		timeField.Set(i, getTime(v.Timestamp))
 		valueField.Set(i, getPropertyVariantValue(v.Value))
 		qualityField.Set(i, *v.Quality)
 	}
 
-	return data.Frames{frame}, nil
+	return frame, nil
 }

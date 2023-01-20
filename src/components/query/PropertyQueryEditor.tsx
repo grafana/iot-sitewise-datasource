@@ -59,9 +59,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     } as State;
 
     const cache = datasource.getCache(query.region);
-    if (query?.assetId) {
+    if (query?.assetId || query.assetIds?.length) {
       try {
-        update.asset = await cache.getAssetInfo(query.assetId);
+        update.asset = await cache.getAssetInfo(query.assetId || query.assetIds![0]);
       } catch (err) {
         console.warn('error reading asset info', err);
         update.property = undefined;
@@ -83,11 +83,11 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
   async componentDidUpdate(oldProps: Props) {
     const { query } = this.props;
-    const assetChanged = query?.assetId !== oldProps?.query?.assetId;
+    const assetChanged = query?.assetId !== oldProps?.query?.assetId || query?.assetIds?.length !== oldProps?.query?.assetIds?.length;
     const propChanged = query?.propertyId !== oldProps?.query?.propertyId;
     const regionChanged = query?.region !== oldProps?.query?.region;
     if (assetChanged || propChanged || regionChanged) {
-      if (!query.assetId && !regionChanged) {
+      if (!query.assetId && query.assetIds?.length === 0 && !regionChanged) {
         this.setState({ asset: undefined, property: undefined, loading: false });
       } else {
         this.setState({ loading: true });
@@ -104,11 +104,14 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
   onAssetChange = (sel: SelectableValue<string>) => {
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, assetId: sel.value! });
+    onChange({ ...query, assetIds: [sel.value!]});
     onRunQuery();
   };
 
   onPropertyChange = (sel: SelectableValue<string>) => {
+    if (!sel?.value) {
+      return;
+    }
     const { onChange, query, onRunQuery } = this.props;
     const update = { ...query, propertyId: sel.value! };
     // Make sure the selected aggregates are actually supported
@@ -131,8 +134,12 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
   };
 
   onSetAssetId = (assetId?: string) => {
+    const ids = [];
+    if (assetId) {
+      ids.push(assetId);
+    }
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, assetId });
+    onChange({ ...query, assetIds: ids });
     onRunQuery();
   };
 
@@ -255,11 +262,11 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     let current = query.assetId ? assets.find((v) => v.value === query.assetId) : undefined;
     if (!current && query.assetId) {
       if (loading) {
-        current = { label: 'loading...', value: query.assetId };
+        current = { label: 'loading...', value: query.assetId ?? query.assetIds?.join()  };
       } else if (asset) {
-        current = { label: asset.name, description: query.assetId, value: query.assetId };
+        current = { label: asset.name, description: query.assetId, value: query.assetId ?? query.assetIds?.join()};
       } else {
-        current = { label: `ID: ${query.assetId}`, value: query.assetId };
+        current = { label: `ID: ${query.assetId}`, value: query.assetId  || query.assetIds?.join()};
       }
     }
 
@@ -306,6 +313,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             <div className="gf-form">
               <InlineField label="Asset" labelWidth={firstLabelWith} grow={true}>
                 <Select
+                  isMulti={true}
                   key={query.region ? query.region : 'default'}
                   isLoading={loading}
                   options={assets}
@@ -323,7 +331,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
               <AssetBrowser
                 datasource={datasource}
                 region={query.region}
-                assetId={query.assetId}
+                assetId={query.assetId || query.assetIds?.join()}
                 onAssetChanged={this.onSetAssetId}
               />
             </div>
@@ -338,6 +346,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                     placeholder="Select a property"
                     allowCustomValue={true}
                     isSearchable={true}
+                    isClearable={true}
                     onCreateOption={this.onSetPropertyId}
                     formatCreateLabel={(txt) => `Property ID: ${txt}`}
                     menuPlacement="bottom"

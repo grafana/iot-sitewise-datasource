@@ -15,8 +15,8 @@ import (
 )
 
 type AssetPropertyAggregates struct {
-	Request  iotsitewise.GetAssetPropertyAggregatesInput
-	Response iotsitewise.GetAssetPropertyAggregatesOutput
+	Request  iotsitewise.BatchGetAssetPropertyAggregatesInput
+	Response iotsitewise.BatchGetAssetPropertyAggregatesOutput
 }
 
 // getAggregationFields enforces ordering of aggregate fields
@@ -90,11 +90,33 @@ func addAggregateFieldValues(idx int, fields map[string]*data.Field, aggs *iotsi
 func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
 
 	resp := a.Response
+	frames := data.Frames{}
 
-	length := len(resp.AggregatedValues)
+	for i, e := range resp.SuccessEntries {
+		frame, err := a.Frame(ctx, resources, e.AggregatedValues)
+		if err != nil {
+			return nil, err
+		}
+		frame.Meta = &data.FrameMeta{
+			Custom: models.SitewiseCustomMeta{
+				NextToken:  aws.StringValue(resp.NextToken),
+				Resolution: aws.StringValue(a.Request.Entries[i].Resolution),
+				Aggregates: aws.StringValueSlice(a.Request.Entries[i].AggregateTypes),
+			},
+		}
+
+		frames = append(frames, frame)
+	}
+
+	return frames, nil
+}
+
+func (a AssetPropertyAggregates) Frame(ctx context.Context, resources resource.ResourceProvider, v []*iotsitewise.AggregatedValue) (*data.Frame, error) {
+
+	length := len(v)
 
 	if length < 1 {
-		return data.Frames{}, nil
+		return &data.Frame{}, nil
 	}
 
 	property, err := resources.Property(ctx)
@@ -104,9 +126,9 @@ func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.
 
 	timeField := fields.TimeField(length)
 	// this will enforce ordering
-	aggregateTypes, aggregateFields := getAggregationFields(length, resp.AggregatedValues[0].Value)
+	aggregateTypes, aggregateFields := getAggregationFields(length, v[0].Value)
 
-	for i, v := range resp.AggregatedValues {
+	for i, v := range v {
 		timeField.Set(i, *v.Timestamp)
 		addAggregateFieldValues(i, aggregateFields, v.Value)
 	}
@@ -122,13 +144,6 @@ func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.
 		fields...,
 	)
 
-	frame.Meta = &data.FrameMeta{
-		Custom: models.SitewiseCustomMeta{
-			NextToken:  aws.StringValue(resp.NextToken),
-			Resolution: aws.StringValue(a.Request.Resolution),
-			Aggregates: aws.StringValueSlice(a.Request.AggregateTypes),
-		},
-	}
+	return frame, nil
 
-	return data.Frames{frame}, nil
 }

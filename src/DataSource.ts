@@ -77,7 +77,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       return false; // skip the query
     }
     if (isPropertyQueryType(query.queryType)) {
-      return Boolean((query.assetId && query.propertyId) || query.propertyAlias);
+      return Boolean(((query.assetId || query.assetIds?.length) && query.propertyId) || query.propertyAlias);
     }
     return true; // keep the query
   }
@@ -85,8 +85,8 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   getQueryDisplayText(query: SitewiseQuery): string {
     const cache = this.getCache(query.region);
     let txt: string = query.queryType;
-    if (query.assetId) {
-      const info = cache.getAssetInfoSync(query.assetId);
+    if (query.assetId || query.assetIds?.length) {
+      const info = cache.getAssetInfoSync(query.assetId || query.assetIds?.join() || '');
       if (!info) {
         return txt + ' / ' + query.assetId;
       }
@@ -113,10 +113,9 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       ...query,
       propertyAlias: templateSrv.replace(query.propertyAlias, scopedVars),
       region: templateSrv.replace(query.region || '', scopedVars),
-      assetId: templateSrv.replace(query.assetId || '', scopedVars),
+      assetId: templateSrv.replace(query.assetId || query.assetIds?.join(), scopedVars),
       propertyId: templateSrv.replace(query.propertyId || '', scopedVars),
     };
-    return query;
   }
 
   runQuery(query: SitewiseQuery, maxDataPoints?: number): Observable<DataQueryResponse> {

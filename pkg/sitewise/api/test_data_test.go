@@ -28,7 +28,6 @@ type testDataFunc func(t *testing.T, client client.SitewiseClient) interface{}
 // export AWS_ACCESS_KEY_ID="<key id>"
 // export AWS_SECRET_ACCESS_KEY="<secret key>"
 // export AWS_SESSION_TOKEN="<session token>"
-//
 func TestGenerateTestData(t *testing.T) {
 
 	if SKIPALL {
@@ -51,7 +50,7 @@ func TestGenerateTestData(t *testing.T) {
 		}
 		query.MaxPageAggregations = 1
 
-		resp, err := GetAssetPropertyValues(ctx, client, query)
+		resp, err := BatchGetAssetPropertyValues(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -73,7 +72,7 @@ func TestGenerateTestData(t *testing.T) {
 		}
 		query.MaxPageAggregations = 1
 
-		resp, err := GetAssetPropertyValues(ctx, client, query)
+		resp, err := BatchGetAssetPropertyValues(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -88,7 +87,7 @@ func TestGenerateTestData(t *testing.T) {
 		query.AssetId = testdata.DemoTurbineAsset1
 		query.PropertyId = testdata.TurbinePropAvgWindSpeed
 
-		resp, err := GetAssetPropertyValue(ctx, client, query)
+		resp, err := BatchGetAssetPropertyValue(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}

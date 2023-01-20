@@ -27,7 +27,7 @@ var getPropertyValueHappyCase testServerScenarioFn = func(t *testing.T) *testSce
 	propVal := testdata.GetIoTSitewisePropVal(t, testDataRelativePath("property-value.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-raw-wind.json"))
 
-	mockSw.On("GetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&propVal, nil)
+	mockSw.On("BatchGetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&propVal, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
 
 	query := models.AssetPropertyValueQuery{
@@ -64,7 +64,7 @@ var getPropertyValueEmptyCase testServerScenarioFn = func(t *testing.T) *testSce
 	propVal := iotsitewise.GetAssetPropertyValueOutput{} // empty prop value response
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-raw-wind.json"))
 
-	mockSw.On("GetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&propVal, nil)
+	mockSw.On("BatchGetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&propVal, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
 
 	query := models.AssetPropertyValueQuery{

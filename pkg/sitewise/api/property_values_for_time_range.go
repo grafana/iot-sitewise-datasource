@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api/propvals"
@@ -15,7 +16,7 @@ func GetAssetPropertyValuesForTimeRange(ctx context.Context, client client.Sitew
 
 		// todo: remove propvals.ResolutionSecond condition once 1s aggregation is supported
 		if propvals.ResolutionRaw == resolution || propvals.ResolutionSecond == resolution {
-			history, err := GetAssetPropertyValues(ctx, client, query)
+			history, err := BatchGetAssetPropertyValues(ctx, client, query)
 			if err != nil {
 				return nil, err
 			}

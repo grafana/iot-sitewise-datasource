@@ -10,30 +10,30 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 )
 
-type AssetPropertyValue iotsitewise.GetAssetPropertyValueOutput
+type AssetPropertyValue iotsitewise.BatchGetAssetPropertyValueOutput
 
 func (p AssetPropertyValue) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
 
-	length := 0
-	if p.PropertyValue != nil {
-		length = 1
-	}
+	length := len(p.SuccessEntries)
+	var frame *data.Frame
 
-	property, err := resources.Property(ctx)
-	if err != nil {
-		return nil, err
-	}
+	for i, e := range p.SuccessEntries {
+		property, err := resources.Property(ctx)
+		if err != nil {
+			return nil, err
+		}
 
-	timeField := fields.TimeField(length)
-	valueField := fields.PropertyValueField(property, length)
-	qualityField := fields.QualityField(length)
+		timeField := fields.TimeField(length)
+		valueField := fields.PropertyValueField(property, length)
+		qualityField := fields.QualityField(length)
 
-	frame := data.NewFrame(*property.AssetName, timeField, valueField, qualityField)
+		frame = data.NewFrame(*property.AssetName, timeField, valueField, qualityField)
 
-	if p.PropertyValue != nil {
-		timeField.Set(0, getTime(p.PropertyValue.Timestamp))
-		valueField.Set(0, getPropertyVariantValue(p.PropertyValue.Value))
-		qualityField.Set(0, *p.PropertyValue.Quality)
+		if e.AssetPropertyValue != nil {
+			timeField.Set(i, getTime(e.AssetPropertyValue.Timestamp))
+			valueField.Set(i, getPropertyVariantValue(e.AssetPropertyValue.Value))
+			qualityField.Set(i, *e.AssetPropertyValue.Quality)
+		}
 	}
 
 	return data.Frames{frame}, nil
