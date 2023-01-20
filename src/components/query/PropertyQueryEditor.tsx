@@ -59,10 +59,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     } as State;
 
     const cache = datasource.getCache(query.region);
-    const assetIds = query.assetIds || [];
-    if (assetIds.length > 0) {
+    if (query?.assetIds?.length) {
       try {
-        update.asset = await cache.getAssetInfo(assetIds[0]);
+        update.asset = await cache.getAssetInfo(query.assetIds[0]);
       } catch (err) {
         console.warn('error reading asset info', err);
         update.property = undefined;
@@ -84,13 +83,11 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
   async componentDidUpdate(oldProps: Props) {
     const { query } = this.props;
-    const oldAssetIds = oldProps.query.assetIds || [];
-    const assetIds = query.assetIds || [];
-    const assetChanged = assetIds.length === oldAssetIds.length && assetIds.every((a, i) => a === oldAssetIds[i]);
+    const assetChanged = query?.assetIds !== oldProps?.query?.assetIds;
     const propChanged = query?.propertyId !== oldProps?.query?.propertyId;
     const regionChanged = query?.region !== oldProps?.query?.region;
     if (assetChanged || propChanged || regionChanged) {
-      if (assetIds?.length === 0 && !regionChanged) {
+      if (!query.assetIds?.length && !regionChanged) {
         this.setState({ asset: undefined, property: undefined, loading: false });
       } else {
         this.setState({ loading: true });
@@ -106,21 +103,12 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
   };
 
   onAssetChange = (sel: SelectableValue<string>) => {
-   let  ids = [];
-    if (Array.isArray(sel)) {
-      ids = sel.map((s) => s.value);
-    } else {
-      ids.push(sel.value);
-    }
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, assetIds: ids});
+    onChange({ ...query, assetIds: [sel.value!] }); // TODO append????
     onRunQuery();
   };
 
   onPropertyChange = (sel: SelectableValue<string>) => {
-    if (!sel?.value) {
-      return;
-    }
     const { onChange, query, onRunQuery } = this.props;
     const update = { ...query, propertyId: sel.value! };
     // Make sure the selected aggregates are actually supported
@@ -143,14 +131,8 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
   };
 
   onSetAssetId = (assetId?: string) => {
-    const ids = [];
-    if (Array.isArray(assetId)) {
-      ids.push(...assetId);
-    } else {
-      ids.push(assetId);
-    }
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, assetIds: ids });
+    onChange({ ...query, assetIds: assetId ? [assetId] : undefined });
     onRunQuery();
   };
 
@@ -248,7 +230,6 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       <div className="gf-form">
         <InlineField label="Show" labelWidth={firstLabelWith} grow={true}>
           <Select
-            isMulti={true}
             isLoading={loading}
             options={hierarchies}
             value={current}
@@ -271,15 +252,21 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const { query, datasource } = this.props;
     const { loading, asset, assets } = this.state;
 
-    let current = assets.filter((v) => query.assetIds?.includes(v.value ?? '')).map((v) => ({...v, id: v.value})) as SelectableValue<string>[];
+    // NOTE: assedId should have already been removed, but keeping it here just in case
+    const assetId = query.assetId ?? query.assetIds?.[0];
+    let current = assetId ? assets.find((v) => v.value === assetId) : undefined;
+    if (!current && assetId) {
       if (loading) {
-        current = query.assetIds?.map(id => ({ id, label: 'loading...', value: id})) as SelectableValue<string>[];
-      } else if (current.length === 0 && (query.assetIds ?? []).length > 0) {
-        current = query.assetIds?.map(id => ({id, label: `ID: ${id}`, value: id})) as SelectableValue<string>[];
+        current = { label: 'loading...', value: assetId };
+      } else if (asset) {
+        current = { label: asset.name, description: assetId, value: assetId };
+      } else {
+        current = { label: `ID: ${assetId}`, value: assetId };
       }
+    }
 
     const isAssociatedAssets = isListAssociatedAssetsQuery(query);
-    const showProp = !isAssociatedAssets && (query.propertyId || query.assetId);
+    const showProp = !isAssociatedAssets && (query.propertyId || assetId);
     const properties = showProp ? (asset ? asset.properties : []) : [];
     const showQuality =
       (query.propertyId && isAssetPropertyAggregatesQuery(query)) ||
@@ -339,7 +326,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
               <AssetBrowser
                 datasource={datasource}
                 region={query.region}
-                assetId={query.assetId || query.assetIds?.[0] || undefined}
+                assetId={assetId}
                 onAssetChanged={this.onSetAssetId}
               />
             </div>
@@ -354,7 +341,6 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                     placeholder="Select a property"
                     allowCustomValue={true}
                     isSearchable={true}
-                    isClearable={true}
                     onCreateOption={this.onSetPropertyId}
                     formatCreateLabel={(txt) => `Property ID: ${txt}`}
                     menuPlacement="bottom"

@@ -55,8 +55,9 @@ export interface SitewiseQuery extends DataQuery {
   region?: string; // aws region string
   responseFormat?: SiteWiseResponseFormat;
 
-  // Although these are not required everywhere, many queries use them
+  /** @deprecated -- this is migrated to assetIds */
   assetId?: string;
+  // One or more assests to filter -- when multple, they shoud share the same properties, the batch API will be called
   assetIds?: string[];
   propertyId?: string;
   propertyAlias?: string;
