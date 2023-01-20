@@ -44,8 +44,9 @@ type BaseQuery struct {
 	QueryType     string            `json:"-"`
 }
 
+// MigrateAssetId handles AssetId <--> AssetIds backward compatibility.
+// This is needed for compatibility for queries saved before the Batch API changes were introduced in 1.6.0
 func (query *BaseQuery) MigrateAssetId() {
-	// backwards compatibility
 	if query.AssetId != "" {
 		query.AssetIds = []string{query.AssetId}
 	} else if len(query.AssetIds) > 0 {

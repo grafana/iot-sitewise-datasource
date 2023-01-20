@@ -32,6 +32,7 @@ func GetDescribeAssetQuery(dq *backend.DataQuery) (*DescribeAssetQuery, error) {
 		return nil, err
 	}
 
+	// AssetId <--> AssetIds backward compatibility
 	query.MigrateAssetId()
 
 	// add on the DataQuery params
@@ -45,6 +46,7 @@ func GetListAssetsQuery(dq *backend.DataQuery) (*ListAssetsQuery, error) {
 		return nil, err
 	}
 
+	// AssetId <--> AssetIds backward compatibility
 	query.MigrateAssetId()
 
 	// add on the DataQuery params
@@ -59,6 +61,7 @@ func GetListAssociatedAssetsQuery(dq *backend.DataQuery) (*ListAssociatedAssetsQ
 		return nil, err
 	}
 
+	// AssetId <--> AssetIds backward compatibility
 	query.MigrateAssetId()
 
 	// add on the DataQuery params
