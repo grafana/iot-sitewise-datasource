@@ -32,6 +32,8 @@ func GetDescribeAssetQuery(dq *backend.DataQuery) (*DescribeAssetQuery, error) {
 		return nil, err
 	}
 
+	query.MigrateAssetId()
+
 	// add on the DataQuery params
 	query.QueryType = dq.QueryType
 	return query, nil
@@ -42,6 +44,8 @@ func GetListAssetsQuery(dq *backend.DataQuery) (*ListAssetsQuery, error) {
 	if err := json.Unmarshal(dq.JSON, query); err != nil {
 		return nil, err
 	}
+
+	query.MigrateAssetId()
 
 	// add on the DataQuery params
 	query.MaxDataPoints = dq.MaxDataPoints
@@ -54,6 +58,8 @@ func GetListAssociatedAssetsQuery(dq *backend.DataQuery) (*ListAssociatedAssetsQ
 	if err := json.Unmarshal(dq.JSON, query); err != nil {
 		return nil, err
 	}
+
+	query.MigrateAssetId()
 
 	// add on the DataQuery params
 	query.MaxDataPoints = dq.MaxDataPoints

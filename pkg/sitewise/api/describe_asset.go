@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
@@ -13,6 +14,8 @@ import (
 
 func DescribeAsset(ctx context.Context, client client.SitewiseClient, query models.DescribeAssetQuery) (*framer.AssetDescription, error) {
 
+	query.MigrateAssetId()
+	log.DefaultLogger.Info("check query ", "query", query)
 	awsReq := &iotsitewise.DescribeAssetInput{AssetId: getAssetId(query.BaseQuery)}
 
 	resp, err := client.DescribeAssetWithContext(ctx, awsReq)

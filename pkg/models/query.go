@@ -28,7 +28,8 @@ const (
 )
 
 type BaseQuery struct {
-	AwsRegion           string   `json:"region,omitempty"`
+	AwsRegion string `json:"region,omitempty"`
+	// Deprecated: use assetIds
 	AssetId             string   `json:"assetId,omitempty"`
 	AssetIds            []string `json:"assetIds,omitempty"`
 	PropertyId          string   `json:"propertyId,omitempty"`
@@ -41,4 +42,13 @@ type BaseQuery struct {
 	TimeRange     backend.TimeRange `json:"-"`
 	MaxDataPoints int64             `json:"-"`
 	QueryType     string            `json:"-"`
+}
+
+func (query *BaseQuery) MigrateAssetId() {
+	// backwards compatibility
+	if query.AssetId != "" {
+		query.AssetIds = []string{query.AssetId}
+	} else if len(query.AssetIds) > 0 {
+		query.AssetId = query.AssetIds[0]
+	}
 }

@@ -26,6 +26,8 @@ func GetAssetPropertyValueQuery(dq *backend.DataQuery) (*AssetPropertyValueQuery
 		return nil, err
 	}
 
+	query.MigrateAssetId()
+
 	//if propertyAlias is set make sure to set the assetId and propertyId to nil
 	if query.PropertyAlias != "" {
 		query.AssetId = ""
