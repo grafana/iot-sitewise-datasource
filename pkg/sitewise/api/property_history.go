@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
@@ -28,6 +27,7 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Batc
 
 	//if propertyAlias is set make sure to set the assetId and propertyId to nil
 	if query.PropertyAlias != "" {
+		query.AssetIds = []string{}
 		query.AssetId = ""
 		query.PropertyId = ""
 	}
@@ -38,13 +38,9 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Batc
 		query.MaxDataPoints = 250
 	}
 
-	if query.AssetId != "" {
-		query.AssetIds = []string{query.AssetId}
-	}
-
 	entries := make([]*iotsitewise.BatchGetAssetPropertyValueHistoryEntry, 0)
 
-	for i, id := range query.AssetIds {
+	for _, id := range query.AssetIds {
 		var assetId *string
 		if id != "" {
 			assetId = aws.String(id)
@@ -52,7 +48,7 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Batc
 		entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueHistoryEntry{
 			StartDate:     from,
 			EndDate:       to,
-			EntryId:       aws.String(fmt.Sprintf("%d", i)),
+			EntryId:       assetId,
 			PropertyId:    aws.String(query.PropertyId),
 			AssetId:       assetId,
 			PropertyAlias: getPropertyAlias(query.BaseQuery),

@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api/propvals"
@@ -45,12 +44,8 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ba
 		query.MaxDataPoints = 250
 	}
 
-	if query.AssetId != "" {
-		query.AssetIds = []string{query.AssetId}
-	}
-
 	entries := make([]*iotsitewise.BatchGetAssetPropertyAggregatesEntry, 0)
-	for i, assetId := range query.AssetIds {
+	for _, assetId := range query.AssetIds {
 		var id *string
 		if assetId != "" {
 			id = aws.String(assetId)
@@ -58,7 +53,7 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ba
 		entries = append(entries, &iotsitewise.BatchGetAssetPropertyAggregatesEntry{
 			AggregateTypes: aggregateTypes,
 			EndDate:        to,
-			EntryId:        aws.String(fmt.Sprintf("%d", i)),
+			EntryId:        id,
 			AssetId:        id,
 			PropertyId:     aws.String(query.PropertyId),
 			PropertyAlias:  getPropertyAlias(query.BaseQuery),

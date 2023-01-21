@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 
@@ -15,18 +14,14 @@ import (
 
 func valueQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.BatchGetAssetPropertyValueInput {
 
-	if query.AssetId != "" {
-		query.AssetIds = []string{query.AssetId}
-	}
-
 	entries := make([]*iotsitewise.BatchGetAssetPropertyValueEntry, 0)
-	for i, assetId := range query.AssetIds {
+	for _, assetId := range query.AssetIds {
 		var id *string
 		if assetId != "" {
 			id = aws.String(assetId)
 		}
 		entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueEntry{
-			EntryId:       aws.String(fmt.Sprintf("%d", i)),
+			EntryId:       id,
 			AssetId:       id,
 			PropertyId:    aws.String(query.PropertyId),
 			PropertyAlias: getPropertyAlias(query.BaseQuery),

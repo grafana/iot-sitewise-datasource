@@ -59,9 +59,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     } as State;
 
     const cache = datasource.getCache(query.region);
-    if (query?.assetIds?.length) {
+    if ((query?.assetIds?.length ?? []) > 0) {
       try {
-        update.asset = await cache.getAssetInfo(query.assetIds[0]);
+        update.asset = await cache.getAssetInfo(query.assetIds![0]);
       } catch (err) {
         console.warn('error reading asset info', err);
         update.property = undefined;
@@ -102,9 +102,21 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     onRunQuery();
   };
 
-  onAssetChange = (sel: SelectableValue<string>) => {
+  onAssetChange(sel: SelectableValue<string> | SelectableValue<string>[]) {
+    const assetIds: Set<string> = new Set();
+    //const assetIds: Set<string> = new Set([...(this.props.query.assetIds ?? [])]);
+    if (Array.isArray(sel)) {
+      sel.forEach(s => {
+        if (s.value) {
+          assetIds.add(s.value)
+        }
+      });
+    } else if (sel.value) {
+      assetIds.add(sel.value);
+    }
+    debugger
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, assetIds: [sel.value!] }); // TODO append????
+    onChange({ ...query, assetIds: [...assetIds]}); // TODO append????
     onRunQuery();
   };
 
@@ -252,21 +264,17 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const { query, datasource } = this.props;
     const { loading, asset, assets } = this.state;
 
-    // NOTE: assedId should have already been removed, but keeping it here just in case
-    const assetId = query.assetId ?? query.assetIds?.[0];
-    let current = assetId ? assets.find((v) => v.value === assetId) : undefined;
-    if (!current && assetId) {
+    let current = assets.filter((a) => a.value ? query.assetIds?.includes(a.value) : false);
+    if (current.length === 0 && query.assetIds?.length) {
       if (loading) {
-        current = { label: 'loading...', value: assetId };
-      } else if (asset) {
-        current = { label: asset.name, description: assetId, value: assetId };
+        current = query.assetIds.map(assetId => ({ label: 'loading...', value: assetId}));
       } else {
-        current = { label: `ID: ${assetId}`, value: assetId };
+        current = query.assetIds.map(assetId => ({ label: `ID: ${assetId}`, value: assetId }));
       }
     }
 
     const isAssociatedAssets = isListAssociatedAssetsQuery(query);
-    const showProp = !isAssociatedAssets && (query.propertyId || assetId);
+    const showProp = !isAssociatedAssets && (query.propertyId || query.assetIds);
     const properties = showProp ? (asset ? asset.properties : []) : [];
     const showQuality =
       (query.propertyId && isAssetPropertyAggregatesQuery(query)) ||
@@ -313,7 +321,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                   isLoading={loading}
                   options={assets}
                   value={current}
-                  onChange={this.onAssetChange}
+                  onChange={sel => this.onAssetChange(sel)}
                   placeholder="Select an asset"
                   allowCustomValue={true}
                   isClearable={true}
@@ -326,7 +334,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
               <AssetBrowser
                 datasource={datasource}
                 region={query.region}
-                assetId={assetId}
+                assetId={query.assetIds?.[0]}
                 onAssetChanged={this.onSetAssetId}
               />
             </div>

@@ -164,7 +164,6 @@ export class SitewiseCache {
       const topLevel = await this.getTopLevelAssets();
       for (const asset of topLevel) {
         options.push({
-          id: asset.id,
           label: asset.name,
           value: asset.id,
           description: asset.arn,
@@ -175,14 +174,13 @@ export class SitewiseCache {
     }
 
     // Also add recent values
-    for (const asset of this.assetsById.values()) {
-      options.push({
-        id: asset.id,
-        label: asset.name,
-        value: asset.id,
-        description: asset.arn,
-      });
-    }
+    //for (const asset of this.assetsById.values()) {
+    //  options.push({
+    //    label: asset.name,
+    //    value: asset.id,
+    //    description: asset.arn,
+    //  });
+    //}
     return options;
   }
 }

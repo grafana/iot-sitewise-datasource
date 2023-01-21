@@ -92,8 +92,14 @@ func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.
 	resp := a.Response
 	frames := data.Frames{}
 
+	properties, err := resources.Properties(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	for i, e := range resp.SuccessEntries {
-		frame, err := a.Frame(ctx, resources, e.AggregatedValues)
+		property := properties[*e.EntryId]
+		frame, err := a.Frame(ctx, property, e.AggregatedValues)
 		if err != nil {
 			return nil, err
 		}
@@ -105,23 +111,28 @@ func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.
 			},
 		}
 
+		for _, e := range resp.ErrorEntries {
+			property := properties[*e.EntryId]
+			frame := data.NewFrame(*property.AssetName)
+			if e.ErrorMessage != nil {
+				frame.Meta = &data.FrameMeta{
+					Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: *e.ErrorMessage}},
+				}
+			}
+			frames = append(frames, frame)
+		}
+
 		frames = append(frames, frame)
 	}
 
 	return frames, nil
 }
 
-func (a AssetPropertyAggregates) Frame(ctx context.Context, resources resource.ResourceProvider, v []*iotsitewise.AggregatedValue) (*data.Frame, error) {
+func (a AssetPropertyAggregates) Frame(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, v []*iotsitewise.AggregatedValue) (*data.Frame, error) {
 
 	length := len(v)
-
 	if length < 1 {
 		return &data.Frame{}, nil
-	}
-
-	property, err := resources.Property(ctx)
-	if err != nil {
-		return nil, err
 	}
 
 	timeField := fields.TimeField(length)

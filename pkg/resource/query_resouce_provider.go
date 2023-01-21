@@ -24,8 +24,32 @@ func (rp *queryResourceProvider) Asset(ctx context.Context) (*iotsitewise.Descri
 	return rp.resources.Asset(ctx, rp.baseQuery.AssetId)
 }
 
+func (rp *queryResourceProvider) Assets(ctx context.Context) (map[string]*iotsitewise.DescribeAssetOutput, error) {
+	assets := map[string]*iotsitewise.DescribeAssetOutput{}
+	for _, id := range rp.baseQuery.AssetIds {
+		asset, err := rp.resources.Asset(ctx, id)
+		if err != nil {
+			return nil, err
+		}
+		assets[id] = asset
+	}
+	return assets, nil
+}
+
 func (rp *queryResourceProvider) Property(ctx context.Context) (*iotsitewise.DescribeAssetPropertyOutput, error) {
 	return rp.resources.Property(ctx, rp.baseQuery.AssetId, rp.baseQuery.PropertyId, rp.baseQuery.PropertyAlias)
+}
+
+func (rp *queryResourceProvider) Properties(ctx context.Context) (map[string]*iotsitewise.DescribeAssetPropertyOutput, error) {
+	properties := map[string]*iotsitewise.DescribeAssetPropertyOutput{}
+	for _, id := range rp.baseQuery.AssetIds {
+		prop, err := rp.resources.Property(ctx, id, rp.baseQuery.PropertyId, rp.baseQuery.PropertyAlias)
+		if err != nil {
+			return nil, err
+		}
+		properties[id] = prop
+	}
+	return properties, nil
 }
 
 func (rp *queryResourceProvider) AssetModel(ctx context.Context) (*iotsitewise.DescribeAssetModelOutput, error) {
