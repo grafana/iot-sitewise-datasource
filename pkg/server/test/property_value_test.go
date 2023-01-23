@@ -61,7 +61,7 @@ var getPropertyValueEmptyCase testServerScenarioFn = func(t *testing.T) *testSce
 
 	mockSw := &mocks.SitewiseClient{}
 
-	propVal := iotsitewise.GetAssetPropertyValueOutput{} // empty prop value response
+	propVal := iotsitewise.BatchGetAssetPropertyValueOutput{} // empty prop value response
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-raw-wind.json"))
 
 	mockSw.On("BatchGetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&propVal, nil)

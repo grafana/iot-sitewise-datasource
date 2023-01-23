@@ -1,15 +1,21 @@
 {
-    "PropertyValue": {
-        "Quality": "GOOD",
-        "Timestamp": {
-            "OffsetInNanos": 0,
-            "TimeInSeconds": 1612207200
-        },
-        "Value": {
-            "BooleanValue": null,
-            "DoubleValue": 23.81007059955162,
-            "IntegerValue": null,
-            "StringValue": null
+    "SuccessEntries": [
+        {
+            "AssetPropertyValue": {
+                "Quality": "GOOD",
+                "Timestamp": {
+                    "OffsetInNanos": 0,
+                    "TimeInSeconds": 1612207200
+                },
+                "Value": {
+                    "BooleanValue": null,
+                    "DoubleValue": 23.81007059955162,
+                    "IntegerValue": null,
+                    "StringValue": null
+                }
+            },
+            "EntryId": "e64c9075-9d89-47cb-8ee5-d3251bd253f4"
         }
-    }
+    ],
+    "NextToken": null
 }
