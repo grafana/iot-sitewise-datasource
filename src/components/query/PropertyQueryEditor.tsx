@@ -114,7 +114,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       assetIds.add(sel.value);
     }
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, assetIds: [...assetIds] }); // TODO append????
+    onChange({ ...query, assetIds: [...assetIds] });
     onRunQuery();
   }
 

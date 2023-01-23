@@ -125,9 +125,17 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
     let assetIds: string[] = [];
     if (query.assetIds) {
       for (const id of query.assetIds) {
-        const out = templateSrv.replace(id, scopedVars);
-        // TODO? multi-value support????
-        assetIds.push(out);
+        const out = templateSrv.replace(id, scopedVars, 'json');
+        try {
+          const parsed: string | string[] = JSON.parse(out);
+          if (Array.isArray(parsed)) {
+            assetIds = assetIds.concat(parsed);
+          } else {
+            assetIds.push(out);
+          }
+        } catch (err) {
+          console.log('Invalid template', out);
+        }
       }
     }
     return {
