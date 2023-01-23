@@ -126,7 +126,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
     if (query.assetIds) {
       for (const id of query.assetIds) {
         const out = templateSrv.replace(id, scopedVars);
-        // TODO? mult-value support????
+        // TODO? multi-value support????
         assetIds.push(out);
       }
     }

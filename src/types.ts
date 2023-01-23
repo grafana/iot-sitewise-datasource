@@ -57,7 +57,7 @@ export interface SitewiseQuery extends DataQuery {
 
   /** @deprecated -- this is migrated to assetIds */
   assetId?: string;
-  // One or more assets to filter -- when multiple, they sholud share the same properties, the batch API will be called
+  // One or more assets to filter -- when multiple, they should share the same properties, the batch API will be called
   assetIds?: string[];
   propertyId?: string;
   propertyAlias?: string;
