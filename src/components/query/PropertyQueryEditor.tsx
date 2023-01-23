@@ -102,23 +102,21 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     onRunQuery();
   };
 
-  onAssetChange(sel: SelectableValue<string> | SelectableValue<string>[]) {
+  onAssetChange(sel: SelectableValue<string> | Array<SelectableValue<string>>) {
     const assetIds: Set<string> = new Set();
-    //const assetIds: Set<string> = new Set([...(this.props.query.assetIds ?? [])]);
     if (Array.isArray(sel)) {
-      sel.forEach(s => {
+      sel.forEach((s) => {
         if (s.value) {
-          assetIds.add(s.value)
+          assetIds.add(s.value);
         }
       });
     } else if (sel.value) {
       assetIds.add(sel.value);
     }
-    debugger
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, assetIds: [...assetIds]}); // TODO append????
+    onChange({ ...query, assetIds: [...assetIds] }); // TODO append????
     onRunQuery();
-  };
+  }
 
   onPropertyChange = (sel: SelectableValue<string>) => {
     const { onChange, query, onRunQuery } = this.props;
@@ -264,12 +262,12 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const { query, datasource } = this.props;
     const { loading, asset, assets } = this.state;
 
-    let current = assets.filter((a) => a.value ? query.assetIds?.includes(a.value) : false);
+    let current = assets.filter((a) => (a.value ? query.assetIds?.includes(a.value) : false));
     if (current.length === 0 && query.assetIds?.length) {
       if (loading) {
-        current = query.assetIds.map(assetId => ({ label: 'loading...', value: assetId}));
+        current = query.assetIds.map((assetId) => ({ label: 'loading...', value: assetId }));
       } else {
-        current = query.assetIds.map(assetId => ({ label: `ID: ${assetId}`, value: assetId }));
+        current = query.assetIds.map((assetId) => ({ label: `ID: ${assetId}`, value: assetId }));
       }
     }
 
@@ -321,7 +319,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                   isLoading={loading}
                   options={assets}
                   value={current}
-                  onChange={sel => this.onAssetChange(sel)}
+                  onChange={(sel) => this.onAssetChange(sel)}
                   placeholder="Select an asset"
                   allowCustomValue={true}
                   isClearable={true}

@@ -28,6 +28,7 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Batc
 	//if propertyAlias is set make sure to set the assetId and propertyId to nil
 	if query.PropertyAlias != "" {
 		query.AssetIds = []string{}
+		// nolint:staticcheck
 		query.AssetId = ""
 		query.PropertyId = ""
 	}

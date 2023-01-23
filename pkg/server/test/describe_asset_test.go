@@ -33,10 +33,10 @@ var describeAssetHappyCase testServerScenarioFn = func(t *testing.T) *testScenar
 	})).Return(&assetWithHierarchy, nil)
 
 	query := models.DescribeAssetQuery{}
-	query.AssetId = testdata.DemoTurbineAsset1
+	query.AssetIds = []string{testdata.DemoTurbineAsset1}
 
 	queryTopLevel := models.DescribeAssetQuery{}
-	queryTopLevel.AssetId = testdata.DemoWindFarmAssetId
+	queryTopLevel.AssetIds = []string{testdata.DemoWindFarmAssetId}
 
 	return &testScenario{
 		name: "DescribeAssetHappyCase",

@@ -21,6 +21,8 @@ func interpolatedQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise
 	//if propertyAlias is set make sure to set the assetId and propertyId to nil
 	if query.PropertyAlias != "" {
 		query.PropertyId = ""
+		query.AssetIds = []string{}
+		// nolint:staticcheck
 		query.AssetId = ""
 	}
 

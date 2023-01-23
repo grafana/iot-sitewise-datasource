@@ -21,7 +21,14 @@ func NewQueryResourceProvider(cachingProvider *cachingResourceProvider, query mo
 }
 
 func (rp *queryResourceProvider) Asset(ctx context.Context) (*iotsitewise.DescribeAssetOutput, error) {
-	return rp.resources.Asset(ctx, rp.baseQuery.AssetId)
+	assetId := ""
+
+	// use the first asset id if there are multiple
+	if len(rp.baseQuery.AssetIds) > 0 {
+		assetId = rp.baseQuery.AssetIds[0]
+	}
+
+	return rp.resources.Asset(ctx, assetId)
 }
 
 func (rp *queryResourceProvider) Assets(ctx context.Context) (map[string]*iotsitewise.DescribeAssetOutput, error) {
@@ -37,7 +44,14 @@ func (rp *queryResourceProvider) Assets(ctx context.Context) (map[string]*iotsit
 }
 
 func (rp *queryResourceProvider) Property(ctx context.Context) (*iotsitewise.DescribeAssetPropertyOutput, error) {
-	return rp.resources.Property(ctx, rp.baseQuery.AssetId, rp.baseQuery.PropertyId, rp.baseQuery.PropertyAlias)
+	assetId := ""
+
+	// use the first asset id if there are multiple
+	if len(rp.baseQuery.AssetIds) > 0 {
+		assetId = rp.baseQuery.AssetIds[0]
+	}
+
+	return rp.resources.Property(ctx, assetId, rp.baseQuery.PropertyId, rp.baseQuery.PropertyAlias)
 }
 
 func (rp *queryResourceProvider) Properties(ctx context.Context) (map[string]*iotsitewise.DescribeAssetPropertyOutput, error) {
@@ -53,8 +67,14 @@ func (rp *queryResourceProvider) Properties(ctx context.Context) (map[string]*io
 }
 
 func (rp *queryResourceProvider) AssetModel(ctx context.Context) (*iotsitewise.DescribeAssetModelOutput, error) {
+	assetId := ""
 
-	asset, err := rp.resources.Asset(ctx, rp.baseQuery.AssetId)
+	// use the first asset id if there are multiple
+	if len(rp.baseQuery.AssetIds) > 0 {
+		assetId = rp.baseQuery.AssetIds[0]
+	}
+
+	asset, err := rp.resources.Asset(ctx, assetId)
 
 	if err != nil {
 		return nil, err
