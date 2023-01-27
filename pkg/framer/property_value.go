@@ -14,25 +14,24 @@ type AssetPropertyValue iotsitewise.BatchGetAssetPropertyValueOutput
 
 func (p AssetPropertyValue) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
 	frames := data.Frames{}
-	length := len(p.SuccessEntries)
 
 	properties, err := resources.Properties(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	for i, e := range p.SuccessEntries {
+	for _, e := range p.SuccessEntries {
 		property := properties[*e.EntryId]
-		timeField := fields.TimeField(length)
-		valueField := fields.PropertyValueField(property, length)
-		qualityField := fields.QualityField(length)
+		timeField := fields.TimeField(0)
+		valueField := fields.PropertyValueField(property, 0)
+		qualityField := fields.QualityField(0)
 
 		frame := data.NewFrame(*property.AssetName, timeField, valueField, qualityField)
 
 		if e.AssetPropertyValue != nil {
-			timeField.Set(i, getTime(e.AssetPropertyValue.Timestamp))
-			valueField.Set(i, getPropertyVariantValue(e.AssetPropertyValue.Value))
-			qualityField.Set(i, *e.AssetPropertyValue.Quality)
+			timeField.Append(getTime(e.AssetPropertyValue.Timestamp))
+			valueField.Append(getPropertyVariantValue(e.AssetPropertyValue.Value))
+			qualityField.Append(*e.AssetPropertyValue.Quality)
 		}
 		frames = append(frames, frame)
 	}

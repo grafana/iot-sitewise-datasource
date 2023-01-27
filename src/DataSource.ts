@@ -134,7 +134,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
             assetIds.push(out);
           }
         } catch (err) {
-          console.log('Invalid template', out);
+          assetIds.push(id);
         }
       }
     }

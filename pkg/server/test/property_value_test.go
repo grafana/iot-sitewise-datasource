@@ -3,6 +3,7 @@ package test
 import (
 	"testing"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
@@ -61,7 +62,10 @@ var getPropertyValueEmptyCase testServerScenarioFn = func(t *testing.T) *testSce
 
 	mockSw := &mocks.SitewiseClient{}
 
-	propVal := iotsitewise.BatchGetAssetPropertyValueOutput{} // empty prop value response
+	propVal := iotsitewise.BatchGetAssetPropertyValueOutput{SuccessEntries: []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{{
+		AssetPropertyValue: nil,
+		EntryId:            aws.String(testdata.DemoTurbineAsset1),
+	}}} // empty prop value response
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-raw-wind.json"))
 
 	mockSw.On("BatchGetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&propVal, nil)
