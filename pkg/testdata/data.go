@@ -62,8 +62,8 @@ func GetPropHistoryVals(t *testing.T, path string) framer.AssetPropertyValueHist
 	return propVals
 }
 
-func GetIoTSitewisePropHistoryVals(t *testing.T, path string) iotsitewise.GetAssetPropertyValueHistoryOutput {
-	propVals := iotsitewise.GetAssetPropertyValueHistoryOutput{}
+func GetIoTSitewisePropHistoryVals(t *testing.T, path string) iotsitewise.BatchGetAssetPropertyValueHistoryOutput {
+	propVals := iotsitewise.BatchGetAssetPropertyValueHistoryOutput{}
 	err := UnmarshalFileContents(path, &propVals)
 	if err != nil {
 		t.Fatal(err)
@@ -71,8 +71,8 @@ func GetIoTSitewisePropHistoryVals(t *testing.T, path string) iotsitewise.GetAss
 	return propVals
 }
 
-func GetIoTSitewisePropVal(t *testing.T, path string) iotsitewise.GetAssetPropertyValueOutput {
-	propVal := iotsitewise.GetAssetPropertyValueOutput{}
+func GetIoTSitewisePropVal(t *testing.T, path string) iotsitewise.BatchGetAssetPropertyValueOutput {
+	propVal := iotsitewise.BatchGetAssetPropertyValueOutput{}
 	err := UnmarshalFileContents(path, &propVal)
 	if err != nil {
 		t.Fatal(err)
@@ -80,8 +80,8 @@ func GetIoTSitewisePropVal(t *testing.T, path string) iotsitewise.GetAssetProper
 	return propVal
 }
 
-func GetIoTSitewisePropAggregateVals(t *testing.T, path string) iotsitewise.GetAssetPropertyAggregatesOutput {
-	propAggs := iotsitewise.GetAssetPropertyAggregatesOutput{}
+func GetIoTSitewisePropAggregateVals(t *testing.T, path string) iotsitewise.BatchGetAssetPropertyAggregatesOutput {
+	propAggs := iotsitewise.BatchGetAssetPropertyAggregatesOutput{}
 	err := UnmarshalFileContents(path, &propAggs)
 	if err != nil {
 		t.Fatal(err)

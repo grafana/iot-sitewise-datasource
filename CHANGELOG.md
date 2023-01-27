@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.6.0
+
+- Add Batch API support
+
 ## v1.5.1
 
 - Add response format selection to time series queries

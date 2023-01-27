@@ -17,10 +17,10 @@ func getNextToken(query models.BaseQuery) *string {
 }
 
 func getAssetId(query models.BaseQuery) *string {
-	if query.AssetId == "" {
+	if len(query.AssetIds) == 0 {
 		return nil
 	}
-	return aws.String(query.AssetId)
+	return aws.String(query.AssetIds[0])
 }
 
 func getPropertyId(query models.BaseQuery) *string {

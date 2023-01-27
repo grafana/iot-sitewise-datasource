@@ -1,6 +1,6 @@
 {
   "name": "grafana-iot-sitewise-datasource",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "View IoT Sitewise data in grafana",
   "scripts": {
     "spellcheck": "cspell -c cspell.config.json \"**/*.{ts,tsx,js,go,md,mdx,yml,yaml,json,scss,css}\"",

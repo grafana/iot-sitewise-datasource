@@ -353,6 +353,29 @@ func (_m *SitewiseClient) BatchGetAssetPropertyAggregates(_a0 *iotsitewise.Batch
 	return r0, r1
 }
 
+// BatchGetAssetPropertyAggregatesPageAggregation provides a mock function with given fields: ctx, req, maxPages, maxResults
+func (_m *SitewiseClient) BatchGetAssetPropertyAggregatesPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyAggregatesInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyAggregatesOutput, error) {
+	ret := _m.Called(ctx, req, maxPages, maxResults)
+
+	var r0 *iotsitewise.BatchGetAssetPropertyAggregatesOutput
+	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.BatchGetAssetPropertyAggregatesInput, int, int) *iotsitewise.BatchGetAssetPropertyAggregatesOutput); ok {
+		r0 = rf(ctx, req, maxPages, maxResults)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.BatchGetAssetPropertyAggregatesOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.BatchGetAssetPropertyAggregatesInput, int, int) error); ok {
+		r1 = rf(ctx, req, maxPages, maxResults)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // BatchGetAssetPropertyAggregatesPages provides a mock function with given fields: _a0, _a1
 func (_m *SitewiseClient) BatchGetAssetPropertyAggregatesPages(_a0 *iotsitewise.BatchGetAssetPropertyAggregatesInput, _a1 func(*iotsitewise.BatchGetAssetPropertyAggregatesOutput, bool) bool) error {
 	ret := _m.Called(_a0, _a1)
@@ -482,6 +505,29 @@ func (_m *SitewiseClient) BatchGetAssetPropertyValueHistory(_a0 *iotsitewise.Bat
 	var r1 error
 	if rf, ok := ret.Get(1).(func(*iotsitewise.BatchGetAssetPropertyValueHistoryInput) error); ok {
 		r1 = rf(_a0)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// BatchGetAssetPropertyValueHistoryPageAggregation provides a mock function with given fields: ctx, req, maxPages, maxResults
+func (_m *SitewiseClient) BatchGetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyValueHistoryOutput, error) {
+	ret := _m.Called(ctx, req, maxPages, maxResults)
+
+	var r0 *iotsitewise.BatchGetAssetPropertyValueHistoryOutput
+	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.BatchGetAssetPropertyValueHistoryInput, int, int) *iotsitewise.BatchGetAssetPropertyValueHistoryOutput); ok {
+		r0 = rf(ctx, req, maxPages, maxResults)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*iotsitewise.BatchGetAssetPropertyValueHistoryOutput)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.BatchGetAssetPropertyValueHistoryInput, int, int) error); ok {
+		r1 = rf(ctx, req, maxPages, maxResults)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -3266,29 +3312,6 @@ func (_m *SitewiseClient) GetAssetPropertyAggregates(_a0 *iotsitewise.GetAssetPr
 	return r0, r1
 }
 
-// GetAssetPropertyAggregatesPageAggregation provides a mock function with given fields: ctx, req, maxPages, maxResults
-func (_m *SitewiseClient) GetAssetPropertyAggregatesPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyAggregatesInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyAggregatesOutput, error) {
-	ret := _m.Called(ctx, req, maxPages, maxResults)
-
-	var r0 *iotsitewise.GetAssetPropertyAggregatesOutput
-	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.GetAssetPropertyAggregatesInput, int, int) *iotsitewise.GetAssetPropertyAggregatesOutput); ok {
-		r0 = rf(ctx, req, maxPages, maxResults)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*iotsitewise.GetAssetPropertyAggregatesOutput)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.GetAssetPropertyAggregatesInput, int, int) error); ok {
-		r1 = rf(ctx, req, maxPages, maxResults)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
 // GetAssetPropertyAggregatesPages provides a mock function with given fields: _a0, _a1
 func (_m *SitewiseClient) GetAssetPropertyAggregatesPages(_a0 *iotsitewise.GetAssetPropertyAggregatesInput, _a1 func(*iotsitewise.GetAssetPropertyAggregatesOutput, bool) bool) error {
 	ret := _m.Called(_a0, _a1)
@@ -3418,29 +3441,6 @@ func (_m *SitewiseClient) GetAssetPropertyValueHistory(_a0 *iotsitewise.GetAsset
 	var r1 error
 	if rf, ok := ret.Get(1).(func(*iotsitewise.GetAssetPropertyValueHistoryInput) error); ok {
 		r1 = rf(_a0)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GetAssetPropertyValueHistoryPageAggregation provides a mock function with given fields: ctx, req, maxPages, maxResults
-func (_m *SitewiseClient) GetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyValueHistoryOutput, error) {
-	ret := _m.Called(ctx, req, maxPages, maxResults)
-
-	var r0 *iotsitewise.GetAssetPropertyValueHistoryOutput
-	if rf, ok := ret.Get(0).(func(context.Context, *iotsitewise.GetAssetPropertyValueHistoryInput, int, int) *iotsitewise.GetAssetPropertyValueHistoryOutput); ok {
-		r0 = rf(ctx, req, maxPages, maxResults)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*iotsitewise.GetAssetPropertyValueHistoryOutput)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, *iotsitewise.GetAssetPropertyValueHistoryInput, int, int) error); ok {
-		r1 = rf(ctx, req, maxPages, maxResults)
 	} else {
 		r1 = ret.Error(1)
 	}

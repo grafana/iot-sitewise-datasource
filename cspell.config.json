@@ -46,6 +46,8 @@
     "magefile",
     "dserrors",
     "querytype",
-    "timeseries"
+    "timeseries",
+    "nolint",
+    "staticcheck"
   ]
 }

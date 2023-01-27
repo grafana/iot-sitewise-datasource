@@ -23,8 +23,8 @@ import (
 
 type SitewiseClient interface {
 	iotsitewiseiface.IoTSiteWiseAPI
-	GetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyValueHistoryOutput, error)
-	GetAssetPropertyAggregatesPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyAggregatesInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyAggregatesOutput, error)
+	BatchGetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyValueHistoryOutput, error)
+	BatchGetAssetPropertyAggregatesPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyAggregatesInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyAggregatesOutput, error)
 	GetInterpolatedAssetPropertyValuesPageAggregation(ctx context.Context, req *iotsitewise.GetInterpolatedAssetPropertyValuesInput, maxPages int, maxResults int) (*iotsitewise.GetInterpolatedAssetPropertyValuesOutput, error)
 }
 
@@ -41,27 +41,37 @@ func NewSitewiseClientForRegion(region string) SitewiseClient {
 	}
 }
 
-func (c *sitewiseClient) GetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyValueHistoryOutput, error) {
+func (c *sitewiseClient) BatchGetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyValueHistoryOutput, error) {
 	var (
+		count     = 0
 		numPages  = 0
-		values    []*iotsitewise.AssetPropertyValue
+		success   []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry
+		skipped   []*iotsitewise.BatchGetAssetPropertyValueHistorySkippedEntry
+		errors    []*iotsitewise.BatchGetAssetPropertyValueHistoryErrorEntry
 		nextToken *string
 	)
 
-	err := c.GetAssetPropertyValueHistoryPagesWithContext(ctx, req, func(output *iotsitewise.GetAssetPropertyValueHistoryOutput, b bool) bool {
+	err := c.BatchGetAssetPropertyValueHistoryPagesWithContext(ctx, req, func(output *iotsitewise.BatchGetAssetPropertyValueHistoryOutput, b bool) bool {
 		numPages++
-		values = append(values, output.AssetPropertyValueHistory...)
+		if len(output.SuccessEntries) > 0 {
+			count += len(output.SuccessEntries[0].AssetPropertyValueHistory)
+		}
+		success = append(success, output.SuccessEntries...)
+		skipped = append(skipped, output.SkippedEntries...)
+		errors = append(errors, output.ErrorEntries...)
 		nextToken = output.NextToken
-		return numPages < maxPages && len(values) <= maxResults
+		return numPages < maxPages && count <= maxResults
 	})
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &iotsitewise.GetAssetPropertyValueHistoryOutput{
-		AssetPropertyValueHistory: values,
-		NextToken:                 nextToken,
+	return &iotsitewise.BatchGetAssetPropertyValueHistoryOutput{
+		SuccessEntries: success,
+		SkippedEntries: skipped,
+		ErrorEntries:   errors,
+		NextToken:      nextToken,
 	}, nil
 }
 
@@ -89,28 +99,37 @@ func (c *sitewiseClient) GetInterpolatedAssetPropertyValuesPageAggregation(ctx c
 	}, nil
 }
 
-func (c *sitewiseClient) GetAssetPropertyAggregatesPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyAggregatesInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyAggregatesOutput, error) {
+func (c *sitewiseClient) BatchGetAssetPropertyAggregatesPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyAggregatesInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyAggregatesOutput, error) {
 
 	var (
+		count     = 0
 		numPages  = 0
-		values    []*iotsitewise.AggregatedValue
+		success   []*iotsitewise.BatchGetAssetPropertyAggregatesSuccessEntry
+		skipped   []*iotsitewise.BatchGetAssetPropertyAggregatesSkippedEntry
+		errors    []*iotsitewise.BatchGetAssetPropertyAggregatesErrorEntry
 		nextToken *string
 	)
 
-	err := c.GetAssetPropertyAggregatesPagesWithContext(ctx, req, func(output *iotsitewise.GetAssetPropertyAggregatesOutput, b bool) bool {
-		numPages++
-		values = append(values, output.AggregatedValues...)
+	err := c.BatchGetAssetPropertyAggregatesPagesWithContext(ctx, req, func(output *iotsitewise.BatchGetAssetPropertyAggregatesOutput, b bool) bool {
+		if len(output.SuccessEntries) > 0 {
+			count += len(output.SuccessEntries[0].AggregatedValues)
+		}
+		success = append(success, output.SuccessEntries...)
+		skipped = append(skipped, output.SkippedEntries...)
+		errors = append(errors, output.ErrorEntries...)
 		nextToken = output.NextToken
-		return numPages < maxPages && len(values) <= maxResults
+		return numPages < maxPages && count <= maxResults
 	})
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &iotsitewise.GetAssetPropertyAggregatesOutput{
-		AggregatedValues: values,
-		NextToken:        nextToken,
+	return &iotsitewise.BatchGetAssetPropertyAggregatesOutput{
+		SuccessEntries: success,
+		SkippedEntries: skipped,
+		ErrorEntries:   errors,
+		NextToken:      nextToken,
 	}, nil
 }
 

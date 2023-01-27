@@ -10,31 +10,42 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 )
 
-type AssetPropertyValue iotsitewise.GetAssetPropertyValueOutput
+type AssetPropertyValue iotsitewise.BatchGetAssetPropertyValueOutput
 
 func (p AssetPropertyValue) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
+	frames := data.Frames{}
 
-	length := 0
-	if p.PropertyValue != nil {
-		length = 1
-	}
-
-	property, err := resources.Property(ctx)
+	properties, err := resources.Properties(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	timeField := fields.TimeField(length)
-	valueField := fields.PropertyValueField(property, length)
-	qualityField := fields.QualityField(length)
+	for _, e := range p.SuccessEntries {
+		property := properties[*e.EntryId]
+		timeField := fields.TimeField(0)
+		valueField := fields.PropertyValueField(property, 0)
+		qualityField := fields.QualityField(0)
 
-	frame := data.NewFrame(*property.AssetName, timeField, valueField, qualityField)
+		frame := data.NewFrame(*property.AssetName, timeField, valueField, qualityField)
 
-	if p.PropertyValue != nil {
-		timeField.Set(0, getTime(p.PropertyValue.Timestamp))
-		valueField.Set(0, getPropertyVariantValue(p.PropertyValue.Value))
-		qualityField.Set(0, *p.PropertyValue.Quality)
+		if e.AssetPropertyValue != nil {
+			timeField.Append(getTime(e.AssetPropertyValue.Timestamp))
+			valueField.Append(getPropertyVariantValue(e.AssetPropertyValue.Value))
+			qualityField.Append(*e.AssetPropertyValue.Quality)
+		}
+		frames = append(frames, frame)
 	}
 
-	return data.Frames{frame}, nil
+	for _, e := range p.ErrorEntries {
+		property := properties[*e.EntryId]
+		frame := data.NewFrame(*property.AssetName)
+		if e.ErrorMessage != nil {
+			frame.Meta = &data.FrameMeta{
+				Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: *e.ErrorMessage}},
+			}
+		}
+		frames = append(frames, frame)
+	}
+
+	return frames, nil
 }

@@ -76,8 +76,21 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
     if (!query.queryType) {
       return false; // skip the query
     }
+    // Migrate assetId to assetIDs (v1.6)
+    if (query.assetId) {
+      const ids = new Set<string>();
+      ids.add(query.assetId);
+      if (query.assetIds) {
+        for (const id of query.assetIds) {
+          ids.add(id);
+        }
+      }
+      query.assetIds = Array.from(ids);
+      delete query.assetId;
+    }
+
     if (isPropertyQueryType(query.queryType)) {
-      return Boolean((query.assetId && query.propertyId) || query.propertyAlias);
+      return Boolean((query.assetIds?.length && query.propertyId) || query.propertyAlias);
     }
     return true; // keep the query
   }
@@ -85,10 +98,10 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   getQueryDisplayText(query: SitewiseQuery): string {
     const cache = this.getCache(query.region);
     let txt: string = query.queryType;
-    if (query.assetId) {
-      const info = cache.getAssetInfoSync(query.assetId);
+    if (query.assetIds?.length) {
+      const info = cache.getAssetInfoSync(query.assetIds[0]);
       if (!info) {
-        return txt + ' / ' + query.assetId;
+        return txt + ' / ' + query.assetIds.join('/');
       }
       txt += ' / ' + info.name;
 
@@ -109,12 +122,28 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
    */
   applyTemplateVariables(query: SitewiseQuery, scopedVars: ScopedVars): SitewiseQuery {
     const templateSrv = getTemplateSrv();
+    let assetIds: string[] = [];
+    if (query.assetIds) {
+      for (const id of query.assetIds) {
+        const out = templateSrv.replace(id, scopedVars, 'json');
+        try {
+          const parsed: string | string[] = JSON.parse(out);
+          if (Array.isArray(parsed)) {
+            assetIds = assetIds.concat(parsed);
+          } else {
+            assetIds.push(out);
+          }
+        } catch (err) {
+          assetIds.push(id);
+        }
+      }
+    }
     return {
       ...query,
       propertyAlias: templateSrv.replace(query.propertyAlias, scopedVars),
       region: templateSrv.replace(query.region || '', scopedVars),
-      assetId: templateSrv.replace(query.assetId || '', scopedVars),
       propertyId: templateSrv.replace(query.propertyId || '', scopedVars),
+      assetIds,
     };
     return query;
   }

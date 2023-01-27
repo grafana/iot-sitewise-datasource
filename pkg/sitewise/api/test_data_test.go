@@ -28,7 +28,6 @@ type testDataFunc func(t *testing.T, client client.SitewiseClient) interface{}
 // export AWS_ACCESS_KEY_ID="<key id>"
 // export AWS_SECRET_ACCESS_KEY="<secret key>"
 // export AWS_SESSION_TOKEN="<session token>"
-//
 func TestGenerateTestData(t *testing.T) {
 
 	if SKIPALL {
@@ -43,7 +42,7 @@ func TestGenerateTestData(t *testing.T) {
 
 		// hard coded values from my account
 		query := models.AssetPropertyValueQuery{}
-		query.AssetId = testdata.DemoTurbineAsset1
+		query.AssetIds = []string{testdata.DemoTurbineAsset1}
 		query.PropertyId = testdata.TurbinePropAvgWindSpeed
 		query.TimeRange = backend.TimeRange{
 			From: time.Now().Add(time.Hour * -3), // return 3 hours of data. 60*3/5 = 36 points
@@ -51,7 +50,7 @@ func TestGenerateTestData(t *testing.T) {
 		}
 		query.MaxPageAggregations = 1
 
-		resp, err := GetAssetPropertyValues(ctx, client, query)
+		resp, err := BatchGetAssetPropertyValues(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -64,7 +63,7 @@ func TestGenerateTestData(t *testing.T) {
 
 		// hard coded values from my account
 		query := models.AssetPropertyValueQuery{}
-		query.AssetId = "709e2e02-7b28-4b41-b669-3fb501a11853"
+		query.AssetIds = []string{"709e2e02-7b28-4b41-b669-3fb501a11853"}
 		//query.PropertyId = "5ff66b29-5b79-427a-978b-29f8dfc2757a"
 		query.PropertyAlias = "/amazon/renton/1/rpm"
 		query.TimeRange = backend.TimeRange{
@@ -73,7 +72,7 @@ func TestGenerateTestData(t *testing.T) {
 		}
 		query.MaxPageAggregations = 1
 
-		resp, err := GetAssetPropertyValues(ctx, client, query)
+		resp, err := BatchGetAssetPropertyValues(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -85,10 +84,10 @@ func TestGenerateTestData(t *testing.T) {
 		ctx := context.Background()
 
 		query := models.AssetPropertyValueQuery{}
-		query.AssetId = testdata.DemoTurbineAsset1
+		query.AssetIds = []string{testdata.DemoTurbineAsset1}
 		query.PropertyId = testdata.TurbinePropAvgWindSpeed
 
-		resp, err := GetAssetPropertyValue(ctx, client, query)
+		resp, err := BatchGetAssetPropertyValue(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -104,7 +103,7 @@ func TestGenerateTestData(t *testing.T) {
 		query.AggregateTypes = []string{
 			models.AggregateCount, models.AggregateAvg, models.AggregateMin, models.AggregateMax, models.AggregateSum, models.AggregateStdDev,
 		}
-		query.AssetId = testdata.DemoTurbineAsset1
+		query.AssetIds = []string{testdata.DemoTurbineAsset1}
 		query.PropertyId = testdata.TurbinePropWindSpeed
 		query.TimeRange = backend.TimeRange{
 			From: time.Now().Add(time.Hour * -3), // return 3 hours of data. 60*3/5 = 36 points
@@ -123,7 +122,7 @@ func TestGenerateTestData(t *testing.T) {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetQuery{}
-		query.AssetId = testdata.DemoTurbineAsset1
+		query.AssetIds = []string{testdata.DemoTurbineAsset1}
 
 		resp, err := DescribeAsset(ctx, client, query)
 		if err != nil {
@@ -135,7 +134,7 @@ func TestGenerateTestData(t *testing.T) {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetQuery{}
-		query.AssetId = testdata.DemoWindFarmAssetId
+		query.AssetIds = []string{testdata.DemoWindFarmAssetId}
 
 		resp, err := DescribeAsset(ctx, client, query)
 		if err != nil {
@@ -147,7 +146,7 @@ func TestGenerateTestData(t *testing.T) {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetPropertyQuery{}
-		query.AssetId = testdata.DemoTurbineAsset1
+		query.AssetIds = []string{testdata.DemoTurbineAsset1}
 		query.PropertyId = testdata.TurbinePropAvgWindSpeed
 		resp, err := GetAssetPropertyDescription(ctx, client, query)
 		if err != nil {
@@ -160,7 +159,7 @@ func TestGenerateTestData(t *testing.T) {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.DescribeAssetPropertyQuery{}
-		query.AssetId = testdata.DemoTurbineAsset1
+		query.AssetIds = []string{testdata.DemoTurbineAsset1}
 		query.PropertyId = testdata.TurbinePropWindSpeed
 		resp, err := GetAssetPropertyDescription(ctx, client, query)
 		if err != nil {
@@ -207,7 +206,7 @@ func TestGenerateTestData(t *testing.T) {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.ListAssociatedAssetsQuery{}
-		query.AssetId = testdata.DemoWindFarmAssetId
+		query.AssetIds = []string{testdata.DemoWindFarmAssetId}
 		query.HierarchyId = testdata.TurbineAssetModelHierarchyId
 		resp, err := ListAssociatedAssets(ctx, client, query)
 		if err != nil {
@@ -220,7 +219,7 @@ func TestGenerateTestData(t *testing.T) {
 		t.Skip("Integration Test") // comment line to run this
 		ctx := context.Background()
 		query := models.ListAssociatedAssetsQuery{}
-		query.AssetId = testdata.DemoTurbineAsset1
+		query.AssetIds = []string{testdata.DemoTurbineAsset1}
 		resp, err := ListAssociatedAssets(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)

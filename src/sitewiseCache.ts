@@ -174,13 +174,13 @@ export class SitewiseCache {
     }
 
     // Also add recent values
-    for (const asset of this.assetsById.values()) {
-      options.push({
-        label: asset.name,
-        value: asset.id,
-        description: asset.arn,
-      });
-    }
+    //for (const asset of this.assetsById.values()) {
+    //  options.push({
+    //    label: asset.name,
+    //    value: asset.id,
+    //    description: asset.arn,
+    //  });
+    //}
     return options;
   }
 }

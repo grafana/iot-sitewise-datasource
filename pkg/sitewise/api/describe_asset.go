@@ -12,7 +12,6 @@ import (
 )
 
 func DescribeAsset(ctx context.Context, client client.SitewiseClient, query models.DescribeAssetQuery) (*framer.AssetDescription, error) {
-
 	awsReq := &iotsitewise.DescribeAssetInput{AssetId: getAssetId(query.BaseQuery)}
 
 	resp, err := client.DescribeAssetWithContext(ctx, awsReq)

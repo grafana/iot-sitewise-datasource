@@ -15,8 +15,8 @@ import (
 )
 
 type AssetPropertyAggregates struct {
-	Request  iotsitewise.GetAssetPropertyAggregatesInput
-	Response iotsitewise.GetAssetPropertyAggregatesOutput
+	Request  iotsitewise.BatchGetAssetPropertyAggregatesInput
+	Response iotsitewise.BatchGetAssetPropertyAggregatesOutput
 }
 
 // getAggregationFields enforces ordering of aggregate fields
@@ -90,23 +90,56 @@ func addAggregateFieldValues(idx int, fields map[string]*data.Field, aggs *iotsi
 func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
 
 	resp := a.Response
+	frames := data.Frames{}
 
-	length := len(resp.AggregatedValues)
-
-	if length < 1 {
-		return data.Frames{}, nil
-	}
-
-	property, err := resources.Property(ctx)
+	properties, err := resources.Properties(ctx)
 	if err != nil {
 		return nil, err
 	}
 
+	for i, e := range resp.SuccessEntries {
+		property := properties[*e.EntryId]
+		frame, err := a.Frame(ctx, property, e.AggregatedValues)
+		if err != nil {
+			return nil, err
+		}
+		frame.Meta = &data.FrameMeta{
+			Custom: models.SitewiseCustomMeta{
+				NextToken:  aws.StringValue(resp.NextToken),
+				Resolution: aws.StringValue(a.Request.Entries[i].Resolution),
+				Aggregates: aws.StringValueSlice(a.Request.Entries[i].AggregateTypes),
+			},
+		}
+
+		for _, e := range resp.ErrorEntries {
+			property := properties[*e.EntryId]
+			frame := data.NewFrame(*property.AssetName)
+			if e.ErrorMessage != nil {
+				frame.Meta = &data.FrameMeta{
+					Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: *e.ErrorMessage}},
+				}
+			}
+			frames = append(frames, frame)
+		}
+
+		frames = append(frames, frame)
+	}
+
+	return frames, nil
+}
+
+func (a AssetPropertyAggregates) Frame(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, v []*iotsitewise.AggregatedValue) (*data.Frame, error) {
+
+	length := len(v)
+	if length < 1 {
+		return &data.Frame{}, nil
+	}
+
 	timeField := fields.TimeField(length)
 	// this will enforce ordering
-	aggregateTypes, aggregateFields := getAggregationFields(length, resp.AggregatedValues[0].Value)
+	aggregateTypes, aggregateFields := getAggregationFields(length, v[0].Value)
 
-	for i, v := range resp.AggregatedValues {
+	for i, v := range v {
 		timeField.Set(i, *v.Timestamp)
 		addAggregateFieldValues(i, aggregateFields, v.Value)
 	}
@@ -122,13 +155,6 @@ func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.
 		fields...,
 	)
 
-	frame.Meta = &data.FrameMeta{
-		Custom: models.SitewiseCustomMeta{
-			NextToken:  aws.StringValue(resp.NextToken),
-			Resolution: aws.StringValue(a.Request.Resolution),
-			Aggregates: aws.StringValueSlice(a.Request.AggregateTypes),
-		},
-	}
+	return frame, nil
 
-	return data.Frames{frame}, nil
 }

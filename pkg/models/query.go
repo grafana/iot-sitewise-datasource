@@ -28,16 +28,28 @@ const (
 )
 
 type BaseQuery struct {
-	AwsRegion           string `json:"region,omitempty"`
-	AssetId             string `json:"assetId,omitempty"`
-	PropertyId          string `json:"propertyId,omitempty"`
-	PropertyAlias       string `json:"propertyAlias,omitempty"`
-	NextToken           string `json:"nextToken,omitempty"`
-	MaxPageAggregations int    `json:"maxPageAggregations,omitempty"`
-	ResponseFormat      string `json:"responseFormat,omitempty"`
+	AwsRegion string `json:"region,omitempty"`
+	// Deprecated: use assetIds
+	AssetId             string   `json:"assetId,omitempty"`
+	AssetIds            []string `json:"assetIds,omitempty"`
+	PropertyId          string   `json:"propertyId,omitempty"`
+	PropertyAlias       string   `json:"propertyAlias,omitempty"`
+	NextToken           string   `json:"nextToken,omitempty"`
+	MaxPageAggregations int      `json:"maxPageAggregations,omitempty"`
+	ResponseFormat      string   `json:"responseFormat,omitempty"`
 
 	Interval      time.Duration     `json:"-"`
 	TimeRange     backend.TimeRange `json:"-"`
 	MaxDataPoints int64             `json:"-"`
 	QueryType     string            `json:"-"`
+}
+
+// MigrateAssetId handles AssetId <--> AssetIds backward compatibility.
+// This is needed for compatibility for queries saved before the Batch API changes were introduced in 1.6.0
+func (query *BaseQuery) MigrateAssetId() {
+	if query.AssetId != "" {
+		query.AssetIds = []string{query.AssetId}
+	} else if len(query.AssetIds) > 0 {
+		query.AssetId = query.AssetIds[0]
+	}
 }

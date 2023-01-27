@@ -119,7 +119,7 @@ func (ds *Datasource) HandleInterpolatedPropertyValueQuery(ctx context.Context, 
 
 func (ds *Datasource) HandleGetAssetPropertyValueHistoryQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
 	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
-		return api.GetAssetPropertyValues(ctx, sw, *query)
+		return api.BatchGetAssetPropertyValues(ctx, sw, *query)
 	})
 }
 
@@ -131,7 +131,7 @@ func (ds *Datasource) HandleGetAssetPropertyAggregateQuery(ctx context.Context, 
 
 func (ds *Datasource) HandleGetAssetPropertyValueQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
 	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
-		return api.GetAssetPropertyValue(ctx, sw, *query)
+		return api.BatchGetAssetPropertyValue(ctx, sw, *query)
 	})
 }
 
