@@ -48,6 +48,7 @@
     "querytype",
     "timeseries",
     "nolint",
-    "staticcheck"
+    "staticcheck",
+    "typecheck"
   ]
 }

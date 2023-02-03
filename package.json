@@ -21,6 +21,10 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@babel/core": "^7.16.7",
+    "@emotion/css": "^11.1.3",
+    "@grafana/data": "8.5.0",
+    "@grafana/runtime": "8.5.0",
+    "@grafana/ui": "8.5.0",
     "@grafana/aws-sdk": "^0.0.37",
     "@grafana/e2e": "9.2.5",
     "@grafana/e2e-selectors": "9.2.5",
@@ -54,6 +58,8 @@
     "jest-environment-jsdom": "^29.3.1",
     "lodash": "latest",
     "prettier": "^2.5.0",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
     "replace-in-file-webpack-plugin": "^1.0.6",
     "sass": "1.56.1",
     "sass-loader": "13.2.0",
@@ -69,13 +75,5 @@
   },
   "resolutions": {
     "rxjs": "6.6.3"
-  },
-  "dependencies": {
-    "@emotion/css": "^11.1.3",
-    "@grafana/data": "8.5.0",
-    "@grafana/runtime": "8.5.0",
-    "@grafana/ui": "8.5.0",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
   }
 }
