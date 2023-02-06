@@ -89,18 +89,18 @@ EOF
 ```
 
 2. Start Grafana docker
+```BASH
+cd /Workspace/iot-sitewise-datasource
+yarn server
+```
+
+OR
 
 ```BASH
 # Run from directory containing iot-sitewise-datasource clone
 cd /Workspace/iot-sitewise-datasource
 docker run -e GF_DEFAULT_APP_MODE=development -e AWS_SHARED_CREDENTIALS_FILE="/Users/grafana/.aws/credentials" -d -p 3000:3000 -v ~/.aws/:/Users/grafana/.aws/ -v "$(pwd)"/dist:/var/lib/grafana/plugins --name=grafana grafana/grafana:latest
 ```
-
-OR
-
-# Run from directory containing iot-sitewise-datasource clone
-
-yarn server
 
 3. Reload plugin
 
