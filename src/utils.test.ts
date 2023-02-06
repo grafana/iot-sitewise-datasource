@@ -6,15 +6,15 @@ describe('Test utils', () => {
   it('convert simple values', () => {
     const df = dataFrameFromJSON(listAssetsResponse as DataFrameJSON);
     expect(frameToMetricFindValues(df)).toMatchInlineSnapshot(`
-      Array [
-        Object {
+      [
+        {
           "text": "WaterTankSimulatorAsset1",
           "value": "3091bd85-8371-4842-8c82-8ece1bf992bb",
         },
       ]
     `);
     const dfPropertyValue = dataFrameFromJSON(getPropertyValueResponse as DataFrameJSON);
-    expect(frameToMetricFindValues(dfPropertyValue)).toMatchInlineSnapshot(`Array []`);
+    expect(frameToMetricFindValues(dfPropertyValue)).toMatchInlineSnapshot(`[]`);
   });
 });
 

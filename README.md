@@ -89,6 +89,12 @@ EOF
 ```
 
 2. Start Grafana docker
+```BASH
+cd /Workspace/iot-sitewise-datasource
+yarn server
+```
+
+OR
 
 ```BASH
 # Run from directory containing iot-sitewise-datasource clone
