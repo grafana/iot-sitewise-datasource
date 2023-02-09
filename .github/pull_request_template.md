@@ -9,7 +9,7 @@ Thank you for sending a pull request! Here are some tips:
 
 2. Ensure you include and run the appropriate tests as part of your Pull Request.
 
-3. In a new feature or configuration option, consider updating the documentation in README.md(https://github.com/grafana/grafana-iot-twinmaker-app/blob/main/README.md) or [src/README.md](https://github.com/grafana/grafana-iot-twinmaker-app/blob/main/src/README.md).
+3. In a new feature or configuration option, consider updating the documentation in README.md(https://github.com/grafana/iot-sitewise-datasource/blob/main/README.md) or [src/README.md](https://github.com/grafana/iot-sitewise-datasource/blob/main/README.md).
 
 -->
 
