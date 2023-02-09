@@ -110,3 +110,13 @@ docker restart grafana
 
 Access from `http://localhost:3000`.
 First time login will be user:**admin** password:**admin**
+
+
+
+### Build a release
+You need to have commit rights to the GitHub repository to publish a release.
+
+1. Update the version number in the `package.json` file.
+2. Update the `CHANGELOG.md` by copy and pasting the relevant PRs from [Github's Release drafter interface](https://github.com/grafana/iot-sitewise-datasource/releases/new) or by running `npm run generate-release-notes`.
+3. PR the changes.
+4. Once merged, follow the Drone release process that you can find [here](https://github.com/grafana/integrations-team/wiki/Plugin-Release-Process#drone-release-process)

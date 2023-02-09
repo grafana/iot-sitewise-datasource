@@ -49,6 +49,7 @@
     "timeseries",
     "nolint",
     "staticcheck",
-    "typecheck"
+    "typecheck",
+    "commitish"
   ]
 }
