@@ -8,7 +8,7 @@
     }
   },
   {
-    "type": "label",
+    "type": "unlabeled",
     "name": "datasource/Sitewise",
     "action": "removeFromProject",
     "removeFromProject": {
@@ -24,7 +24,7 @@
     }
   },
   {
-    "type": "label",
+    "type": "unlabeled",
     "name": "type/docs",
     "action": "removeFromProject",
     "removeFromProject": {
