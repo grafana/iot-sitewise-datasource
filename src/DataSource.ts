@@ -128,18 +128,14 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
     if (query.assetIds) {
       for (const id of query.assetIds) {
         const variableName = templateSrv.getVariableName(id);
-        const valueVar = templateSrv.getVariables().find(({ name }: TypedVariableModel) => {
+        const variableValue = templateSrv.getVariables().find(({ name }: TypedVariableModel) => {
           return name === variableName;
         });
         // Sitewise doesn't support adhoc vars so this should be fine
-        if (valueVar && valueVar.type !== 'adhoc') {
-          if (typeof valueVar.current.value === 'string' || Array.isArray(valueVar.current.value)) {
-            // Only push variables if they're arrays or strings, otherwise throw an error
-            assetIds = assetIds.concat(valueVar.current.value);
-          } else {
-            throw new Error(
-              'Unknown variable value for' + variableName + '. Please specify a string or array of values'
-            );
+        if (variableValue && variableValue.type !== 'adhoc') {
+          if (typeof variableValue.current.value === 'string' || Array.isArray(variableValue.current.value)) {
+            // Only push variables if they're arrays or strings, otherwise skip
+            assetIds = assetIds.concat(variableValue.current.value);
           }
         } else {
           assetIds = assetIds.concat(id);
