@@ -5,8 +5,9 @@ import {
   DataQueryRequest,
   DataFrame,
   MetricFindValue,
+  TypedVariableModel,
 } from '@grafana/data';
-import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
+import { DataSourceWithBackend, getTemplateSrv, TemplateSrv } from '@grafana/runtime';
 import { SitewiseCache } from 'sitewiseCache';
 
 import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta, isPropertyQueryType, SitewiseNextQuery } from './types';
@@ -121,20 +122,27 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
    * Supports template variables for region, asset and property
    */
   applyTemplateVariables(query: SitewiseQuery, scopedVars: ScopedVars): SitewiseQuery {
-    const templateSrv = getTemplateSrv();
+    // @grafana/runtime doesn't expose the entire type, the type cast can be removed once it does
+    const templateSrv = getTemplateSrv() as TemplateSrv & { getVariableName: (id: string) => string };
     let assetIds: string[] = [];
     if (query.assetIds) {
       for (const id of query.assetIds) {
-        const out = templateSrv.replace(id, scopedVars, 'json');
-        try {
-          const parsed: string | string[] = JSON.parse(out);
-          if (Array.isArray(parsed)) {
-            assetIds = assetIds.concat(parsed);
+        const variableName = templateSrv.getVariableName(id);
+        const valueVar = templateSrv.getVariables().find(({ name }: TypedVariableModel) => {
+          return name === variableName;
+        });
+        // Sitewise doesn't support adhoc vars so this should be fine
+        if (valueVar && valueVar.type !== 'adhoc') {
+          if (typeof valueVar.current.value === 'string' || Array.isArray(valueVar.current.value)) {
+            // Only push variables if they're arrays or strings, otherwise throw an error
+            assetIds = assetIds.concat(valueVar.current.value);
           } else {
-            assetIds.push(out);
+            throw new Error(
+              'Unknown variable value for' + variableName + '. Please specify a string or array of values'
+            );
           }
-        } catch (err) {
-          assetIds.push(id);
+        } else {
+          assetIds = assetIds.concat(id);
         }
       }
     }
