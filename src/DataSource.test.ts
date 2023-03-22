@@ -1,7 +1,7 @@
 import { DataSource } from './DataSource';
 import { DataSourceInstanceSettings, PluginMeta, ScopedVars, TypedVariableModel } from '@grafana/data';
 import { QueryType, SitewiseOptions, SitewiseQuery } from './types';
-import { assetIdVariableArray, assetIdVariableConstant } from './__mocks__/variablemocks';
+import { assetIdVariableArray, assetIdVariableConstant } from './__mocks__/variableMocks';
 
 const testInstanceSettings = (
   overrides?: Partial<DataSourceInstanceSettings<SitewiseOptions>>
