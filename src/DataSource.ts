@@ -147,7 +147,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       propertyAlias: templateSrv.replace(query.propertyAlias, scopedVars),
       region: templateSrv.replace(query.region || '', scopedVars),
       propertyId: templateSrv.replace(query.propertyId || '', scopedVars),
-      assetIds,
+      assetIds: [...new Set(assetIds)],
     };
     return query;
   }
