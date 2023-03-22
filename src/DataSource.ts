@@ -138,7 +138,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
             assetIds = assetIds.concat(variableValue.current.value);
           }
         } else {
-          assetIds = assetIds.concat(id);
+          assetIds.push(id);
         }
       }
     }
