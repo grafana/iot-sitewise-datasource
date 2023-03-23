@@ -22,7 +22,7 @@ jest.mock('@grafana/runtime', () => ({
   getTemplateSrv: () => {
     return {
       getVariableName(variableId: string) {
-        return variableId.slice(1);
+        return variableId;
       },
       getVariables(): TypedVariableModel[] {
         return [assetIdVariableArray, assetIdVariableConstant];
@@ -41,7 +41,7 @@ describe('Sitewise Datasource', () => {
       const query: SitewiseQuery = {
         refId: 'RefA',
         queryType: QueryType.ListAssociatedAssets,
-        assetIds: ['$assetIdConstant'],
+        assetIds: ['assetIdConstant'],
         propertyAlias: '',
         region: 'default',
         propertyId: '',
@@ -56,7 +56,7 @@ describe('Sitewise Datasource', () => {
       const query: SitewiseQuery = {
         refId: 'RefA',
         queryType: QueryType.ListAssociatedAssets,
-        assetIds: ['$assetIdArray'],
+        assetIds: ['assetIdArray'],
         propertyAlias: '',
         region: 'default',
         propertyId: '',
@@ -71,7 +71,7 @@ describe('Sitewise Datasource', () => {
       const query: SitewiseQuery = {
         refId: 'RefA',
         queryType: QueryType.ListAssociatedAssets,
-        assetIds: ['$assetIdConstant', '$assetIdArray'],
+        assetIds: ['assetIdConstant', 'assetIdArray'],
         propertyAlias: '',
         region: 'default',
         propertyId: '',
