@@ -123,14 +123,16 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
    */
   applyTemplateVariables(query: SitewiseQuery, scopedVars: ScopedVars): SitewiseQuery {
     // @grafana/runtime doesn't expose the entire type, the type cast can be removed once it does
-    const templateSrv = getTemplateSrv() as TemplateSrv & { getVariableName: (id: string) => string };
+    const templateSrv = getTemplateSrv() as TemplateSrv & { getVariableName: (id: string) => string | undefined };
     let assetIds: string[] = [];
     if (query.assetIds) {
       for (const id of query.assetIds) {
         const variableName = templateSrv.getVariableName(id);
-        const variableValue = templateSrv.getVariables().find(({ name }: TypedVariableModel) => {
-          return name === variableName;
-        });
+        const variableValue = variableName
+          ? templateSrv.getVariables().find(({ name }: TypedVariableModel) => {
+              return name === variableName;
+            })
+          : null;
         // Sitewise doesn't support adhoc vars so this should be fine
         if (variableValue && variableValue.type !== 'adhoc') {
           if (typeof variableValue.current.value === 'string' || Array.isArray(variableValue.current.value)) {
