@@ -50,6 +50,7 @@
     "nolint",
     "staticcheck",
     "typecheck",
-    "commitish"
+    "commitish",
+    "dontHide"
   ]
 }

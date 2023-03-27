@@ -5,8 +5,9 @@ import {
   DataQueryRequest,
   DataFrame,
   MetricFindValue,
+  TypedVariableModel,
 } from '@grafana/data';
-import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
+import { DataSourceWithBackend, getTemplateSrv, TemplateSrv } from '@grafana/runtime';
 import { SitewiseCache } from 'sitewiseCache';
 
 import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta, isPropertyQueryType, SitewiseNextQuery } from './types';
@@ -121,19 +122,24 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
    * Supports template variables for region, asset and property
    */
   applyTemplateVariables(query: SitewiseQuery, scopedVars: ScopedVars): SitewiseQuery {
-    const templateSrv = getTemplateSrv();
+    // @grafana/runtime doesn't expose the entire type, the type cast can be removed once it does
+    const templateSrv = getTemplateSrv() as TemplateSrv & { getVariableName: (id: string) => string | undefined };
     let assetIds: string[] = [];
     if (query.assetIds) {
       for (const id of query.assetIds) {
-        const out = templateSrv.replace(id, scopedVars, 'json');
-        try {
-          const parsed: string | string[] = JSON.parse(out);
-          if (Array.isArray(parsed)) {
-            assetIds = assetIds.concat(parsed);
-          } else {
-            assetIds.push(out);
+        const variableName = templateSrv.getVariableName(id);
+        const variableValue = variableName
+          ? templateSrv.getVariables().find(({ name }: TypedVariableModel) => {
+              return name === variableName;
+            })
+          : null;
+        // Sitewise doesn't support adhoc vars so this should be fine
+        if (variableValue && variableValue.type !== 'adhoc') {
+          if (typeof variableValue.current.value === 'string' || Array.isArray(variableValue.current.value)) {
+            // Only push variables if they're arrays or strings, otherwise skip
+            assetIds = assetIds.concat(variableValue.current.value);
           }
-        } catch (err) {
+        } else {
           assetIds.push(id);
         }
       }
@@ -143,7 +149,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       propertyAlias: templateSrv.replace(query.propertyAlias, scopedVars),
       region: templateSrv.replace(query.region || '', scopedVars),
       propertyId: templateSrv.replace(query.propertyId || '', scopedVars),
-      assetIds,
+      assetIds: [...new Set(assetIds)],
     };
     return query;
   }
