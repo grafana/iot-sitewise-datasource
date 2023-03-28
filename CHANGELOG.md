@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.7.0
+- Variables: Fix assetId field variable replacement ([#172](https://github.com/grafana/iot-sitewise-datasource/pull/172))
+- Bump coverage to version 0.1.19 ([#173](https://github.com/grafana/iot-sitewise-datasource/pull/173))
+- Update aws-sdk-go for the opt-in region list ([#168](https://github.com/grafana/iot-sitewise-datasource/pull/168))
+- Modify templates and add workflows for AWS Datasources squad ([#163](https://github.com/grafana/iot-sitewise-datasource/pull/163))
+- Migrate to create-plugin (#159)
+  ([#159](https://github.com/grafana/iot-sitewise-datasource/pull/159))
+
 ## v1.6.0
 
 - Add Batch API support
