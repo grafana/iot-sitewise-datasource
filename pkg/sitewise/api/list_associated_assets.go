@@ -25,6 +25,18 @@ func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, que
 		traversalDirection = aws.String("PARENT")
 	}
 
+	if query.PropertyAlias != "" {
+		resp, err := client.DescribeTimeSeriesWithContext(ctx, &iotsitewise.DescribeTimeSeriesInput{
+			Alias: aws.String(query.PropertyAlias),
+		})
+		if err != nil {
+			return nil, err
+		}
+		assetsIds := []string{*resp.AssetId}
+		query.AssetIds = assetsIds
+		query.AssetId = *resp.AssetId
+	}
+
 	resp, err := client.ListAssociatedAssetsWithContext(ctx, &iotsitewise.ListAssociatedAssetsInput{
 		AssetId:            getAssetId(query.BaseQuery),
 		HierarchyId:        hierarchyId,
