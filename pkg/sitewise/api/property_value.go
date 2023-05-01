@@ -13,8 +13,19 @@ import (
 )
 
 func valueQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.BatchGetAssetPropertyValueInput {
-
 	entries := make([]*iotsitewise.BatchGetAssetPropertyValueEntry, 0)
+	if query.PropertyAlias != "" {
+		entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueEntry{
+			EntryId:       aws.String(query.BaseQuery.AssetId),
+			PropertyAlias: getPropertyAlias(query.BaseQuery),
+		})
+
+		return &iotsitewise.BatchGetAssetPropertyValueInput{
+			Entries:   entries,
+			NextToken: getNextToken(query.BaseQuery),
+		}
+	}
+
 	for _, assetId := range query.AssetIds {
 		var id *string
 		if assetId != "" {
@@ -34,9 +45,20 @@ func valueQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.BatchG
 	}
 }
 
-func BatchGetAssetPropertyValue(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (*framer.AssetPropertyValue, error) {
+func BatchGetAssetPropertyValue(ctx context.Context, client client.SitewiseClient, query *models.AssetPropertyValueQuery) (*framer.AssetPropertyValue, error) {
+	if query.PropertyAlias != "" {
+		resp, err := client.DescribeTimeSeriesWithContext(ctx, &iotsitewise.DescribeTimeSeriesInput{
+			Alias: aws.String(query.PropertyAlias),
+		})
+		if err != nil {
+			return nil, err
+		}
+		assetsIds := []string{*resp.AssetId}
+		query.BaseQuery.AssetIds = assetsIds
+		query.BaseQuery.AssetId = *resp.AssetId
+	}
 
-	awsReq := valueQueryToInput(query)
+	awsReq := valueQueryToInput(*query)
 
 	resp, err := client.BatchGetAssetPropertyValueWithContext(ctx, awsReq)
 

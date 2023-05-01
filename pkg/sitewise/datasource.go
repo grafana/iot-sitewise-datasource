@@ -85,7 +85,7 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 	}, nil
 }
 
-func (ds *Datasource) invoke(ctx context.Context, req *backend.QueryDataRequest, baseQuery models.BaseQuery, invoker invokerFunc) (data.Frames, error) {
+func (ds *Datasource) invoke(ctx context.Context, req *backend.QueryDataRequest, baseQuery *models.BaseQuery, invoker invokerFunc) (data.Frames, error) {
 	sw, err := ds.GetClient(baseQuery.AwsRegion)
 	if err != nil {
 		return nil, err
@@ -96,7 +96,7 @@ func (ds *Datasource) invoke(ctx context.Context, req *backend.QueryDataRequest,
 		return nil, err
 	}
 
-	return frameResponse(ctx, baseQuery, fr, sw)
+	return frameResponse(ctx, *baseQuery, fr, sw)
 }
 
 func (ds *Datasource) HealthCheck(ctx context.Context, req *backend.CheckHealthRequest) error {
@@ -112,55 +112,55 @@ func (ds *Datasource) HealthCheck(ctx context.Context, req *backend.CheckHealthR
 }
 
 func (ds *Datasource) HandleInterpolatedPropertyValueQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
+	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return api.GetInterpolatedAssetPropertyValues(ctx, sw, *query)
 	})
 }
 
 func (ds *Datasource) HandleGetAssetPropertyValueHistoryQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
-		return api.BatchGetAssetPropertyValues(ctx, sw, *query)
+	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
+		return api.BatchGetAssetPropertyValues(ctx, sw, query)
 	})
 }
 
 func (ds *Datasource) HandleGetAssetPropertyAggregateQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
-		return api.GetAssetPropertyValuesForTimeRange(ctx, sw, *query)
+	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
+		return api.GetAssetPropertyValuesForTimeRange(ctx, sw, query)
 	})
 }
 
 func (ds *Datasource) HandleGetAssetPropertyValueQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
-		return api.BatchGetAssetPropertyValue(ctx, sw, *query)
+	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
+		return api.BatchGetAssetPropertyValue(ctx, sw, query)
 	})
 }
 
 func (ds *Datasource) HandleListAssetModelsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssetModelsQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
+	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return api.ListAssetModels(ctx, sw, *query)
 	})
 }
 
 func (ds *Datasource) HandleListAssociatedAssetsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssociatedAssetsQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
+	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return api.ListAssociatedAssets(ctx, sw, *query)
 	})
 }
 
 func (ds *Datasource) HandleListAssetsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssetsQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
+	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return api.ListAssets(ctx, sw, *query)
 	})
 }
 
 func (ds *Datasource) HandleDescribeAssetQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.DescribeAssetQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
+	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return api.DescribeAsset(ctx, sw, *query)
 	})
 }
 
 func (ds *Datasource) HandleDescribeAssetModelQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.DescribeAssetModelQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
+	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return api.DescribeAssetModel(ctx, sw, *query)
 	})
 }

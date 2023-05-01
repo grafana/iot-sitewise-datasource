@@ -9,7 +9,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
 
-func GetAssetPropertyValuesForTimeRange(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (*framer.AssetPropertyValuesForTimeRange, error) {
+func GetAssetPropertyValuesForTimeRange(ctx context.Context, client client.SitewiseClient, query *models.AssetPropertyValueQuery) (*framer.AssetPropertyValuesForTimeRange, error) {
 
 	if query.Resolution == "AUTO" {
 		resolution := propvals.Resolution(query.BaseQuery)
