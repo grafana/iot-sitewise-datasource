@@ -44,13 +44,12 @@ func getPropertyAlias(query models.BaseQuery) *string {
 func getAndSetAssetIdAndPropertyId(query *models.AssetPropertyValueQuery, client client.SitewiseClient, ctx context.Context) error {
 	if query.PropertyAlias != "" {
 		resp, err := client.DescribeTimeSeriesWithContext(ctx, &iotsitewise.DescribeTimeSeriesInput{
-			Alias: aws.String(query.PropertyAlias),
+			Alias: getPropertyAlias(query.BaseQuery),
 		})
 		if err != nil {
 			return err
 		}
-		assetsIds := []string{*resp.AssetId}
-		query.AssetIds = assetsIds
+		query.AssetIds = []string{*resp.AssetId}
 		query.AssetId = *resp.AssetId
 		query.PropertyId = *resp.PropertyId
 	}
