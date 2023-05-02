@@ -50,7 +50,6 @@ func getAndSetAssetIdAndPropertyId(query *models.AssetPropertyValueQuery, client
 			return err
 		}
 		query.AssetIds = []string{*resp.AssetId}
-		query.AssetId = *resp.AssetId
 		query.PropertyId = *resp.PropertyId
 	}
 	return nil
