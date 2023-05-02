@@ -79,16 +79,9 @@ func BatchGetAssetPropertyValues(ctx context.Context, client client.SitewiseClie
 		maxDps = int(query.MaxDataPoints)
 	)
 
-	if query.PropertyAlias != "" {
-		resp, err := client.DescribeTimeSeriesWithContext(ctx, &iotsitewise.DescribeTimeSeriesInput{
-			Alias: aws.String(query.PropertyAlias),
-		})
-		if err != nil {
-			return nil, err
-		}
-		assetsIds := []string{*resp.AssetId}
-		query.AssetIds = assetsIds
-		query.AssetId = *resp.AssetId
+	err := getAndSetAssetIdAndPropertyId(query, client, ctx)
+	if err != nil {
+		return nil, err
 	}
 
 	awsReq := historyQueryToInput(*query)

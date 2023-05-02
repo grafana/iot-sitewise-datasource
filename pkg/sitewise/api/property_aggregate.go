@@ -99,17 +99,9 @@ func GetAssetPropertyAggregates(ctx context.Context, client client.SitewiseClien
 		maxDps = int(query.MaxDataPoints)
 	)
 
-	if query.PropertyAlias != "" {
-		resp, err := client.DescribeTimeSeriesWithContext(ctx, &iotsitewise.DescribeTimeSeriesInput{
-			Alias: aws.String(query.PropertyAlias),
-		})
-		if err != nil {
-			return nil, err
-		}
-		assetsIds := []string{*resp.AssetId}
-		query.AssetIds = assetsIds
-		query.AssetId = *resp.AssetId
-		query.PropertyId = *resp.PropertyId
+	err := getAndSetAssetIdAndPropertyId(query, client, ctx)
+	if err != nil {
+		return nil, err
 	}
 
 	awsReq := aggregateQueryToInput(*query)
