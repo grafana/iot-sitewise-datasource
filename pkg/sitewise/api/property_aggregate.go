@@ -47,12 +47,13 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ba
 	entries := make([]*iotsitewise.BatchGetAssetPropertyAggregatesEntry, 0)
 
 	if query.PropertyAlias != "" {
+		id := getAssetId(query.BaseQuery)
 		entries = append(entries, &iotsitewise.BatchGetAssetPropertyAggregatesEntry{
 			AggregateTypes: aggregateTypes,
 			EndDate:        to,
-			EntryId:        &query.AssetId,
-			AssetId:        &query.AssetId,
-			PropertyId:     aws.String(query.PropertyId),
+			EntryId:        id,
+			AssetId:        id,
+			PropertyId:     getPropertyId(query.BaseQuery),
 			PropertyAlias:  getPropertyAlias(query.BaseQuery),
 			Qualities:      qualities,
 			Resolution:     aws.String(resolution),
