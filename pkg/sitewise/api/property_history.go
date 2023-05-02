@@ -25,14 +25,6 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Batc
 		qualities = aws.StringSlice([]string{query.Quality})
 	}
 
-	//if propertyAlias is set make sure to set the assetId and propertyId to nil
-	if query.PropertyAlias != "" {
-		// query.AssetIds = []string{}
-		// nolint:staticcheck
-		// query.AssetId = ""
-		// query.PropertyId = ""
-	}
-
 	from, to := util.TimeRangeToUnix(query.TimeRange)
 
 	if query.MaxDataPoints < 1 || query.MaxDataPoints > 250 {
@@ -45,7 +37,7 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Batc
 		entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueHistoryEntry{
 			StartDate:     from,
 			EndDate:       to,
-			EntryId:       aws.String(query.BaseQuery.AssetId),
+			EntryId:       aws.String(query.AssetId),
 			PropertyAlias: aws.String(query.PropertyAlias),
 			TimeOrdering:  aws.String(query.TimeOrdering),
 			Qualities:     qualities,
@@ -95,8 +87,8 @@ func BatchGetAssetPropertyValues(ctx context.Context, client client.SitewiseClie
 			return nil, err
 		}
 		assetsIds := []string{*resp.AssetId}
-		query.BaseQuery.AssetIds = assetsIds
-		query.BaseQuery.AssetId = *resp.AssetId
+		query.AssetIds = assetsIds
+		query.AssetId = *resp.AssetId
 	}
 
 	awsReq := historyQueryToInput(*query)

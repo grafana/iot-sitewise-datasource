@@ -16,7 +16,7 @@ func valueQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.BatchG
 	entries := make([]*iotsitewise.BatchGetAssetPropertyValueEntry, 0)
 	if query.PropertyAlias != "" {
 		entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueEntry{
-			EntryId:       aws.String(query.BaseQuery.AssetId),
+			EntryId:       aws.String(query.AssetId),
 			PropertyAlias: getPropertyAlias(query.BaseQuery),
 		})
 
@@ -54,8 +54,8 @@ func BatchGetAssetPropertyValue(ctx context.Context, client client.SitewiseClien
 			return nil, err
 		}
 		assetsIds := []string{*resp.AssetId}
-		query.BaseQuery.AssetIds = assetsIds
-		query.BaseQuery.AssetId = *resp.AssetId
+		query.AssetIds = assetsIds
+		query.AssetId = *resp.AssetId
 	}
 
 	awsReq := valueQueryToInput(*query)
