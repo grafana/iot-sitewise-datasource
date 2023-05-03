@@ -79,7 +79,6 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ba
 			EntryId:        id,
 			AssetId:        id,
 			PropertyId:     aws.String(query.PropertyId),
-			PropertyAlias:  getPropertyAlias(query.BaseQuery),
 			Qualities:      qualities,
 			Resolution:     aws.String(resolution),
 			StartDate:      from,
