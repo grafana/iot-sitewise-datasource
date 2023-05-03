@@ -74,7 +74,7 @@ export class QueryEditor extends PureComponent<Props> {
     return (
       <>
         <div className="gf-form">
-          <InlineField label="Query type" labelWidth={firstLabelWith} grow={true} tooltip={queryTooltip}>
+          <InlineField label="Query type" labelWidth={firstLabelWith} grow={true} tooltip={queryTooltip} interactive>
             <Select
               options={siteWiseQueryTypes}
               value={currentQueryType}

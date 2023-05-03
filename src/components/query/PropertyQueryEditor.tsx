@@ -301,7 +301,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     return (
       <>
         <div className="gf-form">
-          <InlineField label="Property Alias" labelWidth={firstLabelWith} grow={true} tooltip={queryTooltip}>
+          <InlineField label="Property Alias" labelWidth={firstLabelWith} grow={true} tooltip={queryTooltip} interactive>
             <Input
               value={query.propertyAlias}
               onChange={this.onAliasChange}
