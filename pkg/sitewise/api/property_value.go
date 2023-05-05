@@ -13,19 +13,26 @@ import (
 )
 
 func valueQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.BatchGetAssetPropertyValueInput {
-
 	entries := make([]*iotsitewise.BatchGetAssetPropertyValueEntry, 0)
-	for _, assetId := range query.AssetIds {
-		var id *string
-		if assetId != "" {
-			id = aws.String(assetId)
-		}
+
+	switch {
+	case query.PropertyAlias != "":
 		entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueEntry{
-			EntryId:       id,
-			AssetId:       id,
-			PropertyId:    aws.String(query.PropertyId),
+			EntryId:       getAssetId(query.BaseQuery),
 			PropertyAlias: getPropertyAlias(query.BaseQuery),
 		})
+	default:
+		for _, assetId := range query.AssetIds {
+			var id *string
+			if assetId != "" {
+				id = aws.String(assetId)
+			}
+			entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueEntry{
+				EntryId:    id,
+				AssetId:    id,
+				PropertyId: aws.String(query.PropertyId),
+			})
+		}
 	}
 
 	return &iotsitewise.BatchGetAssetPropertyValueInput{
@@ -34,20 +41,26 @@ func valueQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.BatchG
 	}
 }
 
-func BatchGetAssetPropertyValue(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (*framer.AssetPropertyValue, error) {
+func BatchGetAssetPropertyValue(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.AssetPropertyValue, error) {
+	modifiedQuery, err := getAssetIdAndPropertyId(query, client, ctx)
+	if err != nil {
+		return models.AssetPropertyValueQuery{}, nil, err
+	}
 
-	awsReq := valueQueryToInput(query)
+	awsReq := valueQueryToInput(modifiedQuery)
 
 	resp, err := client.BatchGetAssetPropertyValueWithContext(ctx, awsReq)
 
 	if err != nil {
-		return nil, err
+		return models.AssetPropertyValueQuery{}, nil, err
 	}
 
-	return &framer.AssetPropertyValue{
-		SuccessEntries: resp.SuccessEntries,
-		SkippedEntries: resp.SkippedEntries,
-		ErrorEntries:   resp.ErrorEntries,
-		NextToken:      resp.NextToken,
-	}, nil
+	return modifiedQuery,
+		&framer.AssetPropertyValue{
+			SuccessEntries: resp.SuccessEntries,
+			SkippedEntries: resp.SkippedEntries,
+			ErrorEntries:   resp.ErrorEntries,
+			NextToken:      resp.NextToken,
+		},
+		nil
 }

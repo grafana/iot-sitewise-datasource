@@ -25,14 +25,6 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Batc
 		qualities = aws.StringSlice([]string{query.Quality})
 	}
 
-	//if propertyAlias is set make sure to set the assetId and propertyId to nil
-	if query.PropertyAlias != "" {
-		query.AssetIds = []string{}
-		// nolint:staticcheck
-		query.AssetId = ""
-		query.PropertyId = ""
-	}
-
 	from, to := util.TimeRangeToUnix(query.TimeRange)
 
 	if query.MaxDataPoints < 1 || query.MaxDataPoints > 250 {
@@ -41,21 +33,32 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Batc
 
 	entries := make([]*iotsitewise.BatchGetAssetPropertyValueHistoryEntry, 0)
 
-	for _, id := range query.AssetIds {
-		var assetId *string
-		if id != "" {
-			assetId = aws.String(id)
-		}
+	switch {
+	case query.PropertyAlias != "":
 		entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueHistoryEntry{
 			StartDate:     from,
 			EndDate:       to,
-			EntryId:       assetId,
-			PropertyId:    aws.String(query.PropertyId),
-			AssetId:       assetId,
+			EntryId:       getAssetId(query.BaseQuery),
 			PropertyAlias: getPropertyAlias(query.BaseQuery),
 			TimeOrdering:  aws.String(query.TimeOrdering),
 			Qualities:     qualities,
 		})
+	default:
+		for _, id := range query.AssetIds {
+			var assetId *string
+			if id != "" {
+				assetId = aws.String(id)
+			}
+			entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueHistoryEntry{
+				StartDate:    from,
+				EndDate:      to,
+				EntryId:      assetId,
+				AssetId:      assetId,
+				PropertyId:   aws.String(query.PropertyId),
+				TimeOrdering: aws.String(query.TimeOrdering),
+				Qualities:    qualities,
+			})
+		}
 	}
 
 	return &iotsitewise.BatchGetAssetPropertyValueHistoryInput{
@@ -65,20 +68,28 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Batc
 	}
 }
 
-func BatchGetAssetPropertyValues(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (*framer.AssetPropertyValueHistory, error) {
+func BatchGetAssetPropertyValues(ctx context.Context, client client.SitewiseClient,
+	query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.AssetPropertyValueHistory, error) {
 	var (
 		maxDps = int(query.MaxDataPoints)
 	)
 
-	awsReq := historyQueryToInput(query)
+	modifiedQuery, err := getAssetIdAndPropertyId(query, client, ctx)
+	if err != nil {
+		return models.AssetPropertyValueQuery{}, nil, err
+	}
+
+	awsReq := historyQueryToInput(modifiedQuery)
 	resp, err := client.BatchGetAssetPropertyValueHistoryPageAggregation(ctx, awsReq, query.MaxPageAggregations, maxDps)
 
 	if err != nil {
-		return nil, err
+		return models.AssetPropertyValueQuery{}, nil, err
 	}
 
-	return &framer.AssetPropertyValueHistory{
-		BatchGetAssetPropertyValueHistoryOutput: resp,
-		Query:                                   query,
-	}, nil
+	return modifiedQuery,
+		&framer.AssetPropertyValueHistory{
+			BatchGetAssetPropertyValueHistoryOutput: resp,
+			Query:                                   modifiedQuery,
+		},
+		nil
 }

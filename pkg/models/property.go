@@ -8,7 +8,6 @@ import (
 
 // AssetPropertyValueQuery encapsulates params for all 3 'Get' data APIs in Sitewise.
 // Each API handler will simply ignore the unneeded props.
-// NOTES: We have decided to not support propertyAlias targets, as there is no good way to go from propertyAlias -> assetId/propertyId.
 // This is done simply due to lack of solid generics support in golang.
 type AssetPropertyValueQuery struct {
 	BaseQuery

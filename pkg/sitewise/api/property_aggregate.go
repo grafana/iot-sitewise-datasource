@@ -45,23 +45,38 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ba
 	}
 
 	entries := make([]*iotsitewise.BatchGetAssetPropertyAggregatesEntry, 0)
-	for _, assetId := range query.AssetIds {
-		var id *string
-		if assetId != "" {
-			id = aws.String(assetId)
-		}
+
+	switch {
+	case query.PropertyAlias != "":
+		id := getAssetId(query.BaseQuery)
 		entries = append(entries, &iotsitewise.BatchGetAssetPropertyAggregatesEntry{
 			AggregateTypes: aggregateTypes,
 			EndDate:        to,
 			EntryId:        id,
-			AssetId:        id,
-			PropertyId:     aws.String(query.PropertyId),
 			PropertyAlias:  getPropertyAlias(query.BaseQuery),
 			Qualities:      qualities,
 			Resolution:     aws.String(resolution),
 			StartDate:      from,
 			TimeOrdering:   timeOrdering,
 		})
+	default:
+		for _, assetId := range query.AssetIds {
+			var id *string
+			if assetId != "" {
+				id = aws.String(assetId)
+			}
+			entries = append(entries, &iotsitewise.BatchGetAssetPropertyAggregatesEntry{
+				AggregateTypes: aggregateTypes,
+				EndDate:        to,
+				EntryId:        id,
+				AssetId:        id,
+				PropertyId:     aws.String(query.PropertyId),
+				Qualities:      qualities,
+				Resolution:     aws.String(resolution),
+				StartDate:      from,
+				TimeOrdering:   timeOrdering,
+			})
+		}
 	}
 
 	return &iotsitewise.BatchGetAssetPropertyAggregatesInput{
@@ -71,27 +86,34 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ba
 	}
 }
 
-func GetAssetPropertyAggregates(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (*framer.AssetPropertyAggregates, error) {
+func GetAssetPropertyAggregates(ctx context.Context, client client.SitewiseClient,
+	query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.AssetPropertyAggregates, error) {
 
 	var (
 		maxDps = int(query.MaxDataPoints)
 	)
 
-	awsReq := aggregateQueryToInput(query)
-
-	resp, err := client.BatchGetAssetPropertyAggregatesPageAggregation(ctx, awsReq, query.MaxPageAggregations, maxDps)
-
+	modifiedQuery, err := getAssetIdAndPropertyId(query, client, ctx)
 	if err != nil {
-		return nil, err
+		return models.AssetPropertyValueQuery{}, nil, err
 	}
 
-	return &framer.AssetPropertyAggregates{
-		Request: *awsReq,
-		Response: iotsitewise.BatchGetAssetPropertyAggregatesOutput{
-			SuccessEntries: resp.SuccessEntries,
-			SkippedEntries: resp.SkippedEntries,
-			ErrorEntries:   resp.ErrorEntries,
-			NextToken:      resp.NextToken,
-		},
-	}, nil
+	awsReq := aggregateQueryToInput(modifiedQuery)
+
+	resp, err := client.BatchGetAssetPropertyAggregatesPageAggregation(ctx, awsReq, modifiedQuery.MaxPageAggregations, maxDps)
+
+	if err != nil {
+		return models.AssetPropertyValueQuery{}, nil, err
+	}
+
+	return modifiedQuery,
+		&framer.AssetPropertyAggregates{
+			Request: *awsReq,
+			Response: iotsitewise.BatchGetAssetPropertyAggregatesOutput{
+				SuccessEntries: resp.SuccessEntries,
+				SkippedEntries: resp.SkippedEntries,
+				ErrorEntries:   resp.ErrorEntries,
+				NextToken:      resp.NextToken,
+			},
+		}, nil
 }

@@ -1,0 +1,189 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 35 Rows
+//  +-------------------------------+----------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm | Name: quality  |
+//  | Labels:                       | Labels:                    | Labels:        |
+//  | Type: []time.Time             | Type: []bool               | Type: []string |
+//  +-------------------------------+----------------------------+----------------+
+//  | 2021-02-01 17:30:00 +0100 CET | true                       | GOOD           |
+//  | 2021-02-01 17:35:00 +0100 CET | true                       | GOOD           |
+//  | 2021-02-01 17:40:00 +0100 CET | false                      | GOOD           |
+//  | 2021-02-01 17:45:00 +0100 CET | false                      | GOOD           |
+//  | 2021-02-01 17:50:00 +0100 CET | true                       | GOOD           |
+//  | 2021-02-01 17:55:00 +0100 CET | true                       | GOOD           |
+//  | 2021-02-01 18:00:00 +0100 CET | false                      | GOOD           |
+//  | 2021-02-01 18:05:00 +0100 CET | false                      | GOOD           |
+//  | 2021-02-01 18:10:00 +0100 CET | true                       | GOOD           |
+//  | ...                           | ...                        | ...            |
+//  +-------------------------------+----------------------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm",
+            "type": "boolean",
+            "typeInfo": {
+              "frame": "bool"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612197000000,
+            1612197300000,
+            1612197600000,
+            1612197900000,
+            1612198200000,
+            1612198500000,
+            1612198800000,
+            1612199100000,
+            1612199400000,
+            1612199700000,
+            1612200000000,
+            1612200300000,
+            1612200600000,
+            1612200900000,
+            1612201200000,
+            1612201500000,
+            1612201800000,
+            1612202100000,
+            1612202400000,
+            1612202700000,
+            1612203000000,
+            1612203300000,
+            1612203600000,
+            1612203900000,
+            1612204200000,
+            1612204500000,
+            1612204800000,
+            1612205100000,
+            1612205400000,
+            1612205700000,
+            1612206000000,
+            1612206300000,
+            1612206600000,
+            1612206900000,
+            1612207200000
+          ],
+          [
+            true,
+            true,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            true,
+            true,
+            false,
+            false,
+            true,
+            true,
+            false
+          ],
+          [
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD",
+            "GOOD"
+          ]
+        ]
+      }
+    }
+  ]
+}

@@ -117,22 +117,46 @@ func (ds *Datasource) HandleInterpolatedPropertyValueQuery(ctx context.Context, 
 	})
 }
 
-func (ds *Datasource) HandleGetAssetPropertyValueHistoryQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
-		return api.BatchGetAssetPropertyValues(ctx, sw, *query)
-	})
+func (ds *Datasource) HandleGetAssetPropertyValueHistoryQuery(ctx context.Context, query *models.AssetPropertyValueQuery) (data.Frames, error) {
+	sw, err := ds.GetClient(query.BaseQuery.AwsRegion)
+	if err != nil {
+		return nil, err
+	}
+
+	modifiedQuery, fr, err := api.BatchGetAssetPropertyValues(ctx, sw, *query)
+	if err != nil {
+		return nil, err
+	}
+
+	return frameResponse(ctx, modifiedQuery.BaseQuery, fr, sw)
 }
 
-func (ds *Datasource) HandleGetAssetPropertyAggregateQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
-		return api.GetAssetPropertyValuesForTimeRange(ctx, sw, *query)
-	})
+func (ds *Datasource) HandleGetAssetPropertyAggregateQuery(ctx context.Context, query *models.AssetPropertyValueQuery) (data.Frames, error) {
+	sw, err := ds.GetClient(query.BaseQuery.AwsRegion)
+	if err != nil {
+		return nil, err
+	}
+
+	modifiedQuery, fr, err := api.GetAssetPropertyValuesForTimeRange(ctx, sw, *query)
+	if err != nil {
+		return nil, err
+	}
+
+	return frameResponse(ctx, modifiedQuery.BaseQuery, fr, sw)
 }
 
-func (ds *Datasource) HandleGetAssetPropertyValueQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
-		return api.BatchGetAssetPropertyValue(ctx, sw, *query)
-	})
+func (ds *Datasource) HandleGetAssetPropertyValueQuery(ctx context.Context, query *models.AssetPropertyValueQuery) (data.Frames, error) {
+	sw, err := ds.GetClient(query.BaseQuery.AwsRegion)
+	if err != nil {
+		return nil, err
+	}
+
+	modifiedQuery, fr, err := api.BatchGetAssetPropertyValue(ctx, sw, *query)
+	if err != nil {
+		return nil, err
+	}
+
+	return frameResponse(ctx, modifiedQuery.BaseQuery, fr, sw)
 }
 
 func (ds *Datasource) HandleListAssetModelsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssetModelsQuery) (data.Frames, error) {

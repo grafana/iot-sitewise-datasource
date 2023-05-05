@@ -1,8 +1,12 @@
 package api
 
 import (
+	"context"
+
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
 
 var (
@@ -35,4 +39,19 @@ func getPropertyAlias(query models.BaseQuery) *string {
 		return nil
 	}
 	return aws.String(query.PropertyAlias)
+}
+
+func getAssetIdAndPropertyId(query models.AssetPropertyValueQuery, client client.SitewiseClient, ctx context.Context) (models.AssetPropertyValueQuery, error) {
+	result := query
+	if query.PropertyAlias != "" {
+		resp, err := client.DescribeTimeSeriesWithContext(ctx, &iotsitewise.DescribeTimeSeriesInput{
+			Alias: getPropertyAlias(query.BaseQuery),
+		})
+		if err != nil {
+			return models.AssetPropertyValueQuery{}, err
+		}
+		result.AssetIds = []string{*resp.AssetId}
+		result.PropertyId = *resp.PropertyId
+	}
+	return result, nil
 }
