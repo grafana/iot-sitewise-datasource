@@ -41,16 +41,17 @@ func getPropertyAlias(query models.BaseQuery) *string {
 	return aws.String(query.PropertyAlias)
 }
 
-func getAndSetAssetIdAndPropertyId(query *models.AssetPropertyValueQuery, client client.SitewiseClient, ctx context.Context) error {
+func getAssetIdAndPropertyId(query models.AssetPropertyValueQuery, client client.SitewiseClient, ctx context.Context) (models.AssetPropertyValueQuery, error) {
+	result := query
 	if query.PropertyAlias != "" {
 		resp, err := client.DescribeTimeSeriesWithContext(ctx, &iotsitewise.DescribeTimeSeriesInput{
 			Alias: getPropertyAlias(query.BaseQuery),
 		})
 		if err != nil {
-			return err
+			return models.AssetPropertyValueQuery{}, err
 		}
-		query.AssetIds = []string{*resp.AssetId}
-		query.PropertyId = *resp.PropertyId
+		result.AssetIds = []string{*resp.AssetId}
+		result.PropertyId = *resp.PropertyId
 	}
-	return nil
+	return result, nil
 }

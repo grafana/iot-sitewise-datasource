@@ -73,25 +73,26 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Batc
 	}
 }
 
-func BatchGetAssetPropertyValues(ctx context.Context, client client.SitewiseClient, query *models.AssetPropertyValueQuery) (*framer.AssetPropertyValueHistory, error) {
-	var (
-		maxDps = int(query.MaxDataPoints)
-	)
+func BatchGetAssetPropertyValues(ctx context.Context, client client.SitewiseClient,
+	query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.AssetPropertyValueHistory, error) {
+	maxDps := int(query.MaxDataPoints)
 
-	err := getAndSetAssetIdAndPropertyId(query, client, ctx)
+	modifiedQuery, err := getAssetIdAndPropertyId(query, client, ctx)
 	if err != nil {
-		return nil, err
+		return models.AssetPropertyValueQuery{}, nil, err
 	}
 
-	awsReq := historyQueryToInput(*query)
+	awsReq := historyQueryToInput(modifiedQuery)
 	resp, err := client.BatchGetAssetPropertyValueHistoryPageAggregation(ctx, awsReq, query.MaxPageAggregations, maxDps)
 
 	if err != nil {
-		return nil, err
+		return models.AssetPropertyValueQuery{}, nil, err
 	}
 
-	return &framer.AssetPropertyValueHistory{
-		BatchGetAssetPropertyValueHistoryOutput: resp,
-		Query:                                   *query,
-	}, nil
+	return modifiedQuery,
+		&framer.AssetPropertyValueHistory{
+			BatchGetAssetPropertyValueHistoryOutput: resp,
+			Query:                                   modifiedQuery,
+		},
+		nil
 }

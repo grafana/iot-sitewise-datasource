@@ -50,7 +50,7 @@ func TestGenerateTestData(t *testing.T) {
 		}
 		query.MaxPageAggregations = 1
 
-		resp, err := BatchGetAssetPropertyValues(ctx, client, &query)
+		_, resp, err := BatchGetAssetPropertyValues(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -72,7 +72,7 @@ func TestGenerateTestData(t *testing.T) {
 		}
 		query.MaxPageAggregations = 1
 
-		resp, err := BatchGetAssetPropertyValues(ctx, client, &query)
+		_, resp, err := BatchGetAssetPropertyValues(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -87,7 +87,7 @@ func TestGenerateTestData(t *testing.T) {
 		query.AssetIds = []string{testdata.DemoTurbineAsset1}
 		query.PropertyId = testdata.TurbinePropAvgWindSpeed
 
-		resp, err := BatchGetAssetPropertyValue(ctx, client, &query)
+		_, resp, err := BatchGetAssetPropertyValue(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -111,7 +111,7 @@ func TestGenerateTestData(t *testing.T) {
 		}
 		query.MaxPageAggregations = 1
 
-		resp, err := GetAssetPropertyAggregates(ctx, client, &query)
+		_, resp, err := GetAssetPropertyAggregates(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
 		}
