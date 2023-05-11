@@ -33,7 +33,8 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Batc
 
 	entries := make([]*iotsitewise.BatchGetAssetPropertyValueHistoryEntry, 0)
 
-	if query.PropertyAlias != "" {
+	switch {
+	case query.PropertyAlias != "":
 		entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueHistoryEntry{
 			StartDate:     from,
 			EndDate:       to,
@@ -42,28 +43,22 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Batc
 			TimeOrdering:  aws.String(query.TimeOrdering),
 			Qualities:     qualities,
 		})
-
-		return &iotsitewise.BatchGetAssetPropertyValueHistoryInput{
-			Entries:    entries,
-			MaxResults: aws.Int64(query.MaxDataPoints),
-			NextToken:  getNextToken(query.BaseQuery),
+	default:
+		for _, id := range query.AssetIds {
+			var assetId *string
+			if id != "" {
+				assetId = aws.String(id)
+			}
+			entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueHistoryEntry{
+				StartDate:    from,
+				EndDate:      to,
+				EntryId:      assetId,
+				AssetId:      assetId,
+				PropertyId:   aws.String(query.PropertyId),
+				TimeOrdering: aws.String(query.TimeOrdering),
+				Qualities:    qualities,
+			})
 		}
-	}
-
-	for _, id := range query.AssetIds {
-		var assetId *string
-		if id != "" {
-			assetId = aws.String(id)
-		}
-		entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueHistoryEntry{
-			StartDate:    from,
-			EndDate:      to,
-			EntryId:      assetId,
-			AssetId:      assetId,
-			PropertyId:   aws.String(query.PropertyId),
-			TimeOrdering: aws.String(query.TimeOrdering),
-			Qualities:    qualities,
-		})
 	}
 
 	return &iotsitewise.BatchGetAssetPropertyValueHistoryInput{
