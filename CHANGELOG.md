@@ -2,11 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.9.0
+
+- Add ability to perform property queries by only specifying a property alias ([#179](https://github.com/grafana/iot-sitewise-datasource/pull/179))
+
 ## v1.8.0
 
 - Update backend dependencies
 
 ## v1.7.0
+
 - Variables: Fix assetId field variable replacement ([#172](https://github.com/grafana/iot-sitewise-datasource/pull/172))
 - Bump coverage to version 0.1.19 ([#173](https://github.com/grafana/iot-sitewise-datasource/pull/173))
 - Update aws-sdk-go for the opt-in region list ([#168](https://github.com/grafana/iot-sitewise-datasource/pull/168))
