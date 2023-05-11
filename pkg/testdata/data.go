@@ -142,3 +142,12 @@ func GetIoTSitewiseAssetModelDescription(t *testing.T, path string) iotsitewise.
 	}
 	return assets
 }
+
+func GetIoTSitewiseTimeSeries(t *testing.T, path string) iotsitewise.DescribeTimeSeriesOutput {
+	timeSeries := iotsitewise.DescribeTimeSeriesOutput{}
+	err := UnmarshalFileContents(path, &timeSeries)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return timeSeries
+}

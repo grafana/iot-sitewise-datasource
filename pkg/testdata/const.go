@@ -9,4 +9,5 @@ const (
 	TurbineAssetModelHierarchyId = "883165ce-ea4d-4bac-a223-783e79c5b271"
 	TurbinePropAvgWindSpeed      = "e6c52ea3-d746-46df-b843-d0459540d584"
 	TurbinePropWindSpeed         = "3627f45d-710a-47c8-ae6c-4b71f7c9f5eb"
+	TurbinePropWindSpeedAlias    = "/amazon/renton/1/rpm"
 )

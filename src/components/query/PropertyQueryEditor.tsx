@@ -275,7 +275,8 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const showProp = !isAssociatedAssets && (query.propertyId || query.assetIds);
     const properties = showProp ? (asset ? asset.properties : []) : [];
     const showQuality =
-      (query.propertyId && isAssetPropertyAggregatesQuery(query)) ||
+      query.propertyId ||
+      (query.propertyAlias && isAssetPropertyAggregatesQuery(query)) ||
       isAssetPropertyValueHistoryQuery(query) ||
       isAssetPropertyInterpolatedQuery(query);
 
@@ -301,7 +302,13 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     return (
       <>
         <div className="gf-form">
-          <InlineField label="Property Alias" labelWidth={firstLabelWith} grow={true} tooltip={queryTooltip} interactive>
+          <InlineField
+            label="Property Alias"
+            labelWidth={firstLabelWith}
+            grow={true}
+            tooltip={queryTooltip}
+            interactive
+          >
             <Input
               value={query.propertyAlias}
               onChange={this.onAliasChange}

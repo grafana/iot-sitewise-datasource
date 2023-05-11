@@ -81,7 +81,7 @@ func (s *Server) handlePropertyValueHistoryQuery(ctx context.Context, req *backe
 		return DataResponseErrorUnmarshal(err)
 	}
 
-	frames, err := s.Datasource.HandleGetAssetPropertyValueHistoryQuery(ctx, req, query)
+	frames, err := s.Datasource.HandleGetAssetPropertyValueHistoryQuery(ctx, query)
 	if err != nil {
 		return DataResponseErrorRequestFailed(err)
 	}
@@ -108,7 +108,7 @@ func (s *Server) handlePropertyAggregateQuery(ctx context.Context, req *backend.
 		return DataResponseErrorUnmarshal(err)
 	}
 
-	frames, err := s.Datasource.HandleGetAssetPropertyAggregateQuery(ctx, req, query)
+	frames, err := s.Datasource.HandleGetAssetPropertyAggregateQuery(ctx, query)
 	if err != nil {
 		return DataResponseErrorRequestFailed(err)
 	}
@@ -135,7 +135,7 @@ func (s *Server) handlePropertyValueQuery(ctx context.Context, req *backend.Quer
 		return DataResponseErrorUnmarshal(err)
 	}
 
-	frames, err := s.Datasource.HandleGetAssetPropertyValueQuery(ctx, req, query)
+	frames, err := s.Datasource.HandleGetAssetPropertyValueQuery(ctx, query)
 	if err != nil {
 		return DataResponseErrorRequestFailed(err)
 	}

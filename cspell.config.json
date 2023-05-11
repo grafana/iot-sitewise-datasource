@@ -51,6 +51,7 @@
     "staticcheck",
     "typecheck",
     "commitish",
-    "dontHide"
+    "dontHide",
+    "renton"
   ]
 }

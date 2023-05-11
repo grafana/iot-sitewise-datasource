@@ -9,24 +9,24 @@
 //          "resolution": "RAW"
 //      }
 //  }
-//  Name: Demo Turbine Asset 1
+//  Name: 
 //  Dimensions: 3 Fields by 35 Rows
-//  +-------------------------------+----------------+----------------+
-//  | Name: time                    | Name: Is Windy | Name: quality  |
-//  | Labels:                       | Labels:        | Labels:        |
-//  | Type: []time.Time             | Type: []bool   | Type: []string |
-//  +-------------------------------+----------------+----------------+
-//  | 2021-02-01 08:30:00 -0800 PST | true           | GOOD           |
-//  | 2021-02-01 08:35:00 -0800 PST | true           | GOOD           |
-//  | 2021-02-01 08:40:00 -0800 PST | false          | GOOD           |
-//  | 2021-02-01 08:45:00 -0800 PST | false          | GOOD           |
-//  | 2021-02-01 08:50:00 -0800 PST | true           | GOOD           |
-//  | 2021-02-01 08:55:00 -0800 PST | true           | GOOD           |
-//  | 2021-02-01 09:00:00 -0800 PST | false          | GOOD           |
-//  | 2021-02-01 09:05:00 -0800 PST | false          | GOOD           |
-//  | 2021-02-01 09:10:00 -0800 PST | true           | GOOD           |
-//  | ...                           | ...            | ...            |
-//  +-------------------------------+----------------+----------------+
+//  +-------------------------------+----------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm | Name: quality  |
+//  | Labels:                       | Labels:                    | Labels:        |
+//  | Type: []time.Time             | Type: []bool               | Type: []string |
+//  +-------------------------------+----------------------------+----------------+
+//  | 2021-02-01 08:30:00 -0800 PST | true                       | GOOD           |
+//  | 2021-02-01 08:35:00 -0800 PST | true                       | GOOD           |
+//  | 2021-02-01 08:40:00 -0800 PST | false                      | GOOD           |
+//  | 2021-02-01 08:45:00 -0800 PST | false                      | GOOD           |
+//  | 2021-02-01 08:50:00 -0800 PST | true                       | GOOD           |
+//  | 2021-02-01 08:55:00 -0800 PST | true                       | GOOD           |
+//  | 2021-02-01 09:00:00 -0800 PST | false                      | GOOD           |
+//  | 2021-02-01 09:05:00 -0800 PST | false                      | GOOD           |
+//  | 2021-02-01 09:10:00 -0800 PST | true                       | GOOD           |
+//  | ...                           | ...                        | ...            |
+//  +-------------------------------+----------------------------+----------------+
 //  
 //  
 //  🌟 This was machine generated.  Do not edit. 🌟
@@ -35,7 +35,6 @@
   "frames": [
     {
       "schema": {
-        "name": "Demo Turbine Asset 1",
         "meta": {
           "typeVersion": [
             0,
@@ -54,14 +53,12 @@
             }
           },
           {
-            "name": "Is Windy",
+            "name": "/amazon/renton/1/rpm",
             "type": "boolean",
             "typeInfo": {
               "frame": "bool"
             },
-            "config": {
-              "unit": "none"
-            }
+            "config": {}
           },
           {
             "name": "quality",
