@@ -18,7 +18,7 @@
 //          ]
 //      }
 //  }
-//  Name: Demo Turbine Asset 1 Wind Speed
+//  Name:  /amazon/renton/1/rpm
 //  Dimensions: 7 Fields by 94 Rows
 //  +-------------------------------+--------------------+--------------------+--------------------+--------------------+-----------------+----------------------+
 //  | Name: time                    | Name: avg          | Name: min          | Name: max          | Name: sum          | Name: count     | Name: stddev         |
@@ -44,7 +44,7 @@
   "frames": [
     {
       "schema": {
-        "name": "Demo Turbine Asset 1 Wind Speed",
+        "name": " /amazon/renton/1/rpm",
         "meta": {
           "typeVersion": [
             0,
