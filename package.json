@@ -1,13 +1,13 @@
 {
   "name": "grafana-iot-sitewise-datasource",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "View IoT Sitewise data in grafana",
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
     "dev": "webpack -w -c ./.config/webpack/webpack.config.ts --env development",
     "e2e": "yarn cypress install && yarn grafana-e2e run",
     "e2e:update": "yarn cypress install && yarn grafana-e2e run --update-screenshots",
-    "generate-release-notes": "PREV_TAG=$(git tag | tail -n 1) && gh api --method POST /repos/grafana/iot-sitewise/releases/generate-notes -f tag_name=v${npm_package_version} -f target_commitish=main -f previous_tag_name=${PREV_TAG} | jq -r .body",
+    "generate-release-notes": "PREV_TAG=$(git tag | tail -n 1) && gh api --method POST /repos/grafana/iot-sitewise-datasource/releases/generate-notes -f tag_name=v${npm_package_version} -f target_commitish=main -f previous_tag_name=${PREV_TAG} | jq -r .body",
     "lint": "eslint --cache --ignore-path ./.gitignore --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "yarn lint --fix",
     "server": "docker-compose up --build",

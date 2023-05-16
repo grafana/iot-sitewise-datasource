@@ -9,4 +9,3 @@ export const plugin = new DataSourcePlugin<DataSource, SitewiseQuery, SitewiseOp
   .setConfigEditor(ConfigEditor)
   .setMetadataInspector(MetaInspector)
   .setQueryEditor(QueryEditor);
-
