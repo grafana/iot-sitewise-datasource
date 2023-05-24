@@ -9,7 +9,7 @@
 //          "resolution": "RAW"
 //      }
 //  }
-//  Name: 
+//  Name: Demo Turbine Asset 1
 //  Dimensions: 3 Fields by 35 Rows
 //  +-------------------------------+--------------------+----------------+
 //  | Name: time                    | Name: raw          | Name: quality  |
@@ -35,6 +35,7 @@
   "frames": [
     {
       "schema": {
+        "name": "Demo Turbine Asset 1",
         "meta": {
           "typeVersion": [
             0,
@@ -58,7 +59,9 @@
             "typeInfo": {
               "frame": "float64"
             },
-            "config": {}
+            "config": {
+              "unit": "m/s"
+            }
           },
           {
             "name": "quality",
