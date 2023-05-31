@@ -4,7 +4,7 @@
   "description": "View IoT Sitewise data in grafana",
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
-    "dev": "webpack -w -c ./.config/webpack/webpack.config.ts --env development",
+    "dev": "webpack -c ./.config/webpack/webpack.config.ts --env development",
     "e2e": "yarn cypress install && yarn grafana-e2e run",
     "e2e:update": "yarn cypress install && yarn grafana-e2e run --update-screenshots",
     "generate-release-notes": "PREV_TAG=$(git tag | tail -n 1) && gh api --method POST /repos/grafana/iot-sitewise-datasource/releases/generate-notes -f tag_name=v${npm_package_version} -f target_commitish=main -f previous_tag_name=${PREV_TAG} | jq -r .body",
@@ -17,7 +17,8 @@
     "test:ci": "jest --passWithNoTests --maxWorkers 4",
     "typecheck": "tsc --noEmit",
     "test:coverage": "jest --coverage",
-    "test:coverage:changes": "jest --coverage --changedSince=origin/main"
+    "test:coverage:changes": "jest --coverage --changedSince=origin/main",
+    "watch": "webpack -w -c ./.config/webpack/webpack.config.ts --env development"
   },
   "repository": "github:grafana/iot-sitewise-datasource",
   "author": "Grafana Labs <team@grafana.com> (https://grafana.com)",
