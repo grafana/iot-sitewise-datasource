@@ -27,8 +27,8 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Batc
 
 	from, to := util.TimeRangeToUnix(query.TimeRange)
 
-	if query.MaxDataPoints < 1 || query.MaxDataPoints > 250 {
-		query.MaxDataPoints = 250
+	if query.MaxDataPoints < 1 || query.MaxDataPoints > 20000 {
+		query.MaxDataPoints = 20000
 	}
 
 	entries := make([]*iotsitewise.BatchGetAssetPropertyValueHistoryEntry, 0)
