@@ -84,7 +84,8 @@ func (s *Server) handlePropertyValueHistoryQuery(ctx context.Context, req *backe
 	// Expressions need to run synchronously so we set MaxPageAggregations
 	// and MaxDataPoints to infinity to ensure that the query is not paginated.
 	_, isFromExpression := req.Headers["http_X-Grafana-From-Expr"]
-	if isFromExpression {
+	_, isFromAlert := req.Headers["FromAlert"]
+	if isFromAlert || isFromExpression {
 		query.MaxPageAggregations = int(math.Inf(1))
 		query.MaxDataPoints = int64(math.Inf(1))
 	}
@@ -119,7 +120,8 @@ func (s *Server) handlePropertyAggregateQuery(ctx context.Context, req *backend.
 	// Expressions need to run synchronously so we set MaxPageAggregations
 	// and MaxDataPoints to infinity to ensure that the query is not paginated.
 	_, isFromExpression := req.Headers["http_X-Grafana-From-Expr"]
-	if isFromExpression {
+	_, isFromAlert := req.Headers["FromAlert"]
+	if isFromAlert || isFromExpression {
 		query.MaxPageAggregations = int(math.Inf(1))
 		query.MaxDataPoints = int64(math.Inf(1))
 	}
