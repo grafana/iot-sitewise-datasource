@@ -57,11 +57,17 @@ func (c *sitewiseClient) BatchGetAssetPropertyValueHistoryPageAggregation(ctx co
 			count += len(output.SuccessEntries[0].AssetPropertyValueHistory)
 		}
 		if len(success) > 0 {
-			for i, entry := range success {
-				for _, successEntry := range output.SuccessEntries {
-					if *successEntry.EntryId == *entry.EntryId {
+			for _, successEntry := range output.SuccessEntries {
+				found := false
+				for i, entry := range success {
+					if *entry.EntryId == *successEntry.EntryId {
 						success[i].AssetPropertyValueHistory = append(success[i].AssetPropertyValueHistory, successEntry.AssetPropertyValueHistory...)
+						found = true
+						break
 					}
+				}
+				if !found {
+					success = append(success, successEntry)
 				}
 			}
 		} else {
@@ -125,6 +131,20 @@ func (c *sitewiseClient) BatchGetAssetPropertyAggregatesPageAggregation(ctx cont
 			count += len(output.SuccessEntries[0].AggregatedValues)
 		}
 		if len(success) > 0 {
+			for _, successEntry := range output.SuccessEntries {
+				found := false
+				for i, entry := range success {
+					if *entry.EntryId == *successEntry.EntryId {
+						success[i].AggregatedValues = append(success[i].AggregatedValues, successEntry.AggregatedValues...)
+						found = true
+						break
+					}
+				}
+				if !found {
+					success = append(success, successEntry)
+				}
+			}
+
 			for i, entry := range success {
 				for _, successEntry := range output.SuccessEntries {
 					if *successEntry.EntryId == *entry.EntryId {
