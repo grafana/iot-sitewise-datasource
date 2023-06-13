@@ -56,7 +56,23 @@ func (c *sitewiseClient) BatchGetAssetPropertyValueHistoryPageAggregation(ctx co
 		if len(output.SuccessEntries) > 0 {
 			count += len(output.SuccessEntries[0].AssetPropertyValueHistory)
 		}
-		success = append(success, output.SuccessEntries...)
+		if len(success) > 0 {
+			for _, successEntry := range output.SuccessEntries {
+				found := false
+				for i, entry := range success {
+					if *entry.EntryId == *successEntry.EntryId {
+						success[i].AssetPropertyValueHistory = append(success[i].AssetPropertyValueHistory, successEntry.AssetPropertyValueHistory...)
+						found = true
+						break
+					}
+				}
+				if !found {
+					success = append(success, successEntry)
+				}
+			}
+		} else {
+			success = append(success, output.SuccessEntries...)
+		}
 		skipped = append(skipped, output.SkippedEntries...)
 		errors = append(errors, output.ErrorEntries...)
 		nextToken = output.NextToken
@@ -114,7 +130,31 @@ func (c *sitewiseClient) BatchGetAssetPropertyAggregatesPageAggregation(ctx cont
 		if len(output.SuccessEntries) > 0 {
 			count += len(output.SuccessEntries[0].AggregatedValues)
 		}
-		success = append(success, output.SuccessEntries...)
+		if len(success) > 0 {
+			for _, successEntry := range output.SuccessEntries {
+				found := false
+				for i, entry := range success {
+					if *entry.EntryId == *successEntry.EntryId {
+						success[i].AggregatedValues = append(success[i].AggregatedValues, successEntry.AggregatedValues...)
+						found = true
+						break
+					}
+				}
+				if !found {
+					success = append(success, successEntry)
+				}
+			}
+
+			for i, entry := range success {
+				for _, successEntry := range output.SuccessEntries {
+					if *successEntry.EntryId == *entry.EntryId {
+						success[i].AggregatedValues = append(success[i].AggregatedValues, successEntry.AggregatedValues...)
+					}
+				}
+			}
+		} else {
+			success = append(success, output.SuccessEntries...)
+		}
 		skipped = append(skipped, output.SkippedEntries...)
 		errors = append(errors, output.ErrorEntries...)
 		nextToken = output.NextToken

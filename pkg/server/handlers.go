@@ -81,16 +81,25 @@ func (s *Server) handlePropertyValueHistoryQuery(ctx context.Context, req *backe
 		return DataResponseErrorUnmarshal(err)
 	}
 
+	// Expressions need to run synchronously so we set MaxPageAggregations
+	// and MaxDataPoints to infinity to ensure that the query is not paginated.
+	_, isFromExpression := req.Headers["http_X-Grafana-From-Expr"]
+	_, isFromAlert := req.Headers["FromAlert"]
+	if isFromAlert || isFromExpression {
+		query.MaxPageAggregations = int(math.Inf(1))
+		query.MaxDataPoints = int64(math.Inf(1))
+	}
+
 	frames, err := s.Datasource.HandleGetAssetPropertyValueHistoryQuery(ctx, query)
 	if err != nil {
 		return DataResponseErrorRequestFailed(err)
 	}
 
 	if len(frames) > 0 && query.ResponseFormat == "timeseries" {
-		for _, frame := range frames {
+		for i, frame := range frames {
 			wide, err := data.LongToWide(frame, &data.FillMissing{Mode: data.FillModeNull, Value: math.NaN()})
 			if err == nil {
-				frames = []*data.Frame{wide}
+				frames[i] = wide
 			}
 		}
 	}
@@ -106,6 +115,15 @@ func (s *Server) handlePropertyAggregateQuery(ctx context.Context, req *backend.
 	query, err := models.GetAssetPropertyValueQuery(&q)
 	if err != nil {
 		return DataResponseErrorUnmarshal(err)
+	}
+
+	// Expressions need to run synchronously so we set MaxPageAggregations
+	// and MaxDataPoints to infinity to ensure that the query is not paginated.
+	_, isFromExpression := req.Headers["http_X-Grafana-From-Expr"]
+	_, isFromAlert := req.Headers["FromAlert"]
+	if isFromAlert || isFromExpression {
+		query.MaxPageAggregations = int(math.Inf(1))
+		query.MaxDataPoints = int64(math.Inf(1))
 	}
 
 	frames, err := s.Datasource.HandleGetAssetPropertyAggregateQuery(ctx, query)

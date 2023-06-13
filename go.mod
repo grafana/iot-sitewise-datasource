@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/aws/aws-sdk-go v1.44.194
+	github.com/google/go-cmp v0.5.9
 	github.com/grafana/grafana-aws-sdk v0.15.0
 	github.com/grafana/grafana-plugin-sdk-go v0.161.0
 	github.com/magefile/mage v1.14.0
@@ -31,7 +32,6 @@ require (
 	github.com/go-openapi/swag v0.22.3 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/flatbuffers v22.11.22+incompatible // indirect
-	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/grafana/sqlds/v2 v2.3.10 // indirect
