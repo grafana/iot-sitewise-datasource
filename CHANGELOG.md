@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.9.2
+
+- Fetch asset property info if asset id and property id are available https://github.com/grafana/iot-sitewise-datasource/pull/192
+- Handle expression queries with more than 250 data points https://github.com/grafana/iot-sitewise-datasource/pull/194
+
 ## v1.9.1
 
 * Replace deprecated setVariableQueryEditor with CustomVariableSupport
