@@ -9,22 +9,22 @@
 //          "resolution": "RAW"
 //      }
 //  }
-//  Name: Demo Turbine Asset 1
+//  Name: Demo Turbine Asset 1 Is Windy
 //  Dimensions: 3 Fields by 35 Rows
 //  +-------------------------------+----------------+----------------+
 //  | Name: time                    | Name: Is Windy | Name: quality  |
 //  | Labels:                       | Labels:        | Labels:        |
 //  | Type: []time.Time             | Type: []bool   | Type: []string |
 //  +-------------------------------+----------------+----------------+
-//  | 2021-02-01 08:30:00 -0800 PST | true           | GOOD           |
-//  | 2021-02-01 08:35:00 -0800 PST | true           | GOOD           |
-//  | 2021-02-01 08:40:00 -0800 PST | false          | GOOD           |
-//  | 2021-02-01 08:45:00 -0800 PST | false          | GOOD           |
-//  | 2021-02-01 08:50:00 -0800 PST | true           | GOOD           |
-//  | 2021-02-01 08:55:00 -0800 PST | true           | GOOD           |
-//  | 2021-02-01 09:00:00 -0800 PST | false          | GOOD           |
-//  | 2021-02-01 09:05:00 -0800 PST | false          | GOOD           |
-//  | 2021-02-01 09:10:00 -0800 PST | true           | GOOD           |
+//  | 2021-02-01 17:30:00 +0100 CET | true           | GOOD           |
+//  | 2021-02-01 17:35:00 +0100 CET | true           | GOOD           |
+//  | 2021-02-01 17:40:00 +0100 CET | false          | GOOD           |
+//  | 2021-02-01 17:45:00 +0100 CET | false          | GOOD           |
+//  | 2021-02-01 17:50:00 +0100 CET | true           | GOOD           |
+//  | 2021-02-01 17:55:00 +0100 CET | true           | GOOD           |
+//  | 2021-02-01 18:00:00 +0100 CET | false          | GOOD           |
+//  | 2021-02-01 18:05:00 +0100 CET | false          | GOOD           |
+//  | 2021-02-01 18:10:00 +0100 CET | true           | GOOD           |
 //  | ...                           | ...            | ...            |
 //  +-------------------------------+----------------+----------------+
 //  
@@ -35,7 +35,7 @@
   "frames": [
     {
       "schema": {
-        "name": "Demo Turbine Asset 1",
+        "name": "Demo Turbine Asset 1 Is Windy",
         "meta": {
           "typeVersion": [
             0,

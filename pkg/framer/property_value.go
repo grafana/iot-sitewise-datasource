@@ -2,6 +2,7 @@ package framer
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 
@@ -26,7 +27,7 @@ func (p AssetPropertyValue) Frames(ctx context.Context, resources resource.Resou
 		valueField := fields.PropertyValueField(property, 0)
 		qualityField := fields.QualityField(0)
 
-		frame := data.NewFrame(*property.AssetName, timeField, valueField, qualityField)
+		frame := data.NewFrame(getFrameName(property), timeField, valueField, qualityField)
 
 		if e.AssetPropertyValue != nil {
 			timeField.Append(getTime(e.AssetPropertyValue.Timestamp))
@@ -38,7 +39,7 @@ func (p AssetPropertyValue) Frames(ctx context.Context, resources resource.Resou
 
 	for _, e := range p.ErrorEntries {
 		property := properties[*e.EntryId]
-		frame := data.NewFrame(*property.AssetName)
+		frame := data.NewFrame(fmt.Sprintf("%s %s", *property.AssetName, *property.AssetProperty.Name))
 		if e.ErrorMessage != nil {
 			frame.Meta = &data.FrameMeta{
 				Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: *e.ErrorMessage}},

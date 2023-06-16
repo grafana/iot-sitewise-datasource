@@ -73,7 +73,7 @@ func Test_property_value_query_by_asset_id_and_property_id(t *testing.T) {
 	require.True(t, ok)
 	require.NotNil(t, qdr.Responses["A"].Frames[0])
 
-	expectedFrame := data.NewFrame("Demo Turbine Asset 1",
+	expectedFrame := data.NewFrame("Demo Turbine Asset 1 Wind Speed",
 		data.NewField("time", nil, []time.Time{time.Date(2021, 2, 1, 19, 20, 0, 0, time.UTC)}),
 		data.NewField("Wind Speed", nil, []float64{23.8}).SetConfig(&data.FieldConfig{Unit: "m/s"}),
 		data.NewField("quality", nil, []string{"GOOD"}),
@@ -160,7 +160,7 @@ func Test_property_value_query_by_alias(t *testing.T) {
 	require.True(t, ok)
 	require.NotNil(t, qdr.Responses["A"].Frames[0])
 
-	expectedFrame := data.NewFrame("Demo Turbine Asset 1",
+	expectedFrame := data.NewFrame("Demo Turbine Asset 1 Wind Speed",
 		data.NewField("time", nil, []time.Time{time.Date(2021, 2, 1, 19, 20, 0, 0, time.UTC)}),
 		data.NewField("Wind Speed", nil, []float64{23.8}).SetConfig(&data.FieldConfig{Unit: "m/s"}),
 		data.NewField("quality", nil, []string{"GOOD"}),
@@ -238,7 +238,7 @@ func Test_property_value_query_with_empty_property_value_results(t *testing.T) {
 	require.True(t, ok)
 	require.NotNil(t, qdr.Responses["A"].Frames[0])
 
-	expectedFrame := data.NewFrame("Demo Turbine Asset 1",
+	expectedFrame := data.NewFrame("Demo Turbine Asset 1 Wind Speed",
 		data.NewField("time", nil, []time.Time{}),
 		data.NewField("Wind Speed", nil, []float64{}).SetConfig(&data.FieldConfig{Unit: "m/s"}),
 		data.NewField("quality", nil, []string{}),

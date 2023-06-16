@@ -2,6 +2,7 @@ package framer
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -80,4 +81,20 @@ func serialize(item interface{}) (string, error) {
 		return "", err
 	}
 	return string(serialized), nil
+}
+
+func getFrameName(property *iotsitewise.DescribeAssetPropertyOutput) string {
+	if *property.AssetName != "" {
+		if *property.AssetProperty.Name != "" {
+			return fmt.Sprintf("%s %s", *property.AssetName, *property.AssetProperty.Name)
+		} else {
+			return *property.AssetName
+		}
+	} else {
+		if *property.AssetProperty.Name != "" {
+			return *property.AssetProperty.Name
+		} else {
+			return ""
+		}
+	}
 }

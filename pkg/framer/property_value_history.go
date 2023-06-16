@@ -33,7 +33,7 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 
 	for _, e := range p.ErrorEntries {
 		property := properties[*e.EntryId]
-		frame := data.NewFrame(*property.AssetName)
+		frame := data.NewFrame(getFrameName(property))
 		if e.ErrorMessage != nil {
 			frame.Meta = &data.FrameMeta{
 				Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: *e.ErrorMessage}},
@@ -57,8 +57,11 @@ func (p AssetPropertyValueHistory) Frame(ctx context.Context, property *iotsitew
 	timeField := fields.TimeField(length)
 	valueField := fields.PropertyValueFieldForQuery(p.Query, property, length)
 	qualityField := fields.QualityField(length)
-
-	frame := data.NewFrame(*property.AssetName, timeField, valueField, qualityField)
+	frame := data.NewFrame(
+		getFrameName(property),
+		timeField,
+		valueField,
+		qualityField)
 
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{
