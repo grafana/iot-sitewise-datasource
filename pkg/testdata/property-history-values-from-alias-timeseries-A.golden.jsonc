@@ -10,7 +10,7 @@
 //          "resolution": "RAW"
 //      }
 //  }
-//  Name: Demo Turbine Asset 1 Average Wind Speed
+//  Name: Demo Turbine Asset 1
 //  Dimensions: 2 Fields by 35 Rows
 //  +-------------------------------+--------------------------+
 //  | Name: time                    | Name: Average Wind Speed |
@@ -36,7 +36,7 @@
   "frames": [
     {
       "schema": {
-        "name": "Demo Turbine Asset 1 Average Wind Speed",
+        "name": "Demo Turbine Asset 1",
         "meta": {
           "type": "timeseries-wide",
           "typeVersion": [

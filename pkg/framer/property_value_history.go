@@ -57,8 +57,14 @@ func (p AssetPropertyValueHistory) Frame(ctx context.Context, property *iotsitew
 	timeField := fields.TimeField(length)
 	valueField := fields.PropertyValueFieldForQuery(p.Query, property, length)
 	qualityField := fields.QualityField(length)
+	frameName := ""
+	if models.QueryTypePropertyAggregate == p.Query.QueryType {
+		frameName = getFrameName(property)
+	} else {
+		frameName = *property.AssetName
+	}
 	frame := data.NewFrame(
-		getFrameName(property),
+		frameName,
 		timeField,
 		valueField,
 		qualityField)

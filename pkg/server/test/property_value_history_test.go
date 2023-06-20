@@ -88,7 +88,7 @@ func Test_get_property_value_history_with_default_aka_table_response_format(t *t
 	require.True(t, ok)
 	require.NotNil(t, qdr.Responses["A"].Frames[0])
 
-	expectedFrame := data.NewFrame("Demo Turbine Asset 1 Wind Speed",
+	expectedFrame := data.NewFrame("Demo Turbine Asset 1",
 		data.NewField("time", nil, []time.Time{time.Date(2021, 2, 1, 19, 20, 0, 0, time.UTC)}),
 		data.NewField("Wind Speed", nil, []float64{23.8}).SetConfig(&data.FieldConfig{Unit: "m/s"}),
 		data.NewField("quality", nil, []string{"GOOD"}),
@@ -183,7 +183,7 @@ func Test_get_property_value_history_with_time_series_response_format(t *testing
 	require.True(t, ok)
 	require.NotNil(t, qdr.Responses["A"].Frames[0])
 
-	expectedFrame := data.NewFrame("Demo Turbine Asset 1 Wind Speed",
+	expectedFrame := data.NewFrame("Demo Turbine Asset 1",
 		data.NewField("time", nil, []time.Time{time.Date(2021, 2, 1, 19, 20, 0, 0, time.UTC)}),
 		data.NewField("Wind Speed", data.Labels{"quality": "GOOD"}, []*float64{Pointer(23.8)}),
 	).SetMeta(&data.FrameMeta{
@@ -451,7 +451,7 @@ func Test_get_property_value_history_from_expression_query_with_time_series_resp
 	require.True(t, ok)
 	require.NotNil(t, qdr.Responses["A"].Frames[0])
 
-	expectedFrame := data.NewFrame("Demo Turbine Asset 1 Wind Speed",
+	expectedFrame := data.NewFrame("Demo Turbine Asset 1",
 		data.NewField("time", nil, []time.Time{time.Date(2021, 2, 1, 19, 20, 0, 0, time.UTC)}),
 		data.NewField("Wind Speed", data.Labels{"quality": "GOOD"}, []*float64{Pointer(23.8)}),
 	).SetMeta(&data.FrameMeta{
