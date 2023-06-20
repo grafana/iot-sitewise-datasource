@@ -2,7 +2,6 @@ package framer
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 
@@ -151,7 +150,7 @@ func (a AssetPropertyAggregates) Frame(ctx context.Context, property *iotsitewis
 	}
 
 	frame := data.NewFrame(
-		fmt.Sprintf("%s %s", *property.AssetName, *property.AssetProperty.Name),
+		getFrameName(property),
 		fields...,
 	)
 
