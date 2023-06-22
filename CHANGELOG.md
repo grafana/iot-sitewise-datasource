@@ -1,7 +1,7 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
-## v1.10.2
+## v1.10.0
 
 - Include propertyName in data frame name for 'raw' queries https://github.com/grafana/iot-sitewise-datasource/pull/199
 
