@@ -144,14 +144,6 @@ func (c *sitewiseClient) BatchGetAssetPropertyAggregatesPageAggregation(ctx cont
 					success = append(success, successEntry)
 				}
 			}
-
-			for i, entry := range success {
-				for _, successEntry := range output.SuccessEntries {
-					if *successEntry.EntryId == *entry.EntryId {
-						success[i].AggregatedValues = append(success[i].AggregatedValues, successEntry.AggregatedValues...)
-					}
-				}
-			}
 		} else {
 			success = append(success, output.SuccessEntries...)
 		}
