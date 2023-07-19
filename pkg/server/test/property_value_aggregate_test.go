@@ -56,8 +56,8 @@ func TestPropertyValueAggregate(t *testing.T) {
 				"aggregates":["SUM"],
 				"resolution":"1m"
 			}`,
-			expectedMaxPages:   int(math.Inf(1)),
-			expectedMaxResults: int(math.Inf(1)),
+			expectedMaxPages:   math.MaxInt32,
+			expectedMaxResults: math.MaxInt32,
 		},
 		{
 			name: "query by property alias",
@@ -81,8 +81,8 @@ func TestPropertyValueAggregate(t *testing.T) {
 				"resolution":"1m"
 			}`,
 			expectedDescribeTimeSeriesWithContextArgs: &iotsitewise.DescribeTimeSeriesInput{Alias: Pointer("/amazon/renton/1/rpm")},
-			expectedMaxPages:   int(math.Inf(1)),
-			expectedMaxResults: int(math.Inf(1)),
+			expectedMaxPages:   math.MaxInt32,
+			expectedMaxResults: math.MaxInt32,
 		},
 	}
 
