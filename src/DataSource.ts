@@ -5,9 +5,8 @@ import {
   DataQueryRequest,
   DataFrame,
   MetricFindValue,
-  TypedVariableModel,
 } from '@grafana/data';
-import { DataSourceWithBackend, getTemplateSrv, TemplateSrv } from '@grafana/runtime';
+import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 import { SitewiseCache } from 'sitewiseCache';
 
 import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta, isPropertyQueryType, SitewiseNextQuery } from './types';
@@ -124,36 +123,16 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
    * Supports template variables for region, asset and property
    */
   applyTemplateVariables(query: SitewiseQuery, scopedVars: ScopedVars): SitewiseQuery {
-    // @grafana/runtime doesn't expose the entire type, the type cast can be removed once it does
-    const templateSrv = getTemplateSrv() as TemplateSrv & { getVariableName: (id: string) => string | undefined };
-    let assetIds: string[] = [];
-    if (query.assetIds) {
-      for (const id of query.assetIds) {
-        const variableName = templateSrv.getVariableName(id);
-        const variableValue = variableName
-          ? templateSrv.getVariables().find(({ name }: TypedVariableModel) => {
-              return name === variableName;
-            })
-          : null;
-        // Sitewise doesn't support adhoc vars so this should be fine
-        if (variableValue && variableValue.type !== 'adhoc') {
-          if (typeof variableValue.current.value === 'string' || Array.isArray(variableValue.current.value)) {
-            // Only push variables if they're arrays or strings, otherwise skip
-            assetIds = assetIds.concat(variableValue.current.value);
-          }
-        } else {
-          assetIds.push(id);
-        }
-      }
-    }
+    const templateSrv = getTemplateSrv();
     return {
       ...query,
       propertyAlias: templateSrv.replace(query.propertyAlias, scopedVars),
       region: templateSrv.replace(query.region || '', scopedVars),
       propertyId: templateSrv.replace(query.propertyId || '', scopedVars),
-      assetIds: [...new Set(assetIds)],
+      assetIds: query.assetIds?.flatMap(
+        assetId => templateSrv.replace(assetId, scopedVars, 'csv').split(',')
+      ) ?? []
     };
-    return query;
   }
 
   runQuery(query: SitewiseQuery, maxDataPoints?: number): Observable<DataQueryResponse> {
