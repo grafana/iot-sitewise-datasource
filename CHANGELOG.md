@@ -1,6 +1,12 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
+
+## v1.10.1
+
+- Fix: Property aggregate queries returning duplicated data https://github.com/grafana/iot-sitewise-datasource/pull/203
+- Fix: Query with expression only returns partial data https://github.com/grafana/iot-sitewise-datasource/pull/206
+
 ## v1.10.0
 
 - Include propertyName in data frame name for 'raw' queries https://github.com/grafana/iot-sitewise-datasource/pull/199
@@ -12,7 +18,7 @@ All notable changes to this project will be documented in this file.
 
 ## v1.9.1
 
-* Replace deprecated setVariableQueryEditor with CustomVariableSupport
+- Replace deprecated setVariableQueryEditor with CustomVariableSupport
   in https://github.com/grafana/iot-sitewise-datasource/pull/184
 
 ## v1.9.0
