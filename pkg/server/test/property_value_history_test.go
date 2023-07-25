@@ -467,8 +467,8 @@ func Test_get_property_value_history_from_expression_query_with_time_series_resp
 		"BatchGetAssetPropertyValueHistoryPageAggregation",
 		mock.Anything,
 		mock.Anything,
-		int(math.Inf(1)),
-		int(math.Inf(1)),
+		math.MaxInt32,
+		math.MaxInt32,
 	)
 	mockSw.AssertCalled(t,
 		"DescribeAssetPropertyWithContext",

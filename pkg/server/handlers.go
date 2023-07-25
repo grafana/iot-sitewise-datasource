@@ -86,8 +86,8 @@ func (s *Server) handlePropertyValueHistoryQuery(ctx context.Context, req *backe
 	_, isFromExpression := req.Headers["http_X-Grafana-From-Expr"]
 	_, isFromAlert := req.Headers["FromAlert"]
 	if isFromAlert || isFromExpression {
-		query.MaxPageAggregations = int(math.Inf(1))
-		query.MaxDataPoints = int64(math.Inf(1))
+		query.MaxPageAggregations = math.MaxInt32
+		query.MaxDataPoints = math.MaxInt32
 	}
 
 	frames, err := s.Datasource.HandleGetAssetPropertyValueHistoryQuery(ctx, query)
@@ -122,8 +122,8 @@ func (s *Server) handlePropertyAggregateQuery(ctx context.Context, req *backend.
 	_, isFromExpression := req.Headers["http_X-Grafana-From-Expr"]
 	_, isFromAlert := req.Headers["FromAlert"]
 	if isFromAlert || isFromExpression {
-		query.MaxPageAggregations = int(math.Inf(1))
-		query.MaxDataPoints = int64(math.Inf(1))
+		query.MaxPageAggregations = math.MaxInt32
+		query.MaxDataPoints = math.MaxInt32
 	}
 
 	frames, err := s.Datasource.HandleGetAssetPropertyAggregateQuery(ctx, query)
