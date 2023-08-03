@@ -52,6 +52,8 @@
     "typecheck",
     "commitish",
     "dontHide",
-    "renton"
+    "renton",
+    "assetids",
+    "ahom"
   ]
 }
