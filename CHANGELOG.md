@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.10.3
+
+- Update grafana/aws-sdk-react dependency https://github.com/grafana/iot-sitewise-datasource/pull/20
+
 ## v1.10.2
 
 - Fix: Fix scoped variables replacement in assetids such as repeat panels by @ahom https://github.com/grafana/iot-sitewise-datasource/pull/205
