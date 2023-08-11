@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.11.0
+
+- Update grafana-aws-sdk to v0.19.0 to add `il-central-1` to the opt-in region list
+
 ## v1.10.3
 
 - Update grafana/aws-sdk-react dependency https://github.com/grafana/iot-sitewise-datasource/pull/20
