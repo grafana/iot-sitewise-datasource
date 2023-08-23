@@ -4,7 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## v1.11.0
 
-- Update grafana-aws-sdk to v0.19.0 to add `il-central-1` to the opt-in region list
+- Update backend grafana-aws-sdk to v0.19.0 to add `il-central-1` to the opt-in region list
+- Update frontend grafana/aws-sdk to v0.1.2 to limit `grafana_assume_role` only to enabled datasources
 
 ## v1.10.3
 
