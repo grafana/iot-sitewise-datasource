@@ -1,9 +1,7 @@
 ---
 name: Bug report
 about: Report a bug you found when using this plugin
-title: ''
-labels: datasource/Sitewise, type/bug
-assignees: ''
+labels: ["datasource/Sitewise", "type/bug"]
 
 ---
 
