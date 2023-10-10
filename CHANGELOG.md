@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.11.1
+- Revert "Replace deprecated setVariableQueryEditor with CustomVariableSupport" in [#229](https://github.com/grafana/iot-sitewise-datasource/pull/229)
+
 ## v1.11.0
 
 - Update backend grafana-aws-sdk to v0.19.1 to add `il-central-1` to the opt-in region list
