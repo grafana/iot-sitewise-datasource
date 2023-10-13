@@ -1,0 +1,9 @@
+{
+    "alias": "/amazon/renton/1/rpm",
+    "timeSeriesId": "32c483a3-6091-42fd-a2e2-dbf6caef45be",
+    "dataType": "DOUBLE",
+    "timeSeriesCreationDate": "2023-02-09T07:37:50-08:00",
+    "timeSeriesLastUpdateDate": "2023-03-09T11:42:16-08:00",
+    "timeSeriesArn": "arn:aws:iotsitewise:us-east-2:569069006612:time-series/32c483a3-6091-42fd-a2e2-dbf6caef45be"
+  }
+  

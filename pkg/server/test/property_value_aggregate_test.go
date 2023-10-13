@@ -23,16 +23,17 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
 )
 
-func TestPropertyValueAggregate(t *testing.T) {
-	type test struct {
-		name                                      string
-		query                                     string
-		isExpression                              bool
-		expectedMaxPages                          int
-		expectedMaxResults                        int
-		expectedDescribeTimeSeriesWithContextArgs *iotsitewise.DescribeTimeSeriesInput
-	}
+type test struct {
+	name                                      string
+	query                                     string
+	isExpression                              bool
+	isUnassociated                            bool
+	expectedMaxPages                          int
+	expectedMaxResults                        int
+	expectedDescribeTimeSeriesWithContextArgs *iotsitewise.DescribeTimeSeriesInput
+}
 
+func TestPropertyValueAggregate(t *testing.T) {
 	tests := []test{
 		{
 			name: "query by asset id and property id",
@@ -193,6 +194,115 @@ func TestPropertyValueAggregate(t *testing.T) {
 			})
 		})
 	}
+}
+
+func TestPropertyValueAggregateWithUnassociatedStream(t *testing.T) {
+	tc := test{
+		// an unassociated stream will return nil in DescribeTimeSeriesWithContext for assetId and propertyId
+		name: "query by property alias of an unassociated stream",
+		query: `{
+					"region":"us-west-2",
+					"propertyAlias":"/amazon/renton/1/rpm",
+					"aggregates":["SUM"],
+					"resolution":"1m"
+				}`,
+		expectedDescribeTimeSeriesWithContextArgs: &iotsitewise.DescribeTimeSeriesInput{Alias: Pointer("/amazon/renton/1/rpm")},
+		expectedMaxPages:   1,
+		expectedMaxResults: 0,
+		isUnassociated:     true,
+	}
+
+	t.Run(tc.name, func(t *testing.T) {
+		mockSw := &mocks.SitewiseClient{}
+
+		if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
+			alias := Pointer("/amazon/renton/1/rpm")
+			var assetId *string
+			var propertyId *string
+
+			mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+				Alias:      alias,
+				AssetId:    assetId,
+				PropertyId: propertyId,
+			}, nil)
+		}
+		mockSw.On(
+			"BatchGetAssetPropertyAggregatesPageAggregation",
+			mock.Anything,
+			mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyAggregatesInput) bool {
+				entries := *input.Entries[0]
+				return *entries.EntryId == "_amazon_renton_1_rpm" &&
+					*entries.PropertyAlias == "/amazon/renton/1/rpm" &&
+					*entries.AggregateTypes[0] == "SUM"
+
+			}),
+			tc.expectedMaxPages,
+			tc.expectedMaxResults,
+		).Return(&iotsitewise.BatchGetAssetPropertyAggregatesOutput{
+			NextToken: Pointer("some-next-token"),
+			SuccessEntries: []*iotsitewise.BatchGetAssetPropertyAggregatesSuccessEntry{{
+				AggregatedValues: []*iotsitewise.AggregatedValue{{
+					Timestamp: Pointer(time.Date(2021, 2, 1, 16, 27, 0, 0, time.UTC)),
+					Value:     &iotsitewise.Aggregates{Sum: Pointer(1688.6)},
+				}},
+				EntryId: aws.String("_amazon_renton_1_rpm"),
+			}},
+		}, nil)
+
+		srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
+
+		sitewise.GetCache = func() *cache.Cache {
+			return cache.New(cache.DefaultExpiration, cache.NoExpiration)
+		}
+
+		query := &backend.QueryDataRequest{
+			PluginContext: backend.PluginContext{},
+			Queries: []backend.DataQuery{
+				{
+					RefID:     "A",
+					QueryType: models.QueryTypePropertyAggregate,
+					TimeRange: timeRange,
+					JSON:      []byte(tc.query),
+				},
+			},
+		}
+
+		if tc.isExpression {
+			query.Headers = map[string]string{"http_X-Grafana-From-Expr": "true"}
+		}
+
+		qdr, err := srvr.HandlePropertyAggregate(context.Background(), query)
+		require.Nil(t, err)
+		_, ok := qdr.Responses["A"]
+		require.True(t, ok)
+		require.NotNil(t, qdr.Responses["A"].Frames[0])
+
+		expectedFrame := data.NewFrame("/amazon/renton/1/rpm",
+			data.NewField("time", nil, []time.Time{time.Date(2021, 2, 1, 16, 27, 0, 0, time.UTC)}),
+			data.NewField("sum", nil, []float64{1688.6}),
+		).SetMeta(&data.FrameMeta{
+			Custom: models.SitewiseCustomMeta{
+				NextToken:  "some-next-token",
+				Resolution: "1m",
+				Aggregates: []string{models.AggregateSum},
+			},
+		})
+		if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
+			t.Errorf("Result mismatch (-want +got):\n%s", diff)
+		}
+
+		mockSw.AssertExpectations(t)
+		if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
+			mockSw.AssertCalled(t,
+				"DescribeTimeSeriesWithContext",
+				mock.Anything,
+				tc.expectedDescribeTimeSeriesWithContextArgs,
+			)
+		}
+		mockSw.AssertNotCalled(t, "DescribeAssetPropertyWithContext", mock.Anything, mock.Anything)
+
+	})
+
 }
 
 func Pointer[T any](v T) *T { return &v }

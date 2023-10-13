@@ -297,10 +297,51 @@ func Test_getPropertyValueHistoryFromAliasCaseTable(t *testing.T) {
 	}
 }
 
-func Test_getPropertyValueHistoryFromAliasCaseTimeSeries(t *testing.T) {
-	propVals := testdata.GetIoTSitewisePropHistoryVals(t, testDataRelativePath("property-history-values.json"))
+func Test_getPropertyValueHistoryFromAliasCaseTableUnassociatedStream(t *testing.T) {
+	propVals := testdata.GetIoTSitewisePropHistoryVals(t, testDataRelativePath("property-history-values-from-alias-unassociated.json"))
+	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series-without-property.json"))
+	mockSw := &mocks.SitewiseClient{}
+	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
+	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+
+	srvr := &server.Server{
+		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
+	}
+
+	sitewise.GetCache = func() *cache.Cache {
+		return cache.New(cache.DefaultExpiration, cache.NoExpiration)
+	}
+
+	qdr, err := srvr.HandlePropertyValueHistory(context.Background(), &backend.QueryDataRequest{
+		PluginContext: backend.PluginContext{},
+		Queries: []backend.DataQuery{
+			{
+				QueryType:     models.QueryTypePropertyValueHistory,
+				RefID:         "A",
+				MaxDataPoints: 100,
+				Interval:      1000,
+				TimeRange:     timeRange,
+				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
+					BaseQuery: models.BaseQuery{
+						AwsRegion:     testdata.AwsRegion,
+						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
+					},
+				}),
+			},
+		},
+	})
+	require.Nil(t, err)
+
+	for i, dr := range qdr.Responses {
+		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-table-unassociated", i)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+	}
+}
+
+func Test_getPropertyValueHistoryFromAliasCaseTimeSeries_associated_stream(t *testing.T) {
+	propVals := testdata.GetIoTSitewisePropHistoryVals(t, testDataRelativePath("property-history-values-unassociated.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
-	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
+	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series-without-property.json"))
 	mockSw := &mocks.SitewiseClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -336,12 +377,53 @@ func Test_getPropertyValueHistoryFromAliasCaseTimeSeries(t *testing.T) {
 	require.Nil(t, err)
 
 	for i, dr := range qdr.Responses {
-		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-timeseries", i)
+		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-timeseries_with_associated_stream", i)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+	}
+}
+func Test_getPropertyValueHistoryFromAliasCaseTimeSeries_unassociated_stream(t *testing.T) {
+	propVals := testdata.GetIoTSitewisePropHistoryVals(t, testDataRelativePath("property-history-values-from-alias-unassociated.json"))
+	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series-without-property.json"))
+	mockSw := &mocks.SitewiseClient{}
+	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
+	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+
+	srvr := &server.Server{
+		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
+	}
+
+	sitewise.GetCache = func() *cache.Cache {
+		return cache.New(cache.DefaultExpiration, cache.NoExpiration)
+	}
+
+	qdr, err := srvr.HandlePropertyValueHistory(context.Background(), &backend.QueryDataRequest{
+		PluginContext: backend.PluginContext{},
+		Queries: []backend.DataQuery{
+			{
+				QueryType:     models.QueryTypePropertyValueHistory,
+				RefID:         "A",
+				MaxDataPoints: 100,
+				Interval:      1000,
+				TimeRange:     timeRange,
+				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
+					BaseQuery: models.BaseQuery{
+						ResponseFormat: "timeseries",
+						AwsRegion:      testdata.AwsRegion,
+						PropertyAlias:  testdata.TurbinePropWindSpeedAlias,
+					},
+				}),
+			},
+		},
+	})
+	require.Nil(t, err)
+
+	for i, dr := range qdr.Responses {
+		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-timeseries-unassociated", i)
 		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
 	}
 }
 
-func Test_getPropertyValueBooleanFromAlias(t *testing.T) {
+func Test_getPropertyValueBooleanFromAliasWithAssociatedStream(t *testing.T) {
 	propVals := testdata.GetIoTSitewisePropHistoryVals(t, testDataRelativePath("property-history-values-boolean.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-is-windy.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
@@ -379,7 +461,48 @@ func Test_getPropertyValueBooleanFromAlias(t *testing.T) {
 	require.Nil(t, err)
 
 	for i, dr := range qdr.Responses {
-		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-boolean", i)
+		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-boolean-associated-stream", i)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+	}
+}
+
+func Test_getPropertyValueBooleanFromAliasWithUnassociatedStream(t *testing.T) {
+	propVals := testdata.GetIoTSitewisePropHistoryVals(t, testDataRelativePath("property-history-values-boolean-unassociated.json"))
+	propTimeSeriesWithoutPropertyId := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series-without-property.json"))
+	mockSw := &mocks.SitewiseClient{}
+	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
+	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeriesWithoutPropertyId, nil)
+
+	srvr := &server.Server{
+		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
+	}
+
+	sitewise.GetCache = func() *cache.Cache {
+		return cache.New(cache.DefaultExpiration, cache.NoExpiration)
+	}
+
+	qdr, err := srvr.HandlePropertyValueHistory(context.Background(), &backend.QueryDataRequest{
+		PluginContext: backend.PluginContext{},
+		Queries: []backend.DataQuery{
+			{
+				QueryType:     models.QueryTypePropertyValueHistory,
+				RefID:         "A",
+				MaxDataPoints: 100,
+				Interval:      1000,
+				TimeRange:     timeRange,
+				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
+					BaseQuery: models.BaseQuery{
+						AwsRegion:     testdata.AwsRegion,
+						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
+					},
+				}),
+			},
+		},
+	})
+	require.Nil(t, err)
+
+	for i, dr := range qdr.Responses {
+		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-boolean-with-unassociated-stream", i)
 		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
 	}
 }

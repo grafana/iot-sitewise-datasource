@@ -46,7 +46,6 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 }
 
 func (p AssetPropertyValueHistory) Frame(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, h []*iotsitewise.AssetPropertyValue) (*data.Frame, error) {
-
 	length := len(h)
 	// TODO: make this work with the API instead of ad-hoc dataType inference
 	// https://github.com/grafana/iot-sitewise-datasource/issues/98#issuecomment-892947756

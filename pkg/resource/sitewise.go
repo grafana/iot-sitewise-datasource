@@ -30,7 +30,7 @@ func (rp *SitewiseResources) Asset(ctx context.Context, assetId string) (*iotsit
 func (rp *SitewiseResources) Property(ctx context.Context, assetId string, propertyId string, propertyAlias string) (*iotsitewise.DescribeAssetPropertyOutput, error) {
 	if propertyAlias != "" && (assetId == "" && propertyId == "") {
 		return &iotsitewise.DescribeAssetPropertyOutput{
-			AssetName: aws.String(""),
+			AssetName: aws.String(propertyAlias),
 			AssetProperty: &iotsitewise.Property{
 				Name:     aws.String(propertyAlias),
 				DataType: aws.String("?"),

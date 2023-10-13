@@ -5,6 +5,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
 type queryResourceProvider struct {
@@ -56,13 +57,24 @@ func (rp *queryResourceProvider) Property(ctx context.Context) (*iotsitewise.Des
 
 func (rp *queryResourceProvider) Properties(ctx context.Context) (map[string]*iotsitewise.DescribeAssetPropertyOutput, error) {
 	properties := map[string]*iotsitewise.DescribeAssetPropertyOutput{}
-	for _, id := range rp.baseQuery.AssetIds {
-		prop, err := rp.resources.Property(ctx, id, rp.baseQuery.PropertyId, rp.baseQuery.PropertyAlias)
+
+	if len(rp.baseQuery.AssetIds) == 0 && rp.baseQuery.PropertyId == "" && rp.baseQuery.PropertyAlias != "" {
+		prop, err := rp.resources.Property(ctx, "", "", rp.baseQuery.PropertyAlias)
 		if err != nil {
 			return nil, err
 		}
-		properties[id] = prop
+		entryId := util.GetEntryId(rp.baseQuery)
+		properties[*entryId] = prop
+	} else {
+		for _, id := range rp.baseQuery.AssetIds {
+			prop, err := rp.resources.Property(ctx, id, rp.baseQuery.PropertyId, rp.baseQuery.PropertyAlias)
+			if err != nil {
+				return nil, err
+			}
+			properties[id] = prop
+		}
 	}
+
 	return properties, nil
 }
 

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 
@@ -18,8 +19,8 @@ func valueQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.BatchG
 	switch {
 	case query.PropertyAlias != "":
 		entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueEntry{
-			EntryId:       getAssetId(query.BaseQuery),
-			PropertyAlias: getPropertyAlias(query.BaseQuery),
+			EntryId:       util.GetEntryId(query.BaseQuery),
+			PropertyAlias: util.GetPropertyAlias(query.BaseQuery),
 		})
 	default:
 		for _, assetId := range query.AssetIds {
