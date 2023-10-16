@@ -33,13 +33,13 @@ func getAssetIdAndPropertyId(query models.AssetPropertyValueQuery, client client
 		if resp.AssetId != nil {
 			result.AssetIds = []string{*resp.AssetId}
 		} else {
-			// For unassociated streams with a propertyAlias
+			// For disassociated streams with a propertyAlias
 			result.AssetIds = []string{}
 		}
 		if resp.PropertyId != nil {
 			result.PropertyId = *resp.PropertyId
 		} else {
-			// For unassociated streams without a propertyAlias
+			// For disassociated streams without a propertyAlias
 			result.PropertyId = ""
 		}
 	}

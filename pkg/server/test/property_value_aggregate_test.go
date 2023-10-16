@@ -27,7 +27,7 @@ type test struct {
 	name                                      string
 	query                                     string
 	isExpression                              bool
-	isUnassociated                            bool
+	isDisassociated                           bool
 	expectedMaxPages                          int
 	expectedMaxResults                        int
 	expectedDescribeTimeSeriesWithContextArgs *iotsitewise.DescribeTimeSeriesInput
@@ -196,10 +196,10 @@ func TestPropertyValueAggregate(t *testing.T) {
 	}
 }
 
-func TestPropertyValueAggregateWithUnassociatedStream(t *testing.T) {
+func TestPropertyValueAggregateWithDisassociatedStream(t *testing.T) {
 	tc := test{
-		// an unassociated stream will return nil in DescribeTimeSeriesWithContext for assetId and propertyId
-		name: "query by property alias of an unassociated stream",
+		// an disassociated stream will return nil in DescribeTimeSeriesWithContext for assetId and propertyId
+		name: "query by property alias of an disassociated stream",
 		query: `{
 					"region":"us-west-2",
 					"propertyAlias":"/amazon/renton/1/rpm",
@@ -209,7 +209,7 @@ func TestPropertyValueAggregateWithUnassociatedStream(t *testing.T) {
 		expectedDescribeTimeSeriesWithContextArgs: &iotsitewise.DescribeTimeSeriesInput{Alias: Pointer("/amazon/renton/1/rpm")},
 		expectedMaxPages:   1,
 		expectedMaxResults: 0,
-		isUnassociated:     true,
+		isDisassociated:    true,
 	}
 
 	t.Run(tc.name, func(t *testing.T) {

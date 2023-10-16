@@ -194,7 +194,7 @@ func Test_property_value_query_by_alias_associated_stream(t *testing.T) {
 		},
 	)
 }
-func Test_property_value_query_by_alias_unassociated_stream(t *testing.T) {
+func Test_property_value_query_by_alias_disassociated_stream(t *testing.T) {
 	mockSw := &mocks.SitewiseClient{}
 	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
 		Alias: Pointer("/amazon/renton/1/rpm"),
