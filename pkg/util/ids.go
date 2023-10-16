@@ -29,7 +29,8 @@ func GetPropertyAlias(query models.BaseQuery) *string {
 }
 
 func GetEntryId(query models.BaseQuery) *string {
-	if query.PropertyAlias != "" && len(query.AssetIds) == 0 {
+	if query.PropertyAlias != "" && len(query.AssetIds) == 0 && query.PropertyId == "" {
+		// API constraint: EntryId cannot have a slash in it, so replace with underscore
 		return aws.String(strings.ReplaceAll(query.PropertyAlias, "/", "_"))
 	}
 	return GetAssetId(query)

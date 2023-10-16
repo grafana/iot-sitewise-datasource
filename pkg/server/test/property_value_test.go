@@ -240,7 +240,7 @@ func Test_property_value_query_by_alias_unassociated_stream(t *testing.T) {
 	require.True(t, ok)
 	require.NotNil(t, qdr.Responses["A"].Frames[0])
 
-	expectedFrame := data.NewFrame("/amazon/renton/1/rpm",
+	expectedFrame := data.NewFrame("",
 		data.NewField("time", nil, []time.Time{time.Date(2021, 2, 1, 19, 20, 0, 0, time.UTC)}),
 		data.NewField("/amazon/renton/1/rpm", nil, []float64{23.8}).SetConfig(&data.FieldConfig{Unit: ""}),
 		data.NewField("quality", nil, []string{"GOOD"}),

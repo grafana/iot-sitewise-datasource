@@ -57,7 +57,9 @@ func (rp *queryResourceProvider) Property(ctx context.Context) (*iotsitewise.Des
 
 func (rp *queryResourceProvider) Properties(ctx context.Context) (map[string]*iotsitewise.DescribeAssetPropertyOutput, error) {
 	properties := map[string]*iotsitewise.DescribeAssetPropertyOutput{}
-
+	// if the query for a PropertyAlias doesn't have an assetId or propertyId, it means it's a disassociated strea
+	// in that case, we call Property() with empty values, which will set AssetProperty.Name to the alias
+	// and will set the EntryId to the alias (to access values in results)
 	if len(rp.baseQuery.AssetIds) == 0 && rp.baseQuery.PropertyId == "" && rp.baseQuery.PropertyAlias != "" {
 		prop, err := rp.resources.Property(ctx, "", "", rp.baseQuery.PropertyAlias)
 		if err != nil {
