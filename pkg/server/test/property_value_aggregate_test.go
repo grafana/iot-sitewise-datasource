@@ -27,7 +27,6 @@ type test struct {
 	name                                      string
 	query                                     string
 	isExpression                              bool
-	isDisassociated                           bool
 	expectedMaxPages                          int
 	expectedMaxResults                        int
 	expectedDescribeTimeSeriesWithContextArgs *iotsitewise.DescribeTimeSeriesInput
@@ -209,7 +208,6 @@ func TestPropertyValueAggregateWithDisassociatedStream(t *testing.T) {
 		expectedDescribeTimeSeriesWithContextArgs: &iotsitewise.DescribeTimeSeriesInput{Alias: Pointer("/amazon/renton/1/rpm")},
 		expectedMaxPages:   1,
 		expectedMaxResults: 0,
-		isDisassociated:    true,
 	}
 
 	t.Run(tc.name, func(t *testing.T) {

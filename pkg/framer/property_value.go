@@ -19,9 +19,9 @@ func (p AssetPropertyValue) Frames(ctx context.Context, resources resource.Resou
 	if err != nil {
 		return nil, err
 	}
-	var property *iotsitewise.DescribeAssetPropertyOutput
+
 	for _, e := range p.SuccessEntries {
-		property = properties[*e.EntryId]
+		property := properties[*e.EntryId]
 		timeField := fields.TimeField(0)
 		valueField := fields.PropertyValueField(property, 0)
 		qualityField := fields.QualityField(0)
