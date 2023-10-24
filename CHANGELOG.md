@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.12.0
+- Query by property alias: Add support for unassociated streams in [#231](https://github.com/grafana/iot-sitewise-datasource/pull/231)
+
 ## v1.11.1
 - Revert "Replace deprecated setVariableQueryEditor with CustomVariableSupport" in [#229](https://github.com/grafana/iot-sitewise-datasource/pull/229)
 
