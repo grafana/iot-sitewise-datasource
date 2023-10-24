@@ -94,7 +94,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
     }
     return true; // keep the query
   }
-
+  // returns string that will be shown in the panel header when the panel is collapsed
   getQueryDisplayText(query: SitewiseQuery): string {
     const cache = this.getCache(query.region);
     let txt: string = query.queryType;
@@ -112,7 +112,9 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
         } else {
           txt += ' / ' + query.propertyId;
         }
-      }
+      } 
+    } else if(query.propertyAlias) {
+      txt += ' / ' + query.propertyAlias;
     }
     return txt;
   }

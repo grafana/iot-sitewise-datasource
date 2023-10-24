@@ -38,8 +38,8 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Batc
 		entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueHistoryEntry{
 			StartDate:     from,
 			EndDate:       to,
-			EntryId:       getAssetId(query.BaseQuery),
-			PropertyAlias: getPropertyAlias(query.BaseQuery),
+			EntryId:       util.GetEntryId(query.BaseQuery),
+			PropertyAlias: util.GetPropertyAlias(query.BaseQuery),
 			TimeOrdering:  aws.String(query.TimeOrdering),
 			Qualities:     qualities,
 		})

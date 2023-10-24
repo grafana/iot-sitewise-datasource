@@ -56,9 +56,9 @@ func interpolatedQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise
 		IntervalInSeconds:  aws.Int64(intervalInSeconds),
 		MaxResults:         aws.Int64(10),
 		NextToken:          getNextToken(query.BaseQuery),
-		AssetId:            getAssetId(query.BaseQuery),
-		PropertyId:         getPropertyId(query.BaseQuery),
-		PropertyAlias:      getPropertyAlias(query.BaseQuery),
+		AssetId:            util.GetAssetId(query.BaseQuery),
+		PropertyId:         util.GetPropertyId(query.BaseQuery),
+		PropertyAlias:      util.GetPropertyAlias(query.BaseQuery),
 		Quality:            &quality,
 		Type:               &interpolationType,
 	}

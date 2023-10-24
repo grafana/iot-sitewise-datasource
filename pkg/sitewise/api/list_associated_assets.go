@@ -9,6 +9,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
 func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, query models.ListAssociatedAssetsQuery) (*framer.AssociatedAssets, error) {
@@ -26,7 +27,7 @@ func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, que
 	}
 
 	resp, err := client.ListAssociatedAssetsWithContext(ctx, &iotsitewise.ListAssociatedAssetsInput{
-		AssetId:            getAssetId(query.BaseQuery),
+		AssetId:            util.GetAssetId(query.BaseQuery),
 		HierarchyId:        hierarchyId,
 		MaxResults:         MaxSitewiseResults,
 		NextToken:          getNextToken(query.BaseQuery),

@@ -1,0 +1,71 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 0 Rows
+//  +-------------------+----------------------------+----------------+
+//  | Name: time        | Name: /amazon/renton/1/rpm | Name: quality  |
+//  | Labels:           | Labels:                    | Labels:        |
+//  | Type: []time.Time | Type: []float64            | Type: []string |
+//  +-------------------+----------------------------+----------------+
+//  +-------------------+----------------------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [],
+          [],
+          []
+        ]
+      }
+    }
+  ]
+}

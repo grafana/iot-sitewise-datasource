@@ -48,12 +48,11 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ba
 
 	switch {
 	case query.PropertyAlias != "":
-		id := getAssetId(query.BaseQuery)
 		entries = append(entries, &iotsitewise.BatchGetAssetPropertyAggregatesEntry{
 			AggregateTypes: aggregateTypes,
 			EndDate:        to,
-			EntryId:        id,
-			PropertyAlias:  getPropertyAlias(query.BaseQuery),
+			EntryId:        util.GetEntryId(query.BaseQuery),
+			PropertyAlias:  util.GetPropertyAlias(query.BaseQuery),
 			Qualities:      qualities,
 			Resolution:     aws.String(resolution),
 			StartDate:      from,

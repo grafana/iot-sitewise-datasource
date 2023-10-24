@@ -1,0 +1,465 @@
+{
+  "SuccessEntries": [
+    {
+      "AssetPropertyValueHistory": [
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612197000
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612197300
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612197600
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612197900
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612198200
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612198500
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612198800
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612199100
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612199400
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612199700
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612200000
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612200300
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612200600
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612200900
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612201200
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612201500
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612201800
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612202100
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612202400
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612202700
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612203000
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612203300
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612203600
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612203900
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612204200
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612204500
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612204800
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612205100
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612205400
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612205700
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612206000
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612206300
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612206600
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612206900
+          },
+          "Value": {
+            "BooleanValue": true,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        },
+        {
+          "Quality": "GOOD",
+          "Timestamp": {
+            "OffsetInNanos": 0,
+            "TimeInSeconds": 1612207200
+          },
+          "Value": {
+            "BooleanValue": false,
+            "DoubleValue": null,
+            "IntegerValue": null,
+            "StringValue": null
+          }
+        }
+      ],
+      "EntryId": "_amazon_renton_1_rpm"
+    }
+  ],
+  "NextToken": null
+}
