@@ -229,7 +229,7 @@ func TestPropertyValueAggregateWithDisassociatedStream(t *testing.T) {
 			mock.Anything,
 			mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyAggregatesInput) bool {
 				entries := *input.Entries[0]
-				return *entries.EntryId == "_amazon_renton_1_rpm" &&
+				return *entries.EntryId == "61e4e1a8ab39463fa0b9418d9be2923e364f40a8b935b69d006b999516cdecef" &&
 					*entries.PropertyAlias == "/amazon/renton/1/rpm" &&
 					*entries.AggregateTypes[0] == "SUM"
 
@@ -243,7 +243,7 @@ func TestPropertyValueAggregateWithDisassociatedStream(t *testing.T) {
 					Timestamp: Pointer(time.Date(2021, 2, 1, 16, 27, 0, 0, time.UTC)),
 					Value:     &iotsitewise.Aggregates{Sum: Pointer(1688.6)},
 				}},
-				EntryId: aws.String("_amazon_renton_1_rpm"),
+				EntryId: aws.String("61e4e1a8ab39463fa0b9418d9be2923e364f40a8b935b69d006b999516cdecef"),
 			}},
 		}, nil)
 

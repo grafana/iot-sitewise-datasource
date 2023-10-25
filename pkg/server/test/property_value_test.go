@@ -211,7 +211,7 @@ func Test_property_value_query_by_alias_disassociated_stream(t *testing.T) {
 					DoubleValue: Pointer(float64(23.8)),
 				},
 			},
-			EntryId: Pointer("_amazon_renton_1_rpm"),
+			EntryId: Pointer("61e4e1a8ab39463fa0b9418d9be2923e364f40a8b935b69d006b999516cdecef"),
 		}}}, nil)
 
 	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
@@ -260,7 +260,7 @@ func Test_property_value_query_by_alias_disassociated_stream(t *testing.T) {
 		mock.Anything,
 		&iotsitewise.BatchGetAssetPropertyValueInput{
 			Entries: []*iotsitewise.BatchGetAssetPropertyValueEntry{{
-				EntryId:       Pointer("_amazon_renton_1_rpm"),
+				EntryId:       Pointer("61e4e1a8ab39463fa0b9418d9be2923e364f40a8b935b69d006b999516cdecef"),
 				PropertyAlias: Pointer("/amazon/renton/1/rpm"),
 			}},
 		},
