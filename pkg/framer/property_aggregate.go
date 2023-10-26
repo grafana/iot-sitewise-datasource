@@ -109,21 +109,19 @@ func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.
 				Aggregates: aws.StringValueSlice(a.Request.Entries[i].AggregateTypes),
 			},
 		}
-
-		for _, e := range resp.ErrorEntries {
-			property := properties[*e.EntryId]
-			frame := data.NewFrame(getFrameName(property))
-			if e.ErrorMessage != nil {
-				frame.Meta = &data.FrameMeta{
-					Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: *e.ErrorMessage}},
-				}
-			}
-			frames = append(frames, frame)
-		}
-
 		frames = append(frames, frame)
 	}
 
+	for _, e := range resp.ErrorEntries {
+		property := properties[*e.EntryId]
+		frame := data.NewFrame(getFrameName(property))
+		if e.ErrorMessage != nil {
+			frame.Meta = &data.FrameMeta{
+				Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: *e.ErrorMessage}},
+			}
+		}
+		frames = append(frames, frame)
+	}
 	return frames, nil
 }
 

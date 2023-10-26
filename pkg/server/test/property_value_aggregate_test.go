@@ -303,4 +303,118 @@ func TestPropertyValueAggregateWithDisassociatedStream(t *testing.T) {
 
 }
 
+func TestPropertyValueAggregate_with_error(t *testing.T) {
+	tc := test{
+		name: "query by asset id and property id",
+		query: `{
+			"region":"us-west-2",
+			"assetId":"1assetid-aaaa-2222-bbbb-3333cccc4444",
+			"propertyId":"11propid-aaaa-2222-bbbb-3333cccc4444",
+			"aggregates":["SUM"],
+			"resolution":"1m"
+		}`,
+		expectedMaxPages:   1,
+		expectedMaxResults: 0,
+	}
+	t.Run(tc.name, func(t *testing.T) {
+		mockSw := &mocks.SitewiseClient{}
+
+		if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
+			mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+				Alias:      Pointer("/amazon/renton/1/rpm"),
+				AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
+				PropertyId: Pointer("11propid-aaaa-2222-bbbb-3333cccc4444"),
+			}, nil)
+		}
+
+		mockSw.On(
+			"BatchGetAssetPropertyAggregatesPageAggregation",
+			mock.Anything,
+			mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyAggregatesInput) bool {
+				entries := *input.Entries[0]
+
+				if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
+					return *entries.EntryId == "1assetid-aaaa-2222-bbbb-3333cccc4444" &&
+						*entries.PropertyAlias == "/amazon/renton/1/rpm" &&
+						*entries.AggregateTypes[0] == "SUM"
+				} else {
+					return *entries.EntryId == "1assetid-aaaa-2222-bbbb-3333cccc4444" &&
+						*entries.AssetId == "1assetid-aaaa-2222-bbbb-3333cccc4444" &&
+						*entries.PropertyId == "11propid-aaaa-2222-bbbb-3333cccc4444" &&
+						*entries.AggregateTypes[0] == "SUM"
+				}
+			}),
+			tc.expectedMaxPages,
+			tc.expectedMaxResults,
+		).Return(&iotsitewise.BatchGetAssetPropertyAggregatesOutput{
+			NextToken: Pointer("some-next-token"),
+			ErrorEntries: []*iotsitewise.BatchGetAssetPropertyAggregatesErrorEntry{{
+				ErrorCode:    Pointer("404"),
+				ErrorMessage: Pointer("Asset property not found."),
+				EntryId:      aws.String("1assetid-aaaa-2222-bbbb-3333cccc4444"),
+			}},
+		}, nil)
+
+		mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+			AssetName: Pointer("Demo Turbine Asset 1"),
+			AssetProperty: &iotsitewise.Property{
+				DataType: Pointer("DOUBLE"),
+				Name:     Pointer("Wind Speed"),
+				Unit:     Pointer("m/s"),
+			},
+		}, nil)
+
+		srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
+
+		sitewise.GetCache = func() *cache.Cache {
+			return cache.New(cache.DefaultExpiration, cache.NoExpiration)
+		}
+
+		query := &backend.QueryDataRequest{
+			PluginContext: backend.PluginContext{},
+			Queries: []backend.DataQuery{
+				{
+					RefID:     "A",
+					QueryType: models.QueryTypePropertyAggregate,
+					TimeRange: timeRange,
+					JSON:      []byte(tc.query),
+				},
+			},
+		}
+
+		if tc.isExpression {
+			query.Headers = map[string]string{"http_X-Grafana-From-Expr": "true"}
+		}
+
+		qdr, err := srvr.HandlePropertyAggregate(context.Background(), query)
+		require.Nil(t, err)
+		_, ok := qdr.Responses["A"]
+		require.True(t, ok)
+		require.NotNil(t, qdr.Responses["A"].Frames[0])
+
+		expectedFrame := data.NewFrame("Demo Turbine Asset 1 Wind Speed").SetMeta(&data.FrameMeta{
+			Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: "Asset property not found."}},
+		},
+		)
+		if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
+			t.Errorf("Result mismatch (-want +got):\n%s", diff)
+		}
+
+		mockSw.AssertExpectations(t)
+		if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
+			mockSw.AssertCalled(t,
+				"DescribeTimeSeriesWithContext",
+				mock.Anything,
+				tc.expectedDescribeTimeSeriesWithContextArgs,
+			)
+		}
+		mockSw.AssertCalled(t, "DescribeAssetPropertyWithContext", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
+			AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
+			PropertyId: Pointer("11propid-aaaa-2222-bbbb-3333cccc4444"),
+		})
+
+	})
+
+}
+
 func Pointer[T any](v T) *T { return &v }
