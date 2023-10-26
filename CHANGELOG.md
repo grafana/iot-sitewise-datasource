@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v1.12.1
+- Disassociated streams: Hash entryId to fix bug with property aliases longer than 64 characters in [#239](https://github.com/grafana/iot-sitewise-datasource/pull/239)
+
 ## v1.12.0
 - Query by property alias: Add support for unassociated streams in [#231](https://github.com/grafana/iot-sitewise-datasource/pull/231)
 
