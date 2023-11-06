@@ -377,7 +377,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     return this.props.newFormStylingEnabled ? (
       <>
         <EditorRow>
-          <EditorField label="Property Alias" tooltip={queryTooltip} tooltipInteractive htmlFor="alias" width={70}>
+          <EditorField label="Property Alias" tooltip={queryTooltip} tooltipInteractive htmlFor="alias" width={80}>
             <Input
               id="alias"
               value={query.propertyAlias}
