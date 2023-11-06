@@ -2,7 +2,6 @@ import { DataSource } from './DataSource';
 import { DataSourceInstanceSettings, PluginMeta, ScopedVar, ScopedVars } from '@grafana/data';
 import { QueryType, SitewiseOptions, SitewiseQuery } from './types';
 
-
 const testInstanceSettings = (
   overrides?: Partial<DataSourceInstanceSettings<SitewiseOptions>>
 ): DataSourceInstanceSettings<SitewiseOptions> => ({
@@ -21,26 +20,26 @@ jest.mock('@grafana/runtime', () => ({
   ...jest.requireActual('@grafana/runtime'),
   getTemplateSrv: () => {
     // ref: https://github.com/grafana/grafana/blob/main/public/app/features/variables/utils.ts#L17
-    const variableRegex = /\$(\w+)|\[\[(\w+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::([^\}]+))?}/g; 
+    const variableRegex = /\$(\w+)|\[\[(\w+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::([^\}]+))?}/g;
     const globalVars: ScopedVars = {
-      assetIdConstant: {text: 'valueConstant', value: 'valueConstant'},
-      assetIdArray: {text: ['array1', 'array2', 'array3'], value: ['array1', 'array2', 'array3']}
+      assetIdConstant: { text: 'valueConstant', value: 'valueConstant' },
+      assetIdArray: { text: ['array1', 'array2', 'array3'], value: ['array1', 'array2', 'array3'] },
     };
     return {
       // Approximate mock of replace function, with 'csv' format
-      // ref: https://github.com/grafana/grafana/blob/main/public/app/features/templating/template_srv.mock.ts#L30 
+      // ref: https://github.com/grafana/grafana/blob/main/public/app/features/templating/template_srv.mock.ts#L30
       replace(str: string, scopedVars?: ScopedVars, format?: string | Function) {
         return str.replace(variableRegex, (match, var1, var2, fmt2, var3, fieldPath, fmt3) => {
-            const variableName = var1 || var2 || var3;
-            let varMatch: ScopedVar | undefined;
-            if (!!scopedVars) {
-                varMatch = scopedVars[variableName];
-            }
-            varMatch = varMatch ?? globalVars[variableName];
-            if (Array.isArray(varMatch.value)) {
-                return varMatch.value.join(',');
-            }
-            return varMatch.value;
+          const variableName = var1 || var2 || var3;
+          let varMatch: ScopedVar | undefined;
+          if (!!scopedVars) {
+            varMatch = scopedVars[variableName];
+          }
+          varMatch = varMatch ?? globalVars[variableName];
+          if (Array.isArray(varMatch?.value)) {
+            return varMatch?.value.join(',');
+          }
+          return varMatch?.value ?? '';
         });
       },
     };
@@ -104,7 +103,11 @@ describe('Sitewise Datasource', () => {
         region: 'default',
         propertyId: '',
       };
-      expect(datasource.applyTemplateVariables(query, { assetIdConstant: { text: 'scopedValueConstant', value: 'scopedValueConstant' } })).toEqual({
+      expect(
+        datasource.applyTemplateVariables(query, {
+          assetIdConstant: { text: 'scopedValueConstant', value: 'scopedValueConstant' },
+        })
+      ).toEqual({
         ...query,
         assetIds: ['scopedValueConstant'],
       });
@@ -119,7 +122,11 @@ describe('Sitewise Datasource', () => {
         region: 'default',
         propertyId: '',
       };
-      expect(datasource.applyTemplateVariables(query, { assetIdConstant: { text: 'scopedValueConstant', value: 'scopedValueConstant' } })).toEqual({
+      expect(
+        datasource.applyTemplateVariables(query, {
+          assetIdConstant: { text: 'scopedValueConstant', value: 'scopedValueConstant' },
+        })
+      ).toEqual({
         ...query,
         assetIds: ['scopedValueConstant', 'noVar', 'array1', 'array2', 'array3'],
       });
