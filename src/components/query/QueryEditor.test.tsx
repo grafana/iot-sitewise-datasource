@@ -11,7 +11,7 @@ import userEvent from '@testing-library/user-event';
 const instanceSettings: DataSourceInstanceSettings<SitewiseOptions> = {
   id: 0,
   uid: 'test',
-  name: 'siteqise',
+  name: 'sitewise',
   type: 'datasource',
   access: 'direct',
   url: 'http://localhost',
@@ -115,7 +115,7 @@ describe('QueryEditor', () => {
       });
     });
     it('should display correct fields for query type  Interpolated Property and using Property alias', async () => {
-      setup({
+      await setup({
         queryType: QueryType.PropertyInterpolated,
         propertyAlias: 'propAlias',
       });

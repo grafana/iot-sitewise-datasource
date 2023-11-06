@@ -6,7 +6,7 @@ import { SitewiseOptions, SitewiseSecureJsonData } from 'types';
 import { config } from '@grafana/runtime';
 const datasourceOptions = {
   id: 1,
-  uid: 'sitew',
+  uid: 'sitewise',
   orgId: 1,
   name: 'sitewise-name',
   typeLogoUrl: 'http://',
