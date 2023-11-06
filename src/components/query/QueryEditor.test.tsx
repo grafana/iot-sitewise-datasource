@@ -1,73 +1,245 @@
 import React from 'react';
-import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
-import { ConfigEditor } from './ConfigEditor';
-import { render, screen } from '@testing-library/react';
-import { SitewiseOptions, SitewiseSecureJsonData } from 'types';
-import { config } from '@grafana/runtime';
-const datasourceOptions = {
-  id: 1,
-  uid: 'sitew',
-  orgId: 1,
-  name: 'sitewise-name',
-  typeLogoUrl: 'http://',
-  type: 'type',
-  typeName: 'typeName',
-  access: 'proxy',
-  url: 'https://',
-  user: 'user',
-  database: 'database',
-  basicAuth: true,
-  basicAuthUser: 'bAUser',
-  isDefault: true,
-  jsonData: { defaultRegion: 'us-east-1' },
-  secureJsonFields: {},
-  readOnly: true,
+import { render, screen, waitFor } from '@testing-library/react';
+import { DataQueryRequest, DataSourceInstanceSettings, QueryEditorProps } from '@grafana/data';
+import { DataSourceWithBackend, config } from '@grafana/runtime';
+import { DataSource } from 'DataSource';
+import { QueryType, SitewiseOptions, SitewiseQuery } from 'types';
+import { QueryEditor } from './QueryEditor';
+import { of } from 'rxjs';
+import userEvent from '@testing-library/user-event';
+
+const instanceSettings: DataSourceInstanceSettings<SitewiseOptions> = {
+  id: 0,
+  uid: 'test',
+  name: 'siteqise',
+  type: 'datasource',
+  access: 'direct',
+  url: 'http://localhost',
+  database: '',
+  basicAuth: '',
+  isDefault: false,
+  jsonData: {},
+  readOnly: false,
   withCredentials: false,
+  meta: {} as any,
 };
-const defaultProps: DataSourcePluginOptionsEditorProps<SitewiseOptions, SitewiseSecureJsonData> = {
-  options: datasourceOptions,
-  onOptionsChange: jest.fn(),
+const originalFormFeatureToggleValue = config.featureToggles.awsDatasourcesNewFormStyling;
+
+const cleanup = () => {
+  config.featureToggles.awsDatasourcesNewFormStyling = originalFormFeatureToggleValue;
 };
 
-describe('ConfigEditor', () => {
-  config.featureToggles.awsDatasourcesNewFormStyling = true;
-  describe('edge configuration', () => {
-    it('should show correct fields if Standard authentication', () => {
-      render(
-        <ConfigEditor {...defaultProps} options={{ ...datasourceOptions, jsonData: { defaultRegion: 'Edge' } }} />
-      );
-      expect(screen.getByText('Edge settings')).toBeInTheDocument();
-      expect(screen.getByText('Authentication Provider')).toBeInTheDocument();
+const setup = async (query: Partial<SitewiseQuery>, skipCollapse?: boolean) => {
+  render(
+    <QueryEditor
+      {...defaultProps}
+      query={{
+        ...defaultProps.query,
+        ...query,
+      }}
+    />
+  );
+  if (config.featureToggles.awsDatasourcesNewFormStyling && !skipCollapse) {
+    await openOptionsCollapse();
+  }
+};
+jest
+  .spyOn(DataSourceWithBackend.prototype, 'query')
+  .mockImplementation((request: DataQueryRequest<SitewiseQuery>) => of());
+jest.mock('@grafana/runtime', () => ({
+  ...jest.requireActual('@grafana/runtime'),
+  getTemplateSrv: () => ({
+    getVariables: () => [],
+    replace: (v: string) => v,
+  }),
+  config: {
+    featureToggles: {
+      awsDatasourcesNewFormStyling: false,
+    },
+  },
+}));
+const defaultProps: QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions> = {
+  datasource: new DataSource(instanceSettings),
+  query: { refId: 'A', queryType: QueryType.DescribeAsset, region: 'default' },
+  onRunQuery: jest.fn(),
+  onChange: jest.fn(),
+};
+
+describe('QueryEditor', () => {
+  function run() {
+    it('should display correct fields for query type PropertyAggregate', async () => {
+      await setup({
+        queryType: QueryType.PropertyAggregate,
+        propertyId: 'prop',
+        assetIds: ['asset'],
+      });
+      waitFor(() => {
+        expect(screen.getByText('Property Alias')).toBeInTheDocument();
+        expect(screen.getByText('Asset')).toBeInTheDocument();
+        expect(screen.getByText('Property')).toBeInTheDocument();
+        expect(screen.getByText('Aggregate')).toBeInTheDocument();
+        expect(screen.getByText('Quality')).toBeInTheDocument();
+        expect(screen.getByText('Resolution')).toBeInTheDocument();
+        expect(screen.getByText('Expand Time Range')).toBeInTheDocument();
+        expect(screen.getByText('Time')).toBeInTheDocument();
+        expect(screen.getByText('Format')).toBeInTheDocument();
+      });
     });
-    it('should show correct fields if linux authentication', () => {
-      render(
-        <ConfigEditor
-          {...defaultProps}
-          options={{ ...datasourceOptions, jsonData: { defaultRegion: 'Edge', edgeAuthMode: 'linux' } }}
-        />
-      );
-      expect(screen.getByText('Edge settings')).toBeInTheDocument();
-      expect(screen.getByText('Username')).toBeInTheDocument();
-      expect(screen.getByText('Password')).toBeInTheDocument();
+    it('should display correct fields for query type PropertyAggregate and using Property alias', async () => {
+      await setup({
+        queryType: QueryType.PropertyAggregate,
+        propertyAlias: 'propAlias',
+      });
+      waitFor(() => {
+        expect(screen.getByText('Property Alias')).toBeInTheDocument();
+        expect(screen.getByText('Aggregate')).toBeInTheDocument();
+        expect(screen.getByText('Quality')).toBeInTheDocument();
+        expect(screen.getByText('Time')).toBeInTheDocument();
+        expect(screen.getByText('Format')).toBeInTheDocument();
+      });
     });
-    it('should display warning if region is Edge but no endpoint is specified', () => {
-      render(
-        <ConfigEditor
-          {...defaultProps}
-          options={{ ...datasourceOptions, jsonData: { defaultRegion: 'Edge', endpoint: '' } }}
-        />
-      );
-      expect(screen.getByText('Edge settings')).toBeInTheDocument();
-      expect(screen.getByTestId('endpoint-warning')).toBeInTheDocument();
+    it('should display correct fields for query type Interpolated Property', async () => {
+      await setup({
+        queryType: QueryType.PropertyInterpolated,
+        propertyId: 'prop',
+        assetIds: ['asset'],
+      });
+      waitFor(() => {
+        expect(screen.getByText('Property Alias')).toBeInTheDocument();
+        expect(screen.getByText('Asset')).toBeInTheDocument();
+        expect(screen.getByText('Property')).toBeInTheDocument();
+        expect(screen.getByText('Quality')).toBeInTheDocument();
+        expect(screen.getByText('Time')).toBeInTheDocument();
+        expect(screen.getByText('Format')).toBeInTheDocument();
+        expect(screen.getByText('Resolution')).toBeInTheDocument();
+      });
     });
+    it('should display correct fields for query type  Interpolated Property and using Property alias', async () => {
+      setup({
+        queryType: QueryType.PropertyInterpolated,
+        propertyAlias: 'propAlias',
+      });
+      waitFor(() => {
+        expect(screen.getByText('Property Alias')).toBeInTheDocument();
+        expect(screen.getByText('Quality')).toBeInTheDocument();
+        expect(screen.getByText('Time')).toBeInTheDocument();
+        expect(screen.getByText('Resolution')).toBeInTheDocument();
+        expect(screen.getByText('Format')).toBeInTheDocument();
+      });
+    });
+    it('should display correct fields for query type PropertyValueHistory', async () => {
+      await setup({
+        queryType: QueryType.PropertyValueHistory,
+        propertyId: 'prop',
+        assetIds: ['asset'],
+      });
+      waitFor(() => {
+        expect(screen.getByText('Property Alias')).toBeInTheDocument();
+        expect(screen.getByText('Asset')).toBeInTheDocument();
+        expect(screen.getByText('Property')).toBeInTheDocument();
+        expect(screen.getByText('Quality')).toBeInTheDocument();
+        expect(screen.getByText('Resolution')).toBeInTheDocument();
+        expect(screen.getByText('Expand Time Range')).toBeInTheDocument();
+        expect(screen.getByText('Time')).toBeInTheDocument();
+        expect(screen.getByText('Format')).toBeInTheDocument();
+      });
+    });
+    it('should display correct fields for query type PropertyValueHistory and using Property alias', async () => {
+      await setup({
+        queryType: QueryType.PropertyAggregate,
+        propertyAlias: 'propAlias',
+      });
+      waitFor(() => {
+        expect(screen.getByText('Property Alias')).toBeInTheDocument();
+        expect(screen.getByText('Quality')).toBeInTheDocument();
+        expect(screen.getByText('Format')).toBeInTheDocument();
+      });
+    });
+    it('should display correct fields for query type PropertyValue', async () => {
+      await setup({
+        queryType: QueryType.PropertyValue,
+        propertyId: 'prop',
+        assetIds: ['asset'],
+      });
+      waitFor(() => {
+        expect(screen.getByText('Property Alias')).toBeInTheDocument();
+        expect(screen.getByText('Asset')).toBeInTheDocument();
+        expect(screen.getByText('Property')).toBeInTheDocument();
+        expect(screen.getByText('Quality')).toBeInTheDocument();
+        expect(screen.getByText('Resolution')).toBeInTheDocument();
+        expect(screen.getByText('Expand Time Range')).toBeInTheDocument();
+        expect(screen.getByText('Time')).toBeInTheDocument();
+        expect(screen.getByText('Format')).toBeInTheDocument();
+      });
+    });
+    it('should display correct fields for query type PropertyValue and using Property alias', async () => {
+      await setup({
+        queryType: QueryType.PropertyValue,
+        propertyAlias: 'propAlias',
+      });
+      waitFor(() => {
+        expect(screen.getByText('Property Alias')).toBeInTheDocument();
+        expect(screen.getByText('Quality')).toBeInTheDocument();
+        expect(screen.getByText('Time')).toBeInTheDocument();
+        expect(screen.getByText('Format')).toBeInTheDocument();
+      });
+    });
+    it('should display correct fields for query type ListAssets', async () => {
+      await setup(
+        {
+          queryType: QueryType.ListAssets,
+          propertyId: 'prop',
+          assetIds: ['asset'],
+        },
+        true
+      );
+      waitFor(() => {
+        expect(screen.getByText('Model ID')).toBeInTheDocument();
+        expect(screen.getByText('Filter')).toBeInTheDocument();
+      });
+    });
+    it('should display correct fields for query type ListAssociatedAssets if assetId is defined', async () => {
+      await setup({
+        queryType: QueryType.ListAssociatedAssets,
+        assetIds: ['asset'],
+      });
+      waitFor(() => {
+        expect(screen.getByText('Show')).toBeInTheDocument();
+        expect(screen.getByText('Asset')).toBeInTheDocument();
+        expect(screen.getByText('Property Alias')).toBeInTheDocument();
+      });
+    });
+    it('should display correct fields for query type ListAssociatedAssets if property Alias is defined', async () => {
+      await setup({
+        queryType: QueryType.ListAssociatedAssets,
+        propertyAlias: 'prop',
+      });
+      waitFor(() => {
+        expect(screen.getByText('Show')).toBeInTheDocument();
+      });
+    });
+  }
+  describe('QueryEditor with awsDatasourcesNewFormStyling feature toggle disabled', () => {
+    beforeAll(() => {
+      config.featureToggles.awsDatasourcesNewFormStyling = false;
+    });
+    afterAll(() => {
+      cleanup();
+    });
+    run();
   });
-  describe('non-edge configuration', () => {
-    it('should show correct fields if region is not edge', () => {
-      render(
-        <ConfigEditor {...defaultProps} options={{ ...datasourceOptions, jsonData: { defaultRegion: 'us-east-2' } }} />
-      );
-      expect(screen.queryByText('Edge settings')).not.toBeInTheDocument();
-      expect(screen.getByText('Authentication Provider')).toBeInTheDocument();
+  describe('QueryEditor with awsDatasourcesNewFormStyling feature toggle enabled', () => {
+    beforeAll(() => {
+      config.featureToggles.awsDatasourcesNewFormStyling = true;
     });
+    afterAll(() => {
+      cleanup();
+    });
+    run();
   });
 });
+
+async function openOptionsCollapse() {
+  const collapseLabel = await screen.findByTestId('collapse-title');
+  userEvent.click(collapseLabel);
+}
