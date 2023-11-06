@@ -96,16 +96,20 @@ export function ConfigEditor(props: Props) {
             <ConnectionConfig {...props} standardRegions={standardRegions} newFormStylingEnabled={true} />
           )}
 
-<Divider/>
+          <Divider />
           <ConfigSection title="Edge settings" data-testid="edge-settings">
             {!endpoint && (
-              <Alert title="Edge region requires an explicit endpoint configured above" severity="warning" data-testid="endpoint-warning" />
+              <Alert
+                title="Edge region requires an explicit endpoint configured above"
+                severity="warning"
+                data-testid="endpoint-warning"
+              />
             )}
 
             <Field label="Authentication Mode" htmlFor="edgeAuthMethods">
               <Select
-              id="edgeAuthMethods"
-              aria-label="Authentication Mode"
+                id="edgeAuthMethods"
+                aria-label="Authentication Mode"
                 options={edgeAuthMethods}
                 value={edgeAuthMode}
                 onChange={(v) => {
@@ -117,7 +121,7 @@ export function ConfigEditor(props: Props) {
               <>
                 <Field label="Username" description="The username set to local authentication proxy" htmlFor="username">
                   <Input
-                  id="username"
+                    id="username"
                     name="username"
                     value={jsonData.edgeAuthUser}
                     autoComplete="off"
@@ -126,9 +130,13 @@ export function ConfigEditor(props: Props) {
                     required
                   />
                 </Field>
-                <Field label="Password" description="The password sent to local authentication proxy" htmlFor="password">
+                <Field
+                  label="Password"
+                  description="The password sent to local authentication proxy"
+                  htmlFor="password"
+                >
                   <Input
-                  id="password"
+                    id="password"
                     type="password"
                     name="password"
                     autoComplete="off"
@@ -142,14 +150,23 @@ export function ConfigEditor(props: Props) {
                 </Field>
               </>
             )}
-            <Field label="SSL Certificate" description="Certificate for SSL enabled authentication." htmlFor="certificate">
+            <Field
+              label="SSL Certificate"
+              description="Certificate for SSL enabled authentication."
+              htmlFor="certificate"
+            >
               {options.secureJsonFields?.cert ? (
-                <Button variant="secondary" type="reset" onClick={onUpdateDatasourceResetOption(props as any, 'cert')} aria-label="Reset certificate input">
+                <Button
+                  variant="secondary"
+                  type="reset"
+                  onClick={onUpdateDatasourceResetOption(props as any, 'cert')}
+                  aria-label="Reset certificate input"
+                >
                   Reset
                 </Button>
               ) : (
                 <textarea
-                id = "certificate"
+                  id="certificate"
                   rows={7}
                   className="gf-form-input gf-form-textarea width-30"
                   onChange={(event) => {
@@ -294,7 +311,11 @@ export function ConfigEditor(props: Props) {
   if (props.options.jsonData.defaultRegion === 'Edge') {
     return renderEdgeConfig();
   }
-  return (
-    <ConnectionConfig {...props} standardRegions={standardRegions} newFormStylingEnabled={newFormStylingEnabled} />
+  return newFormStylingEnabled ? (
+    <div className="width-30">
+      <ConnectionConfig {...props} standardRegions={standardRegions} newFormStylingEnabled={true} />{' '}
+    </div>
+  ) : (
+    <ConnectionConfig {...props} standardRegions={standardRegions} newFormStylingEnabled={false} />
   );
 }
