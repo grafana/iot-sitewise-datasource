@@ -1,6 +1,6 @@
 // Jest setup provided by Grafana scaffolding
 import './.config/jest-setup';
-// Used by useMeasure
+// Used by LinkButton -> Text component from grafana/ui
 global.ResizeObserver = class ResizeObserver {
     //callback: ResizeObserverCallback;
   

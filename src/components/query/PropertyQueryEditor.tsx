@@ -13,8 +13,19 @@ import {
   isListAssociatedAssetsQuery,
   isAssetPropertyInterpolatedQuery,
   shouldShowLastObserved,
+  shouldShowOptionsRow,
 } from 'types';
-import { InlineField, LinkButton, Select, Input, Icon, InlineSwitch, Switch, CollapsableSection } from '@grafana/ui';
+import {
+  InlineField,
+  LinkButton,
+  Select,
+  Input,
+  Icon,
+  InlineSwitch,
+  Switch,
+  CollapsableSection,
+  Text,
+} from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetBrowser } from '../browser/AssetBrowser';
 import { AggregatePicker, aggReg } from '../AggregatePicker';
@@ -309,9 +320,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         <CollapsableSection
           className={styles.collapse}
           label={
-            <p className={styles.collapseTitle} data-testid="collapse-title">
+            <Text variant="body" data-testid="collapse-title">
               Query options
-            </p>
+            </Text>
           }
           isOpen={false}
         >
@@ -348,6 +359,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const isAssociatedAssets = isListAssociatedAssetsQuery(query);
     const showProp = !!(!isAssociatedAssets && (query.propertyId || query.assetIds));
     const properties = showProp ? (asset ? asset.properties : []) : [];
+
     const showQuality = !!(
       query.propertyId ||
       (query.propertyAlias && isAssetPropertyAggregatesQuery(query)) ||
@@ -355,6 +367,8 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       isAssetPropertyInterpolatedQuery(query)
     );
 
+    const showOptionsRow = shouldShowOptionsRow(query, showProp);
+    
     let currentProperty = properties.find((p) => p.Id === query.propertyId);
     if (!currentProperty && query.propertyId) {
       currentProperty = {
@@ -420,8 +434,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                 </div>
               </EditorFieldGroup>
             </EditorRow>
-            <EditorRow>
-              {showProp && (
+
+            {showProp && (
+              <EditorRow>
                 <EditorFieldGroup>
                   <EditorField label="Property" htmlFor="property" width={30}>
                     <Select
@@ -440,22 +455,26 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                     />
                   </EditorField>
                 </EditorFieldGroup>
-              )}
-              {(showProp || query.propertyAlias) &&
-                showQuality &&
-                isAssetPropertyAggregatesQuery(query) &&
-                this.renderAggregateRow(query)}
-            </EditorRow>
+                <EditorFieldGroup>
+                  {showQuality && isAssetPropertyAggregatesQuery(query) && this.renderAggregateRow(query)}
+                </EditorFieldGroup>
+              </EditorRow>
+            )}
           </>
+        )}
+        {query.propertyAlias && isAssetPropertyAggregatesQuery(query) && (
+          <EditorRow>{this.renderAggregateRow(query)}</EditorRow>
         )}
         {isAssociatedAssets && (
           <EditorRow>
             <EditorFieldGroup>{this.renderAssociatedAsset(query as ListAssociatedAssetsQuery)}</EditorFieldGroup>
           </EditorRow>
         )}
-        <EditorRow>
-          <EditorFieldGroup>{this.renderOptions(query, showProp, showQuality)}</EditorFieldGroup>
-        </EditorRow>
+        {showOptionsRow ? (
+          <EditorRow>
+            <EditorFieldGroup>{this.renderOptions(query, showProp, !!(query.propertyId || query.propertyAlias))}</EditorFieldGroup>
+          </EditorRow>
+        ) : null}
       </>
     ) : (
       <>

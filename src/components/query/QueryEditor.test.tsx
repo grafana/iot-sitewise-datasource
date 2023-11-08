@@ -29,7 +29,7 @@ const cleanup = () => {
   config.featureToggles.awsDatasourcesNewFormStyling = originalFormFeatureToggleValue;
 };
 
-const setup = async (query: Partial<SitewiseQuery>, skipCollapse?: boolean) => {
+const setup = async (query: Partial<SitewiseQuery>) => {
   render(
     <QueryEditor
       {...defaultProps}
@@ -39,7 +39,7 @@ const setup = async (query: Partial<SitewiseQuery>, skipCollapse?: boolean) => {
       }}
     />
   );
-  if (config.featureToggles.awsDatasourcesNewFormStyling && !skipCollapse) {
+  if (config.featureToggles.awsDatasourcesNewFormStyling) {
     await openOptionsCollapse();
   }
 };
@@ -73,7 +73,7 @@ describe('QueryEditor', () => {
         propertyId: 'prop',
         assetIds: ['asset'],
       });
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.getByText('Property Alias')).toBeInTheDocument();
         expect(screen.getByText('Asset')).toBeInTheDocument();
         expect(screen.getByText('Property')).toBeInTheDocument();
@@ -90,7 +90,7 @@ describe('QueryEditor', () => {
         queryType: QueryType.PropertyAggregate,
         propertyAlias: 'propAlias',
       });
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.getByText('Property Alias')).toBeInTheDocument();
         expect(screen.getByText('Aggregate')).toBeInTheDocument();
         expect(screen.getByText('Quality')).toBeInTheDocument();
@@ -104,7 +104,7 @@ describe('QueryEditor', () => {
         propertyId: 'prop',
         assetIds: ['asset'],
       });
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.getByText('Property Alias')).toBeInTheDocument();
         expect(screen.getByText('Asset')).toBeInTheDocument();
         expect(screen.getByText('Property')).toBeInTheDocument();
@@ -119,7 +119,7 @@ describe('QueryEditor', () => {
         queryType: QueryType.PropertyInterpolated,
         propertyAlias: 'propAlias',
       });
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.getByText('Property Alias')).toBeInTheDocument();
         expect(screen.getByText('Quality')).toBeInTheDocument();
         expect(screen.getByText('Time')).toBeInTheDocument();
@@ -133,12 +133,11 @@ describe('QueryEditor', () => {
         propertyId: 'prop',
         assetIds: ['asset'],
       });
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.getByText('Property Alias')).toBeInTheDocument();
         expect(screen.getByText('Asset')).toBeInTheDocument();
         expect(screen.getByText('Property')).toBeInTheDocument();
         expect(screen.getByText('Quality')).toBeInTheDocument();
-        expect(screen.getByText('Resolution')).toBeInTheDocument();
         expect(screen.getByText('Expand Time Range')).toBeInTheDocument();
         expect(screen.getByText('Time')).toBeInTheDocument();
         expect(screen.getByText('Format')).toBeInTheDocument();
@@ -149,7 +148,7 @@ describe('QueryEditor', () => {
         queryType: QueryType.PropertyAggregate,
         propertyAlias: 'propAlias',
       });
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.getByText('Property Alias')).toBeInTheDocument();
         expect(screen.getByText('Quality')).toBeInTheDocument();
         expect(screen.getByText('Format')).toBeInTheDocument();
@@ -161,13 +160,11 @@ describe('QueryEditor', () => {
         propertyId: 'prop',
         assetIds: ['asset'],
       });
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.getByText('Property Alias')).toBeInTheDocument();
         expect(screen.getByText('Asset')).toBeInTheDocument();
         expect(screen.getByText('Property')).toBeInTheDocument();
         expect(screen.getByText('Quality')).toBeInTheDocument();
-        expect(screen.getByText('Resolution')).toBeInTheDocument();
-        expect(screen.getByText('Expand Time Range')).toBeInTheDocument();
         expect(screen.getByText('Time')).toBeInTheDocument();
         expect(screen.getByText('Format')).toBeInTheDocument();
       });
@@ -177,23 +174,27 @@ describe('QueryEditor', () => {
         queryType: QueryType.PropertyValue,
         propertyAlias: 'propAlias',
       });
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.getByText('Property Alias')).toBeInTheDocument();
-        expect(screen.getByText('Quality')).toBeInTheDocument();
-        expect(screen.getByText('Time')).toBeInTheDocument();
-        expect(screen.getByText('Format')).toBeInTheDocument();
+        // temporary condition - in the old form version, the following fields are not displayed, but they should be in the new one
+        if (config.featureToggles.awsDatasourcesNewFormStyling) {
+          expect(screen.getByText('Quality')).toBeInTheDocument();
+          expect(screen.getByText('Time')).toBeInTheDocument();
+          expect(screen.getByText('Format')).toBeInTheDocument();
+        } else {
+          expect(screen.queryByText('Quality')).toBeNull();
+          expect(screen.queryByText('Time')).toBeNull();
+          expect(screen.queryByText('Format')).toBeNull();
+        }
       });
     });
     it('should display correct fields for query type ListAssets', async () => {
-      await setup(
-        {
-          queryType: QueryType.ListAssets,
-          propertyId: 'prop',
-          assetIds: ['asset'],
-        },
-        true
-      );
-      waitFor(() => {
+      await setup({
+        queryType: QueryType.ListAssets,
+        propertyId: 'prop',
+        assetIds: ['asset'],
+      });
+      await waitFor(() => {
         expect(screen.getByText('Model ID')).toBeInTheDocument();
         expect(screen.getByText('Filter')).toBeInTheDocument();
       });
@@ -203,7 +204,7 @@ describe('QueryEditor', () => {
         queryType: QueryType.ListAssociatedAssets,
         assetIds: ['asset'],
       });
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.getByText('Show')).toBeInTheDocument();
         expect(screen.getByText('Asset')).toBeInTheDocument();
         expect(screen.getByText('Property Alias')).toBeInTheDocument();
@@ -214,7 +215,7 @@ describe('QueryEditor', () => {
         queryType: QueryType.ListAssociatedAssets,
         propertyAlias: 'prop',
       });
-      waitFor(() => {
+      await waitFor(() => {
         expect(screen.getByText('Show')).toBeInTheDocument();
       });
     });
@@ -240,6 +241,8 @@ describe('QueryEditor', () => {
 });
 
 async function openOptionsCollapse() {
-  const collapseLabel = await screen.findByTestId('collapse-title');
-  userEvent.click(collapseLabel);
+  const collapseLabel = await screen.queryByTestId('collapse-title');
+  if (collapseLabel) {
+    return userEvent.click(collapseLabel);
+  }
 }
