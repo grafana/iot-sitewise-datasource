@@ -54,6 +54,11 @@
     "dontHide",
     "renton",
     "assetids",
-    "ahom"
+    "ahom",
+    "opentelemetry",
+    "httptrace",
+    "otelhttptrace",
+    "idastambuk",
+    "fridgepoet"
   ]
 }
