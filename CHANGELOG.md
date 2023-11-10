@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.13.0
+
+- Update dependencies and create-plugin configuration by @idastambuk
+  in https://github.com/grafana/iot-sitewise-datasource/pull/243
+- Property aggregate processing: Move out ErrorEntries processing from SuccessEntries block by @idastambuk
+  in https://github.com/grafana/iot-sitewise-datasource/pull/240
+- Bump go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace from 0.37.0 to 0.44.0 by @dependabot
+  in https://github.com/grafana/iot-sitewise-datasource/pull/241
+- Bump @babel/traverse from 7.17.10 to 7.23.2 by @dependabot
+  in https://github.com/grafana/iot-sitewise-datasource/pull/245
+- Bump loader-utils from 2.0.2 to 2.0.4 by @dependabot in https://github.com/grafana/iot-sitewise-datasource/pull/248
+- Bump semver from 5.7.1 to 5.7.2 by @dependabot in https://github.com/grafana/iot-sitewise-datasource/pull/247
+- Bump google.golang.org/grpc from 1.58.2 to 1.58.3 by @dependabot
+  in https://github.com/grafana/iot-sitewise-datasource/pull/246
+- Upgrade yaml package by @fridgepoet in https://github.com/grafana/iot-sitewise-datasource/pull/249
+- Upgrade underscore, debug dependencies by @fridgepoet in https://github.com/grafana/iot-sitewise-datasource/pull/252
+- Bump yaml from 2.2.1 to 2.3.4 by @dependabot in https://github.com/grafana/iot-sitewise-datasource/pull/253
+- Bump json5 from 2.2.1 to 2.2.3 by @dependabot in https://github.com/grafana/iot-sitewise-datasource/pull/254
+
+**Full Changelog**: https://github.com/grafana/iot-sitewise-datasource/compare/v1.12.1...v1.13.0
+
 ## v1.12.1
 - Disassociated streams: Hash entryId to fix bug with property aliases longer than 64 characters in [#239](https://github.com/grafana/iot-sitewise-datasource/pull/239)
 
