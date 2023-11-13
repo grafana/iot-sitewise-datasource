@@ -22,9 +22,6 @@ import {
   Input,
   Icon,
   InlineSwitch,
-  Switch,
-  CollapsableSection,
-  Text,
 } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetBrowser } from '../browser/AssetBrowser';
@@ -34,6 +31,7 @@ import { QualityAndOrderRow } from './QualityAndOrderRow';
 import { firstLabelWith } from './QueryEditor';
 import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/experimental';
 import { css } from '@emotion/css';
+import { QueryOptions } from './QueryOptions';
 
 interface Props
   extends SitewiseQueryEditorProps<SitewiseQuery | AssetPropertyAggregatesQuery | ListAssociatedAssetsQuery> {
@@ -314,35 +312,6 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     );
   }
 
-  renderOptions(query: SitewiseQuery, showProp: boolean, showQuality: boolean) {
-    return (
-      <div className={styles.collapseRow}>
-        <CollapsableSection
-          className={styles.collapse}
-          label={
-            <Text variant="body" data-testid="collapse-title">
-              Query options
-            </Text>
-          }
-          isOpen={false}
-        >
-          <EditorFieldGroup>
-            {shouldShowLastObserved(query.queryType) && !Boolean(query.propertyAlias) && showProp && (
-              <EditorField
-                label="Expand Time Range"
-                htmlFor="expand"
-                tooltip="Expand query to include last observed value before the current time range, and next observed value after the time range. "
-              >
-                <Switch value={query.lastObservation} onChange={this.onLastObservationChange} />
-              </EditorField>
-            )}
-            {(showProp || query.propertyAlias) && showQuality && <QualityAndOrderRow {...(this.props as any)} />}
-          </EditorFieldGroup>
-        </CollapsableSection>
-      </div>
-    );
-  }
-
   render() {
     const { query, datasource } = this.props;
     const { loading, asset, assets } = this.state;
@@ -472,7 +441,8 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         )}
         {showOptionsRow ? (
           <EditorRow>
-            <EditorFieldGroup>{this.renderOptions(query, showProp, !!(query.propertyId || query.propertyAlias))}</EditorFieldGroup>
+            <EditorFieldGroup>
+              <QueryOptions query={query} showProp={showProp} showQuality={!!(query.propertyId || query.propertyAlias)} onLastObservationChange={this.onLastObservationChange} qualityAndOrderComponent={<QualityAndOrderRow {...(this.props as any)} />}/></EditorFieldGroup>
           </EditorRow>
         ) : null}
       </>
@@ -562,25 +532,5 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 }
 
 const styles = {
-  collapse: css({
-    alignItems: 'flex-start',
-    paddingTop: 0,
-  }),
-  collapseTitle: css({
-    fontSize: 14,
-    fontWeight: 500,
-    marginBottom: 0,
-  }),
-  collapseRow: css({
-    display: 'flex',
-    flexDirection: 'column',
-    '>div': {
-      alignItems: 'baseline',
-      justifyContent: 'flex-end',
-    },
-    '*[id^="collapse-content-"]': {
-      padding: 'unset',
-    },
-  }),
   exploreContainer: css({ display: 'flex', alignItems: 'flex-end' }),
 };

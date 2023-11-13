@@ -23,10 +23,36 @@ const edgeAuthMethods: Array<SelectableValue<string>> = [
 ];
 
 export function ConfigEditor(props: Props) {
+  const newFormStylingEnabled = config.featureToggles.awsDatasourcesNewFormStyling;
+
+
+  // Simple
+  if (props.options.jsonData.defaultRegion === 'Edge') {
+    return <EdgeConfig newFormStylingEnabled={newFormStylingEnabled} {...props}/>
+  }
+  return newFormStylingEnabled ? (
+    <div className="width-30">
+      <ConnectionConfig {...props} standardRegions={standardRegions} newFormStylingEnabled={true} />{' '}
+    </div>
+  ) : (
+    <ConnectionConfig {...props} standardRegions={standardRegions} newFormStylingEnabled={false} />
+  );
+}
+
+
+function EdgeConfig(props: {newFormStylingEnabled?: boolean} & Props) {
+  const { options } = props;
+  const { jsonData } = options;
+  const { endpoint } = jsonData;
+
+  const edgeAuthMode = edgeAuthMethods.find((f) => f.value === jsonData.edgeAuthMode) ?? edgeAuthMethods[0];
+  const hasEdgeAuth = edgeAuthMode !== edgeAuthMethods[0];
+  const labelWidth = 28;
+  const regions = standardRegions.map((value) => ({ value, label: value }));
+
   const onUserChange = (event: ChangeEvent<HTMLInputElement>) => {
     updateDatasourcePluginJsonDataOption(props, 'edgeAuthUser', event.target.value);
   };
-  const newFormStylingEnabled = config.featureToggles.awsDatasourcesNewFormStyling;
 
   function onPasswordChange(event: ChangeEvent<HTMLInputElement>) {
     const { options, onOptionsChange } = props;
@@ -53,17 +79,7 @@ export function ConfigEditor(props: Props) {
     });
   }
 
-  function renderEdgeConfig() {
-    const { options } = props;
-    const { jsonData } = options;
-    const { endpoint } = jsonData;
-
-    const edgeAuthMode = edgeAuthMethods.find((f) => f.value === jsonData.edgeAuthMode) ?? edgeAuthMethods[0];
-    const hasEdgeAuth = edgeAuthMode !== edgeAuthMethods[0];
-    const labelWidth = 28;
-    const regions = standardRegions.map((value) => ({ value, label: value }));
-
-    if (newFormStylingEnabled) {
+   if (props.newFormStylingEnabled) {
       return (
         <div className="width-30">
           {hasEdgeAuth && (
@@ -306,16 +322,4 @@ export function ConfigEditor(props: Props) {
         </>
       );
     }
-  }
-  // Simple
-  if (props.options.jsonData.defaultRegion === 'Edge') {
-    return renderEdgeConfig();
-  }
-  return newFormStylingEnabled ? (
-    <div className="width-30">
-      <ConnectionConfig {...props} standardRegions={standardRegions} newFormStylingEnabled={true} />{' '}
-    </div>
-  ) : (
-    <ConnectionConfig {...props} standardRegions={standardRegions} newFormStylingEnabled={false} />
-  );
 }
