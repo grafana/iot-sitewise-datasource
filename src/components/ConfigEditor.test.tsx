@@ -28,9 +28,15 @@ const defaultProps: DataSourcePluginOptionsEditorProps<SitewiseOptions, Sitewise
   options: datasourceOptions,
   onOptionsChange: jest.fn(),
 };
+const originalToggleValue = config.featureToggles.awsDatasourcesNewFormStyling
 
 describe('ConfigEditor', () => {
-  config.featureToggles.awsDatasourcesNewFormStyling = true;
+  beforeEach(() => {
+    config.featureToggles.awsDatasourcesNewFormStyling = true;
+  })
+ afterEach(() => {
+     config.featureToggles.awsDatasourcesNewFormStyling = originalToggleValue;
+ })
   describe('edge configuration', () => {
     it('should show correct fields if Standard authentication', () => {
       render(
