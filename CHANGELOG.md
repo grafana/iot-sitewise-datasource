@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.14.0
+
+- Query and Config editors: Migrate to new form styling under feature toggle in (#244)[https://github.com/grafana/iot-sitewise-datasource/pull/244]
+
 ## 1.13.0
 
 - Update dependencies and create-plugin configuration by @idastambuk
