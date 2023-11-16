@@ -25,8 +25,6 @@ const edgeAuthMethods: Array<SelectableValue<string>> = [
 export function ConfigEditor(props: Props) {
   const newFormStylingEnabled = config.featureToggles.awsDatasourcesNewFormStyling;
 
-
-  // Simple
   if (props.options.jsonData.defaultRegion === 'Edge') {
     return <EdgeConfig newFormStylingEnabled={newFormStylingEnabled} {...props}/>
   }
