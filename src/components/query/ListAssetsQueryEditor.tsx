@@ -5,8 +5,11 @@ import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetModelSummary } from 'queryResponseTypes';
 import { firstLabelWith } from './QueryEditor';
+import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/experimental';
 
-type Props = SitewiseQueryEditorProps<ListAssetsQuery>;
+interface Props extends SitewiseQueryEditorProps<ListAssetsQuery> {
+  newFormStylingEnabled?: boolean;
+}
 
 interface State {
   models?: DataFrameView<AssetModelSummary>;
@@ -62,36 +65,68 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
       };
     }
 
-    return (
-      <>
-        <div className="gf-form">
-          <InlineField label="Model ID" labelWidth={firstLabelWith} grow={true}>
-            <Select
-              isLoading={!models}
-              options={modelIds}
-              value={currentModel}
-              onChange={this.onAssetModelIdChange}
-              placeholder="Select an asset model id"
-              allowCustomValue={true}
-              isClearable={true}
-              isSearchable={true}
-              formatCreateLabel={(txt) => `Model ID: ${txt}`}
-              menuPlacement="bottom"
-            />
-          </InlineField>
-        </div>
-        <div className="gf-form">
-          <InlineField label="Filter" labelWidth={firstLabelWith} grow={true}>
-            <Select
-              options={filters}
-              value={filters.find((v) => v.value === query.filter) || filters[0]}
-              onChange={this.onFilterChange}
-              placeholder="Select a property"
-              menuPlacement="bottom"
-            />
-          </InlineField>
-        </div>
-      </>
-    );
+    return this.props.newFormStylingEnabled ? (
+          <EditorRow>
+            <EditorFieldGroup>
+              <EditorField label="Model ID" htmlFor="model" width={30}>
+                <Select
+                  id="model"
+                  aria-label="Model ID"
+                  isLoading={!models}
+                  options={modelIds}
+                  value={currentModel}
+                  onChange={this.onAssetModelIdChange}
+                  placeholder="Select an asset model id"
+                  allowCustomValue={true}
+                  isClearable={true}
+                  isSearchable={true}
+                  formatCreateLabel={(txt) => `Model ID: ${txt}`}
+                  menuPlacement="bottom"
+                />
+              </EditorField>
+              <EditorField label="Filter" htmlFor="filter" width={20}>
+                <Select
+                  id="filter"
+                  aria-label="Filter"
+                  options={filters}
+                  value={filters.find((v) => v.value === query.filter) || filters[0]}
+                  onChange={this.onFilterChange}
+                  placeholder="Select a property"
+                  menuPlacement="bottom"
+                />
+              </EditorField>
+            </EditorFieldGroup>
+          </EditorRow>
+        ) : (
+          <>
+            <div className="gf-form">
+              <InlineField label="Model ID" labelWidth={firstLabelWith} grow={true}>
+                <Select
+                  isLoading={!models}
+                  options={modelIds}
+                  value={currentModel}
+                  onChange={this.onAssetModelIdChange}
+                  placeholder="Select an asset model id"
+                  allowCustomValue={true}
+                  isClearable={true}
+                  isSearchable={true}
+                  formatCreateLabel={(txt) => `Model ID: ${txt}`}
+                  menuPlacement="bottom"
+                />
+              </InlineField>
+            </div>
+            <div className="gf-form">
+              <InlineField label="Filter" labelWidth={firstLabelWith} grow={true}>
+                <Select
+                  options={filters}
+                  value={filters.find((v) => v.value === query.filter) || filters[0]}
+                  onChange={this.onFilterChange}
+                  placeholder="Select a property"
+                  menuPlacement="bottom"
+                />
+              </InlineField>
+            </div>
+          </>
+        )
   }
 }

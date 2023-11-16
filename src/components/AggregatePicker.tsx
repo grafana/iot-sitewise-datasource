@@ -84,6 +84,8 @@ export class AggregatePicker extends PureComponent<Props> {
     }
     return (
       <Select
+        id="aggregate-picker"
+        aria-label="Aggregate picker"
         value={select.current}
         className={className}
         isClearable={!defaultStat}

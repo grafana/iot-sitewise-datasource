@@ -13,10 +13,14 @@ import {
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { firstLabelWith } from './QueryEditor';
+import { EditorField } from '@grafana/experimental';
 
-type Props = SitewiseQueryEditorProps<
-  AssetPropertyValueHistoryQuery | AssetPropertyAggregatesQuery | AssetPropertyInterpolatedQuery
->;
+interface Props
+  extends SitewiseQueryEditorProps<
+    AssetPropertyValueHistoryQuery | AssetPropertyAggregatesQuery | AssetPropertyInterpolatedQuery
+  > {
+  newFormStylingEnabled?: boolean;
+}
 
 const interpolatedResolutions: Array<SelectableValue<SiteWiseResolution>> = [
   {
@@ -86,8 +90,53 @@ export class QualityAndOrderRow extends PureComponent<Props> {
 
   render() {
     const { query } = this.props;
-
-    return (
+    return this.props.newFormStylingEnabled ? (
+      <>
+        <EditorField label="Quality" width={15} htmlFor="quality">
+          <Select
+            id="quality"
+            aria-label="quality"
+            options={qualities}
+            value={qualities.find((v) => v.value === query.quality) ?? qualities[0]}
+            onChange={this.onQualityChange}
+            isSearchable={true}
+            menuPlacement="bottom"
+          />
+        </EditorField>
+        <EditorField label="Time" width={10} htmlFor="time">
+          <Select
+            id="time"
+            aria-label="Time"
+            options={ordering}
+            value={ordering.find((v) => v.value === query.timeOrdering) ?? ordering[0]}
+            onChange={this.onOrderChange}
+            isSearchable={true}
+            menuPlacement="bottom"
+          />
+        </EditorField>
+        <EditorField label="Format" width={10} htmlFor="time">
+          <Select
+            id="time"
+            aria-label="Time"
+            value={query.responseFormat || SiteWiseResponseFormat.Table}
+            onChange={this.onResponseFormatChange}
+            options={FORMAT_OPTIONS}
+          />
+        </EditorField>
+        {isAssetPropertyInterpolatedQuery(query) && (
+          <EditorField label="Resolution" width={25} htmlFor="resolution">
+            <Select
+              id="resolution"
+              aria-label="Resolution"
+              options={interpolatedResolutions}
+              value={interpolatedResolutions.find((v) => v.value === query.resolution) || interpolatedResolutions[0]}
+              onChange={this.onResolutionChange}
+              menuPlacement="bottom"
+            />
+          </EditorField>
+        )}
+      </>
+    ) : (
       <>
         <div className="gf-form">
           <InlineField label="Quality" labelWidth={firstLabelWith}>

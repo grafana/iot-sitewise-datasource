@@ -187,6 +187,15 @@ export function shouldShowLastObserved(queryType?: QueryType): boolean {
   return queryType === QueryType.PropertyAggregate || queryType === QueryType.PropertyValueHistory;
 }
 
+export function shouldShowOptionsRow(query: SitewiseQuery, showProp: boolean): boolean {
+  const shouldShowLastObservedSwitch =
+    shouldShowLastObserved(query.queryType) && !Boolean(query.propertyAlias) && showProp;
+  const shouldShowWithPropertyAlias =
+    // shouldn't show the row when querying associated assets with property alias, otherwise show it every time property alias is set
+    query.propertyAlias && !isListAssociatedAssetsQuery(query);
+  return !!(query.propertyId || shouldShowWithPropertyAlias || shouldShowLastObservedSwitch);
+}
+
 // matches native sitewise API with capitals
 export interface AssetPropertyInfo extends SelectableValue<string> {
   Id: string;
