@@ -73,6 +73,7 @@ export interface SitewiseNextQuery extends SitewiseQuery {
    * will require multiple pages in order to fulfil the requests
    */
   nextToken?: string;
+  nextTokens?: Record<string, string>;
 }
 
 /**
@@ -224,6 +225,8 @@ export interface AssetInfo {
  */
 export interface SitewiseCustomMeta {
   nextToken?: string;
+
+  entryId?: string;
 
   resolution?: string;
 
