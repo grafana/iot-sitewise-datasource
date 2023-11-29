@@ -112,8 +112,8 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
         } else {
           txt += ' / ' + query.propertyId;
         }
-      } 
-    } else if(query.propertyAlias) {
+      }
+    } else if (query.propertyAlias) {
       txt += ' / ' + query.propertyAlias;
     }
     return txt;
@@ -129,9 +129,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       propertyAlias: templateSrv.replace(query.propertyAlias, scopedVars),
       region: templateSrv.replace(query.region || '', scopedVars),
       propertyId: templateSrv.replace(query.propertyId || '', scopedVars),
-      assetIds: query.assetIds?.flatMap(
-        assetId => templateSrv.replace(assetId, scopedVars, 'csv').split(',')
-      ) ?? []
+      assetIds: query.assetIds?.flatMap((assetId) => templateSrv.replace(assetId, scopedVars, 'csv').split(',')) ?? [],
     };
   }
 
@@ -151,10 +149,21 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
             if (meta && meta.nextToken) {
               const query = request.targets.find((t) => t.refId === frame.refId);
               if (query) {
-                next.push({
-                  ...query,
-                  nextToken: meta.nextToken,
-                });
+                const existingNextQuery = next.find((v) => v.refId === frame.refId);
+                if (existingNextQuery) {
+                  if (existingNextQuery.nextToken !== meta.nextToken && meta.entryId && meta.nextToken) {
+                    if (!existingNextQuery.nextTokens) {
+                      existingNextQuery.nextTokens = {};
+                    }
+                    existingNextQuery.nextTokens[meta.entryId] = meta.nextToken;
+                  }
+                } else {
+                  next.push({
+                    ...query,
+                    nextToken: meta.nextToken,
+                    nextTokens: { ...(meta.entryId && meta.nextToken ? { [meta.entryId]: meta.nextToken } : {}) },
+                  });
+                }
               }
             }
           }

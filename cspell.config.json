@@ -59,6 +59,9 @@
     "httptrace",
     "otelhttptrace",
     "idastambuk",
-    "fridgepoet"
+    "fridgepoet",
+    "errgroup",
+    "ectx",
+    "reqs"
   ]
 }
