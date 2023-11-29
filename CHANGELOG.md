@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.15.0
+
+- Support multiple assets for interpolated queries in (#256)[https://github.com/grafana/iot-sitewise-datasource/pull/256]
+
 ## 1.14.0
 
 - Query and Config editors: Migrate to new form styling under feature toggle in (#244)[https://github.com/grafana/iot-sitewise-datasource/pull/244]
@@ -28,12 +32,15 @@ All notable changes to this project will be documented in this file.
 **Full Changelog**: https://github.com/grafana/iot-sitewise-datasource/compare/v1.12.1...v1.13.0
 
 ## v1.12.1
+
 - Disassociated streams: Hash entryId to fix bug with property aliases longer than 64 characters in [#239](https://github.com/grafana/iot-sitewise-datasource/pull/239)
 
 ## v1.12.0
+
 - Query by property alias: Add support for unassociated streams in [#231](https://github.com/grafana/iot-sitewise-datasource/pull/231)
 
 ## v1.11.1
+
 - Revert "Replace deprecated setVariableQueryEditor with CustomVariableSupport" in [#229](https://github.com/grafana/iot-sitewise-datasource/pull/229)
 
 ## v1.11.0
