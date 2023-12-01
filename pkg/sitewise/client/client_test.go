@@ -23,7 +23,8 @@ func TestClient(t *testing.T) {
 		baseConfig := models.AWSSiteWiseDataSourceSetting{
 			AWSDatasourceSettings: awsds.AWSDatasourceSettings{Region: "us-west-1"},
 		}
-		GetClient(region, baseConfig, mockProvider)
+		_, err := GetClient(region, baseConfig, mockProvider)
+		assert.Error(t, err)
 		assert.Equal(t, cfg.Settings.Region, region)
 	})
 }
