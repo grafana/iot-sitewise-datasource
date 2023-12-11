@@ -59,6 +59,8 @@ interface State {
   openModal: boolean;
 }
 
+const ALL_HIERARCHIES = '*';
+
 export class PropertyQueryEditor extends PureComponent<Props, State> {
   state: State = {
     assets: [],
@@ -176,10 +178,15 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const { onChange, query, onRunQuery } = this.props;
     const update = { ...query };
     if (isListAssociatedAssetsQuery(update)) {
-      if (sel.value && sel.value.length) {
+      if (sel.value === ALL_HIERARCHIES) {
+        delete update.hierarchyId;
+        update.loadAllChildren = true;
+      } else if (sel.value && sel.value.length) {
         update.hierarchyId = sel.value;
+        update.loadAllChildren = false;
       } else {
         delete update.hierarchyId;
+        update.loadAllChildren = false;
       }
     }
     onChange(update);
@@ -257,7 +264,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
   renderAssociatedAsset(query: ListAssociatedAssetsQuery) {
     const { asset, loading } = this.state;
-    const hierarchies: Array<SelectableValue<string>> = [{ value: '', label: '** Parent **' }];
+    const hierarchies: Array<SelectableValue<string>> = [{ value: '', label: '** Parent **' }, { value: ALL_HIERARCHIES, label: '** All **' }];
     if (asset) {
       hierarchies.push(...asset.hierarchy);
     }
@@ -268,7 +275,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         current = { value: query.hierarchyId, label: 'ID: ' + query.hierarchyId };
         hierarchies.push(current);
       } else {
-        current = hierarchies[0]; // parent
+        current = query.loadAllChildren ? hierarchies[1] /* all */ : hierarchies[0]; // parent
       }
     }
     return this.props.newFormStylingEnabled ? (

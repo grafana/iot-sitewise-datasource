@@ -104,7 +104,8 @@ export function isListAssetsQuery(q?: SitewiseQuery): q is ListAssetsQuery {
 
 export interface ListAssociatedAssetsQuery extends SitewiseQuery {
   queryType: QueryType.ListAssociatedAssets;
-  hierarchyId?: string; // if empty, will list the parents
+  loadAllChildren?: boolean; // When passed, we will loop through all associated hierarchies, and return children from all.
+  hierarchyId?: string; // if empty and loadAllChildren is false, will list the parents
 }
 
 export function isListAssociatedAssetsQuery(q?: SitewiseQuery): q is ListAssociatedAssetsQuery {
