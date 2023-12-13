@@ -23,6 +23,7 @@ type ListAssetsQuery struct {
 type ListAssociatedAssetsQuery struct {
 	BaseQuery
 	HierarchyId string `json:"hierarchyId,omitempty"`
+	LoadAllChildren bool `json:"loadAllChildren,omitempty"`
 	// TraversalDirection is implied from the existence of HierarchyId
 }
 
