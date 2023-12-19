@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.16.0
+
+- Use query region to get client for queries (#258)
+- Feat: implement an "all" option for list associated assets query (#261)
+
 ## 1.15.0
 
 - Support multiple assets for interpolated queries in (#256)[https://github.com/grafana/iot-sitewise-datasource/pull/256]
