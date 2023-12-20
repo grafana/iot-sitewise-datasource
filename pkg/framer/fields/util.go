@@ -18,10 +18,26 @@ func FieldTypeForPropertyValue(property *iotsitewise.DescribeAssetPropertyOutput
 	}
 }
 
+func FieldTypeForQueryResult(column iotsitewise.ColumnInfo) data.FieldType {
+	switch *column.Type.ScalarType {
+	case "BOOLEAN":
+		return data.FieldTypeBool
+	case "INTEGER":
+		return data.FieldTypeInt64
+	case "STRING":
+		return data.FieldTypeString
+	default:
+		return data.FieldTypeFloat64
+	}
+}
+
 // Map values from ???:
-//   https://docs.microsoft.com/en-us/rest/api/monitor/metrics/list#unit
+//
+//	https://docs.microsoft.com/en-us/rest/api/monitor/metrics/list#unit
+//
 // to
-//   https://github.com/grafana/grafana/blob/master/packages/grafana-data/src/valueFormats/categories.ts#L24
+//
+//	https://github.com/grafana/grafana/blob/master/packages/grafana-data/src/valueFormats/categories.ts#L24
 func ToGrafanaUnit(unit *string) string {
 	if unit == nil {
 		return ""

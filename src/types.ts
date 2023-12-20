@@ -11,6 +11,7 @@ export enum QueryType {
   PropertyValueHistory = 'PropertyValueHistory',
   PropertyAggregate = 'PropertyAggregate',
   PropertyInterpolated = 'PropertyInterpolated',
+  SQL = 'SQL',
 }
 
 export enum SiteWiseQuality {
@@ -106,6 +107,12 @@ export interface ListAssociatedAssetsQuery extends SitewiseQuery {
   queryType: QueryType.ListAssociatedAssets;
   loadAllChildren?: boolean; // When passed, we will loop through all associated hierarchies, and return children from all.
   hierarchyId?: string; // if empty and loadAllChildren is false, will list the parents
+}
+
+// https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ExecuteQuery.html
+export interface SqlQuery extends SitewiseQuery {
+  queryType: QueryType.SQL;
+  queryStatement: string;
 }
 
 export function isListAssociatedAssetsQuery(q?: SitewiseQuery): q is ListAssociatedAssetsQuery {

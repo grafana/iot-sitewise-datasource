@@ -33,10 +33,9 @@ import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/experimental'
 import { css } from '@emotion/css';
 import { QueryOptions } from './QueryOptions';
 
-interface Props
-  extends SitewiseQueryEditorProps<SitewiseQuery | AssetPropertyAggregatesQuery | ListAssociatedAssetsQuery> {
-  newFormStylingEnabled?: boolean;
-}
+import { config } from '@grafana/runtime';
+
+interface Props extends SitewiseQueryEditorProps<SitewiseQuery | AssetPropertyAggregatesQuery | ListAssociatedAssetsQuery> {}
 
 const resolutions: Array<SelectableValue<SiteWiseResolution>> = [
   {
@@ -217,8 +216,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
   renderAggregateRow(query: AssetPropertyAggregatesQuery) {
     const { property } = this.state;
+    const newFormStylingEnabled = config.featureToggles.awsDatasourcesNewFormStyling;
 
-    return this.props.newFormStylingEnabled ? (
+    return newFormStylingEnabled ? (
       <EditorFieldGroup>
         <EditorField label="Aggregate" htmlFor="aggregate-picker" width={40}>
           <AggregatePicker
@@ -264,6 +264,8 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
   renderAssociatedAsset(query: ListAssociatedAssetsQuery) {
     const { asset, loading } = this.state;
+    const newFormStylingEnabled = config.featureToggles.awsDatasourcesNewFormStyling;
+
     const hierarchies: Array<SelectableValue<string>> = [{ value: '', label: '** Parent **' }, { value: ALL_HIERARCHIES, label: '** All **' }];
     if (asset) {
       hierarchies.push(...asset.hierarchy);
@@ -278,7 +280,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         current = query.loadAllChildren ? hierarchies[1] /* all */ : hierarchies[0]; // parent
       }
     }
-    return this.props.newFormStylingEnabled ? (
+    return newFormStylingEnabled ? (
       <EditorField label="Show" htmlFor="show">
         <Select
           id="show"
@@ -320,6 +322,8 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
   }
 
   render() {
+    const newFormStylingEnabled = config.featureToggles.awsDatasourcesNewFormStyling;
+
     const { query, datasource } = this.props;
     const { loading, asset, assets } = this.state;
 
@@ -364,7 +368,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       </div>
     );
 
-    return this.props.newFormStylingEnabled ? (
+    return newFormStylingEnabled ? (
       <>
         <EditorRow>
           <EditorField label="Property Alias" tooltip={queryTooltip} tooltipInteractive htmlFor="alias" width={80}>
