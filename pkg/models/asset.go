@@ -22,9 +22,13 @@ type ListAssetsQuery struct {
 
 type ListAssociatedAssetsQuery struct {
 	BaseQuery
-	HierarchyId string `json:"hierarchyId,omitempty"`
-	LoadAllChildren bool `json:"loadAllChildren,omitempty"`
-	// TraversalDirection is implied from the existence of HierarchyId
+	HierarchyId     string `json:"hierarchyId,omitempty"`
+	LoadAllChildren bool   `json:"loadAllChildren,omitempty"`
+}
+
+type ExecuteQuery struct {
+	BaseQuery
+	QueryStatement string `json:"queryStatement"`
 }
 
 func GetDescribeAssetQuery(dq *backend.DataQuery) (*DescribeAssetQuery, error) {
@@ -35,6 +39,17 @@ func GetDescribeAssetQuery(dq *backend.DataQuery) (*DescribeAssetQuery, error) {
 
 	// AssetId <--> AssetIds backward compatibility
 	query.MigrateAssetId()
+
+	// add on the DataQuery params
+	query.QueryType = dq.QueryType
+	return query, nil
+}
+
+func GetExecuteQuery(dq *backend.DataQuery) (*ExecuteQuery, error) {
+	query := &ExecuteQuery{}
+	if err := json.Unmarshal(dq.JSON, query); err != nil {
+		return nil, err
+	}
 
 	// add on the DataQuery params
 	query.QueryType = dq.QueryType

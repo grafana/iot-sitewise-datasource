@@ -6,10 +6,9 @@ import { SitewiseQueryEditorProps } from './types';
 import { AssetModelSummary } from 'queryResponseTypes';
 import { firstLabelWith } from './QueryEditor';
 import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/experimental';
+import { config } from '@grafana/runtime';
 
-interface Props extends SitewiseQueryEditorProps<ListAssetsQuery> {
-  newFormStylingEnabled?: boolean;
-}
+interface Props extends SitewiseQueryEditorProps<ListAssetsQuery> {}
 
 interface State {
   models?: DataFrameView<AssetModelSummary>;
@@ -47,6 +46,8 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
   };
 
   render() {
+    const newFormStylingEnabled = config.featureToggles.awsDatasourcesNewFormStyling;
+
     const { query } = this.props;
     const { models } = this.state;
     const modelIds = models
@@ -65,7 +66,7 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
       };
     }
 
-    return this.props.newFormStylingEnabled ? (
+    return newFormStylingEnabled ? (
           <EditorRow>
             <EditorFieldGroup>
               <EditorField label="Model ID" htmlFor="model" width={30}>

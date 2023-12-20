@@ -49,6 +49,10 @@ func (s *Server) HandleDescribeAsset(ctx context.Context, req *backend.QueryData
 	return processQueries(ctx, req, s.handleDescribeAssetQuery), nil
 }
 
+func (s *Server) HandleExecuteQuery(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
+	return processQueries(ctx, req, s.handleExecuteQuery), nil
+}
+
 func (s *Server) HandleListAssociatedAssets(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
 	return processQueries(ctx, req, s.handleListAssociatedAssetsQuery), nil
 }
@@ -234,6 +238,24 @@ func (s *Server) handleDescribeAssetQuery(ctx context.Context, req *backend.Quer
 	}
 
 	frames, err := s.Datasource.HandleDescribeAssetQuery(ctx, req, query)
+	if err != nil {
+		return DataResponseErrorRequestFailed(err)
+	}
+
+	return backend.DataResponse{
+		Frames: frames,
+		Error:  nil,
+	}
+}
+
+func (s *Server) handleExecuteQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
+
+	query, err := models.GetExecuteQuery(&q)
+	if err != nil {
+		return DataResponseErrorUnmarshal(err)
+	}
+
+	frames, err := s.Datasource.HandleExecuteQuery(ctx, req, query)
 	if err != nil {
 		return DataResponseErrorRequestFailed(err)
 	}

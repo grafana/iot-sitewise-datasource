@@ -14,6 +14,7 @@ import {
   AssetPropertyInfo,
   ListAssociatedAssetsQuery,
   isListAssociatedAssetsQuery,
+  SqlQuery as SiteWiseSQL,
 } from './types';
 
 export interface QueryTypeInfo extends SelectableValue<QueryType> {
@@ -82,6 +83,15 @@ export const siteWiseQueryTypes: QueryTypeInfo[] = [
     defaultQuery: {} as ListAssociatedAssetsQuery,
     helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListAssociatedAssets.html',
   },
+  {
+    label: 'Execute Query',
+    value: QueryType.SQL,
+    description: 'Executes a query against the AWS IoT SiteWise service.',
+    defaultQuery: {
+      queryStatement: `SELECT asset_name, asset_description FROM asset WHERE asset_name LIKE 'Wind%'`
+    } as SiteWiseSQL,
+    helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ExecuteQuery.html'
+  }
 ];
 
 export function changeQueryType(q: SitewiseQuery, info: QueryTypeInfo): SitewiseQuery {
