@@ -112,9 +112,8 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
   }
 
   onAliasChange = (evt: React.SyntheticEvent<HTMLInputElement>) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     onChange({ ...query, propertyAlias: evt.currentTarget.value });
-    onRunQuery();
   };
 
   onAssetChange(sel: SelectableValue<string> | Array<SelectableValue<string>>) {
@@ -129,7 +128,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       assetIds.add(sel.value);
     }
 
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
 
     const newQuery =
       Array.isArray(sel) && sel.length === 0
@@ -144,11 +143,10 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
           };
 
     onChange(newQuery);
-    onRunQuery();
   }
 
   onPropertyChange = (sel: SelectableValue<string>) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     const update = { ...query, propertyId: sel.value! };
 
     // Make sure the selected aggregates are actually supported
@@ -171,29 +169,25 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     }
 
     onChange(update);
-    onRunQuery();
   };
 
   onSetAssetId = (assetId?: string) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     onChange({ ...query, assetIds: assetId ? [assetId] : undefined });
-    onRunQuery();
   };
 
   onSetPropertyId = (propertyId?: string) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     onChange({ ...query, propertyId });
-    onRunQuery();
   };
 
   onSetHierarchyId = (hierarchyId?: string) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     onChange({ ...(query as any), hierarchyId });
-    onRunQuery();
   };
 
   onHierarchyIdChange = (sel: SelectableValue<string>) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     const update = { ...query };
     if (isListAssociatedAssetsQuery(update)) {
       if (sel.value === ALL_HIERARCHIES) {
@@ -208,7 +202,6 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       }
     }
     onChange(update);
-    onRunQuery();
   };
 
   //--------------------------------------------------------------------------------
@@ -216,21 +209,18 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
   //--------------------------------------------------------------------------------
 
   onAggregateChange = (aggregates: AggregateType[]) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     onChange({ ...query, aggregates } as any);
-    onRunQuery();
   };
 
   onLastObservationChange = () => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     onChange({ ...query, lastObservation: !query.lastObservation });
-    onRunQuery();
   };
 
   onResolutionChange = (sel: SelectableValue<SiteWiseResolution>) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     onChange({ ...query, resolution: sel.value } as any);
-    onRunQuery();
   };
 
   renderAggregateRow(query: AssetPropertyAggregatesQuery) {

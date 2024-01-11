@@ -36,15 +36,12 @@ export function QueryEditor(props: Props) {
   const onQueryTypeChange = (sel: SelectableValue<QueryType>) => {
     const { onChange, query } = props;
     // hack to use QueryEditor as VariableQueryEditor
-    const onRunQuery = props.onRunQuery ?? (() => {});
     onChange(changeQueryType(query, sel as QueryTypeInfo));
-    onRunQuery();
   };
 
   const onRegionChange = (sel: SelectableValue<string>) => {
-    const { onChange, query, onRunQuery } = props;
+    const { onChange, query } = props;
     onChange({ ...query, assetId: undefined, propertyId: undefined, region: sel.value });
-    onRunQuery();
   };
 
   const renderQuery = (query: SitewiseQuery, newFormStylingEnabled?: boolean) => {

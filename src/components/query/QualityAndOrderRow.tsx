@@ -58,34 +58,29 @@ export const FORMAT_OPTIONS: Array<SelectableValue<SiteWiseResponseFormat>> = [
 
 export class QualityAndOrderRow extends PureComponent<Props> {
   onQualityChange = (sel: SelectableValue<SiteWiseQuality>) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     onChange({ ...query, quality: sel.value });
-    onRunQuery();
   };
 
   onOrderChange = (sel: SelectableValue<SiteWiseTimeOrder>) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     onChange({ ...query, timeOrdering: sel.value });
-    onRunQuery();
   };
 
   onResponseFormatChange = (sel: SelectableValue<SiteWiseResponseFormat>) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     onChange({ ...query, responseFormat: sel.value });
-    onRunQuery();
   };
 
   onResolutionChange = (sel: SelectableValue<SiteWiseResolution>) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     onChange({ ...query, resolution: sel.value });
-    onRunQuery();
   };
 
   onMaxPageAggregations = (event: React.FormEvent<HTMLInputElement>) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
 
     onChange({ ...query, maxPageAggregations: +event.currentTarget.value });
-    onRunQuery();
   };
 
   render() {
