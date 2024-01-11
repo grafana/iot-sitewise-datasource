@@ -51,27 +51,19 @@ func (c *sitewiseClient) BatchGetAssetPropertyValueHistoryPageAggregation(ctx co
 		nextToken *string
 	)
 
+	successEntryIndex := make(map[string]int)
 	err := c.BatchGetAssetPropertyValueHistoryPagesWithContext(ctx, req, func(output *iotsitewise.BatchGetAssetPropertyValueHistoryOutput, b bool) bool {
 		numPages++
-		if len(output.SuccessEntries) > 0 {
-			count += len(output.SuccessEntries[0].AssetPropertyValueHistory)
-		}
-		if len(success) > 0 {
-			for _, successEntry := range output.SuccessEntries {
-				found := false
-				for i, entry := range success {
-					if *entry.EntryId == *successEntry.EntryId {
-						success[i].AssetPropertyValueHistory = append(success[i].AssetPropertyValueHistory, successEntry.AssetPropertyValueHistory...)
-						found = true
-						break
-					}
-				}
-				if !found {
-					success = append(success, successEntry)
-				}
+		for i, successEntry := range output.SuccessEntries {
+			if i == 0 {
+				count += len(output.SuccessEntries[0].AssetPropertyValueHistory)
 			}
-		} else {
-			success = append(success, output.SuccessEntries...)
+			if index, exists := successEntryIndex[*successEntry.EntryId]; exists {
+				success[index].AssetPropertyValueHistory = append(success[index].AssetPropertyValueHistory, successEntry.AssetPropertyValueHistory...)
+			} else {
+				successEntryIndex[*successEntry.EntryId] = len(success)
+				success = append(success, successEntry)
+			}
 		}
 		skipped = append(skipped, output.SkippedEntries...)
 		errors = append(errors, output.ErrorEntries...)
@@ -126,26 +118,18 @@ func (c *sitewiseClient) BatchGetAssetPropertyAggregatesPageAggregation(ctx cont
 		nextToken *string
 	)
 
+	successEntryIndex := make(map[string]int)
 	err := c.BatchGetAssetPropertyAggregatesPagesWithContext(ctx, req, func(output *iotsitewise.BatchGetAssetPropertyAggregatesOutput, b bool) bool {
-		if len(output.SuccessEntries) > 0 {
-			count += len(output.SuccessEntries[0].AggregatedValues)
-		}
-		if len(success) > 0 {
-			for _, successEntry := range output.SuccessEntries {
-				found := false
-				for i, entry := range success {
-					if *entry.EntryId == *successEntry.EntryId {
-						success[i].AggregatedValues = append(success[i].AggregatedValues, successEntry.AggregatedValues...)
-						found = true
-						break
-					}
-				}
-				if !found {
-					success = append(success, successEntry)
-				}
+		for i, successEntry := range output.SuccessEntries {
+			if i == 0 {
+				count += len(successEntry.AggregatedValues)
 			}
-		} else {
-			success = append(success, output.SuccessEntries...)
+			if index, exists := successEntryIndex[*successEntry.EntryId]; exists {
+				success[index].AggregatedValues = append(success[index].AggregatedValues, successEntry.AggregatedValues...)
+			} else {
+				successEntryIndex[*successEntry.EntryId] = len(success)
+				success = append(success, successEntry)
+			}
 		}
 		skipped = append(skipped, output.SkippedEntries...)
 		errors = append(errors, output.ErrorEntries...)
