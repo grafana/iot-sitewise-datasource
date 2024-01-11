@@ -2,8 +2,9 @@ package sitewise
 
 import (
 	"context"
-	"github.com/patrickmn/go-cache"
 	"time"
+
+	"github.com/patrickmn/go-cache"
 
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
@@ -29,4 +30,8 @@ func frameResponse(ctx context.Context, query models.BaseQuery, data framer.Fram
 	cp := resource.NewCachingResourceProvider(resource.NewSitewiseResources(client), GetCache())
 	rp := resource.NewQueryResourceProvider(cp, query)
 	return data.Frames(ctx, rp)
+}
+
+func FrameResponse(ctx context.Context, query models.BaseQuery, data framer.Framer, client client.SitewiseClient) (data.Frames, error) {
+	return frameResponse(ctx, query, data, client)
 }
