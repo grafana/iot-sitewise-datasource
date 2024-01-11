@@ -120,11 +120,10 @@ func (ds *DatasourceServerInstance) CheckHealth(ctx context.Context, _ *backend.
 	return nil, nil
 }
 
-/* 
+/*
 Notes:
 we need access to headers in our queries to know if something is from expressions, right now we're not storing headers
 let's format request object into individual queries that contain all that we need to make descions
-
 */
 func (ds *DatasourceServerInstance) QueryData(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
 	response := backend.NewQueryDataResponse()
@@ -313,15 +312,12 @@ func (ds *DatasourceServerInstance) runQuery(ctx context.Context, q SitewiseQuer
 		TimeRange:     q.TimeRange,
 		JSON:          remarshalledQueryJSON,
 	}
-	req := backend.QueryDataRequest{
-		Headers: [],
-	}
 
 	switch q.QueryType {
 	// case models.QueryTypePropertyValueHistory:
 	// 	return s.lastObservation(s.HandlePropertyValueHistory)
 	case models.QueryTypePropertyAggregate:
-		return ds.lastObservation(ds.handlePropertyAggregate(ctx, ))
+		return ds.lastObservation(ds.handlePropertyAggregate(ctx))
 	// case models.QueryTypePropertyInterpolated:
 	// 	return s.lastObservation(s.HandleInterpolatedPropertyValue)
 	case models.QueryTypePropertyValue:
