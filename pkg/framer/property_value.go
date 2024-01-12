@@ -5,6 +5,7 @@ import (
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
@@ -22,6 +23,9 @@ func (p AssetPropertyValue) Frames(ctx context.Context, resources resource.Resou
 
 	for _, e := range p.SuccessEntries {
 		property := properties[*e.EntryId]
+		if *property.AssetProperty.DataType == *aws.String("?") && e.AssetPropertyValue != nil {
+			property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(e.AssetPropertyValue.Value))
+		}
 		timeField := fields.TimeField(0)
 		valueField := fields.PropertyValueField(property, 0)
 		qualityField := fields.QualityField(0)
