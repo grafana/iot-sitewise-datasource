@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.16.1
+
+- Upgrade aws-sdk-go to v1.49.6 to have access to the `ExecuteQuery` API (#266)
+- Fix: Infer data type for disassociated streams for property value queries by alias (#275)
+
 ## 1.16.0
 
 - Use query region to get client for queries (#258)
