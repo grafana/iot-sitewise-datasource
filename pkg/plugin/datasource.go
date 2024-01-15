@@ -17,7 +17,6 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api"
-	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api/propvals"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/framer"
 	"github.com/pkg/errors"
@@ -124,6 +123,10 @@ func (ds *DatasourceServerInstance) CheckHealth(ctx context.Context, _ *backend.
 Notes:
 we need access to headers in our queries to know if something is from expressions, right now we're not storing headers
 let's format request object into individual queries that contain all that we need to make descions
+
+different options:
+- one we alter how these things work to not use req
+- alternatively what if we stored the full request object in the stream
 */
 func (ds *DatasourceServerInstance) QueryData(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
 	response := backend.NewQueryDataResponse()
@@ -316,8 +319,8 @@ func (ds *DatasourceServerInstance) runQuery(ctx context.Context, q SitewiseQuer
 	switch q.QueryType {
 	// case models.QueryTypePropertyValueHistory:
 	// 	return s.lastObservation(s.HandlePropertyValueHistory)
-	case models.QueryTypePropertyAggregate:
-		return ds.lastObservation(ds.handlePropertyAggregate(ctx))
+	// case models.QueryTypePropertyAggregate:
+	// 	return ds.lastObservation(ds.handlePropertyAggregate(ctx))
 	// case models.QueryTypePropertyInterpolated:
 	// 	return s.lastObservation(s.HandleInterpolatedPropertyValue)
 	case models.QueryTypePropertyValue:
@@ -436,25 +439,25 @@ func (ds *DatasourceServerInstance) handleDescribeAsset(ctx context.Context, q b
 	}
 }
 
-func (ds *DatasourceServerInstance) handleListAssociatedAssetsQuery(ctx context.Context, q backend.DataQuery) backend.DataResponse {
-	query, err := models.GetListAssociatedAssetsQuery(&q)
-	if err != nil {
-		return DataResponseErrorUnmarshal(err)
-	}
+// func (ds *DatasourceServerInstance) handleListAssociatedAssetsQuery(ctx context.Context, q backend.DataQuery) backend.DataResponse {
+// 	query, err := models.GetListAssociatedAssetsQuery(&q)
+// 	if err != nil {
+// 		return DataResponseErrorUnmarshal(err)
+// 	}
 
-	frames, err := ds.invoke(ctx, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
-		return api.ListAssociatedAssets(ctx, sw, *query)
-	})
+// 	frames, err := ds.invoke(ctx, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
+// 		return api.ListAssociatedAssets(ctx, sw, *query)
+// 	})
 
-	if err != nil {
-		return DataResponseErrorRequestFailed(err)
-	}
+// 	if err != nil {
+// 		return DataResponseErrorRequestFailed(err)
+// 	}
 
-	return backend.DataResponse{
-		Frames: frames,
-		Error:  nil,
-	}
-}
+// 	return backend.DataResponse{
+// 		Frames: frames,
+// 		Error:  nil,
+// 	}
+// }
 
 func DataResponseErrorUnmarshal(err error) backend.DataResponse {
 	return backend.DataResponse{
@@ -539,186 +542,186 @@ func getFromTimestamp(res backend.DataResponse) *time.Time {
 	return lastTimestamp
 }
 
-type handler func(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error)
+// type handler func(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error)
 
 // used when Expand Time Range is true
 // basically makes additional requests for values outside of the time range to make graphs look smoother
-func (ds *DatasourceServerInstance) lastObservation(h handler) handler {
-	return func(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
-		resp := &backend.QueryDataResponse{
-			Responses: make(map[string]backend.DataResponse),
-		}
+// func (ds *DatasourceServerInstance) lastObservation(h handler) handler {
+// 	return func(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
+// 		resp := &backend.QueryDataResponse{
+// 			Responses: make(map[string]backend.DataResponse),
+// 		}
 
-		queries := make(map[string]backend.DataQuery, len(req.Queries))
-		for _, q := range req.Queries {
-			queries[q.RefID] = q
-		}
+// 		queries := make(map[string]backend.DataQuery, len(req.Queries))
+// 		for _, q := range req.Queries {
+// 			queries[q.RefID] = q
+// 		}
 
-		origResp, err := h(ctx, req)
-		if err != nil {
-			return nil, err
-		}
+// 		origResp, err := h(ctx, req)
+// 		if err != nil {
+// 			return nil, err
+// 		}
 
-		for refID, res := range origResp.Responses {
-			if res.Error != nil {
-				resp.Responses[refID] = res
-				continue
-			}
+// 		for refID, res := range origResp.Responses {
+// 			if res.Error != nil {
+// 				resp.Responses[refID] = res
+// 				continue
+// 			}
 
-			query := queries[refID]
-			resp.Responses[refID] = res
+// 			query := queries[refID]
+// 			resp.Responses[refID] = res
 
-			// ensure this is the last page of data
-			if len(res.Frames) > 0 {
-				if meta, ok := res.Frames[0].Meta.Custom.(models.SitewiseCustomMeta); ok && meta.NextToken != "" {
-					continue
-				}
-			}
+// 			// ensure this is the last page of data
+// 			if len(res.Frames) > 0 {
+// 				if meta, ok := res.Frames[0].Meta.Custom.(models.SitewiseCustomMeta); ok && meta.NextToken != "" {
+// 					continue
+// 				}
+// 			}
 
-			// ensure that this is a supported query type, and that the user requested last observation
-			assetQuery, err := models.GetAssetPropertyValueQuery(&query)
-			if err != nil || !assetQuery.LastObservation {
-				continue
-			}
+// 			// ensure that this is a supported query type, and that the user requested last observation
+// 			assetQuery, err := models.GetAssetPropertyValueQuery(&query)
+// 			if err != nil || !assetQuery.LastObservation {
+// 				continue
+// 			}
 
-			lastValueRes, err := ds.lastValueQuery(ctx, query, "DESCENDING")
-			if err != nil {
-				log.DefaultLogger.Debug("failed to fetch last observation", "error", err)
-			}
-			if r, ok := resp.Responses[refID]; err == nil && ok {
-				resp.Responses[refID] = mergeLastValueResponse(r, lastValueRes)
-			}
+// 			lastValueRes, err := ds.lastValueQuery(ctx, query, "DESCENDING")
+// 			if err != nil {
+// 				log.DefaultLogger.Debug("failed to fetch last observation", "error", err)
+// 			}
+// 			if r, ok := resp.Responses[refID]; err == nil && ok {
+// 				resp.Responses[refID] = mergeLastValueResponse(r, lastValueRes)
+// 			}
 
-			nextValueRes, err := ds.lastValueQuery(ctx, query, "ASCENDING")
-			if err != nil {
-				log.DefaultLogger.Debug("failed to fetch next observation", "error", err)
-			}
-			if r, ok := resp.Responses[refID]; err == nil && ok {
-				resp.Responses[refID] = mergeLastValueResponse(r, nextValueRes)
-			}
-		}
+// 			nextValueRes, err := ds.lastValueQuery(ctx, query, "ASCENDING")
+// 			if err != nil {
+// 				log.DefaultLogger.Debug("failed to fetch next observation", "error", err)
+// 			}
+// 			if r, ok := resp.Responses[refID]; err == nil && ok {
+// 				resp.Responses[refID] = mergeLastValueResponse(r, nextValueRes)
+// 			}
+// 		}
 
-		return resp, nil
-	}
-}
-func (ds *DatasourceServerInstance) lastValueQuery(ctx context.Context, query backend.DataQuery, timeOrdering string) (backend.DataResponse, error) {
-	query.MaxDataPoints = 1
-	if timeOrdering == "DESCENDING" {
-		query.TimeRange.To = query.TimeRange.From.Add(-1 * time.Second)
-		query.TimeRange.From = query.TimeRange.From.Add(-8760 * time.Hour) // 1 year ago
-	} else if timeOrdering == "ASCENDING" {
-		query.TimeRange.From = query.TimeRange.To.Add(time.Second)
-		query.TimeRange.To = time.Now()
-	}
+// 		return resp, nil
+// 	}
+// }
+// func (ds *DatasourceServerInstance) lastValueQuery(ctx context.Context, query backend.DataQuery, timeOrdering string) (backend.DataResponse, error) {
+// 	query.MaxDataPoints = 1
+// 	if timeOrdering == "DESCENDING" {
+// 		query.TimeRange.To = query.TimeRange.From.Add(-1 * time.Second)
+// 		query.TimeRange.From = query.TimeRange.From.Add(-8760 * time.Hour) // 1 year ago
+// 	} else if timeOrdering == "ASCENDING" {
+// 		query.TimeRange.From = query.TimeRange.To.Add(time.Second)
+// 		query.TimeRange.To = time.Now()
+// 	}
 
-	assetQuery, err := models.GetAssetPropertyValueQuery(&query)
-	if err != nil {
-		return backend.DataResponse{}, err
-	}
-	assetQuery.NextToken = ""
-	assetQuery.TimeOrdering = timeOrdering
-	assetQuery.LastObservation = false
-	assetQuery.MaxDataPoints = 1
-	assetQuery.MaxPageAggregations = 1
-	assetQuery.TimeRange = query.TimeRange
-	assetQuery.Resolution = propvals.ResolutionMinute
+// 	assetQuery, err := models.GetAssetPropertyValueQuery(&query)
+// 	if err != nil {
+// 		return backend.DataResponse{}, err
+// 	}
+// 	assetQuery.NextToken = ""
+// 	assetQuery.TimeOrdering = timeOrdering
+// 	assetQuery.LastObservation = false
+// 	assetQuery.MaxDataPoints = 1
+// 	assetQuery.MaxPageAggregations = 1
+// 	assetQuery.TimeRange = query.TimeRange
+// 	assetQuery.Resolution = propvals.ResolutionMinute
 
-	log.DefaultLogger.Debug("last observation query", "timeOrdering", timeOrdering, "timeRange", assetQuery.TimeRange)
-	query.JSON, err = json.Marshal(&assetQuery)
-	if err != nil {
-		return backend.DataResponse{}, err
-	}
+// 	log.DefaultLogger.Debug("last observation query", "timeOrdering", timeOrdering, "timeRange", assetQuery.TimeRange)
+// 	query.JSON, err = json.Marshal(&assetQuery)
+// 	if err != nil {
+// 		return backend.DataResponse{}, err
+// 	}
 
-	res, err := s.QueryData(ctx, &backend.QueryDataRequest{Queries: []backend.DataQuery{query}})
-	if err != nil {
-		return backend.DataResponse{}, err
-	}
+// 	res, err := s.QueryData(ctx, &backend.QueryDataRequest{Queries: []backend.DataQuery{query}})
+// 	if err != nil {
+// 		return backend.DataResponse{}, err
+// 	}
 
-	dataRes, ok := res.Responses[query.RefID]
-	if !ok || dataRes.Error != nil || len(dataRes.Frames) == 0 || dataRes.Frames[0].Rows() == 0 {
-		return backend.DataResponse{}, fmt.Errorf("no response for query %s", query.RefID)
-	}
+// 	dataRes, ok := res.Responses[query.RefID]
+// 	if !ok || dataRes.Error != nil || len(dataRes.Frames) == 0 || dataRes.Frames[0].Rows() == 0 {
+// 		return backend.DataResponse{}, fmt.Errorf("no response for query %s", query.RefID)
+// 	}
 
-	log.DefaultLogger.Debug("last observation response", "timeOrdering", timeOrdering, "timeRange", assetQuery.TimeRange, "time", getFirstTime(dataRes))
+// 	log.DefaultLogger.Debug("last observation response", "timeOrdering", timeOrdering, "timeRange", assetQuery.TimeRange, "time", getFirstTime(dataRes))
 
-	frame := dataRes.Frames[0].EmptyCopy()
-	frame.AppendRow(dataRes.Frames[0].RowCopy(0)...)
+// 	frame := dataRes.Frames[0].EmptyCopy()
+// 	frame.AppendRow(dataRes.Frames[0].RowCopy(0)...)
 
-	return backend.DataResponse{Frames: []*data.Frame{frame}}, nil
-}
+// 	return backend.DataResponse{Frames: []*data.Frame{frame}}, nil
+// }
 
-func mergeLastValueResponse(originalRes, lastValueRes backend.DataResponse) backend.DataResponse {
-	// always return the original response if either response has an error
-	if hasError(originalRes) || hasError(lastValueRes) {
-		log.DefaultLogger.Debug("has error", "original", hasError(originalRes), "lastValue", hasError(lastValueRes))
-		return originalRes
-	}
+// func mergeLastValueResponse(originalRes, lastValueRes backend.DataResponse) backend.DataResponse {
+// 	// always return the original response if either response has an error
+// 	if hasError(originalRes) || hasError(lastValueRes) {
+// 		log.DefaultLogger.Debug("has error", "original", hasError(originalRes), "lastValue", hasError(lastValueRes))
+// 		return originalRes
+// 	}
 
-	if isEmpty(lastValueRes) {
-		log.DefaultLogger.Debug("last value response is empty")
-		return originalRes
-	}
+// 	if isEmpty(lastValueRes) {
+// 		log.DefaultLogger.Debug("last value response is empty")
+// 		return originalRes
+// 	}
 
-	if isEmpty(originalRes) {
-		log.DefaultLogger.Debug("original response is empty")
-		return lastValueRes
-	}
+// 	if isEmpty(originalRes) {
+// 		log.DefaultLogger.Debug("original response is empty")
+// 		return lastValueRes
+// 	}
 
-	if !fieldsMatch(originalRes, lastValueRes) {
-		log.DefaultLogger.Debug("fields do not match")
-		return originalRes
-	}
+// 	if !fieldsMatch(originalRes, lastValueRes) {
+// 		log.DefaultLogger.Debug("fields do not match")
+// 		return originalRes
+// 	}
 
-	originalTime := getFirstTime(originalRes)
-	lastValueTime := getFirstTime(lastValueRes)
-	if originalTime.After(lastValueTime) {
-		log.DefaultLogger.Debug("original time is after last value time")
-		originalRes.Frames[0].InsertRow(0, lastValueRes.Frames[0].RowCopy(0)...)
-		return originalRes
-	}
+// 	originalTime := getFirstTime(originalRes)
+// 	lastValueTime := getFirstTime(lastValueRes)
+// 	if originalTime.After(lastValueTime) {
+// 		log.DefaultLogger.Debug("original time is after last value time")
+// 		originalRes.Frames[0].InsertRow(0, lastValueRes.Frames[0].RowCopy(0)...)
+// 		return originalRes
+// 	}
 
-	log.DefaultLogger.Debug("last value time is after original time")
+// 	log.DefaultLogger.Debug("last value time is after original time")
 
-	originalRes.Frames[0].AppendRow(lastValueRes.Frames[0].RowCopy(0)...)
-	return originalRes
-}
+// 	originalRes.Frames[0].AppendRow(lastValueRes.Frames[0].RowCopy(0)...)
+// 	return originalRes
+// }
 
-func hasError(r backend.DataResponse) bool {
-	return r.Error != nil
-}
+// func hasError(r backend.DataResponse) bool {
+// 	return r.Error != nil
+// }
 
-func isEmpty(r backend.DataResponse) bool {
-	return len(r.Frames) == 0 || r.Frames[0].Rows() == 0
-}
+// func isEmpty(r backend.DataResponse) bool {
+// 	return len(r.Frames) == 0 || r.Frames[0].Rows() == 0
+// }
 
-func fieldsMatch(originalRes, lastValueRes backend.DataResponse) bool {
-	if len(originalRes.Frames[0].Fields) != len(lastValueRes.Frames[0].Fields) {
-		return false
-	}
+// func fieldsMatch(originalRes, lastValueRes backend.DataResponse) bool {
+// 	if len(originalRes.Frames[0].Fields) != len(lastValueRes.Frames[0].Fields) {
+// 		return false
+// 	}
 
-	for i := 0; i < len(originalRes.Frames[0].Fields); i++ {
-		if originalRes.Frames[0].Fields[i].Name != lastValueRes.Frames[0].Fields[i].Name {
-			return false
-		}
-	}
+// 	for i := 0; i < len(originalRes.Frames[0].Fields); i++ {
+// 		if originalRes.Frames[0].Fields[i].Name != lastValueRes.Frames[0].Fields[i].Name {
+// 			return false
+// 		}
+// 	}
 
-	return true
-}
+// 	return true
+// }
 
-func getFirstTime(r backend.DataResponse) time.Time {
-	if len(r.Frames) > 0 && r.Frames[0].Rows() > 0 {
-		for _, f := range r.Frames[0].Fields {
-			if f.Type() == data.FieldTypeTime {
-				if t, ok := f.At(0).(time.Time); ok {
-					return t
-				}
-			}
-			if f.Type() == data.FieldTypeNullableTime {
-				if t, ok := f.At(0).(*time.Time); ok {
-					return *t
-				}
-			}
-		}
-	}
-	return time.Time{}
-}
+// func getFirstTime(r backend.DataResponse) time.Time {
+// 	if len(r.Frames) > 0 && r.Frames[0].Rows() > 0 {
+// 		for _, f := range r.Frames[0].Fields {
+// 			if f.Type() == data.FieldTypeTime {
+// 				if t, ok := f.At(0).(time.Time); ok {
+// 					return t
+// 				}
+// 			}
+// 			if f.Type() == data.FieldTypeNullableTime {
+// 				if t, ok := f.At(0).(*time.Time); ok {
+// 					return *t
+// 				}
+// 			}
+// 		}
+// 	}
+// 	return time.Time{}
+// }
