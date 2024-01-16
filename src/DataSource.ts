@@ -139,6 +139,35 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   }
 
   query(request: DataQueryRequest<SitewiseQuery>): Observable<DataQueryResponse> {
+    /*
+    I think we want to do something like this: (from twinmaker)
+    if (this.grafanaLiveEnabled) {
+      return super.query(options);
+    } 
+    or possibly something like this: (from grafana-plugin-examples)
+      const observables = request.targets.map((target, index) => {
+      const query = defaults(target, DEFAULT_QUERY);
+      this.grafanaLiveEnabled = true;
+
+      return getGrafanaLiveSrv().getDataStream({
+        addr: {
+          scope: LiveChannelScope.DataSource,
+          namespace: this.uid,
+          path: `my-ws/custom-${query.lowerLimit}-${query.upperLimit}`, // this will allow each new query to create a new connection
+          data: {
+            ...query,
+          },
+        },
+      });
+    });
+
+    return merge(...observables);
+
+
+    In general I remain unclear about the relationship between grafana live and a streaming toggle
+
+    Another TODO: remove streaming toggle from non-stream-able query types like list assets, otherwise they just repeat the same data over and over again
+    */
     return super.query(request);
     // return getRequestLooper(request, {
     //   // Check for a "nextToken" in the response

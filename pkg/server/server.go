@@ -56,8 +56,6 @@ func DataResponseErrorRequestFailed(err error) backend.DataResponse {
 	}
 }
 
-type handler func(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error)
-
 // GetQueryHandlers creates the QueryTypeMux type for handling queries
 func getQueryHandlers(s *Server) *datasource.QueryTypeMux {
 	mux := datasource.NewQueryTypeMux()
@@ -76,7 +74,6 @@ func getQueryHandlers(s *Server) *datasource.QueryTypeMux {
 
 func NewServerInstance(ctx context.Context, settings backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
 	ds, err := sitewise.NewDatasource(settings)
-	backend.Logger.Info("SETTTTTTTTINGs", settings)
 	if err != nil {
 		return nil, err
 	}
@@ -116,12 +113,17 @@ func (s *Server) Dispose() {
 	close(s.closeCh)
 }
 
+// PublishStream just returns permission denied in this case, since in this example we don't want the user to send stream data.
+// Permissions verifications could be done here. Check backend.StreamHandler docs for more details.
 func (s *Server) PublishStream(_ context.Context, _ *backend.PublishStreamRequest) (*backend.PublishStreamResponse, error) {
 	return &backend.PublishStreamResponse{
 		Status: backend.PublishStreamStatusPermissionDenied,
 	}, nil
 }
 
+// handle streaming query is responsible for running an individual query request and returning the data from the api
+// it is very similar to the queryData above, but we don't want these queries to also use handleStreaming
+// since a streaming channel has already been established and creating the next query is handled in streaming loop
 func (s *Server) handleStreamingQuery(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
 	// there should always be one query as this was hard coded in handleStreaming or in streamingLoop
 	query := req.Queries[0]
@@ -147,10 +149,12 @@ func (s *Server) handleStreamingQuery(ctx context.Context, req *backend.QueryDat
 	}
 }
 
+// streaming loop is responsisble for handling each streaming query and sending the response back to the resChannel
+// and for creating and calling the next query for the stream
 func (s *Server) streamingLoop(ctx context.Context, queryRequest *backend.QueryDataRequest, resChannel chan *backend.QueryDataResponse) {
+	// a bit unclear to me why we need this when it also is in runStream, but I think we do?
 	select {
 	case <-ctx.Done():
-		backend.Logger.Info("context closed in streaming loop?")
 		resChannel <- nil
 		return
 	default:
@@ -158,7 +162,6 @@ func (s *Server) streamingLoop(ctx context.Context, queryRequest *backend.QueryD
 
 	// get the last query from the stream, and then send the response to the res channel
 	res, err := s.handleStreamingQuery(ctx, queryRequest)
-
 	if err != nil {
 		backend.Logger.Info("got a error", err)
 		resChannel <- nil
@@ -169,17 +172,18 @@ func (s *Server) streamingLoop(ctx context.Context, queryRequest *backend.QueryD
 	// if the results are paged, request the next page
 	nextToken := findNextToken(*res)
 	if nextToken != "" {
+		// TODO: I think we could dedupe this and put it in handle-streaming.go?
 		lastQueriesJson := queryRequest.Queries[0].JSON
 		var data map[string]interface{}
 		err := json.Unmarshal(lastQueriesJson, &data)
 		if err != nil {
-			fmt.Println("Error decoding JSON:", err)
+			fmt.Println("Error unmarshalling JSON:", err)
 			return
 		}
 		data["NextToken"] = nextToken
 		newQuerysJSON, err := json.Marshal(data)
 		if err != nil {
-			fmt.Println("Error decoding JSON:", err)
+			fmt.Println("Error marshalling JSON:", err)
 			return
 		}
 		newQueries := make([]backend.DataQuery, len(queryRequest.Queries))
@@ -201,14 +205,8 @@ func (s *Server) streamingLoop(ctx context.Context, queryRequest *backend.QueryD
 		Headers:       queryRequest.Headers,
 		Queries:       queryRequest.Queries,
 	}
-	refId := queryRequest.Queries[0].RefID
-	resValue := res.Responses[refId]
-	if ts := getFromTimestamp(resValue); ts != nil {
-		newRequest.Queries[0].TimeRange.From = *ts
-	}
-	// TODO figure out interval streaming
-	// newRequest.Queries[0].TimeRange.To = time.Now().Add(queryRequest.IntervalStreaming)
-	time.Sleep(5 * time.Second)
+	newRequest.Queries[0].TimeRange.From = newRequest.Queries[0].TimeRange.To
+	//TODO use intervalStreaming instead of hard coded 5 seconds
 	newRequest.Queries[0].TimeRange.To = newRequest.Queries[0].TimeRange.To.Add(5 * time.Second)
 	s.streamingLoop(ctx, &newRequest, resChannel)
 }
