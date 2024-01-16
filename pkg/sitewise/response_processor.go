@@ -31,7 +31,3 @@ func frameResponse(ctx context.Context, query models.BaseQuery, data framer.Fram
 	rp := resource.NewQueryResourceProvider(cp, query)
 	return data.Frames(ctx, rp)
 }
-
-func FrameResponse(ctx context.Context, query models.BaseQuery, data framer.Framer, client client.SitewiseClient) (data.Frames, error) {
-	return frameResponse(ctx, query, data, client)
-}
