@@ -15,14 +15,7 @@ import {
   shouldShowLastObserved,
   shouldShowOptionsRow,
 } from 'types';
-import {
-  InlineField,
-  LinkButton,
-  Select,
-  Input,
-  Icon,
-  InlineSwitch,
-} from '@grafana/ui';
+import { InlineField, LinkButton, Select, Input, Icon, InlineSwitch } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetBrowser } from '../browser/AssetBrowser';
 import { AggregatePicker, aggReg } from '../AggregatePicker';
@@ -99,9 +92,11 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
   async componentDidUpdate(oldProps: Props) {
     const { query } = this.props;
+
     const assetChanged = query?.assetIds !== oldProps?.query?.assetIds;
     const propChanged = query?.propertyId !== oldProps?.query?.propertyId;
     const regionChanged = query?.region !== oldProps?.query?.region;
+
     if (assetChanged || propChanged || regionChanged) {
       if (!query.assetIds?.length && !regionChanged) {
         this.setState({ asset: undefined, property: undefined, loading: false });
@@ -129,29 +124,48 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     } else if (sel.value) {
       assetIds.add(sel.value);
     }
+
     const { onChange, query, onRunQuery } = this.props;
-    onChange({ ...query, assetIds: [...assetIds] });
+
+    const newQuery =
+      Array.isArray(sel) && sel.length === 0
+        ? {
+            ...query,
+            assetIds: [],
+            propertyId: undefined,
+          }
+        : {
+            ...query,
+            assetIds: [...assetIds],
+          };
+
+    onChange(newQuery);
     onRunQuery();
   }
 
   onPropertyChange = (sel: SelectableValue<string>) => {
     const { onChange, query, onRunQuery } = this.props;
     const update = { ...query, propertyId: sel.value! };
+
     // Make sure the selected aggregates are actually supported
     if (isAssetPropertyAggregatesQuery(update)) {
       if (update.propertyId) {
         const info = getAssetProperty(this.state.asset, update.propertyId);
+
         if (!update.aggregates) {
           update.aggregates = [];
         }
+
         if (info) {
           update.aggregates = update.aggregates.filter((a) => aggReg.get(a).isValid(info));
         }
+
         if (!update.aggregates.length) {
           update.aggregates = [getDefaultAggregate(info)];
         }
       }
     }
+
     onChange(update);
     onRunQuery();
   };
@@ -264,7 +278,10 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
   renderAssociatedAsset(query: ListAssociatedAssetsQuery) {
     const { asset, loading } = this.state;
-    const hierarchies: Array<SelectableValue<string>> = [{ value: '', label: '** Parent **' }, { value: ALL_HIERARCHIES, label: '** All **' }];
+    const hierarchies: Array<SelectableValue<string>> = [
+      { value: '', label: '** Parent **' },
+      { value: ALL_HIERARCHIES, label: '** All **' },
+    ];
     if (asset) {
       hierarchies.push(...asset.hierarchy);
     }
@@ -344,7 +361,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     );
 
     const showOptionsRow = shouldShowOptionsRow(query, showProp);
-    
+
     let currentProperty = properties.find((p) => p.Id === query.propertyId);
     if (!currentProperty && query.propertyId) {
       currentProperty = {
@@ -352,6 +369,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         label: 'ID: ' + query.propertyId,
       } as AssetPropertyInfo;
     }
+
     const queryTooltip = (
       <div>
         Setting an alias for an asset property. <br />
@@ -376,6 +394,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             />
           </EditorField>
         </EditorRow>
+
         {!Boolean(query.propertyAlias) && (
           <>
             <EditorRow>
@@ -420,7 +439,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                       aria-label="Property"
                       isLoading={loading}
                       options={properties}
-                      value={currentProperty}
+                      value={currentProperty ?? null}
                       onChange={this.onPropertyChange}
                       placeholder="Select a property"
                       allowCustomValue={true}
@@ -431,6 +450,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                     />
                   </EditorField>
                 </EditorFieldGroup>
+
                 <EditorFieldGroup>
                   {showQuality && isAssetPropertyAggregatesQuery(query) && this.renderAggregateRow(query)}
                 </EditorFieldGroup>
@@ -438,18 +458,28 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             )}
           </>
         )}
+
         {query.propertyAlias && isAssetPropertyAggregatesQuery(query) && (
           <EditorRow>{this.renderAggregateRow(query)}</EditorRow>
         )}
+
         {isAssociatedAssets && (
           <EditorRow>
             <EditorFieldGroup>{this.renderAssociatedAsset(query as ListAssociatedAssetsQuery)}</EditorFieldGroup>
           </EditorRow>
         )}
+
         {showOptionsRow ? (
           <EditorRow>
             <EditorFieldGroup>
-              <QueryOptions query={query} showProp={showProp} showQuality={!!(query.propertyId || query.propertyAlias)} onLastObservationChange={this.onLastObservationChange} qualityAndOrderComponent={<QualityAndOrderRow {...(this.props as any)} />}/></EditorFieldGroup>
+              <QueryOptions
+                query={query}
+                showProp={showProp}
+                showQuality={!!(query.propertyId || query.propertyAlias)}
+                onLastObservationChange={this.onLastObservationChange}
+                qualityAndOrderComponent={<QualityAndOrderRow {...(this.props as any)} />}
+              />
+            </EditorFieldGroup>
           </EditorRow>
         ) : null}
       </>
@@ -470,6 +500,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             />
           </InlineField>
         </div>
+
         {!Boolean(query.propertyAlias) && (
           <>
             <div className="gf-form">
@@ -490,6 +521,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                   menuPlacement="bottom"
                 />
               </InlineField>
+
               <AssetBrowser
                 datasource={datasource}
                 region={query.region}
@@ -497,22 +529,24 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                 onAssetChanged={this.onSetAssetId}
               />
             </div>
+
             {showProp && (
               <div className="gf-form">
                 <InlineField label="Property" labelWidth={firstLabelWith} grow={true}>
                   <Select
                     isLoading={loading}
                     options={properties}
-                    value={currentProperty}
+                    value={currentProperty ?? null}
                     onChange={this.onPropertyChange}
                     placeholder="Select a property"
-                    allowCustomValue={true}
                     isSearchable={true}
+                    allowCustomValue={true}
                     onCreateOption={this.onSetPropertyId}
                     formatCreateLabel={(txt) => `Property ID: ${txt}`}
                     menuPlacement="bottom"
                   />
                 </InlineField>
+
                 {shouldShowLastObserved(query.queryType) && (
                   <InlineField
                     label="Expand Time Range"
@@ -525,6 +559,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             )}
           </>
         )}
+
         {(showProp || query.propertyAlias) && showQuality && (
           <>
             {isAssetPropertyAggregatesQuery(query) && this.renderAggregateRow(query)}
