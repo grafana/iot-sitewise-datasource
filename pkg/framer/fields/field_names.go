@@ -16,4 +16,6 @@ const (
 	Time            = "time"
 	Quality         = "quality"
 	CompositeModels = "composite_models"
+	Alias 					= "alias"
+	Unit						= "unit"
 )

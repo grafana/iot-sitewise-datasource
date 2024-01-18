@@ -92,3 +92,11 @@ func PropertyValueFieldNamed(name string, property *iotsitewise.DescribeAssetPro
 func AggregationField(length int, name string) *data.Field {
 	return NewFieldWithName(name, data.FieldTypeFloat64, length)
 }
+
+func AliasField(length int) *data.Field {
+	return NewFieldWithName(Alias, data.FieldTypeNullableString, length)
+}
+
+func UnitField(length int) *data.Field {
+	return NewFieldWithName(Unit, data.FieldTypeNullableString, length)
+}

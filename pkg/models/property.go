@@ -6,6 +6,10 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 )
 
+type ListAssetPropertiesQuery struct {
+	BaseQuery
+}
+
 // AssetPropertyValueQuery encapsulates params for all 3 'Get' data APIs in Sitewise.
 // Each API handler will simply ignore the unneeded props.
 // This is done simply due to lack of solid generics support in golang.
