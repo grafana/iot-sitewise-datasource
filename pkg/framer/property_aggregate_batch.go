@@ -2,25 +2,25 @@ package framer
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 
 	"github.com/aws/aws-sdk-go/aws"
+
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 )
 
-type AssetPropertyAggregates struct {
-	Request  iotsitewise.GetAssetPropertyAggregatesInput
-	Response iotsitewise.GetAssetPropertyAggregatesOutput
+type AssetPropertyAggregatesBatch struct {
+	Request  iotsitewise.BatchGetAssetPropertyAggregatesInput
+	Response iotsitewise.BatchGetAssetPropertyAggregatesOutput
 }
 
 // getAggregationFields enforces ordering of aggregate fields
 // Golang maps return a random order during iteration
-func getAggregationFields(length int, aggs *iotsitewise.Aggregates) ([]string, map[string]*data.Field) {
+func getAggregationFieldsBatch(length int, aggs *iotsitewise.Aggregates) ([]string, map[string]*data.Field) {
 
 	aggregateTypes := []string{}
 	aggregateFields := map[string]*data.Field{}
@@ -58,7 +58,7 @@ func getAggregationFields(length int, aggs *iotsitewise.Aggregates) ([]string, m
 	return aggregateTypes, aggregateFields
 }
 
-func addAggregateFieldValues(idx int, fields map[string]*data.Field, aggs *iotsitewise.Aggregates) {
+func addAggregateFieldValuesBatch(idx int, fields map[string]*data.Field, aggs *iotsitewise.Aggregates) {
 
 	if val := aggs.Average; val != nil {
 		fields[models.AggregateAvg].Set(idx, *aggs.Average)
@@ -86,26 +86,57 @@ func addAggregateFieldValues(idx int, fields map[string]*data.Field, aggs *iotsi
 
 }
 
-func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
+func (a AssetPropertyAggregatesBatch) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
 
 	resp := a.Response
+	frames := data.Frames{}
 
-	length := len((resp.AggregatedValues))
-
-	if length < 1 {
-		return data.Frames{}, nil
-	}
-
-	property, err := resources.Property(ctx)
+	properties, err := resources.Properties(ctx)
 	if err != nil {
 		return nil, err
 	}
 
+	for i, e := range resp.SuccessEntries {
+		property := properties[*e.EntryId]
+		frame, err := a.Frame(ctx, property, e.AggregatedValues)
+		if err != nil {
+			return nil, err
+		}
+		frame.Meta = &data.FrameMeta{
+			Custom: models.SitewiseCustomMeta{
+				NextToken:  aws.StringValue(resp.NextToken),
+				Resolution: aws.StringValue(a.Request.Entries[i].Resolution),
+				Aggregates: aws.StringValueSlice(a.Request.Entries[i].AggregateTypes),
+			},
+		}
+		frames = append(frames, frame)
+	}
+
+	for _, e := range resp.ErrorEntries {
+		property := properties[*e.EntryId]
+		frame := data.NewFrame(getFrameName(property))
+		if e.ErrorMessage != nil {
+			frame.Meta = &data.FrameMeta{
+				Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: *e.ErrorMessage}},
+			}
+		}
+		frames = append(frames, frame)
+	}
+	return frames, nil
+}
+
+func (a AssetPropertyAggregatesBatch) Frame(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, v []*iotsitewise.AggregatedValue) (*data.Frame, error) {
+
+	length := len(v)
+	if length < 1 {
+		return &data.Frame{}, nil
+	}
+
 	timeField := fields.TimeField(length)
 	// this will enforce ordering
-	aggregateTypes, aggregateFields := getAggregationFields(length, resp.AggregatedValues[0].Value)
+	aggregateTypes, aggregateFields := getAggregationFields(length, v[0].Value)
 
-	for i, v := range resp.AggregatedValues {
+	for i, v := range v {
 		timeField.Set(i, *v.Timestamp)
 		addAggregateFieldValues(i, aggregateFields, v.Value)
 	}
@@ -117,17 +148,10 @@ func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.
 	}
 
 	frame := data.NewFrame(
-		fmt.Sprintf("%s %s", *property.AssetName, *property.AssetProperty.Name),
-		fields...
+		getFrameName(property),
+		fields...,
 	)
 
-	frame.Meta = &data.FrameMeta{
-		Custom: models.SitewiseCustomMeta{
-			NextToken: aws.StringValue(resp.NextToken),
-			Resolution: aws.StringValue(a.Request.Resolution),
-			Aggregates: aws.StringValueSlice(a.Request.AggregateTypes),
-		},
-	}
+	return frame, nil
 
-	return data.Frames{frame}, nil
 }

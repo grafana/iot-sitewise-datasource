@@ -4,45 +4,23 @@ import (
 	"context"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
-	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
-func valueQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.BatchGetAssetPropertyValueInput {
-	entries := make([]*iotsitewise.BatchGetAssetPropertyValueEntry, 0)
+func valueQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetAssetPropertyValueInput {
 
-	switch {
-	case query.PropertyAlias != "":
-		entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueEntry{
-			EntryId:       util.GetEntryId(query.BaseQuery),
-			PropertyAlias: util.GetPropertyAlias(query.BaseQuery),
-		})
-	default:
-		for _, assetId := range query.AssetIds {
-			var id *string
-			if assetId != "" {
-				id = aws.String(assetId)
-			}
-			entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueEntry{
-				EntryId:    id,
-				AssetId:    id,
-				PropertyId: aws.String(query.PropertyId),
-			})
-		}
-	}
-
-	return &iotsitewise.BatchGetAssetPropertyValueInput{
-		Entries:   entries,
-		NextToken: getNextToken(query.BaseQuery),
+	return &iotsitewise.GetAssetPropertyValueInput{
+		AssetId:       getAssetId(query.BaseQuery),
+		PropertyId:    getPropertyId(query.BaseQuery),
+		PropertyAlias: getPropertyAlias(query.BaseQuery),
 	}
 }
 
-func BatchGetAssetPropertyValue(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.AssetPropertyValue, error) {
+func GetAssetPropertyValue(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.AssetPropertyValue, error) {
 	modifiedQuery, err := getAssetIdAndPropertyId(query, client, ctx)
 	if err != nil {
 		return models.AssetPropertyValueQuery{}, nil, err
@@ -50,18 +28,11 @@ func BatchGetAssetPropertyValue(ctx context.Context, client client.SitewiseClien
 
 	awsReq := valueQueryToInput(modifiedQuery)
 
-	resp, err := client.BatchGetAssetPropertyValueWithContext(ctx, awsReq)
+	resp, err := client.GetAssetPropertyValueWithContext(ctx, awsReq)
 
 	if err != nil {
 		return models.AssetPropertyValueQuery{}, nil, err
 	}
 
-	return modifiedQuery,
-		&framer.AssetPropertyValue{
-			SuccessEntries: resp.SuccessEntries,
-			SkippedEntries: resp.SkippedEntries,
-			ErrorEntries:   resp.ErrorEntries,
-			NextToken:      resp.NextToken,
-		},
-		nil
+	return modifiedQuery, &framer.AssetPropertyValue{PropertyValue: resp.PropertyValue}, nil
 }
