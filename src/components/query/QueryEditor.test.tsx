@@ -29,10 +29,10 @@ const cleanup = () => {
   config.featureToggles.awsDatasourcesNewFormStyling = originalFormFeatureToggleValue;
 };
 
-const setup = async (query: Partial<SitewiseQuery>) => {
+const setup = async (query: Partial<SitewiseQuery>, props = defaultProps) => {
   render(
     <QueryEditor
-      {...defaultProps}
+      {...props}
       query={{
         ...defaultProps.query,
         ...query,
@@ -85,6 +85,7 @@ describe('QueryEditor', () => {
         expect(screen.getByText('Format')).toBeInTheDocument();
       });
     });
+
     it('should display correct fields for query type PropertyAggregate and using Property alias', async () => {
       await setup({
         queryType: QueryType.PropertyAggregate,
@@ -98,6 +99,7 @@ describe('QueryEditor', () => {
         expect(screen.getByText('Format')).toBeInTheDocument();
       });
     });
+
     it('should display correct fields for query type Interpolated Property', async () => {
       await setup({
         queryType: QueryType.PropertyInterpolated,
@@ -114,6 +116,7 @@ describe('QueryEditor', () => {
         expect(screen.getByText('Resolution')).toBeInTheDocument();
       });
     });
+
     it('should display correct fields for query type  Interpolated Property and using Property alias', async () => {
       await setup({
         queryType: QueryType.PropertyInterpolated,
@@ -127,6 +130,7 @@ describe('QueryEditor', () => {
         expect(screen.getByText('Format')).toBeInTheDocument();
       });
     });
+
     it('should display correct fields for query type PropertyValueHistory', async () => {
       await setup({
         queryType: QueryType.PropertyValueHistory,
@@ -143,6 +147,7 @@ describe('QueryEditor', () => {
         expect(screen.getByText('Format')).toBeInTheDocument();
       });
     });
+
     it('should display correct fields for query type PropertyValueHistory and using Property alias', async () => {
       await setup({
         queryType: QueryType.PropertyAggregate,
@@ -154,6 +159,7 @@ describe('QueryEditor', () => {
         expect(screen.getByText('Format')).toBeInTheDocument();
       });
     });
+
     it('should display correct fields for query type PropertyValue', async () => {
       await setup({
         queryType: QueryType.PropertyValue,
@@ -169,6 +175,7 @@ describe('QueryEditor', () => {
         expect(screen.getByText('Format')).toBeInTheDocument();
       });
     });
+
     it('should display correct fields for query type PropertyValue and using Property alias', async () => {
       await setup({
         queryType: QueryType.PropertyValue,
@@ -188,6 +195,7 @@ describe('QueryEditor', () => {
         }
       });
     });
+
     it('should display correct fields for query type ListAssets', async () => {
       await setup({
         queryType: QueryType.ListAssets,
@@ -199,6 +207,7 @@ describe('QueryEditor', () => {
         expect(screen.getByText('Filter')).toBeInTheDocument();
       });
     });
+
     it('should display correct fields for query type ListAssociatedAssets if assetId is defined', async () => {
       await setup({
         queryType: QueryType.ListAssociatedAssets,
@@ -210,6 +219,7 @@ describe('QueryEditor', () => {
         expect(screen.getByText('Property Alias')).toBeInTheDocument();
       });
     });
+
     it('should display correct fields for query type ListAssociatedAssets if property Alias is defined', async () => {
       await setup({
         queryType: QueryType.ListAssociatedAssets,
@@ -219,7 +229,95 @@ describe('QueryEditor', () => {
         expect(screen.getByText('Show')).toBeInTheDocument();
       });
     });
+
+    it('should clear property when the only asset is deselected', async () => {
+      const onChange = jest.fn();
+
+      await setup(
+        {
+          queryType: QueryType.PropertyValue,
+          propertyId: 'prop',
+          assetIds: ['asset'],
+        },
+        {
+          ...defaultProps,
+          onChange,
+        }
+      );
+
+      await waitFor(() => {
+        expect(screen.getAllByRole('button', { name: 'select-clear-value' })[1]).toBeInTheDocument();
+      });
+
+      await userEvent.click(screen.getAllByRole('button', { name: 'select-clear-value' })[1]);
+
+      expect(onChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          assetIds: [],
+          propertyId: undefined,
+        })
+      );
+    });
+
+    it('should clear property when all assets are deselected', async () => {
+      const onChange = jest.fn();
+
+      await setup(
+        {
+          queryType: QueryType.PropertyValue,
+          propertyId: 'prop',
+          assetIds: ['asset1', 'asset2', 'asset3'],
+        },
+        {
+          ...defaultProps,
+          onChange,
+        }
+      );
+
+      await waitFor(() => {
+        expect(screen.getAllByRole('button', { name: 'select-clear-value' })[1]).toBeInTheDocument();
+      });
+
+      await userEvent.click(screen.getAllByRole('button', { name: 'select-clear-value' })[1]);
+
+      expect(onChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          assetIds: [],
+          propertyId: undefined,
+        })
+      );
+    });
+
+    it('should not clear property when only one of multiple assets is deselected', async () => {
+      const onChange = jest.fn();
+
+      await setup(
+        {
+          queryType: QueryType.PropertyValue,
+          propertyId: 'prop',
+          assetIds: ['asset1', 'asset2', 'asset3'],
+        },
+        {
+          ...defaultProps,
+          onChange,
+        }
+      );
+
+      await waitFor(() => {
+        expect(screen.getAllByRole('button', { name: 'Remove' })[1]).toBeInTheDocument();
+      });
+
+      await userEvent.click(screen.getAllByRole('button', { name: 'Remove' })[1]);
+
+      expect(onChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          assetIds: ['asset1', 'asset3'],
+          propertyId: 'prop',
+        })
+      );
+    });
   }
+
   describe('QueryEditor with awsDatasourcesNewFormStyling feature toggle disabled', () => {
     beforeAll(() => {
       config.featureToggles.awsDatasourcesNewFormStyling = false;
@@ -229,6 +327,7 @@ describe('QueryEditor', () => {
     });
     run();
   });
+
   describe('QueryEditor with awsDatasourcesNewFormStyling feature toggle enabled', () => {
     beforeAll(() => {
       config.featureToggles.awsDatasourcesNewFormStyling = true;
