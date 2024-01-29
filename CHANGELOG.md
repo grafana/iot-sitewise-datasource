@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## 1.16.2
 
 - Update grafana-aws-sdk to 0.21.0 and prepare 1.16.2 in (#282)[https://github.com/grafana/iot-sitewise-datasource/pull/282]
+- fix: clear selected property when assets are removed (#278)[https://github.com/grafana/iot-sitewise-datasource/pull/278]
+
 ## 1.16.1
 
 - Upgrade aws-sdk-go to v1.49.6 to have access to the `ExecuteQuery` API (#266)
