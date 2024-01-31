@@ -11,18 +11,41 @@ import { SitewiseCache } from 'sitewiseCache';
 
 import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta, isPropertyQueryType, SitewiseNextQuery } from './types';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { getRequestLooper, MultiRequestTracker } from 'requestLooper';
 import { appendMatchingFrames } from 'appendFrames';
 import { frameToMetricFindValues } from 'utils';
+import { CacheRequestInfo, QueryCache, defaultQueryOverlapWindow } from './QueryCache';
 
 export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
   readonly options: SitewiseOptions;
   private cache = new Map<string, SitewiseCache>();
+  private queryCache: QueryCache<SitewiseQuery>;
 
   constructor(instanceSettings: DataSourceInstanceSettings<SitewiseOptions>) {
     super(instanceSettings);
     this.options = instanceSettings.jsonData;
+    this.queryCache = new QueryCache<SitewiseQuery>({
+      getTargetSignature: this.getTargetSignature.bind(this),
+      overlapString: defaultQueryOverlapWindow,
+    });
+  }
+
+  /**
+   * Get target signature for query caching
+   * @param request
+   * @param query
+   */
+  getTargetSignature(request: DataQueryRequest<SitewiseQuery>, query: SitewiseQuery) {
+    // TODO: REFINE THIS
+    const assetIds = query.assetIds?.join(',') ?? '';
+    const propertyId = query.propertyId ?? '';
+    const propertyAlias = query.propertyAlias ?? '';
+    const quality = query.quality ?? '';
+    const region = query.region ?? '';
+    const format = query.responseFormat ?? '';
+    return `${region}|${assetIds}|${propertyId}|${propertyAlias}|${quality}|${format}`;
   }
 
   /**
@@ -178,7 +201,29 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
        * The original request
        */
       query: (request: DataQueryRequest<SitewiseQuery>) => {
-        return super.query(request);
+        if (request.range === undefined) {
+          return super.query(request);
+        } else {
+          // INCREMENTAL QUERY
+          let fullOrPartialRequest: DataQueryRequest<SitewiseQuery>;
+
+          let requestInfo: CacheRequestInfo<SitewiseQuery> | undefined = undefined;
+          // const hasInstantQuery = request.targets.some((target) => target.instant);
+
+          requestInfo = this.queryCache.requestInfo(request);
+          fullOrPartialRequest = requestInfo.requests[0];
+
+          return super.query(fullOrPartialRequest).pipe(
+            map((response) => {
+              const amendedResponse = {
+                ...response,
+                data: this.queryCache.procFrames(request, requestInfo, response.data),
+              };
+
+              return amendedResponse;
+            })
+          );
+        }
       },
 
       /**

@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -41,23 +42,139 @@ func NewSitewiseClientForRegion(region string) SitewiseClient {
 	}
 }
 
-func (c *sitewiseClient) BatchGetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyValueHistoryOutput, error) {
+type IndexedData struct {
+	Index int
+	Data  *iotsitewise.BatchGetAssetPropertyValueHistoryOutput
+}
+
+func fetchRawData(ctx context.Context, startTime int64, endTime int64, c iotsitewiseiface.IoTSiteWiseAPI, req *iotsitewise.BatchGetAssetPropertyValueHistoryInput) (*iotsitewise.BatchGetAssetPropertyValueHistoryOutput, error) {
 	var (
-		count     = 0
-		numPages  = 0
-		success   []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry
-		skipped   []*iotsitewise.BatchGetAssetPropertyValueHistorySkippedEntry
-		errors    []*iotsitewise.BatchGetAssetPropertyValueHistoryErrorEntry
-		nextToken *string
+		count    = 0
+		numPages = 0
+		success  []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry
+		skipped  []*iotsitewise.BatchGetAssetPropertyValueHistorySkippedEntry
+		errors   []*iotsitewise.BatchGetAssetPropertyValueHistoryErrorEntry
 	)
 
-	err := c.BatchGetAssetPropertyValueHistoryPagesWithContext(ctx, req, func(output *iotsitewise.BatchGetAssetPropertyValueHistoryOutput, b bool) bool {
-		numPages++
-		if len(output.SuccessEntries) > 0 {
-			count += len(output.SuccessEntries[0].AssetPropertyValueHistory)
-		}
+	entries := make([]*iotsitewise.BatchGetAssetPropertyValueHistoryEntry, 0)
+	for _, entry := range req.Entries {
+		entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueHistoryEntry{
+			StartDate:    aws.Time(time.Unix(startTime, 0)),
+			EndDate:      aws.Time(time.Unix(endTime, 0)),
+			EntryId:      entry.EntryId,
+			AssetId:      entry.AssetId,
+			PropertyId:   entry.PropertyId,
+			TimeOrdering: entry.TimeOrdering,
+			Qualities:    entry.Qualities,
+		})
+	}
+
+	slicedReq := &iotsitewise.BatchGetAssetPropertyValueHistoryInput{
+		Entries:    entries,
+		MaxResults: req.MaxResults,
+		NextToken:  req.NextToken,
+	}
+
+	err := c.BatchGetAssetPropertyValueHistoryPagesWithContext(ctx, slicedReq,
+		func(output *iotsitewise.BatchGetAssetPropertyValueHistoryOutput, b bool) bool {
+			numPages++
+			if len(output.SuccessEntries) > 0 {
+				count += len(output.SuccessEntries[0].AssetPropertyValueHistory)
+			}
+			if len(success) > 0 {
+				for _, successEntry := range output.SuccessEntries {
+					found := false
+					for i, entry := range success {
+						if *entry.EntryId == *successEntry.EntryId {
+							success[i].AssetPropertyValueHistory = append(success[i].AssetPropertyValueHistory, successEntry.AssetPropertyValueHistory...)
+							found = true
+							break
+						}
+					}
+					if !found {
+						success = append(success, successEntry)
+					}
+				}
+			} else {
+				success = append(success, output.SuccessEntries...)
+			}
+			skipped = append(skipped, output.SkippedEntries...)
+			errors = append(errors, output.ErrorEntries...)
+			return true
+		})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &iotsitewise.BatchGetAssetPropertyValueHistoryOutput{
+		SuccessEntries: success,
+		SkippedEntries: skipped,
+		ErrorEntries:   errors,
+		NextToken:      nil,
+	}, nil
+}
+
+func (c *sitewiseClient) BatchGetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyValueHistoryOutput, error) {
+	var (
+		success []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry
+		skipped []*iotsitewise.BatchGetAssetPropertyValueHistorySkippedEntry
+		errors  []*iotsitewise.BatchGetAssetPropertyValueHistoryErrorEntry
+	)
+
+	// Divide the time range into 10 chunks and fetch data in parallel
+	startTime := req.Entries[0].StartDate.Unix()
+	endTime := req.Entries[0].EndDate.Unix()
+	intervalCount := 50
+	totalDuration := endTime - startTime
+	intervalDuration := totalDuration / int64(intervalCount)
+
+	// If the time range is less than 10 seconds, we will fetch all data in one request
+	if intervalDuration < 1 {
+		intervalDuration = totalDuration
+		intervalCount = 1
+	}
+
+	var wg sync.WaitGroup
+	results := make([]*iotsitewise.BatchGetAssetPropertyValueHistoryOutput, intervalCount)
+	resultChannel := make(chan IndexedData, intervalCount)
+
+	for i := 0; i < intervalCount; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			intervalStart := startTime + int64(i)*intervalDuration
+			intervalEnd := intervalStart + intervalDuration
+			if intervalEnd > endTime {
+				intervalEnd = endTime
+			}
+
+			data, err := fetchRawData(ctx, intervalStart, intervalEnd, c, req)
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+
+			resultChannel <- IndexedData{Index: i, Data: data}
+		}(i)
+	}
+
+	// wait for all goroutines to finish
+	go func() {
+		wg.Wait()
+		close(resultChannel)
+	}()
+
+	i := 0
+	for res := range resultChannel {
+		results[res.Index] = res.Data
+		i++
+	}
+
+	// aggregate result back
+	for _, result := range results {
 		if len(success) > 0 {
-			for _, successEntry := range output.SuccessEntries {
+			for _, successEntry := range result.SuccessEntries {
 				found := false
 				for i, entry := range success {
 					if *entry.EntryId == *successEntry.EntryId {
@@ -71,23 +188,17 @@ func (c *sitewiseClient) BatchGetAssetPropertyValueHistoryPageAggregation(ctx co
 				}
 			}
 		} else {
-			success = append(success, output.SuccessEntries...)
+			success = append(success, result.SuccessEntries...)
 		}
-		skipped = append(skipped, output.SkippedEntries...)
-		errors = append(errors, output.ErrorEntries...)
-		nextToken = output.NextToken
-		return numPages < maxPages && count <= maxResults
-	})
-
-	if err != nil {
-		return nil, err
+		skipped = append(skipped, result.SkippedEntries...)
+		errors = append(errors, result.ErrorEntries...)
 	}
 
 	return &iotsitewise.BatchGetAssetPropertyValueHistoryOutput{
 		SuccessEntries: success,
 		SkippedEntries: skipped,
 		ErrorEntries:   errors,
-		NextToken:      nextToken,
+		NextToken:      nil,
 	}, nil
 }
 
