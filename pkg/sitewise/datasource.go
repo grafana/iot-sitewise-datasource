@@ -19,6 +19,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+const EDGE_REGION string = "Edge"
+
 type clientGetterFunc func(region string) (client client.SitewiseClient, err error)
 type invokerFunc func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error)
 
@@ -123,6 +125,16 @@ func (ds *Datasource) HandleGetAssetPropertyValueHistoryQuery(ctx context.Contex
 		return nil, err
 	}
 
+	// Batch API is not available at the edge
+	if query.BaseQuery.AwsRegion == EDGE_REGION {
+		modifiedQuery, fr, err := api.GetAssetPropertyValues(ctx, sw, *query)
+		if err != nil {
+			return nil, err
+		}
+
+		return frameResponse(ctx, modifiedQuery.BaseQuery, fr, sw)
+	}
+
 	modifiedQuery, fr, err := api.BatchGetAssetPropertyValues(ctx, sw, *query)
 	if err != nil {
 		return nil, err
@@ -137,7 +149,17 @@ func (ds *Datasource) HandleGetAssetPropertyAggregateQuery(ctx context.Context, 
 		return nil, err
 	}
 
-	modifiedQuery, fr, err := api.GetAssetPropertyValuesForTimeRange(ctx, sw, *query)
+	// Batch API is not available at the edge
+	if query.BaseQuery.AwsRegion == EDGE_REGION {
+		modifiedQuery, fr, err := api.GetAssetPropertyValuesForTimeRange(ctx, sw, *query)
+		if err != nil {
+			return nil, err
+		}
+
+		return frameResponse(ctx, modifiedQuery.BaseQuery, fr, sw)
+	}
+
+	modifiedQuery, fr, err := api.BatchGetAssetPropertyValuesForTimeRange(ctx, sw, *query)
 	if err != nil {
 		return nil, err
 	}
@@ -149,6 +171,16 @@ func (ds *Datasource) HandleGetAssetPropertyValueQuery(ctx context.Context, quer
 	sw, err := ds.GetClient(query.BaseQuery.AwsRegion)
 	if err != nil {
 		return nil, err
+	}
+
+	// Batch API is not available at the edge
+	if query.BaseQuery.AwsRegion == EDGE_REGION {
+		modifiedQuery, fr, err := api.GetAssetPropertyValue(ctx, sw, *query)
+		if err != nil {
+			return nil, err
+		}
+
+		return frameResponse(ctx, modifiedQuery.BaseQuery, fr, sw)
 	}
 
 	modifiedQuery, fr, err := api.BatchGetAssetPropertyValue(ctx, sw, *query)

@@ -45,3 +45,24 @@ func getAssetIdAndPropertyId(query models.AssetPropertyValueQuery, client client
 	}
 	return result, nil
 }
+
+func getAssetId(query models.BaseQuery) *string {
+	if len(query.AssetIds) == 0 {
+		return nil
+	}
+	return aws.String(query.AssetIds[0])
+}
+
+func getPropertyId(query models.BaseQuery) *string {
+	if query.PropertyId == "" {
+		return nil
+	}
+	return aws.String(query.PropertyId)
+}
+
+func getPropertyAlias(query models.BaseQuery) *string {
+	if query.PropertyAlias == "" {
+		return nil
+	}
+	return aws.String(query.PropertyAlias)
+}
