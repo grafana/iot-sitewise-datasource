@@ -6,16 +6,18 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 )
 
+type SiteWiseQueryType = string
+
 const (
-	QueryTypePropertyValueHistory = "PropertyValueHistory"
-	QueryTypePropertyValue        = "PropertyValue"
-	QueryTypePropertyAggregate    = "PropertyAggregate"
-	QueryTypePropertyInterpolated = "PropertyInterpolated"
-	QueryTypeListAssetModels      = "ListAssetModels"
-	QueryTypeListAssets           = "ListAssets"
-	QueryTypeListAssociatedAssets = "ListAssociatedAssets"
-	QueryTypeDescribeAsset        = "DescribeAsset"
-	QueryTypeDescribeAssetModel   = "DescribeAssetModel"
+	QueryTypePropertyValueHistory SiteWiseQueryType = "PropertyValueHistory"
+	QueryTypePropertyValue        SiteWiseQueryType = "PropertyValue"
+	QueryTypePropertyAggregate    SiteWiseQueryType = "PropertyAggregate"
+	QueryTypePropertyInterpolated SiteWiseQueryType = "PropertyInterpolated"
+	QueryTypeListAssetModels      SiteWiseQueryType = "ListAssetModels"
+	QueryTypeListAssets           SiteWiseQueryType = "ListAssets"
+	QueryTypeListAssociatedAssets SiteWiseQueryType = "ListAssociatedAssets"
+	QueryTypeDescribeAsset        SiteWiseQueryType = "DescribeAsset"
+	QueryTypeDescribeAssetModel   SiteWiseQueryType = "DescribeAssetModel"
 )
 
 const (

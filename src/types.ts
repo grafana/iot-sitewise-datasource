@@ -65,6 +65,7 @@ export interface SitewiseQuery extends DataQuery {
   resolution?: SiteWiseResolution;
   lastObservation?: boolean;
   maxPageAggregations?: number;
+  isStreaming?: boolean;
 }
 
 export interface SitewiseNextQuery extends SitewiseQuery {

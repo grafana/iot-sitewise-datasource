@@ -139,66 +139,93 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   }
 
   query(request: DataQueryRequest<SitewiseQuery>): Observable<DataQueryResponse> {
-    return getRequestLooper(request, {
-      // Check for a "nextToken" in the response
-      getNextQueries: (rsp: DataQueryResponse) => {
-        if (rsp.data?.length) {
-          const next: SitewiseNextQuery[] = [];
-          for (const frame of rsp.data as DataFrame[]) {
-            const meta = frame.meta?.custom as SitewiseCustomMeta;
-            if (meta && meta.nextToken) {
-              const query = request.targets.find((t) => t.refId === frame.refId);
-              if (query) {
-                const existingNextQuery = next.find((v) => v.refId === frame.refId);
-                if (existingNextQuery) {
-                  if (existingNextQuery.nextToken !== meta.nextToken && meta.entryId && meta.nextToken) {
-                    if (!existingNextQuery.nextTokens) {
-                      existingNextQuery.nextTokens = {};
-                    }
-                    existingNextQuery.nextTokens[meta.entryId] = meta.nextToken;
-                  }
-                } else {
-                  next.push({
-                    ...query,
-                    nextToken: meta.nextToken,
-                    nextTokens: { ...(meta.entryId && meta.nextToken ? { [meta.entryId]: meta.nextToken } : {}) },
-                  });
-                }
-              }
-            }
-          }
-          if (next.length) {
-            return next;
-          }
-        }
-        return undefined;
-      },
+    /*
+    I think we want to do something like this: (from twinmaker)
+    if (this.grafanaLiveEnabled) {
+      return super.query(options);
+    } 
+    or possibly something like this: (from grafana-plugin-examples)
+      const observables = request.targets.map((target, index) => {
+      const query = defaults(target, DEFAULT_QUERY);
+      this.grafanaLiveEnabled = true;
 
-      /**
-       * The original request
-       */
-      query: (request: DataQueryRequest<SitewiseQuery>) => {
-        return super.query(request);
-      },
-
-      /**
-       * Process the results
-       */
-      process: (t: MultiRequestTracker, data: DataFrame[], isLast: boolean) => {
-        if (t.data) {
-          // append rows to fields with the same structure
-          t.data = appendMatchingFrames(t.data, data);
-        } else {
-          t.data = data; // hang on to the results from the last query
-        }
-        return t.data;
-      },
-
-      /**
-       * Callback that gets executed when unsubscribed
-       */
-      onCancel: (tracker: MultiRequestTracker) => {},
+      return getGrafanaLiveSrv().getDataStream({
+        addr: {
+          scope: LiveChannelScope.DataSource,
+          namespace: this.uid,
+          path: `my-ws/custom-${query.lowerLimit}-${query.upperLimit}`, // this will allow each new query to create a new connection
+          data: {
+            ...query,
+          },
+        },
+      });
     });
+
+    return merge(...observables);
+
+
+    In general I remain unclear about the relationship between grafana live and a streaming toggle
+
+    Another TODO: remove streaming toggle from non-stream-able query types like list assets, otherwise they just repeat the same data over and over again
+    */
+    return super.query(request);
+    // return getRequestLooper(request, {
+    //   // Check for a "nextToken" in the response
+    //   getNextQueries: (rsp: DataQueryResponse) => {
+    //     if (rsp.data?.length) {
+    //       const next: SitewiseNextQuery[] = [];
+    //       for (const frame of rsp.data as DataFrame[]) {
+    //         const meta = frame.meta?.custom as SitewiseCustomMeta;
+    //         if (meta && meta.nextToken) {
+    //           const query = request.targets.find((t) => t.refId === frame.refId);
+    //           if (query) {
+    //             const existingNextQuery = next.find((v) => v.refId === frame.refId);
+    //             if (existingNextQuery) {
+    //               if (existingNextQuery.nextToken !== meta.nextToken && meta.entryId && meta.nextToken) {
+    //                 if (!existingNextQuery.nextTokens) {
+    //                   existingNextQuery.nextTokens = {};
+    //                 }
+    //                 existingNextQuery.nextTokens[meta.entryId] = meta.nextToken;
+    //               }
+    //             } else {
+    //               next.push({
+    //                 ...query,
+    //                 nextToken: meta.nextToken,
+    //                 nextTokens: { ...(meta.entryId && meta.nextToken ? { [meta.entryId]: meta.nextToken } : {}) },
+    //               });
+    //             }
+    //           }
+    //         }
+    //       }
+    //       if (next.length) {
+    //         return next;
+    //       }
+    //     }
+    //     return undefined;
+    //   },
+    //   /**
+    //    * The original request
+    //    */
+    //   query: (request: DataQueryRequest<SitewiseQuery>) => {
+    //     return super.query(request);
+    //   },
+    //   /**
+    //    * Process the results
+    //    */
+    //   process: (t: MultiRequestTracker, data: DataFrame[], isLast: boolean) => {
+    //     if (t.data) {
+    //       // append rows to fields with the same structure
+    //       t.data = appendMatchingFrames(t.data, data);
+    //     } else {
+    //       t.data = data; // hang on to the results from the last query
+    //     }
+    //     return t.data;
+    //   },
+    //   /**
+    //    * Callback that gets executed when unsubscribed
+    //    */
+    //   onCancel: (tracker: MultiRequestTracker) => {},
+    // });
   }
 }
 

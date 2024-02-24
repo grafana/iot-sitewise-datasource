@@ -3,6 +3,7 @@
   "name": "AWS IoT SiteWise",
   "id": "grafana-iot-sitewise-datasource",
   "category": "iot",
+  "streaming": true,
 
   "backend": true,
   "executable": "gpx_iot_sitewise",
