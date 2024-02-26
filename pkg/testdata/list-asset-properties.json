@@ -1,0 +1,31 @@
+{
+  "AssetPropertySummaries": [
+    {
+      "Id": "aedd92ad-b034-4d4b-bbd8-1eca007c5750",
+      "Path": [
+        {
+          "Id": "fedd92ad-b034-4d4b-bbd8-1eca007c5750",
+          "Name": "Asset Name"
+        },
+        {
+          "Id": "aedd92ad-b034-4d4b-bbd8-1eca007c5750",
+          "Name": "Asset Property 1 Name"
+        }
+      ]
+    },
+    {
+      "Id": "bedd92ad-b034-4d4b-bbd8-1eca007c5750",
+      "Path": [
+        {
+          "Id": "fedd92ad-b034-4d4b-bbd8-1eca007c5750",
+          "Name": "Asset Name"
+        },
+        {
+          "Id": "bedd92ad-b034-4d4b-bbd8-1eca007c5750",
+          "Name": "Asset Property 2 Name"
+        }
+      ]
+    }
+  ],
+  "NextToken": null
+}

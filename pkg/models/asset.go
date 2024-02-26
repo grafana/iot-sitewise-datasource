@@ -38,6 +38,21 @@ func GetDescribeAssetQuery(dq *backend.DataQuery) (*DescribeAssetQuery, error) {
 
 	// add on the DataQuery params
 	query.QueryType = dq.QueryType
+
+	return query, nil
+}
+
+func GetListAssetPropertiesQuery(dq *backend.DataQuery) (*ListAssetPropertiesQuery, error) {
+	query := &ListAssetPropertiesQuery{}
+	if err := json.Unmarshal(dq.JSON, query); err != nil {
+		return nil, err
+	}
+
+	// AssetId <--> AssetIds backward compatibility
+	query.MigrateAssetId()
+
+	query.QueryType = dq.QueryType
+
 	return query, nil
 }
 

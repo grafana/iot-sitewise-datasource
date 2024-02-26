@@ -48,6 +48,7 @@ interface State {
   asset?: AssetInfo;
   property?: AssetPropertyInfo;
   assets: Array<SelectableValue<string>>;
+  assetProperties: Array<{ id: string; name: string }>;
   loading: boolean;
   openModal: boolean;
 }
@@ -57,6 +58,7 @@ const ALL_HIERARCHIES = '*';
 export class PropertyQueryEditor extends PureComponent<Props, State> {
   state: State = {
     assets: [],
+    assetProperties: [],
     loading: true,
     openModal: false,
   };
@@ -71,6 +73,8 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     if (query?.assetIds?.length) {
       try {
         update.asset = await cache.getAssetInfo(query.assetIds![0]);
+        const ps = await cache.listAssetProperties(query.assetIds[0]);
+        update.assetProperties = ps.map(({ id, name }) => ({ id, name }));
       } catch (err) {
         console.warn('error reading asset info', err);
         update.property = undefined;
@@ -338,7 +342,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
   render() {
     const { query, datasource } = this.props;
-    const { loading, asset, assets } = this.state;
+    const { loading, assets, assetProperties } = this.state;
 
     let current = assets.filter((a) => (a.value ? query.assetIds?.includes(a.value) : false));
     if (current.length === 0 && query.assetIds?.length) {
@@ -351,7 +355,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
     const isAssociatedAssets = isListAssociatedAssetsQuery(query);
     const showProp = !!(!isAssociatedAssets && (query.propertyId || query.assetIds));
-    const properties = showProp ? (asset ? asset.properties : []) : [];
+    const assetPropertyOptions = showProp
+      ? assetProperties.map(({ id, name }) => ({ id, name, value: id, label: name }))
+      : [];
 
     const showQuality = !!(
       query.propertyId ||
@@ -362,12 +368,14 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
     const showOptionsRow = shouldShowOptionsRow(query, showProp);
 
-    let currentProperty = properties.find((p) => p.Id === query.propertyId);
-    if (!currentProperty && query.propertyId) {
-      currentProperty = {
+    let currentAssetPropertyOption = assetPropertyOptions.find((p) => p.id === query.propertyId);
+    if (!currentAssetPropertyOption && query.propertyId) {
+      currentAssetPropertyOption = {
+        id: query.propertyId,
+        name: 'ID: ' + query.propertyId,
         value: query.propertyId,
         label: 'ID: ' + query.propertyId,
-      } as AssetPropertyInfo;
+      };
     }
 
     const queryTooltip = (
@@ -438,8 +446,8 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                       id="property"
                       aria-label="Property"
                       isLoading={loading}
-                      options={properties}
-                      value={currentProperty ?? null}
+                      options={assetProperties}
+                      value={currentAssetPropertyOption ?? null}
                       onChange={this.onPropertyChange}
                       placeholder="Select a property"
                       allowCustomValue={true}
@@ -535,8 +543,8 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                 <InlineField label="Property" labelWidth={firstLabelWith} grow={true}>
                   <Select
                     isLoading={loading}
-                    options={properties}
-                    value={currentProperty ?? null}
+                    options={assetProperties}
+                    value={currentAssetPropertyOption ?? null}
                     onChange={this.onPropertyChange}
                     placeholder="Select a property"
                     isSearchable={true}
