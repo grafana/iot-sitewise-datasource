@@ -4,6 +4,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
 func NewFieldWithName(name string, fieldType data.FieldType, length int) *data.Field {
@@ -70,7 +71,9 @@ func CompositeModelsField(length int) *data.Field {
 }
 
 func PropertyValueField(property *iotsitewise.DescribeAssetPropertyOutput, length int) *data.Field {
-	return PropertyValueFieldNamed(*property.AssetProperty.Name, property, length)
+	propertyName := util.GetPropertyName(property)
+
+	return PropertyValueFieldNamed(propertyName, property, length)
 }
 
 func PropertyValueFieldForQuery(query models.AssetPropertyValueQuery, property *iotsitewise.DescribeAssetPropertyOutput, length int) *data.Field {
@@ -82,10 +85,13 @@ func PropertyValueFieldForQuery(query models.AssetPropertyValueQuery, property *
 }
 
 func PropertyValueFieldNamed(name string, property *iotsitewise.DescribeAssetPropertyOutput, length int) *data.Field {
+	unit := util.GetPropertyUnit(property)
+
 	valueField := NewFieldWithName(name, FieldTypeForPropertyValue(property), length)
 	valueField.Config = &data.FieldConfig{
-		Unit: ToGrafanaUnit(property.AssetProperty.Unit),
+		Unit: ToGrafanaUnit(&unit),
 	}
+
 	return valueField
 }
 

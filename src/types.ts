@@ -6,6 +6,7 @@ export enum QueryType {
   ListAssetModels = 'ListAssetModels',
   ListAssets = 'ListAssets',
   ListAssociatedAssets = 'ListAssociatedAssets',
+  ListAssetProperties = 'ListAssetProperties',
   DescribeAsset = 'DescribeAsset',
   PropertyValue = 'PropertyValue',
   PropertyValueHistory = 'PropertyValueHistory',
@@ -110,6 +111,17 @@ export interface ListAssociatedAssetsQuery extends SitewiseQuery {
 
 export function isListAssociatedAssetsQuery(q?: SitewiseQuery): q is ListAssociatedAssetsQuery {
   return q?.queryType === QueryType.ListAssociatedAssets;
+}
+
+/**
+ * {@link http://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListAssetProperties.html}
+ */
+export interface ListAssetPropertiesQuery extends SitewiseQuery {
+  queryType: QueryType.ListAssetProperties;
+}
+
+export function isListAssetPropertiesQuery(q?: SitewiseQuery): q is ListAssetPropertiesQuery {
+  return q?.queryType === QueryType.ListAssetProperties;
 }
 
 /**

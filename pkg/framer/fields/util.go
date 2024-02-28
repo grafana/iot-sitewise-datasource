@@ -3,10 +3,13 @@ package fields
 import (
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
 func FieldTypeForPropertyValue(property *iotsitewise.DescribeAssetPropertyOutput) data.FieldType {
-	switch *property.AssetProperty.DataType {
+	dataType := util.GetPropertyDataType(property)
+
+	switch dataType {
 	case "BOOLEAN":
 		return data.FieldTypeBool
 	case "INTEGER":

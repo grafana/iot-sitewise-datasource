@@ -13,6 +13,7 @@ export class SitewiseCache {
   private models?: DataFrameView<AssetModelSummary>;
   private assetsById = new Map<string, AssetInfo>();
   private topLevelAssets?: DataFrameView<AssetSummary>;
+  private assetPropertiesByAssetId = new Map<string, DataFrameView<{ id: string; name: string }>>();
 
   constructor(private ds: DataSource, private region: string) {}
 
@@ -57,6 +58,36 @@ export class SitewiseCache {
       (async () => await this.getAssetInfo(id))();
     } catch {}
     return this.assetsById.get(id);
+  }
+
+  async listAssetProperties(assetId: string): Promise<DataFrameView<{ id: string; name: string }>> {
+    const ap = this.assetPropertiesByAssetId.get(assetId);
+
+    if (ap) {
+      return ap;
+    }
+
+    return this.ds
+      .runQuery({
+        refId: 'listAssetProperties',
+        queryType: QueryType.ListAssetProperties,
+        assetId,
+        region: this.region,
+      })
+      .pipe(
+        map((res) => {
+          if (res.data.length) {
+            const assetProperties = new DataFrameView<{ id: string; name: string }>(res.data[0]);
+
+            this.assetPropertiesByAssetId.set(assetId, assetProperties);
+
+            return assetProperties;
+          }
+
+          throw 'asset properties not found';
+        })
+      )
+      .toPromise();
   }
 
   async getModels(): Promise<DataFrameView<AssetModelSummary>> {

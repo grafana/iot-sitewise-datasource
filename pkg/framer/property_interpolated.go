@@ -45,7 +45,7 @@ func (p InterpolatedAssetPropertyValue) Frames(ctx context.Context, resources re
 func (p InterpolatedAssetPropertyValue) Frame(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, v []*iotsitewise.InterpolatedAssetPropertyValue) (*data.Frame, error) {
 	// TODO: make this work with the API instead of ad-hoc dataType inference
 	// https://github.com/grafana/iot-sitewise-datasource/issues/98#issuecomment-892947756
-	if *property.AssetProperty.DataType == *aws.String("?") {
+	if util.IsAssetProperty(property) && *property.AssetProperty.DataType == *aws.String("?") {
 		property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(v[0].Value))
 	}
 
@@ -53,7 +53,7 @@ func (p InterpolatedAssetPropertyValue) Frame(ctx context.Context, property *iot
 	valueField := fields.PropertyValueFieldForQuery(p.Query, property, 0)
 	name := *property.AssetName
 	if name == "" {
-		name = *property.AssetProperty.Name
+		name = util.GetPropertyName(property)
 	}
 	frame := data.NewFrame(name, timeField, valueField)
 
@@ -61,7 +61,7 @@ func (p InterpolatedAssetPropertyValue) Frame(ctx context.Context, property *iot
 	if property.AssetId != nil {
 		entryId = *property.AssetId
 	} else {
-		entryId = *property.AssetProperty.Name
+		entryId = util.GetPropertyName(property)
 	}
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{

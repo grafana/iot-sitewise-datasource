@@ -7,6 +7,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
 func getTime(ts *iotsitewise.TimeInNanos) time.Time {
@@ -84,17 +85,19 @@ func serialize(item interface{}) (string, error) {
 }
 
 func getFrameName(property *iotsitewise.DescribeAssetPropertyOutput) string {
-	if *property.AssetName != "" {
-		if *property.AssetProperty.Name != "" {
-			return fmt.Sprintf("%s %s", *property.AssetName, *property.AssetProperty.Name)
+	propertyName := util.GetPropertyName(property)
+
+	if propertyName != "" {
+		if *property.AssetName != "" {
+			return fmt.Sprintf("%s %s", *property.AssetName, propertyName)
 		} else {
-			return *property.AssetName
-		}
-	} else {
-		if *property.AssetProperty.Name != "" {
-			return *property.AssetProperty.Name
-		} else {
-			return ""
+			return propertyName
 		}
 	}
+
+	if *property.AssetName != "" {
+		return *property.AssetName
+	}
+
+	return ""
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
 type AssetPropertyValueHistory struct {
@@ -25,7 +26,7 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 	}
 	// TODO: make this work with the API instead of ad-hoc dataType inference
 	// https://github.com/grafana/iot-sitewise-datasource/issues/98#issuecomment-892947756
-	if *property.AssetProperty.DataType == *aws.String("?") {
+	if util.IsAssetProperty(property) && *property.AssetProperty.DataType == *aws.String("?") {
 		property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(p.AssetPropertyValueHistory[0].Value))
 	}
 
