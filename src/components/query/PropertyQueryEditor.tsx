@@ -446,7 +446,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                       id="property"
                       aria-label="Property"
                       isLoading={loading}
-                      options={assetProperties}
+                      options={assetPropertyOptions}
                       value={currentAssetPropertyOption ?? null}
                       onChange={this.onPropertyChange}
                       placeholder="Select a property"
@@ -543,7 +543,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                 <InlineField label="Property" labelWidth={firstLabelWith} grow={true}>
                   <Select
                     isLoading={loading}
-                    options={assetProperties}
+                    options={assetPropertyOptions}
                     value={currentAssetPropertyOption ?? null}
                     onChange={this.onPropertyChange}
                     placeholder="Select a property"
