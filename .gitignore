@@ -10,3 +10,8 @@ dist/
 # until we can figure out how to install the mockery executable on circleci, leave this commented out
 #**/mocks/*.*
 __debug_bin
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
