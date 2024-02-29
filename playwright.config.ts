@@ -12,6 +12,10 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
+  timeout: 60000,
+  expect: {
+    timeout: 30000,
+  },
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
@@ -26,12 +30,17 @@ export default defineConfig({
       testMatch: [/.*\.js/],
     },
     {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+      retries: 5,
+    },
+    {
       name: 'run-tests',
       use: {
         ...devices['Desktop Chrome'],
         storageState: 'playwright/.auth/admin.json',
       },
-      dependencies: ['auth'],
+      dependencies: ['auth', 'setup'],
     },
   ],
 });

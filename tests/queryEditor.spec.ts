@@ -1,13 +1,9 @@
 import { type Page } from '@playwright/test';
-import { test, expect, type CreateDataSourceArgs } from '@grafana/plugin-e2e';
-
-const SITE_WISE_DATA_SOURCE_CONFIG: CreateDataSourceArgs = {
-  type: 'grafana-iot-sitewise-datasource',
-  name: 'IoT SiteWise',
-};
+import { test, expect } from '@grafana/plugin-e2e';
+import { SITE_WISE_DATA_SOURCE_CONFIG } from './constants';
 
 async function interceptRequests(page: Page) {
-  await page.route('**/api/ds/query', async (route) => {
+  await page.route('', async (route) => {
     const requestBody = route.request().postData();
 
     if (requestBody?.includes('topLevelAssets')) {
@@ -319,17 +315,16 @@ async function interceptRequests(page: Page) {
 
 test.describe('Query Editor', () => {
   test.describe('Queries', () => {
-    test('Get property value', async ({ page, panelEditPage, createDataSource }) => {
+    test('Get property value', async ({ page, panelEditPage }) => {
       await interceptRequests(page);
 
       /* Configure data source */
 
-      const ds = await createDataSource(SITE_WISE_DATA_SOURCE_CONFIG);
-      await panelEditPage.refreshPanel();
-      await panelEditPage.datasource.set(ds.name);
+      await panelEditPage.datasource.set(SITE_WISE_DATA_SOURCE_CONFIG.name);
 
       /* Select query type */
 
+      await expect(page.getByText('Query type', { exact: true })).toBeVisible();
       await expect(page.getByText('Property Alias')).not.toBeVisible();
       await expect(page.getByText('Asset', { exact: true })).not.toBeVisible();
 
@@ -339,7 +334,13 @@ test.describe('Query Editor', () => {
         .filter({ hasText: /^Select query type$/ })
         .nth(2)
         .click();
-      await page.getByText('Get property value', { exact: true }).click();
+      await Promise.all([
+        page.waitForResponse(async (response) => {
+          const responseBody = await response.text();
+          return responseBody.includes('topLevelAssets');
+        }),
+        page.getByText('Get property value', { exact: true }).click(),
+      ]);
 
       await expect(page.getByText('Property Alias')).toBeVisible();
       await expect(page.getByText('Asset', { exact: true })).toBeVisible();
@@ -347,9 +348,20 @@ test.describe('Query Editor', () => {
       /* Select asset */
 
       await expect(page.getByText('Property', { exact: true })).not.toBeVisible();
-
       await page.getByText('Select an asset').click();
-      await page.getByText('Demo Wind Farm Asset', { exact: true }).click();
+      await expect(page.getByText('Demo Wind Farm Asset', { exact: true })).toBeVisible();
+
+      await Promise.all([
+        page.waitForResponse(async (response) => {
+          const responseBody = await response.text();
+          return responseBody.includes('getAssetInfo');
+        }),
+        page.waitForResponse(async (response) => {
+          const responseBody = await response.text();
+          return responseBody.includes('listAssetProperties');
+        }),
+        page.getByText('Demo Wind Farm Asset', { exact: true }).click(),
+      ]);
 
       await expect(page.getByText('Property', { exact: true })).toBeVisible();
 
@@ -366,7 +378,7 @@ test.describe('Query Editor', () => {
         .filter({ hasText: /^Select a property$/ })
         .nth(2)
         .click();
-
+      expect(page.getByText('Total Average Power', { exact: true })).toBeVisible();
       await page.getByText('Total Average Power', { exact: true }).click();
 
       await expect(page.getByText('Quality', { exact: true })).toBeVisible();
