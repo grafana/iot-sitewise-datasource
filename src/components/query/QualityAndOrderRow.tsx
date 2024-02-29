@@ -95,7 +95,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
         <EditorField label="Quality" width={15} htmlFor="quality">
           <Select
             id="quality"
-            aria-label="quality"
+            aria-label="Quality"
             options={qualities}
             value={qualities.find((v) => v.value === query.quality) ?? qualities[0]}
             onChange={this.onQualityChange}
@@ -114,10 +114,10 @@ export class QualityAndOrderRow extends PureComponent<Props> {
             menuPlacement="bottom"
           />
         </EditorField>
-        <EditorField label="Format" width={10} htmlFor="time">
+        <EditorField label="Format" width={10} htmlFor="format">
           <Select
-            id="time"
-            aria-label="Time"
+            id="format"
+            aria-label="Format"
             value={query.responseFormat || SiteWiseResponseFormat.Table}
             onChange={this.onResponseFormatChange}
             options={FORMAT_OPTIONS}
@@ -141,6 +141,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
         <div className="gf-form">
           <InlineField label="Quality" labelWidth={firstLabelWith}>
             <Select
+              aria-label="Quality"
               width={20}
               options={qualities}
               value={qualities.find((v) => v.value === query.quality) ?? qualities[0]}
@@ -151,6 +152,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
           </InlineField>
           <InlineField label="Time" labelWidth={8}>
             <Select
+              aria-label="Time"
               options={ordering}
               value={ordering.find((v) => v.value === query.timeOrdering) ?? ordering[0]}
               onChange={this.onOrderChange}
@@ -161,6 +163,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
 
           <InlineField label="Format" labelWidth={8}>
             <Select
+              aria-label="Format"
               value={query.responseFormat || SiteWiseResponseFormat.Table}
               onChange={this.onResponseFormatChange}
               options={FORMAT_OPTIONS}
@@ -170,6 +173,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
           {isAssetPropertyInterpolatedQuery(query) && (
             <InlineField label="Resolution" labelWidth={10}>
               <Select
+                aria-label="Resolution"
                 width={18}
                 options={interpolatedResolutions}
                 value={interpolatedResolutions.find((v) => v.value === query.resolution) || interpolatedResolutions[0]}

@@ -30,16 +30,12 @@ export default defineConfig({
       testMatch: [/.*\.js/],
     },
     {
-      name: 'setup',
-      testMatch: /.*\.setup\.ts/,
-    },
-    {
       name: 'run-tests',
       use: {
         ...devices['Desktop Chrome'],
         storageState: 'playwright/.auth/admin.json',
       },
-      dependencies: ['auth', 'setup'],
+      dependencies: ['auth'],
     },
   ],
 });

@@ -1,6 +1,6 @@
 import { type Page } from '@playwright/test';
 import { test, expect } from '@grafana/plugin-e2e';
-import { SITE_WISE_DATA_SOURCE_CONFIG } from './constants';
+import { SiteWiseOptions, SitewiseSecureJsonData } from '../src/types';
 
 async function interceptRequests(page: Page) {
   await page.route('', async (route) => {
@@ -315,78 +315,67 @@ async function interceptRequests(page: Page) {
 
 test.describe('Query Editor', () => {
   test.describe('Queries', () => {
-    test('Get property value', async ({ page, panelEditPage }) => {
+    test('Get property value', async ({ page, panelEditPage, readProvisionedDataSource }) => {
       await interceptRequests(page);
 
       /* Configure data source */
 
-      await panelEditPage.datasource.set(SITE_WISE_DATA_SOURCE_CONFIG.name);
+      const ds = await readProvisionedDataSource<SiteWiseOptions, SitewiseSecureJsonData>({
+        fileName: 'mock-iot-sitewise.e2e.yaml',
+      });
+      await panelEditPage.datasource.set(ds.name);
+      await panelEditPage.setVisualization('Table');
 
       /* Select query type */
 
-      await expect(page.getByText('Query type', { exact: true })).toBeVisible();
-      await expect(page.getByText('Property Alias')).not.toBeVisible();
-      await expect(page.getByText('Asset', { exact: true })).not.toBeVisible();
+      const queryTypeSelect = panelEditPage.getByTestIdOrAriaLabel('Query type');
+      const propertyAliasInput = panelEditPage.getByTestIdOrAriaLabel('Property alias');
+      const assetSelect = panelEditPage.getByTestIdOrAriaLabel('Asset');
 
-      // TODO: Find a better selector to open drop-down
-      await page
-        .locator('div')
-        .filter({ hasText: /^Select query type$/ })
-        .nth(2)
-        .click();
-      await Promise.all([
-        page.waitForResponse(async (response) => {
-          const responseBody = await response.text();
-          return responseBody.includes('topLevelAssets');
-        }),
-        page.getByText('Get property value', { exact: true }).click(),
-      ]);
+      await expect(queryTypeSelect).toBeVisible();
+      await expect(propertyAliasInput).not.toBeVisible();
+      await expect(assetSelect).not.toBeVisible();
 
-      await expect(page.getByText('Property Alias')).toBeVisible();
-      await expect(page.getByText('Asset', { exact: true })).toBeVisible();
+      await queryTypeSelect.click();
+      await page.getByText('Get property value', { exact: true }).click();
+
+      await expect(propertyAliasInput).toBeVisible();
+      await expect(assetSelect).toBeVisible();
 
       /* Select asset */
 
-      await expect(page.getByText('Property', { exact: true })).not.toBeVisible();
-      await page.getByText('Select an asset').click();
-      await expect(page.getByText('Demo Wind Farm Asset', { exact: true })).toBeVisible();
+      const propertySelect = panelEditPage.getByTestIdOrAriaLabel('Property');
+      const demoAssetOption = page.getByText('Demo Wind Farm Asset', { exact: true });
 
-      await Promise.all([
-        page.waitForResponse(async (response) => {
-          const responseBody = await response.text();
-          return responseBody.includes('getAssetInfo');
-        }),
-        page.waitForResponse(async (response) => {
-          const responseBody = await response.text();
-          return responseBody.includes('listAssetProperties');
-        }),
-        page.getByText('Demo Wind Farm Asset', { exact: true }).click(),
-      ]);
+      await expect(propertySelect).not.toBeVisible();
 
-      await expect(page.getByText('Property', { exact: true })).toBeVisible();
+      await assetSelect.click();
+      await demoAssetOption.waitFor();
+      await demoAssetOption.click();
+
+      await expect(propertySelect).toBeVisible();
 
       /* Select asset property */
 
-      await expect(page.getByText('Quality', { exact: true })).not.toBeVisible();
-      await expect(page.getByText('Time', { exact: true })).not.toBeVisible();
-      await expect(page.getByText('Format', { exact: true })).not.toBeVisible();
+      const qualitySelect = panelEditPage.getByTestIdOrAriaLabel('Quality');
+      const timeSelect = panelEditPage.getByTestIdOrAriaLabel('Time');
+      const formatSelect = panelEditPage.getByTestIdOrAriaLabel('Format');
+      const demoPropertyOption = page.getByText('Total Average Power', { exact: true });
+
+      await expect(qualitySelect).not.toBeVisible();
+      await expect(timeSelect).not.toBeVisible();
+      await expect(formatSelect).not.toBeVisible();
       await expect(page.getByText('No data')).toBeVisible();
 
-      // TODO: Find a better selector to open drop-down
-      await page
-        .locator('div')
-        .filter({ hasText: /^Select a property$/ })
-        .nth(2)
-        .click();
-      expect(page.getByText('Total Average Power', { exact: true })).toBeVisible();
-      await page.getByText('Total Average Power', { exact: true }).click();
+      await propertySelect.click();
+      await demoPropertyOption.waitFor();
+      await demoPropertyOption.click();
 
-      await expect(page.getByText('Quality', { exact: true })).toBeVisible();
-      await expect(page.getByText('Time', { exact: true })).toBeVisible();
-      await expect(page.getByText('Format', { exact: true })).toBeVisible();
-
-      // Get asset property value query is executed
+      await expect(qualitySelect).toBeVisible();
+      await expect(timeSelect).toBeVisible();
+      await expect(formatSelect).toBeVisible();
       await expect(page.getByText('No data')).not.toBeVisible();
+      await expect(panelEditPage.panel.data).toContainText(['15.6 kW', 'GOOD']);
     });
   });
 });

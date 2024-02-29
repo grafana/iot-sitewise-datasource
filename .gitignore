@@ -15,3 +15,7 @@ __debug_bin
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# ignore all provisioning files except for e2e placeholders.
+provisioning/datasources/*
+!provisioning/datasources/*.e2e.yaml

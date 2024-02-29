@@ -396,6 +396,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
           <EditorField label="Property Alias" tooltip={queryTooltip} tooltipInteractive htmlFor="alias" width={80}>
             <Input
               id="alias"
+              aria-label="Property alias"
               value={query.propertyAlias}
               onChange={this.onAliasChange}
               placeholder="optional alias that identifies the property, such as an OPC-UA server data stream path"
@@ -502,6 +503,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             interactive
           >
             <Input
+              aria-label="Property alias"
               value={query.propertyAlias}
               onChange={this.onAliasChange}
               placeholder="optional alias that identifies the property, such as an OPC-UA server data stream path"
@@ -514,6 +516,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             <div className="gf-form">
               <InlineField label="Asset" labelWidth={firstLabelWith} grow={true}>
                 <Select
+                  aria-label="Asset"
                   isMulti={true}
                   key={query.region ? query.region : 'default'}
                   isLoading={loading}
@@ -542,6 +545,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
               <div className="gf-form">
                 <InlineField label="Property" labelWidth={firstLabelWith} grow={true}>
                   <Select
+                    aria-label="Property"
                     isLoading={loading}
                     options={assetPropertyOptions}
                     value={currentAssetPropertyOption ?? null}
