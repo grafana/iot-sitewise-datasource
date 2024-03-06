@@ -10,3 +10,12 @@ dist/
 # until we can figure out how to install the mockery executable on circleci, leave this commented out
 #**/mocks/*.*
 __debug_bin
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# ignore all provisioning files except for e2e placeholders.
+provisioning/datasources/*
+!provisioning/datasources/*.e2e.yaml

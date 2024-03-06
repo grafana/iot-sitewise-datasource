@@ -55,13 +55,19 @@ export function QueryEditor(props: Props) {
       case QueryType.ListAssetModels:
         return null; // nothing required
       case QueryType.ListAssets:
-        return <ListAssetsQueryEditor {...props} query={query as ListAssetsQuery} newFormStylingEnabled={newFormStylingEnabled} />;
+        return (
+          <ListAssetsQueryEditor
+            {...props}
+            query={query as ListAssetsQuery}
+            newFormStylingEnabled={newFormStylingEnabled}
+          />
+        );
       case QueryType.ListAssociatedAssets:
       case QueryType.PropertyValue:
       case QueryType.PropertyInterpolated:
       case QueryType.PropertyAggregate:
       case QueryType.PropertyValueHistory:
-        return <PropertyQueryEditor {...props}  newFormStylingEnabled={newFormStylingEnabled} />;
+        return <PropertyQueryEditor {...props} newFormStylingEnabled={newFormStylingEnabled} />;
     }
     return <div>Missing UI for query type: {query.queryType}</div>;
   };
@@ -84,6 +90,7 @@ export function QueryEditor(props: Props) {
               <EditorFieldGroup>
                 <EditorField label="Query type" tooltip={queryTooltip} tooltipInteractive width={30}>
                   <Select
+                    aria-label="Query type"
                     options={siteWiseQueryTypes}
                     value={currentQueryType}
                     onChange={onQueryTypeChange}
@@ -107,32 +114,36 @@ export function QueryEditor(props: Props) {
             {renderQuery(query, true)}
           </EditorRows>
         </>
-      ) :<> 
-        <div className="gf-form">
-          <InlineField label="Query type" labelWidth={firstLabelWith} grow={true} tooltip={queryTooltip} interactive>
-            <Select
-              options={siteWiseQueryTypes}
-              value={currentQueryType}
-              onChange={onQueryTypeChange}
-              placeholder="Select query type"
-              menuPlacement="bottom"
-            />
-          </InlineField>
-          <InlineField label="Region" labelWidth={14}>
-            <Select
-              width={18}
-              options={regions}
-              value={standardRegionOptions.find((v) => v.value === query.region) || defaultRegion}
-              onChange={onRegionChange}
-              backspaceRemovesValue={true}
-              allowCustomValue={true}
-              isClearable={true}
-              menuPlacement="bottom"
-            />
-          </InlineField>
-        </div>
-      
-      {renderQuery(query)}</>}
+      ) : (
+        <>
+          <div className="gf-form">
+            <InlineField label="Query type" labelWidth={firstLabelWith} grow={true} tooltip={queryTooltip} interactive>
+              <Select
+                aria-label="Query type"
+                options={siteWiseQueryTypes}
+                value={currentQueryType}
+                onChange={onQueryTypeChange}
+                placeholder="Select query type"
+                menuPlacement="bottom"
+              />
+            </InlineField>
+            <InlineField label="Region" labelWidth={14}>
+              <Select
+                width={18}
+                options={regions}
+                value={standardRegionOptions.find((v) => v.value === query.region) || defaultRegion}
+                onChange={onRegionChange}
+                backspaceRemovesValue={true}
+                allowCustomValue={true}
+                isClearable={true}
+                menuPlacement="bottom"
+              />
+            </InlineField>
+          </div>
+
+          {renderQuery(query)}
+        </>
+      )}
     </>
   );
 }
