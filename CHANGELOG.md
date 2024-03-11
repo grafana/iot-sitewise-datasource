@@ -2,10 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## 1.16.2
+## 1.17.0
 
 - Update grafana-aws-sdk to 0.21.0 and prepare 1.16.2 in (#282)[https://github.com/grafana/iot-sitewise-datasource/pull/282]
 - fix: clear selected property when assets are removed (#278)[https://github.com/grafana/iot-sitewise-datasource/pull/278]
+- E2E Tests (#285)[https://github.com/grafana/iot-sitewise-datasource/pull/285]
+- Add support for composite model properties (#279)[https://github.com/grafana/iot-sitewise-datasource/pull/279]
+- Use non-batch APIs at the edge (#281)[https://github.com/grafana/iot-sitewise-datasource/pull/281]
 
 ## 1.16.1
 
