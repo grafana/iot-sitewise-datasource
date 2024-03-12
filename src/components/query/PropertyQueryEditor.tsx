@@ -259,7 +259,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       </EditorFieldGroup>
     ) : (
       <div className="gf-form">
-        <InlineField label="Aggregate" labelWidth={firstLabelWith} grow={true}>
+        <InlineField htmlFor="aggregate-picker" label="Aggregate" labelWidth={firstLabelWith} grow={true}>
           <AggregatePicker
             stats={query.aggregates ?? []}
             onChange={this.onAggregateChange}
@@ -267,8 +267,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             menuPlacement="bottom"
           />
         </InlineField>
-        <InlineField label="Resolution" labelWidth={10}>
+        <InlineField htmlFor="resolution" label="Resolution" labelWidth={10}>
           <Select
+            inputId="resolution"
             width={18}
             options={resolutions}
             value={resolutions.find((v) => v.value === query.resolution) || resolutions[0]}
@@ -320,8 +321,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       </EditorField>
     ) : (
       <div className="gf-form">
-        <InlineField label="Show" labelWidth={firstLabelWith} grow={true}>
+        <InlineField label="Show" htmlFor="show" labelWidth={firstLabelWith} grow={true}>
           <Select
+            inputId="show"
             isLoading={loading}
             options={hierarchies}
             value={current}
@@ -496,6 +498,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       <>
         <div className="gf-form">
           <InlineField
+            htmlFor="alias"
             label="Property Alias"
             labelWidth={firstLabelWith}
             grow={true}
@@ -503,7 +506,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             interactive
           >
             <Input
-              aria-label="Property alias"
+              id="alias"
               value={query.propertyAlias}
               onChange={this.onAliasChange}
               placeholder="optional alias that identifies the property, such as an OPC-UA server data stream path"
@@ -514,9 +517,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         {!Boolean(query.propertyAlias) && (
           <>
             <div className="gf-form">
-              <InlineField label="Asset" labelWidth={firstLabelWith} grow={true}>
+              <InlineField htmlFor="asset" label="Asset" labelWidth={firstLabelWith} grow={true}>
                 <Select
-                  aria-label="Asset"
+                  inputId="asset"
                   isMulti={true}
                   key={query.region ? query.region : 'default'}
                   isLoading={loading}
@@ -543,9 +546,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
             {showProp && (
               <div className="gf-form">
-                <InlineField label="Property" labelWidth={firstLabelWith} grow={true}>
+                <InlineField htmlFor="property" label="Property" labelWidth={firstLabelWith} grow={true}>
                   <Select
-                    aria-label="Property"
+                    inputId="property"
                     isLoading={loading}
                     options={assetPropertyOptions}
                     value={currentAssetPropertyOption ?? null}

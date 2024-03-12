@@ -88,8 +88,9 @@ export function QueryEditor(props: Props) {
           <EditorRows>
             <EditorRow>
               <EditorFieldGroup>
-                <EditorField label="Query type" tooltip={queryTooltip} tooltipInteractive width={30}>
+                <EditorField htmlFor="query" label="Query type" tooltip={queryTooltip} tooltipInteractive width={30}>
                   <Select
+                    id="query"
                     aria-label="Query type"
                     options={siteWiseQueryTypes}
                     value={currentQueryType}
@@ -117,9 +118,16 @@ export function QueryEditor(props: Props) {
       ) : (
         <>
           <div className="gf-form">
-            <InlineField label="Query type" labelWidth={firstLabelWith} grow={true} tooltip={queryTooltip} interactive>
+            <InlineField
+              htmlFor="query"
+              label="Query type"
+              labelWidth={firstLabelWith}
+              grow={true}
+              tooltip={queryTooltip}
+              interactive
+            >
               <Select
-                aria-label="Query type"
+                inputId="query"
                 options={siteWiseQueryTypes}
                 value={currentQueryType}
                 onChange={onQueryTypeChange}

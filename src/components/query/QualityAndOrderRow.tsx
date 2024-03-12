@@ -139,9 +139,9 @@ export class QualityAndOrderRow extends PureComponent<Props> {
     ) : (
       <>
         <div className="gf-form">
-          <InlineField label="Quality" labelWidth={firstLabelWith}>
+          <InlineField htmlFor="quality" label="Quality" labelWidth={firstLabelWith}>
             <Select
-              aria-label="Quality"
+              inputId="quality"
               width={20}
               options={qualities}
               value={qualities.find((v) => v.value === query.quality) ?? qualities[0]}
@@ -150,9 +150,9 @@ export class QualityAndOrderRow extends PureComponent<Props> {
               menuPlacement="bottom"
             />
           </InlineField>
-          <InlineField label="Time" labelWidth={8}>
+          <InlineField htmlFor="time" label="Time" labelWidth={8}>
             <Select
-              aria-label="Time"
+              inputId="time"
               options={ordering}
               value={ordering.find((v) => v.value === query.timeOrdering) ?? ordering[0]}
               onChange={this.onOrderChange}
@@ -161,9 +161,9 @@ export class QualityAndOrderRow extends PureComponent<Props> {
             />
           </InlineField>
 
-          <InlineField label="Format" labelWidth={8}>
+          <InlineField htmlFor="format" label="Format" labelWidth={8}>
             <Select
-              aria-label="Format"
+              inputId="format"
               value={query.responseFormat || SiteWiseResponseFormat.Table}
               onChange={this.onResponseFormatChange}
               options={FORMAT_OPTIONS}
@@ -171,9 +171,9 @@ export class QualityAndOrderRow extends PureComponent<Props> {
           </InlineField>
 
           {isAssetPropertyInterpolatedQuery(query) && (
-            <InlineField label="Resolution" labelWidth={10}>
+            <InlineField htmlFor="resolution" label="Resolution" labelWidth={10}>
               <Select
-                aria-label="Resolution"
+                inputId="resolution"
                 width={18}
                 options={interpolatedResolutions}
                 value={interpolatedResolutions.find((v) => v.value === query.resolution) || interpolatedResolutions[0]}

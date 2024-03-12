@@ -100,8 +100,9 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
     ) : (
       <>
         <div className="gf-form">
-          <InlineField label="Model ID" labelWidth={firstLabelWith} grow={true}>
+          <InlineField htmlFor="model" label="Model ID" labelWidth={firstLabelWith} grow={true}>
             <Select
+              inputId="model"
               isLoading={!models}
               options={modelIds}
               value={currentModel}
@@ -116,8 +117,9 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
           </InlineField>
         </div>
         <div className="gf-form">
-          <InlineField label="Filter" labelWidth={firstLabelWith} grow={true}>
+          <InlineField htmlFor="filter" label="Filter" labelWidth={firstLabelWith} grow={true}>
             <Select
+              inputId="filter"
               options={filters}
               value={filters.find((v) => v.value === query.filter) || filters[0]}
               onChange={this.onFilterChange}
