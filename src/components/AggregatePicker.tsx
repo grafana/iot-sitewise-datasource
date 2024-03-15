@@ -84,7 +84,7 @@ export class AggregatePicker extends PureComponent<Props> {
     }
     return (
       <Select
-        id="aggregate-picker"
+        inputId="aggregate-picker"
         aria-label="Aggregate picker"
         value={select.current}
         className={className}
