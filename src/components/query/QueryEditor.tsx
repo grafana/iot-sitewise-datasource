@@ -10,6 +10,7 @@ import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
 import { PropertyQueryEditor } from './PropertyQueryEditor';
 import { EditorField, EditorFieldGroup, EditorRow, EditorRows } from '@grafana/experimental';
 import { config } from '@grafana/runtime';
+import { QueryEditorHeader } from '@grafana/aws-sdk';
 
 type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 
@@ -82,6 +83,13 @@ export function QueryEditor(props: Props) {
     <>
       {newFormStylingEnabled ? (
         <>
+          {props?.app !== 'explore' && (
+            <QueryEditorHeader<DataSource, SitewiseQuery, SitewiseOptions>
+              {...props}
+              enableRunButton
+              showAsyncQueryButtons={false}
+            />
+          )}
           <EditorRows>
             <EditorRow>
               <EditorFieldGroup>
