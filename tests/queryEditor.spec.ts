@@ -29,16 +29,22 @@ test.describe('Query Editor', () => {
       await queryEditor.selectAsset('Demo Wind Farm Asset');
 
       await expect(queryEditor.propertySelect).toBeVisible();
-      await expect(queryEditor.qualitySelect).not.toBeVisible();
-      await expect(queryEditor.timeSelect).not.toBeVisible();
-      await expect(queryEditor.formatSelect).not.toBeVisible();
+      await expect(queryEditor.queryOptionsSelect).not.toBeVisible();
+
+      await queryEditor.runQuery();
+
       await expect(page.getByText('No data')).toBeVisible();
 
       await queryEditor.selectProperty('Total Average Power');
 
+      await queryEditor.openQueryOptions();
+
       await expect(queryEditor.qualitySelect).toBeVisible();
       await expect(queryEditor.timeSelect).toBeVisible();
       await expect(queryEditor.formatSelect).toBeVisible();
+
+      await queryEditor.runQuery();
+
       await expect(page.getByText('No data')).not.toBeVisible();
       await expect(panelEditPage.panel.data).toContainText(['15.6 kW', 'GOOD']);
     });
@@ -51,18 +57,23 @@ test.describe('Query Editor', () => {
 
       await expect(queryEditor.propertyAliasInput).toBeVisible();
       await expect(queryEditor.assetSelect).toBeVisible();
-      await expect(queryEditor.qualitySelect).not.toBeVisible();
-      await expect(queryEditor.timeSelect).not.toBeVisible();
-      await expect(queryEditor.formatSelect).not.toBeVisible();
+
+      await expect(queryEditor.queryOptionsSelect).not.toBeVisible();
 
       await queryEditor.selectAsset('Demo Wind Farm Asset');
 
-      await expect(queryEditor.qualitySelect).toBeVisible();
-      await expect(queryEditor.timeSelect).toBeVisible();
-      await expect(queryEditor.formatSelect).toBeVisible();
+      await queryEditor.runQuery();
+
       await expect(page.getByText('No data')).toBeVisible();
 
       await queryEditor.selectProperty('Total Average Power');
+
+      await queryEditor.openQueryOptions();
+      await expect(queryEditor.qualitySelect).toBeVisible();
+      await expect(queryEditor.timeSelect).toBeVisible();
+      await expect(queryEditor.formatSelect).toBeVisible();
+
+      await queryEditor.runQuery();
 
       await expect(page.getByText('No data')).not.toBeVisible();
       await expect(panelEditPage.panel.data).toContainText(['15.6 kW', '14.3 kW', '16.3 kW', 'GOOD']);
@@ -80,10 +91,15 @@ test.describe('Query Editor', () => {
       await queryEditor.selectAsset('Demo Wind Farm Asset');
 
       await expect(queryEditor.aggregatePicker).not.toBeVisible();
+
+      await queryEditor.openQueryOptions();
       await expect(queryEditor.resolutionSelect).not.toBeVisible();
       await expect(queryEditor.qualitySelect).not.toBeVisible();
       await expect(queryEditor.timeSelect).not.toBeVisible();
       await expect(queryEditor.formatSelect).not.toBeVisible();
+
+      await queryEditor.runQuery();
+
       await expect(page.getByText('No data')).toBeVisible();
 
       await queryEditor.selectProperty('Total Average Power');
@@ -93,6 +109,9 @@ test.describe('Query Editor', () => {
       await expect(queryEditor.qualitySelect).toBeVisible();
       await expect(queryEditor.timeSelect).toBeVisible();
       await expect(queryEditor.formatSelect).toBeVisible();
+
+      await queryEditor.runQuery();
+
       await expect(page.getByText('No data')).not.toBeVisible();
       await expect(panelEditPage.panel.data).toContainText(['15.6 kW', '14.3 kW', '16.3 kW', 'GOOD']);
     });
@@ -112,13 +131,14 @@ test.describe('Query Editor', () => {
 
       await queryEditor.selectAsset('Demo Wind Farm Asset');
 
-      await expect(queryEditor.qualitySelect).toBeVisible();
-      await expect(queryEditor.timeSelect).toBeVisible();
-      await expect(queryEditor.formatSelect).toBeVisible();
-      await expect(queryEditor.resolutionSelect).toBeVisible();
+      await expect(queryEditor.queryOptionsSelect).not.toBeVisible();
+
+      await queryEditor.runQuery();
+
       await expect(page.getByText('No data')).toBeVisible();
 
       await queryEditor.selectProperty('Total Average Power');
+      await queryEditor.runQuery();
 
       await expect(page.getByText('No data')).not.toBeVisible();
       await expect(panelEditPage.panel.data).toContainText(['15.6 kW', '14.3 kW', '16.3 kW', 'GOOD']);
@@ -133,11 +153,14 @@ test.describe('Query Editor', () => {
       await expect(queryEditor.modelIdSelect).toBeVisible();
       await expect(queryEditor.filterSelect).toBeVisible();
 
+      await queryEditor.runQuery();
+
       await expect(panelEditPage.panel.data).toContainText(['Demo Wind Farm Asset']);
     });
 
     test('List asset models', async ({ panelEditPage, queryEditor }) => {
       await queryEditor.selectQueryType('List asset models');
+      await queryEditor.runQuery();
 
       await expect(panelEditPage.panel.data).toContainText(['Demo Wind Farm Asset Model']);
     });
@@ -154,6 +177,7 @@ test.describe('Query Editor', () => {
       await expect(queryEditor.showSelect).toBeVisible();
 
       await queryEditor.selectShow('** All **');
+      await queryEditor.runQuery();
 
       await expect(panelEditPage.panel.data).toContainText(['Demo Turbine Asset']);
     });

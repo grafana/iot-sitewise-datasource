@@ -17,6 +17,7 @@ export class QueryEditor {
   readonly modelIdSelect: Locator;
   readonly filterSelect: Locator;
   readonly showSelect: Locator;
+  readonly queryOptionsSelect: Locator;
   readonly #page: Page;
 
   constructor(page: Page) {
@@ -32,6 +33,7 @@ export class QueryEditor {
     this.modelIdSelect = page.getByLabel('Model ID');
     this.filterSelect = page.getByLabel('Filter', { exact: true });
     this.showSelect = page.getByLabel('Show', { exact: true });
+    this.queryOptionsSelect = page.getByTestId('collapse-title');
     this.#page = page;
   }
 
@@ -69,5 +71,15 @@ export class QueryEditor {
     const showOption = this.#page.getByText(show, { exact: true });
 
     await showOption.click();
+  }
+
+  async runQuery() {
+    const runQueryButton = this.#page.getByText('Run queries');
+    await runQueryButton.click();
+  }
+
+  async openQueryOptions() {
+    const optionsButton = this.#page.getByTestId('collapse-title');
+    await optionsButton.click();
   }
 }
