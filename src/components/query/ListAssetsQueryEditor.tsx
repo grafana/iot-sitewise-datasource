@@ -81,7 +81,7 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
               isClearable={true}
               isSearchable={true}
               formatCreateLabel={(txt) => `Model ID: ${txt}`}
-              menuPlacement="bottom"
+              menuPlacement="auto"
             />
           </EditorField>
           <EditorField label="Filter" htmlFor="filter" width={20}>
@@ -92,7 +92,7 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
               value={filters.find((v) => v.value === query.filter) || filters[0]}
               onChange={this.onFilterChange}
               placeholder="Select a property"
-              menuPlacement="bottom"
+              menuPlacement="auto"
             />
           </EditorField>
         </EditorFieldGroup>
