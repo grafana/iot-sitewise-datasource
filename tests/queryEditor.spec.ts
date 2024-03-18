@@ -2,12 +2,12 @@ import { test, expect } from './helpers';
 import { interceptRequests } from './interceptRequests';
 import { type SitewiseOptions, type SitewiseSecureJsonData } from '../src/types';
 
+test.use({
+  featureToggles: {
+    awsDatasourcesNewFormStyling: true,
+  },
+});
 test.describe('Query Editor', () => {
-  test.use({
-    featureToggles: {
-      awsDatasourcesNewFormStyling: true,
-    },
-  });
   test.describe('Queries', () => {
     test.beforeEach(async ({ page, panelEditPage, readProvisionedDataSource }) => {
       await interceptRequests(page);
