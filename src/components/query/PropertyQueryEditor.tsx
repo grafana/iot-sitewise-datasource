@@ -243,7 +243,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             stats={query.aggregates ?? []}
             onChange={this.onAggregateChange}
             defaultStat={getDefaultAggregate(property)}
-            menuPlacement="bottom"
+            menuPlacement="auto"
           />
         </EditorField>
         <EditorField label="Resolution" htmlFor="resolution" width={25}>
@@ -253,7 +253,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             options={resolutions}
             value={resolutions.find((v) => v.value === query.resolution) || resolutions[0]}
             onChange={this.onResolutionChange}
-            menuPlacement="bottom"
+            menuPlacement="auto"
           />
         </EditorField>
       </EditorFieldGroup>
@@ -316,7 +316,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
           isSearchable={true}
           onCreateOption={this.onSetHierarchyId}
           formatCreateLabel={(txt) => `Hierarchy Id: ${txt}`}
-          menuPlacement="bottom"
+          menuPlacement="auto"
         />
       </EditorField>
     ) : (
@@ -426,7 +426,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                     isSearchable={true}
                     onCreateOption={this.onSetAssetId}
                     formatCreateLabel={(txt) => `Asset ID: ${txt}`}
-                    menuPlacement="bottom"
+                    menuPlacement="auto"
                   />
                 </EditorField>
 
@@ -457,7 +457,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                       isSearchable={true}
                       onCreateOption={this.onSetPropertyId}
                       formatCreateLabel={(txt) => `Property ID: ${txt}`}
-                      menuPlacement="bottom"
+                      menuPlacement="auto"
                     />
                   </EditorField>
                 </EditorFieldGroup>

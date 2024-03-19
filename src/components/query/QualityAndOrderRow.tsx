@@ -100,7 +100,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
             value={qualities.find((v) => v.value === query.quality) ?? qualities[0]}
             onChange={this.onQualityChange}
             isSearchable={true}
-            menuPlacement="bottom"
+            menuPlacement="auto"
           />
         </EditorField>
         <EditorField label="Time" width={10} htmlFor="time">
@@ -111,7 +111,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
             value={ordering.find((v) => v.value === query.timeOrdering) ?? ordering[0]}
             onChange={this.onOrderChange}
             isSearchable={true}
-            menuPlacement="bottom"
+            menuPlacement="auto"
           />
         </EditorField>
         <EditorField label="Format" width={10} htmlFor="format">
@@ -131,7 +131,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
               options={interpolatedResolutions}
               value={interpolatedResolutions.find((v) => v.value === query.resolution) || interpolatedResolutions[0]}
               onChange={this.onResolutionChange}
-              menuPlacement="bottom"
+              menuPlacement="auto"
             />
           </EditorField>
         )}

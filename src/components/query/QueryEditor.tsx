@@ -96,7 +96,7 @@ export function QueryEditor(props: Props) {
                     value={currentQueryType}
                     onChange={onQueryTypeChange}
                     placeholder="Select query type"
-                    menuPlacement="bottom"
+                    menuPlacement="auto"
                   />
                 </EditorField>
                 <EditorField label="Region" width={15}>
@@ -107,7 +107,7 @@ export function QueryEditor(props: Props) {
                     backspaceRemovesValue={true}
                     allowCustomValue={true}
                     isClearable={true}
-                    menuPlacement="bottom"
+                    menuPlacement="auto"
                   />
                 </EditorField>
               </EditorFieldGroup>
