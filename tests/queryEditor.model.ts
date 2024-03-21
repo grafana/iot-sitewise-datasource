@@ -1,4 +1,5 @@
 import { type Page, type Locator } from '@playwright/test';
+import { isVersionGtOrEq } from './utils';
 
 /**
  * Query Editor page object model testing utility providing properties and
@@ -19,8 +20,9 @@ export class QueryEditor {
   readonly showSelect: Locator;
   readonly queryOptionsSelect: Locator;
   readonly #page: Page;
+  readonly grafanaVersion: string;
 
-  constructor(page: Page) {
+  constructor(page: Page, grafanaVersion: string) {
     this.queryTypeSelect = page.getByLabel('Query type');
     this.assetSelect = page.getByLabel('Asset');
     this.propertySelect = page.getByLabel('Property', { exact: true });
@@ -35,6 +37,7 @@ export class QueryEditor {
     this.showSelect = page.getByLabel('Show', { exact: true });
     this.queryOptionsSelect = page.getByTestId('collapse-title');
     this.#page = page;
+    this.grafanaVersion = grafanaVersion;
   }
 
   async selectQueryType(queryTypeOption: string) {
@@ -79,7 +82,9 @@ export class QueryEditor {
   }
 
   async openQueryOptions() {
-    const optionsButton = this.#page.getByTestId('collapse-title');
-    await optionsButton.click();
+    if (isVersionGtOrEq(this.grafanaVersion, '10.2.0')) {
+      const optionsButton = this.#page.getByTestId('collapse-title');
+      await optionsButton.click();
+    }
   }
 }
