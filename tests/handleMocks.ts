@@ -52,7 +52,7 @@ const returnMockForEndpoint = async (page: Page, endpoint: string, mockName: str
 // to run tests with mocks: yarn run test:e2e:use-mocks
 // to run tests with live endpoints: yarn run test:e2e:use-live-data
 // to run tests with live endpoints and generate mocks from the responses: yarn run test:e2e:use-live-data:generate-mocks
-// when using live endpoints be sure to create a provisioned datasource in provisoning/datasources/iot-sitewise.e2e.yaml
+// when using live endpoints be sure to create a provisioned datasource in provisioning/datasources/iot-sitewise.e2e.yaml
 export const handleMocks = async (page: Page, endpoint: string, testCaseName: string) => {
   if (process.env.GENERATE_MOCKS === 'true') {
     generateMockForEndpoint(page, endpoint, testCaseName);
