@@ -3,9 +3,34 @@ apiVersion: 1
 deleteDatasources:
   - name: E2E Mock IoT SiteWise
     orgId: 1
+  - name: e2e-sitewise-invalid-credentials
+    orgId: 1
+  - name: e2e-sitewise-valid-credentials
+    orgId: 1
 
 datasources:
   - name: E2E Mock IoT SiteWise
     type: grafana-iot-sitewise-datasource
+    editable: true
     uid: e2e-mock-iot-sitewise
     version: 1
+
+  - name: e2e-sitewise-invalid-credentials
+    type: grafana-iot-sitewise-datasource
+    uid: e2e-sitewise-invalid-credentials
+    editable: true
+    defaultRegion: us-east-1
+    secureJsonData:
+      accessKey: invalid-mock-access-key
+      secretKey: invalid-mock-secret-key
+
+  - name: e2e-sitewise-valid-credentials
+    type: grafana-iot-sitewise-datasource
+    uid: e2e-sitewise-valid-credentials
+    editable: true
+    jsonData:
+      authType: keys
+      defaultRegion: us-east-1
+    secureJsonData:
+      accessKey: very-valid-mock-access-key
+      secretKey: very-valid-mock-access-key

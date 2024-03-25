@@ -16,6 +16,6 @@ __debug_bin
 /playwright/.cache/
 /playwright/.auth/
 
-# ignore all provisioning files except for e2e placeholders.
+# ignore all provisioning files except for mocks
 provisioning/datasources/*
-!provisioning/datasources/*.e2e.yaml
+!provisioning/datasources/mock-iot-sitewise.e2e.yaml
