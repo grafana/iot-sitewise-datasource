@@ -21,7 +21,6 @@ test.describe('ConfigEditor', () => {
     const ds = await readProvisionedDataSource<SitewiseOptions, SitewiseSecureJsonData>(provisionedDatasource);
 
     // fill in the config form
-    await page.getByLabel('Name').fill(ds.name || '');
     await page.getByLabel('Access Key ID').fill(ds.secureJsonData?.accessKey || '');
     await page.getByLabel('Secret Access Key').fill(ds.secureJsonData?.secretKey || '');
     await page.getByLabel('Default Region').fill('us-east-1');
@@ -56,7 +55,6 @@ test.describe('ConfigEditor', () => {
     const ds = await readProvisionedDataSource<SitewiseOptions, SitewiseSecureJsonData>(provisionedDatasource);
 
     // fill in the config form
-    await page.getByLabel('Name').fill(ds.name || '');
     await page.getByLabel('Access Key ID').fill(ds.secureJsonData?.accessKey || '');
     await page.getByLabel('Secret Access Key').fill(ds.secureJsonData?.secretKey || '');
     await page.getByLabel('Default Region').fill('us-east-1');
