@@ -7,8 +7,8 @@ interface Fixtures {
 
 const test = base.extend<Fixtures>({
   /** Isolated `QueryEditorPage` instance. */
-  queryEditor: async ({ page, grafanaVersion }, use) => {
-    const queryEditor = new QueryEditor(page, grafanaVersion);
+  queryEditor: async ({ page, featureToggles }, use) => {
+    const queryEditor = new QueryEditor(page, featureToggles);
 
     await use(queryEditor);
   },
