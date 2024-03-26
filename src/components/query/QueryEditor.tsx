@@ -122,6 +122,13 @@ export function QueryEditor(props: Props) {
         </>
       ) : (
         <>
+        {props?.app !== 'explore' && (
+            <QueryEditorHeader<DataSource, SitewiseQuery, SitewiseOptions>
+              {...props}
+              enableRunButton
+              showAsyncQueryButtons={false}
+            />
+          )}
           <div className="gf-form">
             <InlineField
               htmlFor="query"
