@@ -81,7 +81,6 @@ export function QueryEditor(props: Props) {
 
   return (
     <>
-      <div>feature toggle {newFormStylingEnabled ? "enabled" : "disabled"}</div>
       {newFormStylingEnabled ? (
         <>
           {props?.app !== 'explore' && (

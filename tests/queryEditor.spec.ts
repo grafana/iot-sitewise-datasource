@@ -16,8 +16,7 @@ test.describe('Query Editor', () => {
       await panelEditPage.setVisualization('Table');
     });
 
-    test('Get property value', async ({ page, panelEditPage, queryEditor, featureToggles }) => {
-      console.log("Feature toggle value", featureToggles.awsDatasourcesNewFormStyling);
+    test('Get property value', async ({ page, panelEditPage, queryEditor }) => {
       await expect(queryEditor.assetSelect).not.toBeVisible();
       await expect(queryEditor.propertyAliasInput).not.toBeVisible();
 
