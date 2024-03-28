@@ -5,8 +5,6 @@
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
     "dev": "webpack -w -c ./.config/webpack/webpack.config.ts --env development",
-    "e2e": "yarn exec cypress install && yarn exec grafana-e2e run",
-    "e2e:update": "yarn exec cypress install && yarn exec grafana-e2e run --update-screenshots",
     "generate-release-notes": "PREV_TAG=$(git tag | tail -n 1) && gh api --method POST /repos/grafana/iot-sitewise-datasource/releases/generate-notes -f tag_name=v${npm_package_version} -f target_commitish=main -f previous_tag_name=${PREV_TAG} | jq -r .body",
     "lint": "eslint --cache --ignore-path ./.gitignore --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "yarn run lint --fix",
@@ -18,6 +16,10 @@
     "typecheck": "tsc --noEmit",
     "test:coverage": "jest --coverage",
     "test:coverage:changes": "jest --coverage --changedSince=origin/main",
+    "test:e2e:debug": "USE_MOCKS=true npx playwright test --ui",
+    "test:e2e:use-mocks": "USE_MOCKS=true npx playwright test",
+    "test:e2e:use-live-data": "npx playwright test",
+    "test:e2e:use-live-data:generate-mocks": "GENERATE_MOCKS=true npx playwright test",
     "watch": "webpack -w -c ./.config/webpack/webpack.config.ts --env development"
   },
   "repository": "github:grafana/iot-sitewise-datasource",

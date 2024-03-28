@@ -11,6 +11,7 @@ test.describe('Query Editor', () => {
 
       const ds = await readProvisionedDataSource<SitewiseOptions, SitewiseSecureJsonData>({
         fileName: 'mock-iot-sitewise.e2e.yaml',
+        name: 'E2E Mock IoT SiteWise',
       });
       await panelEditPage.datasource.set(ds.name);
       await panelEditPage.setVisualization('Table');

@@ -69,7 +69,7 @@ jobs:
 
       - name: Run Playwright tests
         id: run-tests
-        run: yarn playwright test
+        run: yarn run test:e2e:use-mocks
 
       - name: Publish report to GCS
         if: ${{ github.repository_owner == 'grafana' && (always() && steps.run-tests.outcome == 'success') || (failure() && steps.run-tests.outcome == 'failure') }}
