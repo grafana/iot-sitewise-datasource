@@ -17,7 +17,7 @@
       "name": "Grafana Labs",
       "url": "https://grafana.com"
     },
-    "keywords": ["datasource", "iot", "aws"],
+    "keywords": ["datasource", "sitewise", "iot", "aws", "cloud provider"],
     "logos": {
       "small": "img/sitewise.svg",
       "large": "img/sitewise.svg"
