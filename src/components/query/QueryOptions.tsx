@@ -1,8 +1,9 @@
 import { SitewiseQuery, shouldShowLastObserved } from 'types';
-import { CollapsableSection, Switch, Text } from '@grafana/ui';
+import { CollapsableSection, Switch, useTheme2 } from '@grafana/ui';
 import React from 'react';
 import { EditorField, EditorFieldGroup } from '@grafana/experimental';
 import { css } from '@emotion/css';
+import { GrafanaTheme2 } from '@grafana/data';
 
 interface Props {
   qualityAndOrderComponent: JSX.Element;
@@ -19,14 +20,17 @@ export function QueryOptions({
   qualityAndOrderComponent,
   onLastObservationChange,
 }: Props) {
+  const theme = useTheme2();
+  const style = getStyles(theme);
+
   return (
-    <div className={styles.collapseRow}>
+    <div className={style.collapseRow}>
       <CollapsableSection
-        className={styles.collapse}
+        className={style.collapse}
         label={
-          <Text variant="body" data-testid="collapse-title">
+          <span data-testid="collapse-title" className={style.collapseLabel}>
             Query options
-          </Text>
+          </span>
         }
         isOpen={false}
       >
@@ -47,7 +51,7 @@ export function QueryOptions({
   );
 }
 
-const styles = {
+const getStyles = (theme: GrafanaTheme2) => ({
   collapse: css({
     alignItems: 'flex-start',
     paddingTop: 0,
@@ -63,4 +67,7 @@ const styles = {
       padding: 'unset',
     },
   }),
-};
+  collapseLabel: css({
+    fontSize: theme.typography.body.fontSize,
+  }),
+});

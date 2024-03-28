@@ -35,15 +35,13 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
   }
 
   onAssetModelIdChange = (sel: SelectableValue<string>) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     onChange({ ...query, modelId: sel.value! });
-    onRunQuery();
   };
 
   onFilterChange = (sel: SelectableValue<string>) => {
-    const { onChange, query, onRunQuery } = this.props;
+    const { onChange, query } = this.props;
     onChange({ ...query, filter: sel.value as 'ALL' | 'TOP_LEVEL' });
-    onRunQuery();
   };
 
   render() {

@@ -1,5 +1,6 @@
 import { dirname } from 'path';
 import { defineConfig, devices } from '@playwright/test';
+import { PluginOptions } from '@grafana/plugin-e2e';
 
 const pluginE2eAuth = `${dirname(require.resolve('@grafana/plugin-e2e'))}/auth`;
 
@@ -7,7 +8,7 @@ const pluginE2eAuth = `${dirname(require.resolve('@grafana/plugin-e2e'))}/auth`;
  * See https://playwright.dev/docs/test-configuration.
  * See https://grafana.com/developers/plugin-tools/e2e-test-a-plugin/introduction
  */
-export default defineConfig({
+export default defineConfig<PluginOptions>({
   testDir: './tests',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -21,6 +22,9 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
+    featureToggles: {
+      awsDatasourcesNewFormStyling: true,
+    }
   },
 
   projects: [

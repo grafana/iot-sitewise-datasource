@@ -10,6 +10,7 @@ import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
 import { PropertyQueryEditor } from './PropertyQueryEditor';
 import { EditorField, EditorFieldGroup, EditorRow, EditorRows } from '@grafana/experimental';
 import { config } from '@grafana/runtime';
+import { QueryEditorHeader } from '@grafana/aws-sdk';
 
 type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 
@@ -36,15 +37,12 @@ export function QueryEditor(props: Props) {
   const onQueryTypeChange = (sel: SelectableValue<QueryType>) => {
     const { onChange, query } = props;
     // hack to use QueryEditor as VariableQueryEditor
-    const onRunQuery = props.onRunQuery ?? (() => {});
     onChange(changeQueryType(query, sel as QueryTypeInfo));
-    onRunQuery();
   };
 
   const onRegionChange = (sel: SelectableValue<string>) => {
-    const { onChange, query, onRunQuery } = props;
+    const { onChange, query } = props;
     onChange({ ...query, assetId: undefined, propertyId: undefined, region: sel.value });
-    onRunQuery();
   };
 
   const renderQuery = (query: SitewiseQuery, newFormStylingEnabled?: boolean) => {
@@ -85,6 +83,13 @@ export function QueryEditor(props: Props) {
     <>
       {newFormStylingEnabled ? (
         <>
+          {props?.app !== 'explore' && (
+            <QueryEditorHeader<DataSource, SitewiseQuery, SitewiseOptions>
+              {...props}
+              enableRunButton
+              showAsyncQueryButtons={false}
+            />
+          )}
           <EditorRows>
             <EditorRow>
               <EditorFieldGroup>
@@ -117,6 +122,13 @@ export function QueryEditor(props: Props) {
         </>
       ) : (
         <>
+          {props?.app !== 'explore' && (
+            <QueryEditorHeader<DataSource, SitewiseQuery, SitewiseOptions>
+              {...props}
+              enableRunButton
+              showAsyncQueryButtons={false}
+            />
+          )}
           <div className="gf-form">
             <InlineField
               htmlFor="query"
