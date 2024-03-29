@@ -2,19 +2,25 @@ package framer
 
 import (
 	"context"
+	"encoding/json"
+	"slices"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
 type AssetPropertyValueHistoryBatch struct {
 	*iotsitewise.BatchGetAssetPropertyValueHistoryOutput
-	Query models.AssetPropertyValueQuery
+	Query           models.AssetPropertyValueQuery
+	AnomalyAssetIds []string
+	SitewiseClient  client.SitewiseClient
 }
 
 func (p AssetPropertyValueHistoryBatch) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
@@ -29,7 +35,9 @@ func (p AssetPropertyValueHistoryBatch) Frames(ctx context.Context, resources re
 		if err != nil {
 			return nil, err
 		}
-		frames = append(frames, frame)
+		if frame != nil {
+			frames = append(frames, frame)
+		}
 	}
 
 	for _, e := range p.ErrorEntries {
@@ -59,6 +67,18 @@ func (p AssetPropertyValueHistoryBatch) Frame(ctx context.Context, property *iot
 		}
 	}
 
+	assetId := property.AssetId
+	if assetId != nil && slices.Contains(p.AnomalyAssetIds, *assetId) {
+		return p.frameL4ePropertyValues(ctx, property, h)
+	} else {
+		return p.framePropertyValues(property, h)
+	}
+}
+
+// framePropertyValues creates a frame for a property value history.
+func (p AssetPropertyValueHistoryBatch) framePropertyValues(property *iotsitewise.DescribeAssetPropertyOutput, h []*iotsitewise.AssetPropertyValue) (*data.Frame, error) {
+	length := len(h)
+
 	timeField := fields.TimeField(length)
 	valueField := fields.PropertyValueFieldForQuery(p.Query, property, length)
 	qualityField := fields.QualityField(length)
@@ -77,7 +97,7 @@ func (p AssetPropertyValueHistoryBatch) Frame(ctx context.Context, property *iot
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{
 			NextToken:  aws.StringValue(p.NextToken),
-			Resolution: "RAW", //circular dep
+			Resolution: models.PropertyQueryResolutionRaw,
 		},
 	}
 
@@ -88,4 +108,94 @@ func (p AssetPropertyValueHistoryBatch) Frame(ctx context.Context, property *iot
 	}
 
 	return frame, nil
+}
+
+// frameL4ePropertyValues creates a frame for a property value history with L4E fields flatten.
+func (p AssetPropertyValueHistoryBatch) frameL4ePropertyValues(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, h []*iotsitewise.AssetPropertyValue) (*data.Frame, error) {
+	frameName := ""
+	if models.QueryTypePropertyAggregate == p.Query.QueryType {
+		frameName = getFrameName(property)
+	} else {
+		frameName = *property.AssetName
+	}
+
+	dataFields, err := p.parseL4eFields(ctx, property.AssetId, h)
+	if err != nil {
+		return nil, err
+	}
+
+	frame := data.NewFrame(
+		frameName,
+		dataFields...)
+
+	frame.Meta = &data.FrameMeta{
+		Custom: models.SitewiseCustomMeta{
+			NextToken:  aws.StringValue(p.NextToken),
+			Resolution: models.PropertyQueryResolutionRaw,
+		},
+	}
+
+	return frame, nil
+}
+
+func (p AssetPropertyValueHistoryBatch) parseL4eFields(ctx context.Context, assetId *string, h []*iotsitewise.AssetPropertyValue) ([]*data.Field, error) {
+	length := len(h)
+
+	dataFields := []*data.Field{}
+
+	timeField := fields.TimeField(length)
+	dataFields = append(dataFields, timeField)
+
+	qualityField := fields.QualityField(length)
+	dataFields = append(dataFields, qualityField)
+
+	anomalyScoreField := fields.AnomalyScoreField(length)
+	dataFields = append(dataFields, anomalyScoreField)
+
+	predictionReasonField := fields.PredictionReasonField(length)
+	dataFields = append(dataFields, predictionReasonField)
+
+	// Maps diagnostic property id to the corresponding data field
+	diagnosticsMap := map[string]*data.Field{}
+
+	for i, v := range h {
+		var l4eAnomalyResult models.L4eAnomalyResult
+		err := json.Unmarshal([]byte(*v.Value.StringValue), &l4eAnomalyResult)
+		if err != nil {
+			return nil, err
+		}
+
+		timeField.Set(i, getTime(v.Timestamp))
+		qualityField.Set(i, *v.Quality)
+		anomalyScoreField.Set(i, l4eAnomalyResult.AnomalyScore)
+		predictionReasonField.Set(i, l4eAnomalyResult.PredictionReason)
+
+		for _, diagnostics := range l4eAnomalyResult.Diagnostics {
+			diagnosticsField, ok := diagnosticsMap[diagnostics.Name]
+			if !ok {
+				diagnosticsField = fields.DiagnosticField(length, diagnostics.Name)
+				diagnosticsMap[diagnostics.Name] = diagnosticsField
+				dataFields = append(dataFields, diagnosticsField)
+			}
+			diagnosticsField.Set(i, diagnostics.Value)
+		}
+	}
+
+	// Rename diagnostic fields with human friendly names
+	for _, diagnosticsField := range diagnosticsMap {
+		propertyId := strings.Split(diagnosticsField.Name, "\\")[0]
+
+		req := &iotsitewise.DescribeAssetPropertyInput{
+			AssetId:    assetId,
+			PropertyId: aws.String(propertyId),
+		}
+		resp, err := p.SitewiseClient.DescribeAssetPropertyWithContext(ctx, req)
+		if err != nil {
+			return nil, err
+		}
+
+		diagnosticsField.Name = *resp.AssetProperty.Name
+	}
+
+	return dataFields, nil
 }

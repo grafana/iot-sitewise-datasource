@@ -65,6 +65,7 @@ export interface SitewiseQuery extends DataQuery {
   quality?: SiteWiseQuality;
   resolution?: SiteWiseResolution;
   lastObservation?: boolean;
+  flattenL4e?: boolean;
   maxPageAggregations?: number;
 }
 
@@ -141,6 +142,8 @@ export function isDescribeAssetQuery(q?: SitewiseQuery): q is ListAssetModelsQue
  */
 export interface AssetPropertyValueQuery extends SitewiseQuery {
   queryType: QueryType.PropertyValue;
+
+  flattenL4e?: boolean;
 }
 
 export function isAssetPropertyValueQuery(q?: SitewiseQuery): q is AssetPropertyValueQuery {
@@ -154,6 +157,7 @@ export interface AssetPropertyValueHistoryQuery extends SitewiseQuery {
   queryType: QueryType.PropertyValueHistory;
 
   timeOrdering?: SiteWiseTimeOrder;
+  flattenL4e?: boolean;
 }
 
 export function isAssetPropertyValueHistoryQuery(q?: SitewiseQuery): q is AssetPropertyValueHistoryQuery {
@@ -208,6 +212,10 @@ export function shouldShowOptionsRow(query: SitewiseQuery, showProp: boolean): b
     // shouldn't show the row when querying associated assets with property alias, otherwise show it every time property alias is set
     query.propertyAlias && !isListAssociatedAssetsQuery(query);
   return !!(query.propertyId || shouldShowWithPropertyAlias || shouldShowLastObservedSwitch);
+}
+
+export function shouldShowL4eOptions(queryType?: QueryType): boolean {
+  return queryType === QueryType.PropertyValue || queryType === QueryType.PropertyValueHistory;
 }
 
 // matches native sitewise API with capitals

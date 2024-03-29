@@ -143,6 +143,7 @@ describe('QueryEditor', () => {
         expect(screen.getByText('Property')).toBeInTheDocument();
         expect(screen.getByText('Quality')).toBeInTheDocument();
         expect(screen.getByText('Expand Time Range')).toBeInTheDocument();
+        expect(screen.getByText('Format L4E Anomaly Result')).toBeInTheDocument();
         expect(screen.getByText('Time')).toBeInTheDocument();
         expect(screen.getByText('Format')).toBeInTheDocument();
       });
@@ -171,6 +172,7 @@ describe('QueryEditor', () => {
         expect(screen.getByText('Asset')).toBeInTheDocument();
         expect(screen.getByText('Property')).toBeInTheDocument();
         expect(screen.getByText('Quality')).toBeInTheDocument();
+        expect(screen.getByText('Format L4E Anomaly Result')).toBeInTheDocument();
         expect(screen.getByText('Time')).toBeInTheDocument();
         expect(screen.getByText('Format')).toBeInTheDocument();
       });
