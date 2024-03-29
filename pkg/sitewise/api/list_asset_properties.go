@@ -11,7 +11,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
 
-func ListAssetProperties(ctx context.Context, client client.SitewiseClient, query models.ListAssetPropertiesQuery) (*framer.AssetProperties, error) {
+func ListAssetProperties(ctx context.Context, client client.ListAssetPropertiesClient, query models.ListAssetPropertiesQuery) (*framer.AssetProperties, error) {
 	resp, err := client.ListAssetPropertiesWithContext(ctx, &iotsitewise.ListAssetPropertiesInput{
 		AssetId:    &query.AssetId,
 		Filter:     aws.String("ALL"),
