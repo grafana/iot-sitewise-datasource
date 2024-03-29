@@ -76,6 +76,6 @@ jobs:
             AWS_ACCESS_KEY=e2e:AWS_ACCESS_KEY
             AWS_SECRET_KEY=e2e:AWS_SECRET_KEY
 
-      - name: Run Playwright tests
+      - name: Run E2E tests
         id: run-tests
-        run: yarn playwright test
+        run: yarn run e2e
