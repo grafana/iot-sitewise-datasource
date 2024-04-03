@@ -30,6 +30,10 @@ type SitewiseClient interface {
 	GetInterpolatedAssetPropertyValuesPageAggregation(ctx context.Context, req *iotsitewise.GetInterpolatedAssetPropertyValuesInput, maxPages int, maxResults int) (*iotsitewise.GetInterpolatedAssetPropertyValuesOutput, error)
 }
 
+type ListAssetPropertiesClient interface {
+	ListAssetPropertiesWithContext(aws.Context, *iotsitewise.ListAssetPropertiesInput, ...request.Option) (*iotsitewise.ListAssetPropertiesOutput, error)
+}
+
 type sitewiseClient struct {
 	iotsitewiseiface.IoTSiteWiseAPI
 }
