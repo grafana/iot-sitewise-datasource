@@ -6,6 +6,10 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 )
 
+const (
+	PropertyQueryResolutionRaw = "RAW"
+)
+
 type ListAssetPropertiesQuery struct {
 	BaseQuery
 	AssetId string `json:"assetId,omitempty"`
@@ -21,6 +25,7 @@ type AssetPropertyValueQuery struct {
 	Resolution      string   `json:"resolution,omitempty"`
 	LastObservation bool     `json:"lastObservation,omitempty"`
 	TimeOrdering    string   `json:"timeOrdering,omitempty"`
+	FlattenL4e      bool     `json:"flattenL4e,omitempty"`
 }
 
 func GetAssetPropertyValueQuery(dq *backend.DataQuery) (*AssetPropertyValueQuery, error) {

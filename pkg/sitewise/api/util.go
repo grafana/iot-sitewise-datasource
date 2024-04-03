@@ -10,6 +10,10 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
+const (
+	l4eAnomalyResultPropertyName = "AWS/L4E_ANOMALY_RESULT"
+)
+
 var (
 	MaxSitewiseResults = aws.Int64(250)
 )
@@ -65,4 +69,37 @@ func getPropertyAlias(query models.BaseQuery) *string {
 		return nil
 	}
 	return aws.String(query.PropertyAlias)
+}
+
+func filterAnomalyAssetIds(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) ([]string, error) {
+	anomalyAssetIds := []string{}
+
+	switch {
+	case query.PropertyAlias != "":
+		return nil, nil
+
+	default:
+		for _, assetId := range query.AssetIds {
+			var id *string
+			if assetId != "" {
+				id = aws.String(assetId)
+			}
+
+			req := &iotsitewise.DescribeAssetPropertyInput{
+				AssetId:    id,
+				PropertyId: aws.String(query.PropertyId),
+			}
+
+			resp, err := client.DescribeAssetPropertyWithContext(ctx, req)
+			if err != nil {
+				return nil, err
+			}
+
+			if resp.CompositeModel != nil && *resp.CompositeModel.AssetProperty.Name == l4eAnomalyResultPropertyName {
+				anomalyAssetIds = append(anomalyAssetIds, assetId)
+			}
+		}
+	}
+
+	return anomalyAssetIds, nil
 }

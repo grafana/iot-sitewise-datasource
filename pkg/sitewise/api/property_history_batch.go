@@ -79,15 +79,24 @@ func BatchGetAssetPropertyValues(ctx context.Context, client client.SitewiseClie
 
 	awsReq := historyBatchQueryToInput(modifiedQuery)
 	resp, err := client.BatchGetAssetPropertyValueHistoryPageAggregation(ctx, awsReq, query.MaxPageAggregations, maxDps)
-
 	if err != nil {
 		return models.AssetPropertyValueQuery{}, nil, err
+	}
+
+	anomalyAssetIds := []string{}
+	if query.FlattenL4e {
+		anomalyAssetIds, err = filterAnomalyAssetIds(ctx, client, modifiedQuery)
+		if err != nil {
+			return models.AssetPropertyValueQuery{}, nil, err
+		}
 	}
 
 	return modifiedQuery,
 		&framer.AssetPropertyValueHistoryBatch{
 			BatchGetAssetPropertyValueHistoryOutput: resp,
 			Query:                                   modifiedQuery,
+			AnomalyAssetIds:                         anomalyAssetIds,
+			SitewiseClient:                          client,
 		},
 		nil
 }

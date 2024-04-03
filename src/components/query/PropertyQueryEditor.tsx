@@ -14,6 +14,7 @@ import {
   isAssetPropertyInterpolatedQuery,
   shouldShowLastObserved,
   shouldShowOptionsRow,
+  shouldShowL4eOptions,
 } from 'types';
 import { InlineField, LinkButton, Select, Input, Icon, InlineSwitch } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
@@ -216,6 +217,11 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
   onLastObservationChange = () => {
     const { onChange, query } = this.props;
     onChange({ ...query, lastObservation: !query.lastObservation });
+  };
+
+  onFlattenL4eChange = () => {
+    const { onChange, query } = this.props;
+    onChange({ ...query, flattenL4e: !query.flattenL4e });
   };
 
   onResolutionChange = (sel: SelectableValue<SiteWiseResolution>) => {
@@ -478,6 +484,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                 showProp={showProp}
                 showQuality={!!(query.propertyId || query.propertyAlias)}
                 onLastObservationChange={this.onLastObservationChange}
+                onFlattenL4eChange={this.onFlattenL4eChange}
                 qualityAndOrderComponent={<QualityAndOrderRow {...(this.props as any)} />}
               />
             </EditorFieldGroup>
@@ -558,6 +565,16 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                     tooltip="Expand query to include last observed value before the current time range, and next observed value after the time range. "
                   >
                     <InlineSwitch value={query.lastObservation} onChange={this.onLastObservationChange} />
+                  </InlineField>
+                )}
+
+                {shouldShowL4eOptions(query.queryType) && (
+                  <InlineField
+                    label="Format L4E Anomaly Result"
+                    htmlFor="l4e"
+                    tooltip="Format query to parse L4E anomaly result."
+                  >
+                    <InlineSwitch value={query.flattenL4e} onChange={this.onFlattenL4eChange} />
                   </InlineField>
                 )}
               </div>

@@ -254,6 +254,204 @@ func Test_getPropertyValueBoolean(t *testing.T) {
 	}
 }
 
+func Test_get_property_value_history_with_flatten_l4e(t *testing.T) {
+	assetId := "1assetid-aaaa-2222-bbbb-3333cccc4444"
+	assetPropertyIdQuery := "11propid-aaaa-2222-bbbb-3333cccc4444"
+	assetPropertyIdDiagnosticOne := "44fa33e2-b2db-4724-ba03-48ce28902809"
+	assetPropertyIdDiagnosticTwo := "3a985085-ea71-4ae6-9395-b65990f58a05"
+
+	mockSw := &mocks.SitewiseClient{}
+	mockSw.On(
+		"BatchGetAssetPropertyValueHistoryPageAggregation",
+		mock.Anything,
+		mock.Anything,
+		mock.Anything,
+		mock.Anything,
+	).Return(&iotsitewise.BatchGetAssetPropertyValueHistoryOutput{
+		SuccessEntries: []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{
+			{
+				AssetPropertyValueHistory: []*iotsitewise.AssetPropertyValue{
+					{
+						Quality: Pointer("GOOD"),
+						Timestamp: &iotsitewise.TimeInNanos{
+							OffsetInNanos: Pointer(int64(0)),
+							TimeInSeconds: Pointer(int64(1612207200)),
+						},
+						Value: &iotsitewise.Variant{
+							StringValue: Pointer("{\"timestamp\":\"2021-02-01T19:20:00.000000\",\"prediction\":0,\"prediction_reason\":\"NO_ANOMALY_DETECTED\",\"anomaly_score\":0.2674,\"diagnostics\":[{\"name\":\"3a985085-ea71-4ae6-9395-b65990f58a05\\\\3a985085-ea71-4ae6-9395-b65990f58a05\",\"value\":0.44856},{\"name\":\"44fa33e2-b2db-4724-ba03-48ce28902809\\\\44fa33e2-b2db-4724-ba03-48ce28902809\",\"value\":0.55144}]}"),
+						},
+					},
+				},
+				EntryId: Pointer(assetId),
+			},
+		},
+	}, nil)
+	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+		return req.PropertyId != nil && *req.PropertyId == assetPropertyIdQuery
+	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
+		AssetId:   Pointer(assetId),
+		AssetName: Pointer("Demo Turbine Asset 1"),
+		CompositeModel: &iotsitewise.CompositeModelProperty{
+			Name: Pointer("prediction1"),
+			AssetProperty: &iotsitewise.Property{
+				Name:     Pointer("AWS/L4E_ANOMALY_RESULT"),
+				DataType: Pointer("STRUCT"),
+			},
+		},
+	}, nil)
+	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+		return req.PropertyId != nil && *req.PropertyId == assetPropertyIdDiagnosticOne
+	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
+		AssetName: Pointer("Demo Turbine Asset 1"),
+		AssetProperty: &iotsitewise.Property{
+			Id:       Pointer(assetPropertyIdDiagnosticOne),
+			DataType: Pointer("DOUBLE"),
+			Name:     Pointer("Torque"),
+		},
+	}, nil)
+	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+		return req.PropertyId != nil && *req.PropertyId == assetPropertyIdDiagnosticTwo
+	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
+		AssetName: Pointer("Demo Turbine Asset 1"),
+		AssetProperty: &iotsitewise.Property{
+			Id:       Pointer(assetPropertyIdDiagnosticTwo),
+			DataType: Pointer("DOUBLE"),
+			Name:     Pointer("RPM"),
+		},
+	}, nil)
+
+	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
+
+	sitewise.GetCache = func() *cache.Cache {
+		return cache.New(cache.DefaultExpiration, cache.NoExpiration)
+	}
+
+	qdr, err := srvr.HandlePropertyValueHistory(context.Background(), &backend.QueryDataRequest{
+		PluginContext: backend.PluginContext{},
+		Queries: []backend.DataQuery{
+			{
+				QueryType:     models.QueryTypePropertyValueHistory,
+				RefID:         "A",
+				MaxDataPoints: 100,
+				Interval:      1000,
+				TimeRange:     timeRange,
+				JSON: []byte(
+					`{
+					   "region":"us-west-2",
+					   "assetId":"1assetid-aaaa-2222-bbbb-3333cccc4444",
+					   "propertyId":"11propid-aaaa-2222-bbbb-3333cccc4444",
+					   "flattenL4E": true
+					}`),
+			},
+		},
+	})
+	require.Nil(t, err)
+	_, ok := qdr.Responses["A"]
+	require.True(t, ok)
+	require.NotNil(t, qdr.Responses["A"].Frames[0])
+
+	expectedFrame := data.NewFrame("Demo Turbine Asset 1",
+		data.NewField("time", nil, []time.Time{time.Date(2021, 2, 1, 19, 20, 0, 0, time.UTC)}),
+		data.NewField("quality", nil, []string{"GOOD"}),
+		data.NewField("anomaly_score", nil, []float64{0.2674}),
+		data.NewField("prediction_reason", nil, []string{"NO_ANOMALY_DETECTED"}),
+		data.NewField("RPM", nil, []float64{0.44856}),
+		data.NewField("Torque", nil, []float64{0.55144}),
+	).SetMeta(&data.FrameMeta{
+		Custom: models.SitewiseCustomMeta{Resolution: "RAW"},
+	})
+	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
+		t.Errorf("Result mismatch (-want +got):\n%s", diff)
+	}
+
+	mockSw.AssertExpectations(t)
+}
+
+func Test_get_property_value_history_with_struct_type(t *testing.T) {
+	structValue := "{\"timestamp\":\"2021-02-01T19:20:00.000000\",\"prediction\":0,\"prediction_reason\":\"NO_ANOMALY_DETECTED\",\"anomaly_score\":0.2674,\"diagnostics\":[{\"name\":\"3a985085-ea71-4ae6-9395-b65990f58a05\\\\3a985085-ea71-4ae6-9395-b65990f58a05\",\"value\":0.44856},{\"name\":\"44fa33e2-b2db-4724-ba03-48ce28902809\\\\44fa33e2-b2db-4724-ba03-48ce28902809\",\"value\":0.55144}]}"
+	assetId := "1assetid-aaaa-2222-bbbb-3333cccc4444"
+
+	mockSw := &mocks.SitewiseClient{}
+	mockSw.On(
+		"BatchGetAssetPropertyValueHistoryPageAggregation",
+		mock.Anything,
+		mock.Anything,
+		mock.Anything,
+		mock.Anything,
+	).Return(&iotsitewise.BatchGetAssetPropertyValueHistoryOutput{
+		SuccessEntries: []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{
+			{
+				AssetPropertyValueHistory: []*iotsitewise.AssetPropertyValue{
+					{
+						Quality: Pointer("GOOD"),
+						Timestamp: &iotsitewise.TimeInNanos{
+							OffsetInNanos: Pointer(int64(0)),
+							TimeInSeconds: Pointer(int64(1612207200)),
+						},
+						Value: &iotsitewise.Variant{
+							StringValue: Pointer(structValue),
+						},
+					},
+				},
+				EntryId: Pointer(assetId),
+			},
+		},
+	}, nil)
+	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+		AssetId:   Pointer(assetId),
+		AssetName: Pointer("Demo Turbine Asset 1"),
+		CompositeModel: &iotsitewise.CompositeModelProperty{
+			Name: Pointer("prediction1"),
+			AssetProperty: &iotsitewise.Property{
+				Name:     Pointer("AWS/L4E_ANOMALY_RESULT"),
+				DataType: Pointer("STRUCT"),
+			},
+		},
+	}, nil)
+
+	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
+
+	sitewise.GetCache = func() *cache.Cache {
+		return cache.New(cache.DefaultExpiration, cache.NoExpiration)
+	}
+
+	qdr, err := srvr.HandlePropertyValueHistory(context.Background(), &backend.QueryDataRequest{
+		PluginContext: backend.PluginContext{},
+		Queries: []backend.DataQuery{
+			{
+				QueryType:     models.QueryTypePropertyValueHistory,
+				RefID:         "A",
+				MaxDataPoints: 100,
+				Interval:      1000,
+				TimeRange:     timeRange,
+				JSON: []byte(
+					`{
+					   "region":"us-west-2",
+					   "assetId":"1assetid-aaaa-2222-bbbb-3333cccc4444",
+					   "propertyId":"11propid-aaaa-2222-bbbb-3333cccc4444"
+					}`),
+			},
+		},
+	})
+	require.Nil(t, err)
+	_, ok := qdr.Responses["A"]
+	require.True(t, ok)
+	require.NotNil(t, qdr.Responses["A"].Frames[0])
+
+	expectedFrame := data.NewFrame("Demo Turbine Asset 1",
+		data.NewField("time", nil, []time.Time{time.Date(2021, 2, 1, 19, 20, 0, 0, time.UTC)}),
+		data.NewField("AWS/L4E_ANOMALY_RESULT", nil, []string{structValue}).SetConfig(&data.FieldConfig{}),
+		data.NewField("quality", nil, []string{"GOOD"}),
+	).SetMeta(&data.FrameMeta{
+		Custom: models.SitewiseCustomMeta{Resolution: "RAW"},
+	})
+	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
+		t.Errorf("Result mismatch (-want +got):\n%s", diff)
+	}
+
+	mockSw.AssertExpectations(t)
+}
+
 func Test_getPropertyValueHistoryFromAliasCaseTable(t *testing.T) {
 	propVals := testdata.GetIoTSitewisePropHistoryVals(t, testDataRelativePath("property-history-values.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))

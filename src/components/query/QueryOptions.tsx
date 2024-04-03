@@ -1,4 +1,4 @@
-import { SitewiseQuery, shouldShowLastObserved } from 'types';
+import { SitewiseQuery, shouldShowL4eOptions, shouldShowLastObserved } from 'types';
 import { CollapsableSection, Switch, useTheme2 } from '@grafana/ui';
 import React from 'react';
 import { EditorField, EditorFieldGroup } from '@grafana/experimental';
@@ -11,6 +11,7 @@ interface Props {
   showProp: boolean;
   showQuality: boolean;
   onLastObservationChange: (e?: React.FormEvent<HTMLInputElement>) => void;
+  onFlattenL4eChange: (e?: React.FormEvent<HTMLInputElement>) => void;
 }
 
 export function QueryOptions({
@@ -19,6 +20,7 @@ export function QueryOptions({
   showQuality,
   qualityAndOrderComponent,
   onLastObservationChange,
+  onFlattenL4eChange,
 }: Props) {
   const theme = useTheme2();
   const style = getStyles(theme);
@@ -42,6 +44,15 @@ export function QueryOptions({
               tooltip="Expand query to include last observed value before the current time range, and next observed value after the time range. "
             >
               <Switch value={query.lastObservation} onChange={onLastObservationChange} />
+            </EditorField>
+          )}
+          {shouldShowL4eOptions(query.queryType) && !Boolean(query.propertyAlias) && showProp && (
+            <EditorField
+              label="Format L4E Anomaly Result"
+              htmlFor="l4e"
+              tooltip="Format query to parse L4E anomaly result."
+            >
+              <Switch value={query.flattenL4e} onChange={onFlattenL4eChange} />
             </EditorField>
           )}
           {(showProp || query.propertyAlias) && showQuality && qualityAndOrderComponent}

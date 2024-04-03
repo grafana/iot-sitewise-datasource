@@ -98,3 +98,15 @@ func PropertyValueFieldNamed(name string, property *iotsitewise.DescribeAssetPro
 func AggregationField(length int, name string) *data.Field {
 	return NewFieldWithName(name, data.FieldTypeFloat64, length)
 }
+
+func AnomalyScoreField(length int) *data.Field {
+	return NewFieldWithName(AnomalyScore, data.FieldTypeFloat64, length)
+}
+
+func PredictionReasonField(length int) *data.Field {
+	return NewFieldWithName(PredictionReason, data.FieldTypeString, length)
+}
+
+func DiagnosticField(length int, assetId string) *data.Field {
+	return NewFieldWithName(assetId, data.FieldTypeFloat64, length)
+}

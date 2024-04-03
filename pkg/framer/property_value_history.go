@@ -37,7 +37,7 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{
 			NextToken:  aws.StringValue(p.NextToken),
-			Resolution: "RAW", //circular dep
+			Resolution: models.PropertyQueryResolutionRaw,
 		},
 	}
 
