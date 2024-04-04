@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.18.0
+
+- Fix fetching asset properties in (#302)[https://github.com/grafana/iot-sitewise-datasource/pull/302]
+- Feature: L4E struct support in (#300)[https://github.com/grafana/iot-sitewise-datasource/pull/300]
+- Response processing: Add struct data type handling in (#297)[https://github.com/grafana/iot-sitewise-datasource/pull/297]
+- Query Editor: Improve menu placement for dropdowns in (#292)[https://github.com/grafana/iot-sitewise-datasource/pull/292]
+- Add keywords in (#291)[https://github.com/grafana/iot-sitewise-datasource/pull/291]
+- E2E: Add happy path playwright query tests in (#290)[https://github.com/grafana/iot-sitewise-datasource/pull/290]
+- Query Editor: Stop running queries on every change in (#274)[https://github.com/grafana/iot-sitewise-datasource/pull/274]
+
 ## 1.17.0
 
 - Update grafana-aws-sdk to 0.21.0 and prepare 1.16.2 in (#282)[https://github.com/grafana/iot-sitewise-datasource/pull/282]
