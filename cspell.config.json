@@ -62,6 +62,7 @@
     "fridgepoet",
     "errgroup",
     "ectx",
-    "reqs"
+    "reqs",
+    "struct"
   ]
 }
