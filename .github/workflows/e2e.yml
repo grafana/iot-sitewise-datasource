@@ -59,6 +59,7 @@ jobs:
         run: |
           docker-compose pull
           GRAFANA_VERSION=${{ matrix.GRAFANA_IMAGE.VERSION }} GRAFANA_IMAGE=${{ matrix.GRAFANA_IMAGE.NAME }} docker-compose up -d
+
       - name: Wait for Grafana to start
         uses: nev7n/wait_for_response@v1
         with:
@@ -67,12 +68,14 @@ jobs:
           timeout: 60000
           interval: 500
 
-      - name: Run Playwright tests
-        id: run-tests
-        run: yarn playwright test
-
-      - name: Publish report to GCS
-        if: ${{ github.repository_owner == 'grafana' && (always() && steps.run-tests.outcome == 'success') || (failure() && steps.run-tests.outcome == 'failure') }}
-        uses: grafana/plugin-actions/publish-report@main
+      - name: Get secrets for e2e tests and set in env
+        id: get-secrets
+        uses: grafana/shared-workflows/actions/get-vault-secrets@main
         with:
-          grafana-version: ${{ matrix.GRAFANA_IMAGE.VERSION }}
+          repo_secrets: |
+            AWS_ACCESS_KEY=e2e:AWS_ACCESS_KEY
+            AWS_SECRET_KEY=e2e:AWS_SECRET_KEY
+
+      - name: Run E2E tests
+        id: run-tests
+        run: yarn run e2e
