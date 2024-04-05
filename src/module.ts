@@ -8,5 +8,4 @@ import { QueryEditor } from 'components/query/QueryEditor';
 export const plugin = new DataSourcePlugin<DataSource, SitewiseQuery, SitewiseOptions>(DataSource)
   .setConfigEditor(ConfigEditor)
   .setMetadataInspector(MetaInspector)
-  .setVariableQueryEditor(QueryEditor)
   .setQueryEditor(QueryEditor);
