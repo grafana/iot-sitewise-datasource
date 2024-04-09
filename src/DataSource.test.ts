@@ -53,6 +53,7 @@ describe('Sitewise Datasource', () => {
       const query: SitewiseQuery = {
         refId: 'RefA',
         queryType: QueryType.ListAssociatedAssets,
+        assetId: '',
         assetIds: ['${assetIdConstant}'],
         propertyAlias: '',
         region: 'default',
@@ -68,6 +69,7 @@ describe('Sitewise Datasource', () => {
       const query: SitewiseQuery = {
         refId: 'RefA',
         queryType: QueryType.ListAssociatedAssets,
+        assetId: '',
         assetIds: ['${assetIdArray}'],
         propertyAlias: '',
         region: 'default',
@@ -84,6 +86,7 @@ describe('Sitewise Datasource', () => {
         refId: 'RefA',
         queryType: QueryType.ListAssociatedAssets,
         assetIds: ['${assetIdConstant}', '${assetIdArray}'],
+        assetId: '',
         propertyAlias: '',
         region: 'default',
         propertyId: '',
@@ -98,6 +101,7 @@ describe('Sitewise Datasource', () => {
       const query: SitewiseQuery = {
         refId: 'RefA',
         queryType: QueryType.ListAssociatedAssets,
+        assetId: '',
         assetIds: ['${assetIdConstant}'],
         propertyAlias: '',
         region: 'default',
@@ -117,6 +121,7 @@ describe('Sitewise Datasource', () => {
       const query: SitewiseQuery = {
         refId: 'RefA',
         queryType: QueryType.ListAssociatedAssets,
+        assetId: '',
         assetIds: ['${assetIdConstant}', 'noVar', '${assetIdArray}'],
         propertyAlias: '',
         region: 'default',

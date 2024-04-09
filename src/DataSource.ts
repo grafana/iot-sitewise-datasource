@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 import { getRequestLooper, MultiRequestTracker } from 'requestLooper';
 import { appendMatchingFrames } from 'appendFrames';
 import { frameToMetricFindValues } from 'utils';
+import { SitewiseVariableSupport } from 'variables';
 
 export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
@@ -23,6 +24,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   constructor(instanceSettings: DataSourceInstanceSettings<SitewiseOptions>) {
     super(instanceSettings);
     this.options = instanceSettings.jsonData;
+    this.variables = new SitewiseVariableSupport(this);
   }
 
   /**
@@ -129,6 +131,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       propertyAlias: templateSrv.replace(query.propertyAlias, scopedVars),
       region: templateSrv.replace(query.region || '', scopedVars),
       propertyId: templateSrv.replace(query.propertyId || '', scopedVars),
+      assetId: templateSrv.replace(query.assetId || '', scopedVars),
       assetIds: query.assetIds?.flatMap((assetId) => templateSrv.replace(assetId, scopedVars, 'csv').split(',')) ?? [],
     };
   }
