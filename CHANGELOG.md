@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.19.0
+
+- Fetch properties using both AssetId and AssetIds in (#307)[https://github.com/grafana/iot-sitewise-datasource/pull/307]
+- Migrate to CustomVariableSupport in (#304)[https://github.com/grafana/iot-sitewise-datasource/pull/304]
+
 ## 1.18.0
 
 - Fix fetching asset properties in (#302)[https://github.com/grafana/iot-sitewise-datasource/pull/302]

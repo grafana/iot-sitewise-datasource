@@ -23,17 +23,17 @@ var listAssetPropertiesHappyCase testServerScenarioFn = func(t *testing.T) *test
 	mockSw.On("ListAssetPropertiesWithContext", mock.Anything, mock.Anything).Return(&assetProperties, nil)
 
 	query := models.ListAssetPropertiesQuery{
-		AssetId: "123",
+		BaseQuery: models.BaseQuery{AssetId: "123"},
 	}
 
 	return &testScenario{
-		name: "TestListAssetPropertiesResponseHappyCase",
+		name:   "TestListAssetPropertiesResponseHappyCase",
 		mockSw: mockSw,
 		queries: []backend.DataQuery{
 			{
-				RefID: "A",
+				RefID:     "A",
 				QueryType: models.QueryTypeListAssetProperties,
-				JSON: testdata.SerializeStruct(t, query),
+				JSON:      testdata.SerializeStruct(t, query),
 			},
 		},
 		goldenFileName: "list-asset-properties",
