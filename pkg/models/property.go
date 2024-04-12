@@ -12,7 +12,6 @@ const (
 
 type ListAssetPropertiesQuery struct {
 	BaseQuery
-	AssetId string `json:"assetId,omitempty"`
 }
 
 // AssetPropertyValueQuery encapsulates params for all 3 'Get' data APIs in Sitewise.

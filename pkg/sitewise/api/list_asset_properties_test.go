@@ -26,7 +26,7 @@ func (f *fakeListAssetPropertiesClient) ListAssetPropertiesWithContext(ctx aws.C
 func TestListAssetProperties(t *testing.T) {
 	client := fakeListAssetPropertiesClient{}
 	query := models.ListAssetPropertiesQuery{
-		AssetId: "foo",
+		BaseQuery: models.BaseQuery{AssetIds: []string{"foo"}},
 	}
 	framer, err := api.ListAssetProperties(context.Background(), &client, query)
 	require.NoError(t, err)

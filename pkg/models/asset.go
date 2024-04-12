@@ -48,6 +48,9 @@ func GetListAssetPropertiesQuery(dq *backend.DataQuery) (*ListAssetPropertiesQue
 		return nil, err
 	}
 
+	// AssetId <--> AssetIds backward compatibility
+	query.MigrateAssetId()
+
 	query.QueryType = dq.QueryType
 	return query, nil
 }
