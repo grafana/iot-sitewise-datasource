@@ -15,6 +15,7 @@ import (
 // The front end component should ensure that both cannot be sent at the same time by the user.
 // If an invalid combo of assetId/propertyId/propertyAlias are sent to the API, an exception will be returned.
 // The Framer consumer should bubble up that error to the user.
+// `query.MaxDataPoints` is ignored and it always requests with the maximum number of data points the SiteWise API can support
 func historyBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.BatchGetAssetPropertyValueHistoryInput {
 
 	var (
@@ -26,10 +27,6 @@ func historyBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise
 	}
 
 	from, to := util.TimeRangeToUnix(query.TimeRange)
-
-	if query.MaxDataPoints < 1 || query.MaxDataPoints > 20000 {
-		query.MaxDataPoints = 20000
-	}
 
 	entries := make([]*iotsitewise.BatchGetAssetPropertyValueHistoryEntry, 0)
 
@@ -62,8 +59,9 @@ func historyBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise
 	}
 
 	return &iotsitewise.BatchGetAssetPropertyValueHistoryInput{
-		Entries:    entries,
-		MaxResults: aws.Int64(query.MaxDataPoints),
+		Entries: entries,
+		// performance: hardcoded to fetch the maximum number of data points
+		MaxResults: aws.Int64(BatchGetAssetPropertyValueHistoryMaxResults),
 		NextToken:  getNextToken(query.BaseQuery),
 	}
 }
