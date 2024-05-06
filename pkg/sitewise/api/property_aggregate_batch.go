@@ -13,6 +13,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
+// `query.MaxDataPoints` is ignored and it always requests with the maximum number of data points the SiteWise API can support
 func aggregateBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.BatchGetAssetPropertyAggregatesInput {
 
 	resolution := query.Resolution
@@ -38,10 +39,6 @@ func aggregateBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewi
 
 	if query.TimeOrdering != "" {
 		timeOrdering = aws.String(query.TimeOrdering)
-	}
-
-	if query.MaxDataPoints < 1 || query.MaxDataPoints > 250 {
-		query.MaxDataPoints = 250
 	}
 
 	entries := make([]*iotsitewise.BatchGetAssetPropertyAggregatesEntry, 0)
@@ -79,8 +76,9 @@ func aggregateBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewi
 	}
 
 	return &iotsitewise.BatchGetAssetPropertyAggregatesInput{
-		Entries:    entries,
-		MaxResults: aws.Int64(query.MaxDataPoints),
+		Entries: entries,
+		// performance: hardcoded to fetch the maximum number of data points
+		MaxResults: aws.Int64(BatchGetAssetPropertyAggregatesMaxResults),
 		NextToken:  getNextToken(query.BaseQuery),
 	}
 }
