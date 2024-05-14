@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.20.0
+
+- Perf: Update batch api queries to request maximum number of dependencies in (#310)[https://github.com/grafana/iot-sitewise-datasource/pull/310]
+
 ## 1.19.0
 
 - Fetch properties using both AssetId and AssetIds in (#307)[https://github.com/grafana/iot-sitewise-datasource/pull/307]
