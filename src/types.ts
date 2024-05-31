@@ -1,4 +1,5 @@
-import { DataQuery, SelectableValue } from '@grafana/data';
+import { SelectableValue } from '@grafana/data';
+import { DataQuery } from '@grafana/schema';
 import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData } from '@grafana/aws-sdk';
 
 // Matches https://github.com/grafana/iot-sitewise-datasource/blob/main/pkg/models/query.go#L3

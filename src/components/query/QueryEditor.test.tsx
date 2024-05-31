@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { DataQueryRequest, DataSourceInstanceSettings, QueryEditorProps } from '@grafana/data';
-import { DataSourceWithBackend, config } from '@grafana/runtime';
+import { config } from '@grafana/runtime';
 import { DataSource } from 'DataSource';
 import { QueryType, SitewiseOptions, SitewiseQuery } from 'types';
 import { QueryEditor } from './QueryEditor';
@@ -44,7 +44,7 @@ const setup = async (query: Partial<SitewiseQuery>, props = defaultProps) => {
   }
 };
 jest
-  .spyOn(DataSourceWithBackend.prototype, 'query')
+  .spyOn(DataSource.prototype, 'query')
   .mockImplementation((request: DataQueryRequest<SitewiseQuery>) => of());
 jest.mock('@grafana/runtime', () => ({
   ...jest.requireActual('@grafana/runtime'),

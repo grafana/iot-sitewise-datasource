@@ -7,14 +7,13 @@ import {
   MetricFindValue,
 } from '@grafana/data';
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
-import { SitewiseCache } from 'sitewiseCache';
 
-import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta, isPropertyQueryType, SitewiseNextQuery } from './types';
+import { SitewiseCache } from 'sitewiseCache';
+import { SitewiseQuery, SitewiseOptions, isPropertyQueryType } from './types';
 import { Observable } from 'rxjs';
-import { getRequestLooper, MultiRequestTracker } from 'requestLooper';
-import { appendMatchingFrames } from 'appendFrames';
 import { frameToMetricFindValues } from 'utils';
 import { SitewiseVariableSupport } from 'variables';
+import { SitewiseQueryPaginator } from 'SiteWiseQueryPaginator';
 
 export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
@@ -142,66 +141,12 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   }
 
   query(request: DataQueryRequest<SitewiseQuery>): Observable<DataQueryResponse> {
-    return getRequestLooper(request, {
-      // Check for a "nextToken" in the response
-      getNextQueries: (rsp: DataQueryResponse) => {
-        if (rsp.data?.length) {
-          const next: SitewiseNextQuery[] = [];
-          for (const frame of rsp.data as DataFrame[]) {
-            const meta = frame.meta?.custom as SitewiseCustomMeta;
-            if (meta && meta.nextToken) {
-              const query = request.targets.find((t) => t.refId === frame.refId);
-              if (query) {
-                const existingNextQuery = next.find((v) => v.refId === frame.refId);
-                if (existingNextQuery) {
-                  if (existingNextQuery.nextToken !== meta.nextToken && meta.entryId && meta.nextToken) {
-                    if (!existingNextQuery.nextTokens) {
-                      existingNextQuery.nextTokens = {};
-                    }
-                    existingNextQuery.nextTokens[meta.entryId] = meta.nextToken;
-                  }
-                } else {
-                  next.push({
-                    ...query,
-                    nextToken: meta.nextToken,
-                    nextTokens: { ...(meta.entryId && meta.nextToken ? { [meta.entryId]: meta.nextToken } : {}) },
-                  });
-                }
-              }
-            }
-          }
-          if (next.length) {
-            return next;
-          }
-        }
-        return undefined;
+    return new SitewiseQueryPaginator({
+      request,
+      queryFn: (request: DataQueryRequest<SitewiseQuery>) => {
+        return super.query(request).toPromise();
       },
-
-      /**
-       * The original request
-       */
-      query: (request: DataQueryRequest<SitewiseQuery>) => {
-        return super.query(request);
-      },
-
-      /**
-       * Process the results
-       */
-      process: (t: MultiRequestTracker, data: DataFrame[], isLast: boolean) => {
-        if (t.data) {
-          // append rows to fields with the same structure
-          t.data = appendMatchingFrames(t.data, data);
-        } else {
-          t.data = data; // hang on to the results from the last query
-        }
-        return t.data;
-      },
-
-      /**
-       * Callback that gets executed when unsubscribed
-       */
-      onCancel: (tracker: MultiRequestTracker) => {},
-    });
+    }).toObservable();
   }
 }
 
