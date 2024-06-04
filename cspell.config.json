@@ -63,6 +63,7 @@
     "ectx",
     "reqs",
     "struct",
-    "combobox"
+    "combobox",
+    "Cacheable"
   ]
 }
