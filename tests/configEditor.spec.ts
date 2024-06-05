@@ -2,7 +2,11 @@ import { test, expect, ReadProvisionedDataSourceArgs, DataSourceSettings } from 
 import { SitewiseOptions, SitewiseSecureJsonData } from '../src/types';
 
 test.describe('ConfigEditor', () => {
-  test('invalid credentials should return a 400 status code', async ({ createDataSourceConfigPage, page }) => {
+  test('invalid credentials should return a 400 status code', async ({
+    createDataSourceConfigPage,
+    page,
+    selectors,
+  }) => {
     // create a new datasource and navigate to config page
     const configPage = await createDataSourceConfigPage({ type: 'grafana-iot-sitewise-datasource' });
 
@@ -11,8 +15,8 @@ test.describe('ConfigEditor', () => {
     await page.keyboard.press('Enter');
     await page.getByLabel('Access Key ID').fill('bad1credentials');
     await page.getByLabel('Secret Access Key').fill('very-bad-credentials');
-    await page.getByLabel('Default Region').fill('us-east-1');
-    await page.keyboard.press('Enter');
+    await page.getByRole('combobox', { name: 'Default Region' }).click();
+    await configPage.getByGrafanaSelector(selectors.components.Select.option).getByText('us-east-1').click();
 
     // click save and test
     const response = await configPage.saveAndTest();
@@ -31,6 +35,7 @@ test.describe('ConfigEditor', () => {
     createDataSourceConfigPage,
     readProvisionedDataSource,
     page,
+    selectors,
   }) => {
     const { accessKey, secretKey } = await getTestCredentials(readProvisionedDataSource);
 
@@ -42,8 +47,8 @@ test.describe('ConfigEditor', () => {
     await page.keyboard.press('Enter');
     await page.getByLabel('Access Key ID').fill(accessKey);
     await page.getByLabel('Secret Access Key').fill(secretKey);
-    await page.getByLabel('Default Region').fill('us-east-1');
-    await page.keyboard.press('Enter');
+    await page.getByRole('combobox', { name: 'Default Region' }).click();
+    await configPage.getByGrafanaSelector(selectors.components.Select.option).getByText('us-east-1').click();
 
     // click save and test
     const response = await configPage.saveAndTest();
