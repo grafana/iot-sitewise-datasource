@@ -16,7 +16,7 @@ export const ClientCacheRow = ({clientCache, newFormStylingEnabled, onClientCach
           <EditorField
             label="Client cache"
             htmlFor="clientCache"
-            tooltip="Enable to cache results from the query in. This will improve performance for repeated queries with relative time range."
+            tooltip="Enable to cache results in the browser that are older than 15 minutes. This will improve performance for repeated queries with relative time range."
           >
             <Switch id="clientCache" value={clientCache} onChange={onClientCacheChange} />
           </EditorField>
