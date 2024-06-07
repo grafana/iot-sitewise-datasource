@@ -11,12 +11,14 @@ import { PropertyQueryEditor } from './PropertyQueryEditor';
 import { EditorField, EditorFieldGroup, EditorRow, EditorRows } from '@grafana/experimental';
 import { config } from '@grafana/runtime';
 import { QueryEditorHeader } from '@grafana/aws-sdk';
+import { ClientCacheRow } from './ClientCacheRow';
 
 type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 
 const queryDefaults: Partial<SitewiseQuery> = {
   maxPageAggregations: 1,
   flattenL4e: true,
+  clientCache: true,
 };
 
 export const firstLabelWith = 20;
@@ -44,6 +46,11 @@ export function QueryEditor(props: Props) {
   const onRegionChange = (sel: SelectableValue<string>) => {
     const { onChange, query } = props;
     onChange({ ...query, assetId: undefined, propertyId: undefined, region: sel.value });
+  };
+
+  const onClientCacheChange = (evt: React.SyntheticEvent<HTMLInputElement>) => {
+    const { onChange, query } = props;
+    onChange({ ...query, clientCache: evt.currentTarget.checked });
   };
 
   const renderQuery = (query: SitewiseQuery, newFormStylingEnabled?: boolean) => {
@@ -79,6 +86,8 @@ export function QueryEditor(props: Props) {
       </LinkButton>
     </div>
   ) : undefined;
+
+  const clientCacheRow = <ClientCacheRow clientCache={query.clientCache} newFormStylingEnabled={newFormStylingEnabled} onClientCacheChange={onClientCacheChange}></ClientCacheRow>;
 
   return (
     <>
@@ -119,6 +128,7 @@ export function QueryEditor(props: Props) {
               </EditorFieldGroup>
             </EditorRow>
             {renderQuery(query, true)}
+            {clientCacheRow}
           </EditorRows>
         </>
       ) : (
@@ -163,6 +173,8 @@ export function QueryEditor(props: Props) {
           </div>
 
           {renderQuery(query)}
+          {clientCacheRow}
+          <ClientCacheRow clientCache={query.clientCache} newFormStylingEnabled={newFormStylingEnabled} onClientCacheChange={onClientCacheChange}></ClientCacheRow>
         </>
       )}
     </>

@@ -36,7 +36,50 @@ describe('RelativeRangeCache', () => {
     startTime: 1716858000000,
   };
 
+  const requestDisabledCache = {
+    ...request,
+    targets: [
+      {
+        ...request.targets[0],
+        clientCache: false,
+      },
+    ],
+  };
+
   describe('get()', () => {
+    it('returns undefined when any query with client cache disabled', () => {
+      const cachedQueryInfo = [
+        {
+          query: {
+            queryType: QueryType.PropertyValueHistory,
+            refId: 'A',
+          },
+          dataFrame: {
+            name: 'Demo Turbine Asset 1',
+            refId: 'A',
+            fields: [
+              {
+                name: 'time',
+                type: FieldType.time,
+                config: {},
+                values: [],
+              },
+            ],
+            length: 0
+          },
+        },
+      ];
+      const cacheData = {
+        [generateSiteWiseRequestCacheId(requestDisabledCache)]: {
+          queries: cachedQueryInfo,
+          range,
+        },
+      };
+      const cache = new RelativeRangeCache(new Map(Object.entries(cacheData)));
+
+      expect(cache.get(requestDisabledCache)).toBeUndefined();
+    });
+
     it('returns undefined when there is no cached response', () => {
       const cache = new RelativeRangeCache();
 
@@ -462,21 +505,34 @@ describe('RelativeRangeCache', () => {
       },
     ];
 
-    const cacheData = {
-      [generateSiteWiseRequestCacheId(request)]: {
-        queries: cachedQueryInfo,
-        range,
-      },
-    };
-    const expectedCacheMap = new Map(Object.entries(cacheData))
-
-    const cacheMap = new Map();
-    const cache = new RelativeRangeCache(cacheMap);
-
-    cache.set(request, {
-      data: expectedDataFrames
+    it('does nothing when any query with client cache disabled', () => {
+      const cacheMap = new Map();
+      const cache = new RelativeRangeCache(cacheMap);
+  
+      cache.set(requestDisabledCache, {
+        data: expectedDataFrames,
+      });
+  
+      expect(cacheMap.size).toBe(0);
     });
 
-    expect(cacheMap).toEqual(expectedCacheMap);
+    it('set request/response pair', () => {
+      const cacheData = {
+        [generateSiteWiseRequestCacheId(request)]: {
+          queries: cachedQueryInfo,
+          range,
+        },
+      };
+      const expectedCacheMap = new Map(Object.entries(cacheData));
+  
+      const cacheMap = new Map();
+      const cache = new RelativeRangeCache(cacheMap);
+  
+      cache.set(request, {
+        data: expectedDataFrames,
+      });
+  
+      expect(cacheMap).toEqual(expectedCacheMap);
+    });
   });
 });

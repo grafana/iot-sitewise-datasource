@@ -47,6 +47,10 @@ export class RelativeRangeCache {
       range,
     } = request;
 
+    if (!RelativeRangeCache.isClientCacheEnabled(targets)) {
+      return;
+    }
+
     if (!isCacheableTimeRange(range)) {
       return;
     }
@@ -96,7 +100,11 @@ export class RelativeRangeCache {
    * 4. otherwise, it returns undefined
    */
   get(request: DataQueryRequest<SitewiseQuery>): RelativeRangeCacheInfo | undefined {
-    const { range: requestRange } = request;
+    const { range: requestRange, targets } = request;
+
+    if (!RelativeRangeCache.isClientCacheEnabled(targets)) {
+      return undefined;
+    }
 
     if (!isCacheableTimeRange(request.range)) {
       return undefined;
@@ -109,6 +117,11 @@ export class RelativeRangeCache {
     }
 
     return RelativeRangeCache.parseCacheInfo(cachedDataInfo, request);
+  }
+
+  private static isClientCacheEnabled(targets: DataQueryRequest<SitewiseQuery>['targets']) {
+    // default to enabled unless any query explicitly disables clientCache
+    return !targets.some((target) => target.clientCache === false);
   }
 
   /**
