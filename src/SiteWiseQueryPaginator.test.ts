@@ -1,4 +1,4 @@
-import { DataQueryRequest, DataQueryResponse, DateTime, LoadingState } from '@grafana/data';
+import { DataQueryRequest, DataQueryResponse, LoadingState, dateTime } from '@grafana/data';
 
 import { SitewiseQueryPaginator } from 'SiteWiseQueryPaginator';
 import { QueryType, SitewiseNextQuery, SitewiseQuery } from 'types';
@@ -12,8 +12,8 @@ const dataQueryRequest: DataQueryRequest<SitewiseQuery> = {
   panelId: 2,
   dashboardUID: 'OPixSZySk',
   range: {
-    from: new Date('2024-05-28T20:59:49.659Z') as unknown as DateTime,
-    to: new Date('2024-05-28T21:29:49.659Z') as unknown as DateTime,
+    from: dateTime('2024-05-28T20:59:49.659Z'),
+    to: dateTime('2024-05-28T21:29:49.659Z'),
     raw: {
       from: 'now-30m',
       to: 'now'
@@ -115,8 +115,8 @@ const dataQueryRequestPaginating: DataQueryRequest<SitewiseNextQuery> = {
   panelId: 2,
   dashboardUID: 'OPixSZySk',
   range: {
-    from: new Date('2024-05-28T20:59:49.659Z') as unknown as DateTime,
-    to: new Date('2024-05-28T21:29:49.659Z') as unknown as DateTime,
+    from: dateTime('2024-05-28T20:59:49.659Z'),
+    to: dateTime('2024-05-28T21:29:49.659Z'),
     raw: {
       from: 'now-30m',
       to: 'now'
@@ -289,6 +289,186 @@ describe('SitewiseQueryPaginator', () => {
 
       const lastResponse = queryObservable.pipe(last()).toPromise();
       expect(lastResponse).resolves.toMatchObject(dataQueryResponse);
+
+      await lastResponse;
+      expect(queryFn).toHaveBeenCalledTimes(1);
+      expect(queryFn).toHaveBeenCalledWith(request);
+    });
+
+    it('handles single page request with cached data', async () => {
+      const cachedStartResponse: DataQueryResponse = {
+        data: [
+          {
+            name: 'Demo Turbine Asset 1',
+            refId: 'A',
+            fields: [
+              {
+                name: 'time',
+                type: 'time',
+                typeInfo: {
+                  frame: 'time.Time'
+                },
+                config: {},
+                values: [
+                  1716931540000
+                ],
+                entities: {}
+              },
+              {
+                name: 'RotationsPerSecond',
+                type: 'number',
+                typeInfo: {
+                  frame: 'float64'
+                },
+                config: {
+                  unit: 'RPS'
+                },
+                values: [
+                  1
+                ],
+                entities: {}
+              },
+              {
+                name: 'quality',
+                type: 'string',
+                typeInfo: {
+                  frame: 'string'
+                },
+                config: {},
+                values: [
+                  'GOOD'
+                ],
+                entities: {}
+              }
+            ],
+            length: 1
+          }
+        ],
+        state: LoadingState.Done,
+      };
+
+      const cachedEndResponse: DataQueryResponse = {
+        data: [
+          {
+            name: 'Demo Turbine Asset 1',
+            refId: 'A',
+            fields: [
+              {
+                name: 'time',
+                type: 'time',
+                typeInfo: {
+                  frame: 'time.Time'
+                },
+                config: {},
+                values: [
+                  1716931560000
+                ],
+                entities: {}
+              },
+              {
+                name: 'RotationsPerSecond',
+                type: 'number',
+                typeInfo: {
+                  frame: 'float64'
+                },
+                config: {
+                  unit: 'RPS'
+                },
+                values: [
+                  3
+                ],
+                entities: {}
+              },
+              {
+                name: 'quality',
+                type: 'string',
+                typeInfo: {
+                  frame: 'string'
+                },
+                config: {},
+                values: [
+                  'GOOD'
+                ],
+                entities: {}
+              }
+            ],
+            length: 1
+          }
+        ],
+        state: LoadingState.Done,
+      };
+
+      const expectedResponse: DataQueryResponse = {
+        data: [
+          {
+            name: 'Demo Turbine Asset 1',
+            refId: 'A',
+            fields: [
+              {
+                name: 'time',
+                type: 'time',
+                typeInfo: {
+                  frame: 'time.Time'
+                },
+                config: {},
+                values: [
+                  1716931540000,
+                  1716931550000,
+                  1716931560000
+                ],
+                entities: {}
+              },
+              {
+                name: 'RotationsPerSecond',
+                type: 'number',
+                typeInfo: {
+                  frame: 'float64'
+                },
+                config: {
+                  unit: 'RPS'
+                },
+                values: [
+                  1,
+                  0.45253960150485795,
+                  3,
+                ],
+                entities: {}
+              },
+              {
+                name: 'quality',
+                type: 'string',
+                typeInfo: {
+                  frame: 'string'
+                },
+                config: {},
+                values: [
+                  'GOOD',
+                  'GOOD',
+                  'GOOD',
+                ],
+                entities: {}
+              }
+            ],
+            length: 3
+          }
+        ],
+        state: LoadingState.Done,
+      };
+
+      const request = dataQueryRequest;
+      const queryFn = jest.fn().mockResolvedValue(dataQueryResponse);
+
+      const queryObservable = new SitewiseQueryPaginator({
+        cachedResponse: {
+          start: cachedStartResponse,
+          end: cachedEndResponse,
+        },
+        request,
+        queryFn,
+      }).toObservable();
+
+      const lastResponse = queryObservable.pipe(last()).toPromise();
+      expect(lastResponse).resolves.toMatchObject(expectedResponse);
 
       await lastResponse;
       expect(queryFn).toHaveBeenCalledTimes(1);

@@ -261,7 +261,7 @@ export function frameToAssetInfo(res: DescribeAssetResult): AssetInfo {
 }
 
 export function assetSummaryToAssetInfo(res: DataFrameView<AssetSummary>): AssetInfo[] {
-  let results: AssetInfo[] = [];
+  const results: AssetInfo[] = [];
 
   for (const info of res.toArray()) {
     const hierarchy: AssetPropertyInfo[] = JSON.parse(info.hierarchies); // has Id, Name
