@@ -1,5 +1,5 @@
 import { QueryType, SiteWiseQuality, SiteWiseResolution, SiteWiseResponseFormat, SiteWiseTimeOrder } from 'types';
-import { parseSiteWiseQueriesCacheId, parseSiteWiseRequestCacheId } from './cacheIdUtils';
+import { generateSiteWiseQueriesCacheId, generateSiteWiseRequestCacheId } from './cacheIdUtils';
 import { dateTime } from '@grafana/data';
 import { SitewiseQueriesUnion } from './types';
 
@@ -30,9 +30,9 @@ function createSiteWiseQuery(id: number): SitewiseQueriesUnion {
   };
 }
 
-describe('parseSiteWiseQueriesCacheId()', () => {
+describe('generateSiteWiseQueriesCacheId()', () => {
   it('parses SiteWise Queries into cache Id', () => {
-    const actualId = parseSiteWiseQueriesCacheId([createSiteWiseQuery(1), createSiteWiseQuery(2)]);
+    const actualId = generateSiteWiseQueriesCacheId([createSiteWiseQuery(1), createSiteWiseQuery(2)]);
     const expectedId = JSON.stringify([
       '["PropertyValueHistory","us-west-2","table","mock-asset-id-1",["mock-asset-id-1"],"mock-property-id-1","mock-property-alias-1","ANY","AUTO",true,true,1000,"grafana-iot-sitewise-datasource","mock-datasource-uid","ASCENDING",true,"mock-hierarchy-1","mock-model-1","ALL"]',
       '["PropertyValueHistory","us-west-2","table","mock-asset-id-2",["mock-asset-id-2"],"mock-property-id-2","mock-property-alias-2","ANY","AUTO",true,true,1000,"grafana-iot-sitewise-datasource","mock-datasource-uid","ASCENDING",true,"mock-hierarchy-2","mock-model-2","ALL"]'
@@ -68,8 +68,8 @@ describe('parseSiteWiseQueriesCacheId()', () => {
       queryType: QueryType.PropertyValue,
     };
 
-    const order1 = parseSiteWiseQueriesCacheId([query2, query1]);
-    const order2 = parseSiteWiseQueriesCacheId([query1, query2]);
+    const order1 = generateSiteWiseQueriesCacheId([query2, query1]);
+    const order2 = generateSiteWiseQueriesCacheId([query1, query2]);
 
     expect(order1).toEqual(order2);
   });
@@ -80,7 +80,7 @@ describe('parseSiteWiseQueriesCacheId()', () => {
       refId: 'A-1',
       queryType: QueryType.ListAssets,
     };
-    const actualId = parseSiteWiseQueriesCacheId([query]);
+    const actualId = generateSiteWiseQueriesCacheId([query]);
     const expectedId = JSON.stringify([
       '["ListAssets",null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]',
     ]);
@@ -89,7 +89,7 @@ describe('parseSiteWiseQueriesCacheId()', () => {
   });
 });
 
-describe('parseSiteWiseRequestCacheId()', () => {
+describe('generateSiteWiseRequestCacheId()', () => {
   it('parses SiteWise Queries into cache Id', () => {
     const request = {
       requestId: 'mock-request-id',
@@ -117,6 +117,6 @@ describe('parseSiteWiseRequestCacheId()', () => {
       ])
     ]);
 
-    expect(parseSiteWiseRequestCacheId(request)).toEqual(expectedId);
+    expect(generateSiteWiseRequestCacheId(request)).toEqual(expectedId);
   });
 });

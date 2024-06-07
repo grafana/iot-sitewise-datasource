@@ -1,7 +1,7 @@
 import { DataFrame, DataQueryRequest, DataQueryResponse, LoadingState, TimeRange } from '@grafana/data';
 import { isTimeRangeCoveringStart } from 'timeRangeUtils';
 import { SitewiseQuery } from 'types';
-import { RequestCacheId, parseSiteWiseRequestCacheId } from './cacheIdUtils';
+import { RequestCacheId, generateSiteWiseRequestCacheId } from './cacheIdUtils';
 import { CachedQueryInfo, TIME_SERIES_QUERY_TYPES } from './types';
 import { trimCachedQueryDataFramesAtStart, trimCachedQueryDataFramesEnding } from './dataFrameUtils';
 import { getRefreshRequestRange, isCacheableTimeRange } from './timeRangeUtils';
@@ -51,7 +51,7 @@ export class RelativeRangeCache {
       return;
     }
 
-    const requestCacheId = parseSiteWiseRequestCacheId(request);
+    const requestCacheId = generateSiteWiseRequestCacheId(request);
     
     const queryIdMap = new Map(targets.map(q => [q.refId, q]));
 
@@ -117,7 +117,7 @@ export class RelativeRangeCache {
    * @returns Cached data info if found, undefined otherwise
    */
   private lookupCachedData(request: DataQueryRequest<SitewiseQuery>) {
-    const requestCacheId = parseSiteWiseRequestCacheId(request);
+    const requestCacheId = generateSiteWiseRequestCacheId(request);
     const cachedDataInfo = this.responseDataMap.get(requestCacheId);
     
     return cachedDataInfo;

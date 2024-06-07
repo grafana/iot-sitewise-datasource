@@ -3,16 +3,16 @@ import { SitewiseQueriesUnion } from './types';
 
 export type RequestCacheId = string;
 
-export function parseSiteWiseRequestCacheId(request: DataQueryRequest<SitewiseQueriesUnion>): RequestCacheId {
+export function generateSiteWiseRequestCacheId(request: DataQueryRequest<SitewiseQueriesUnion>): RequestCacheId {
   const { targets, range: { raw: { from } } } = request;
 
-  return JSON.stringify([from, parseSiteWiseQueriesCacheId(targets)]);
+  return JSON.stringify([from, generateSiteWiseQueriesCacheId(targets)]);
 }
 
 type QueryCacheId = string;
 
-export function parseSiteWiseQueriesCacheId(queries: SitewiseQueriesUnion[]): QueryCacheId {
-  const cacheIds = queries.map(parseSiteWiseQueryCacheId).sort();
+export function generateSiteWiseQueriesCacheId(queries: SitewiseQueriesUnion[]): QueryCacheId {
+  const cacheIds = queries.map(generateSiteWiseQueryCacheId).sort();
 
   return JSON.stringify(cacheIds);
 }
@@ -20,7 +20,7 @@ export function parseSiteWiseQueriesCacheId(queries: SitewiseQueriesUnion[]): Qu
 /**
  * Parse query to cache id.
  */
-function parseSiteWiseQueryCacheId(query: SitewiseQueriesUnion): QueryCacheId {
+function generateSiteWiseQueryCacheId(query: SitewiseQueriesUnion): QueryCacheId {
   const {
     queryType,
     region,

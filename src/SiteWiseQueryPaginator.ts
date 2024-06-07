@@ -63,7 +63,7 @@ export class SitewiseQueryPaginator {
     try {
       let retrievedData = cachedResponse?.start?.data;
       let nextQueries: SitewiseNextQuery[] | undefined;
-      let errorEncountered = false;  // whether there's a error response
+      const errorEncountered = false;  // whether there's a error response
       let count = 1;
 
       do {

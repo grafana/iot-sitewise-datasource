@@ -13,10 +13,8 @@ import { trimTimeSeriesDataFrame, trimTimeSeriesDataFrameReversedTime } from 'da
  * For property value queries, it will return an empty data frame.
  * For all other queries, it will return the trimmed data frame.
  *
- * @param cachedQueryInfos - Cached query infos
- * @param queryType - Query type
- * @param cachedQueryInfos - Cached query infos
- * @param cacheRange - Cache range
+ * @param cachedQueryInfos - Cached query infos to trim
+ * @param cacheRange - Cache range to include
  * @returns Trimmed data frames
  */
 export function trimCachedQueryDataFramesAtStart(cachedQueryInfos: CachedQueryInfo[], cacheRange: AbsoluteTimeRange): DataFrame[] {
@@ -64,10 +62,9 @@ export function trimCachedQueryDataFramesAtStart(cachedQueryInfos: CachedQueryIn
  * For descending ordered data frames, it will return the trimmed data frame.
  * For all other queries, it will return an empty data frame.
  *
- * @param cachedQueryInfos - Cached query infos
- * @param cachedQueryInfos 
- * @param cacheRange 
- * @returns 
+ * @param cachedQueryInfos - Cached query infos to trim
+ * @param cacheRange - Cache range to include
+ * @returns Trimmed data frames
  */
 export function trimCachedQueryDataFramesEnding(cachedQueryInfos: CachedQueryInfo[], cacheRange: AbsoluteTimeRange): DataFrame[] {
   return cachedQueryInfos

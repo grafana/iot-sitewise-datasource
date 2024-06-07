@@ -40,7 +40,7 @@ export class AssetBrowser extends Component<Props, State> {
   }
 
   async componentDidUpdate(oldProps: Props) {
-    let update: State = { ...this.state };
+    const update: State = { ...this.state };
     let shouldUpdate = false;
 
     if (this.props.region !== oldProps.region) {

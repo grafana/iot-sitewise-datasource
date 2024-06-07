@@ -8,10 +8,10 @@ interface TrimParams {
 
 /**
  * Trim the time series data frame to the specified time range.
- * @param param0 - The parameters for trimming the data frame.
- * @param param0.dataFrame - The data frame to trim.
- * @param param0.timeRange - The time range to trim to.
- * @param param0.lastObservation - Whether to include the last observation in the range.
+ * @param trimParams - The parameters for trimming the data frame.
+ * @param trimParams.dataFrame - The data frame to trim.
+ * @param trimParams.timeRange - The time range to trim to.
+ * @param trimParams.lastObservation - Whether to include the last observation in the range.
  * @returns The trimmed data frame.
  */
 export function trimTimeSeriesDataFrame({
@@ -34,7 +34,7 @@ export function trimTimeSeriesDataFrame({
     return dataFrame;
   }
 
-  let timeValues = timeField.values.toArray();
+  const timeValues = timeField.values.toArray();
 
   let fromIndex = timeValues.findIndex(time => time > from);  // from is exclusive
   if (fromIndex === -1) {
@@ -65,10 +65,10 @@ export function trimTimeSeriesDataFrame({
 
 /**
  * Trim the time series data frame to the specified time range where the time field is in reversed order.
- * @param param0 - The parameters for trimming the data frame.
- * @param param0.dataFrame - The data frame to trim.
- * @param param0.timeRange - The time range to trim to.
- * @param param0.lastObservation - Whether to include the last observation in the range.
+ * @param trimParams - The parameters for trimming the data frame.
+ * @param trimParams.dataFrame - The data frame to trim.
+ * @param trimParams.timeRange - The time range to trim to.
+ * @param trimParams.lastObservation - Whether to include the last observation in the range.
  * @returns The trimmed data frame.
  */
 export function trimTimeSeriesDataFrameReversedTime({
@@ -92,7 +92,7 @@ export function trimTimeSeriesDataFrameReversedTime({
   }
 
   // Copy before reverse in place
-  let timeValues = [...timeField.values.toArray()].reverse();
+  const timeValues = [...timeField.values.toArray()].reverse();
   
   let fromIndex = timeValues.findIndex(time => time > from);  // from is exclusive
   if (fromIndex === -1) {

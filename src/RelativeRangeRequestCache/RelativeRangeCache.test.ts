@@ -1,7 +1,7 @@
 import { FieldType, LoadingState, dateTime } from '@grafana/data';
 import { RelativeRangeCache } from 'RelativeRangeRequestCache/RelativeRangeCache';
 import { QueryType, SiteWiseTimeOrder } from 'types';
-import { parseSiteWiseRequestCacheId } from './cacheIdUtils';
+import { generateSiteWiseRequestCacheId } from './cacheIdUtils';
 
 describe('RelativeRangeCache', () => {
   const requestId = 'mock-request-id';
@@ -146,7 +146,7 @@ describe('RelativeRangeCache', () => {
       ];
 
       const cacheData = {
-        [parseSiteWiseRequestCacheId(request)]: {
+        [generateSiteWiseRequestCacheId(request)]: {
           queries: cachedQueryInfo,
           range,
         },
@@ -320,7 +320,7 @@ describe('RelativeRangeCache', () => {
       ];
       
       const cacheData = {
-        [parseSiteWiseRequestCacheId(requestDescending)]: {
+        [generateSiteWiseRequestCacheId(requestDescending)]: {
           queries: cachedQueryInfoDescending,
           range,
         },
@@ -463,7 +463,7 @@ describe('RelativeRangeCache', () => {
     ];
 
     const cacheData = {
-      [parseSiteWiseRequestCacheId(request)]: {
+      [generateSiteWiseRequestCacheId(request)]: {
         queries: cachedQueryInfo,
         range,
       },

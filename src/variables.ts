@@ -18,7 +18,7 @@ export class SitewiseVariableSupport extends CustomVariableSupport<DataSource, S
 
   query(request: DataQueryRequest<SitewiseQuery>): Observable<DataQueryResponse> {
     assign(request.targets, [{ ...request.targets[0], refId: 'A' }]);
-    let response = this.datasource.query(request);
+    const response = this.datasource.query(request);
     switch (request.targets[0].queryType) {
       case QueryType.ListAssetModels:
       case QueryType.ListAssets:
@@ -39,7 +39,7 @@ export class SitewiseVariableSupport extends CustomVariableSupport<DataSource, S
         return {data: new DataFrameView<AssetModelSummary>(data)};
       }),
       map((res) => {
-        let newData = res.data.map((m)=>{
+        const newData = res.data.map((m)=>{
           return {
           value: m.id,
           text: m.name,
