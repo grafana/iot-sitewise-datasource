@@ -174,7 +174,6 @@ export function QueryEditor(props: Props) {
 
           {renderQuery(query)}
           {clientCacheRow}
-          <ClientCacheRow clientCache={query.clientCache} newFormStylingEnabled={newFormStylingEnabled} onClientCacheChange={onClientCacheChange}></ClientCacheRow>
         </>
       )}
     </>
