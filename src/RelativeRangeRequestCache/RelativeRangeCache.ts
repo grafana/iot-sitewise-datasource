@@ -2,7 +2,7 @@ import { DataFrame, DataQueryRequest, DataQueryResponse, LoadingState, TimeRange
 import { isTimeRangeCoveringStart } from 'timeRangeUtils';
 import { SitewiseQuery } from 'types';
 import { RequestCacheId, generateSiteWiseRequestCacheId } from './cacheIdUtils';
-import { CachedQueryInfo, TIME_SERIES_QUERY_TYPES } from './types';
+import { CachedQueryInfo, isTimeSeriesQueryType } from './types';
 import { trimCachedQueryDataFramesAtStart, trimCachedQueryDataFramesEnding } from './dataFrameUtils';
 import { getRefreshRequestRange, isCacheableTimeRange } from './timeRangeUtils';
 
@@ -174,7 +174,7 @@ export class RelativeRangeCache {
     return {
       ...request,
       range,
-      targets: targets.filter(({ queryType }) => TIME_SERIES_QUERY_TYPES.has(queryType)),
+      targets: targets.filter(({ queryType }) => isTimeSeriesQueryType(queryType)),
     };
   }
 }

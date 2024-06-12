@@ -187,7 +187,6 @@ export function isAssetPropertyAggregatesQuery(q?: SitewiseQuery): q is AssetPro
  */
 export interface AssetPropertyInterpolatedQuery extends SitewiseQuery {
   queryType: QueryType.PropertyInterpolated;
-  timeOrdering?: SiteWiseTimeOrder;
 }
 
 export function isAssetPropertyInterpolatedQuery(q?: SitewiseQuery): q is AssetPropertyInterpolatedQuery {

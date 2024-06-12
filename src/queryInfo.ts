@@ -38,9 +38,7 @@ export const siteWiseQueryTypes: QueryTypeInfo[] = [
     label: 'Get interpolated property values',
     value: QueryType.PropertyInterpolated,
     description: `Gets interpolated values for an asset property.`,
-    defaultQuery: {
-      timeOrdering: 'ASCENDING',
-    } as AssetPropertyInterpolatedQuery,
+    defaultQuery: {} as AssetPropertyInterpolatedQuery,
     helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetInterpolatedAssetPropertyValues.html',
   },
   {

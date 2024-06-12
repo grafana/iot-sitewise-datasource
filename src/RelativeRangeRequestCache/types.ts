@@ -1,20 +1,34 @@
 import { DataFrame } from '@grafana/data';
-import { AssetPropertyValueHistoryQuery, ListAssetsQuery, ListAssociatedAssetsQuery, QueryType, SitewiseQuery } from 'types';
+import { AssetPropertyAggregatesQuery, AssetPropertyValueHistoryQuery, ListAssetsQuery, ListAssociatedAssetsQuery, QueryType, SitewiseQuery } from 'types';
 
-export const TIME_SERIES_QUERY_TYPES = new Set<QueryType>([
+const TIME_SERIES_QUERY_TYPES = new Set<QueryType>([
   QueryType.PropertyAggregate,
   QueryType.PropertyInterpolated,
   QueryType.PropertyValue,
   QueryType.PropertyValueHistory,
 ]);
 
+export function isTimeSeriesQueryType(queryType: QueryType) {
+  return TIME_SERIES_QUERY_TYPES.has(queryType);
+}
+
+const TIME_ORDERING_QUERY_TYPES = new Set<QueryType>([
+  QueryType.PropertyAggregate,
+  QueryType.PropertyValueHistory,
+]);
+
+export function isTimeOrderingQueryType(queryType: QueryType) {
+  return TIME_ORDERING_QUERY_TYPES.has(queryType);
+}
+
 export interface CachedQueryInfo {
-  query: Pick<SitewiseQueriesUnion, 'queryType' | 'timeOrdering' | 'lastObservation'>;
+  query: SitewiseQueriesUnion;
   dataFrame: DataFrame;
 }
 
 // Union of all SiteWise queries variants
 export type SitewiseQueriesUnion = SitewiseQuery
+  & Partial<Pick<AssetPropertyAggregatesQuery, 'aggregates'>>
   & Partial<Pick<AssetPropertyValueHistoryQuery, 'timeOrdering'>>
   & Partial<Pick<ListAssociatedAssetsQuery, 'loadAllChildren'>>
   & Partial<Pick<ListAssociatedAssetsQuery, 'hierarchyId'>>

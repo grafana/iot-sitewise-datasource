@@ -153,7 +153,6 @@ describe('trimCachedQueryDataFrames', () => {
 
   it.each([
     QueryType.PropertyAggregate,
-    QueryType.PropertyInterpolated,
     QueryType.PropertyValueHistory,
   ])('trims descending time series data of time-series type - "%s"', (queryType: QueryType) => {
     const cachedQueryInfo = {
