@@ -1,5 +1,5 @@
 import { DataFrame } from '@grafana/data';
-import { AssetPropertyValueHistoryQuery, ListAssetsQuery, ListAssociatedAssetsQuery, QueryType, SitewiseQuery } from 'types';
+import { AssetPropertyAggregatesQuery, AssetPropertyValueHistoryQuery, ListAssetsQuery, ListAssociatedAssetsQuery, QueryType, SitewiseQuery } from 'types';
 
 export const TIME_SERIES_QUERY_TYPES = new Set<QueryType>([
   QueryType.PropertyAggregate,
@@ -15,6 +15,7 @@ export interface CachedQueryInfo {
 
 // Union of all SiteWise queries variants
 export type SitewiseQueriesUnion = SitewiseQuery
+  & Partial<Pick<AssetPropertyAggregatesQuery, 'aggregates'>>
   & Partial<Pick<AssetPropertyValueHistoryQuery, 'timeOrdering'>>
   & Partial<Pick<ListAssociatedAssetsQuery, 'loadAllChildren'>>
   & Partial<Pick<ListAssociatedAssetsQuery, 'hierarchyId'>>

@@ -111,7 +111,6 @@ describe('QueryEditor', () => {
         expect(screen.getByText('Asset')).toBeInTheDocument();
         expect(screen.getByText('Property')).toBeInTheDocument();
         expect(screen.getByText('Quality')).toBeInTheDocument();
-        expect(screen.getByText('Time')).toBeInTheDocument();
         expect(screen.getByText('Format')).toBeInTheDocument();
         expect(screen.getByText('Resolution')).toBeInTheDocument();
       });
@@ -125,7 +124,6 @@ describe('QueryEditor', () => {
       await waitFor(() => {
         expect(screen.getByText('Property Alias')).toBeInTheDocument();
         expect(screen.getByText('Quality')).toBeInTheDocument();
-        expect(screen.getByText('Time')).toBeInTheDocument();
         expect(screen.getByText('Resolution')).toBeInTheDocument();
         expect(screen.getByText('Format')).toBeInTheDocument();
       });

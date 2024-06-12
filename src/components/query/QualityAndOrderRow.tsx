@@ -9,6 +9,7 @@ import {
   SiteWiseResolution,
   isAssetPropertyInterpolatedQuery,
   SiteWiseResponseFormat,
+  QueryType,
 } from 'types';
 import { InlineField, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
@@ -62,11 +63,6 @@ export class QualityAndOrderRow extends PureComponent<Props> {
     onChange({ ...query, quality: sel.value });
   };
 
-  onOrderChange = (sel: SelectableValue<SiteWiseTimeOrder>) => {
-    const { onChange, query } = this.props;
-    onChange({ ...query, timeOrdering: sel.value });
-  };
-
   onResponseFormatChange = (sel: SelectableValue<SiteWiseResponseFormat>) => {
     const { onChange, query } = this.props;
     onChange({ ...query, responseFormat: sel.value });
@@ -81,6 +77,44 @@ export class QualityAndOrderRow extends PureComponent<Props> {
     const { onChange, query } = this.props;
 
     onChange({ ...query, maxPageAggregations: +event.currentTarget.value });
+  };
+
+  timeOrderField = () => {
+    const { onChange, query } = this.props;
+
+    // PropertyInterpolated has no time ordering support
+    if (query.queryType === QueryType.PropertyInterpolated) {
+      return null;
+    }
+
+    const onOrderChange = (sel: SelectableValue<SiteWiseTimeOrder>) => {
+      onChange({ ...query, timeOrdering: sel.value });
+    };
+
+    return this.props.newFormStylingEnabled ? (
+      <EditorField label="Time" width={10} htmlFor="time">
+        <Select
+          id="time"
+          aria-label="Time"
+          options={ordering}
+          value={ordering.find((v) => v.value === query.timeOrdering) ?? ordering[0]}
+          onChange={onOrderChange}
+          isSearchable={true}
+          menuPlacement="auto"
+        />
+      </EditorField>
+    ) : (
+      <InlineField htmlFor="time" label="Time" labelWidth={8}>
+        <Select
+          inputId="time"
+          options={ordering}
+          value={ordering.find((v) => v.value === query.timeOrdering) ?? ordering[0]}
+          onChange={onOrderChange}
+          isSearchable={true}
+          menuPlacement="bottom"
+        />
+      </InlineField>
+    );
   };
 
   render() {
@@ -98,17 +132,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
             menuPlacement="auto"
           />
         </EditorField>
-        <EditorField label="Time" width={10} htmlFor="time">
-          <Select
-            id="time"
-            aria-label="Time"
-            options={ordering}
-            value={ordering.find((v) => v.value === query.timeOrdering) ?? ordering[0]}
-            onChange={this.onOrderChange}
-            isSearchable={true}
-            menuPlacement="auto"
-          />
-        </EditorField>
+        {this.timeOrderField()}
         <EditorField label="Format" width={10} htmlFor="format">
           <Select
             id="format"
@@ -145,16 +169,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
               menuPlacement="bottom"
             />
           </InlineField>
-          <InlineField htmlFor="time" label="Time" labelWidth={8}>
-            <Select
-              inputId="time"
-              options={ordering}
-              value={ordering.find((v) => v.value === query.timeOrdering) ?? ordering[0]}
-              onChange={this.onOrderChange}
-              isSearchable={true}
-              menuPlacement="bottom"
-            />
-          </InlineField>
+          {this.timeOrderField()}
 
           <InlineField htmlFor="format" label="Format" labelWidth={8}>
             <Select
