@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.21.0
+
+- Refactor Paginator [#313](https://github.com/grafana/iot-sitewise-datasource/pull/313)
+- Fix e2e tests [#316](https://github.com/grafana/iot-sitewise-datasource/pull/316)
+- Added Stalebot [#314](https://github.com/grafana/iot-sitewise-datasource/pull/314)
+- Added lint rule [#319](https://github.com/grafana/iot-sitewise-datasource/pull/319)
+- Add a frontend cache for relative time range queries [#318](https://github.com/grafana/iot-sitewise-datasource/pull/318)
+- Removed unsupported time ordering from interpolated query and fix issue with caching `aggregates` queries [#323](https://github.com/grafana/iot-sitewise-datasource/pull/323)
+
 ## 1.20.0
 
 - Perf: Update batch api queries to request maximum number of dependencies in (#310)[https://github.com/grafana/iot-sitewise-datasource/pull/310]
