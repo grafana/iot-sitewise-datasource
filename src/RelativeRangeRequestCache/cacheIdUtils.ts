@@ -40,6 +40,7 @@ function generateSiteWiseQueryCacheId(query: SitewiseQueriesUnion): QueryCacheId
     hierarchyId,
     modelId,
     filter,
+    aggregates,
   } = query;
 
   /*
@@ -66,5 +67,6 @@ function generateSiteWiseQueryCacheId(query: SitewiseQueriesUnion): QueryCacheId
     hierarchyId,
     modelId,
     filter,
+    aggregates,
   ]);
 }
