@@ -64,6 +64,7 @@
     "reqs",
     "struct",
     "combobox",
-    "Cacheable"
+    "Cacheable",
+    "Stalebot"
   ]
 }
