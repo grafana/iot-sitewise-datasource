@@ -15,7 +15,7 @@ func tdpath(filename string) string {
 	return "../testdata/" + filename
 }
 
-func setupMocks(t *testing.T) (*mocks.SitewiseClient, *cachingResourceProvider) {
+func setupMocks() (*mocks.SitewiseClient, *cachingResourceProvider) {
 	client := &mocks.SitewiseClient{}
 	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
 	return client, NewCachingResourceProvider(&SitewiseResources{client}, c)
@@ -28,7 +28,7 @@ func TestCachingResourceProvider(t *testing.T) {
 
 func testGetProperty(t *testing.T) {
 
-	mockSw, cachingProvider := setupMocks(t)
+	mockSw, cachingProvider := setupMocks()
 	property := testdata.GetIotSitewiseAssetProp(t, tdpath("describe-asset-property-avg-wind.json"))
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything, mock.Anything).Return(&property, nil)
 
@@ -45,7 +45,7 @@ func testGetProperty(t *testing.T) {
 }
 
 func testGetAsset(t *testing.T) {
-	mockSw, cachingProvider := setupMocks(t)
+	mockSw, cachingProvider := setupMocks()
 	asset := testdata.GetIoTSitewiseAssetDescription(t, tdpath("describe-asset.json"))
 	mockSw.On("DescribeAssetWithContext", mock.Anything, mock.Anything, mock.Anything).Return(&asset, nil)
 
