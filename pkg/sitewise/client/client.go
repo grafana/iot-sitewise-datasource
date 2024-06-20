@@ -219,12 +219,12 @@ func (c *sitewiseClient) BatchGetAssetPropertyAggregatesPageAggregation(ctx cont
 	}, nil
 }
 
-type AmazonSessionProvider func(c awsds.SessionConfig) (*session.Session, error)
+type AmazonSessionProvider func(c awsds.GetSessionConfig, as awsds.AuthSettings) (*session.Session, error)
 
-func GetClient(region string, settings models.AWSSiteWiseDataSourceSetting, provider AmazonSessionProvider) (client SitewiseClient, err error) {
+func GetClient(region string, settings models.AWSSiteWiseDataSourceSetting, provider AmazonSessionProvider, authSettings *awsds.AuthSettings) (client SitewiseClient, err error) {
 	awsSettings := settings.ToAWSDatasourceSettings()
 	awsSettings.Region = region
-	sess, err := provider(awsds.SessionConfig{Settings: awsSettings})
+	sess, err := provider(awsds.GetSessionConfig{Settings: awsSettings}, *authSettings)
 	if err != nil {
 		return nil, err
 	}

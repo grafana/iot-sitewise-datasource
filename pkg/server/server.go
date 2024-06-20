@@ -68,7 +68,7 @@ func getQueryHandlers(s *Server) *datasource.QueryTypeMux {
 }
 
 func NewServerInstance(ctx context.Context, settings backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
-	ds, err := sitewise.NewDatasource(settings)
+	ds, err := sitewise.NewDatasource(ctx, settings)
 	if err != nil {
 		return nil, err
 	}

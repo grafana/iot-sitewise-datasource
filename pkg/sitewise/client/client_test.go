@@ -12,10 +12,12 @@ import (
 
 func TestClient(t *testing.T) {
 	t.Run("Uses region", func(t *testing.T) {
-		var cfg awsds.SessionConfig
+		var cfg awsds.GetSessionConfig
+		var as awsds.AuthSettings
 		// deliberately error to avoid the rest of the function
-		mockProvider := func(c awsds.SessionConfig) (*session.Session, error) {
+		mockProvider := func(c awsds.GetSessionConfig, authSettings awsds.AuthSettings) (*session.Session, error) {
 			cfg = c
+			as = authSettings
 			return nil, fmt.Errorf("break")
 		}
 
@@ -23,8 +25,12 @@ func TestClient(t *testing.T) {
 		baseConfig := models.AWSSiteWiseDataSourceSetting{
 			AWSDatasourceSettings: awsds.AWSDatasourceSettings{Region: "us-west-1"},
 		}
-		_, err := GetClient(region, baseConfig, mockProvider)
+		authSettings := awsds.AuthSettings{
+			AllowedAuthProviders: []string{"keys"},
+		}
+		_, err := GetClient(region, baseConfig, mockProvider, &authSettings)
 		assert.Error(t, err)
 		assert.Equal(t, cfg.Settings.Region, region)
+		assert.Equal(t, []string{"keys"}, as.AllowedAuthProviders)
 	})
 }

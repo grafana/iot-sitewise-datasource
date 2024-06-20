@@ -28,7 +28,7 @@ type Datasource struct {
 	GetClient clientGetterFunc
 }
 
-func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, error) {
+func NewDatasource(ctx context.Context, settings backend.DataSourceInstanceSettings) (*Datasource, error) {
 	cfg := models.AWSSiteWiseDataSourceSetting{}
 
 	err := cfg.Load(settings)
@@ -42,8 +42,9 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 	}
 
 	sessions := awsds.NewSessionCache()
+	authSettings, _ := awsds.ReadAuthSettingsFromContext(ctx)
 	clientGetter := func(region string) (swclient client.SitewiseClient, err error) {
-		swclient, err = client.GetClient(region, cfg, sessions.GetSession)
+		swclient, err = client.GetClient(region, cfg, sessions.GetSessionWithAuthSettings, authSettings)
 		return
 	}
 
@@ -77,7 +78,7 @@ func NewDatasource(settings backend.DataSourceInstanceSettings) (*Datasource, er
 			}
 			cfgCopy := cfg
 			mu.Unlock()
-			swclient, err = client.GetClient(region, cfgCopy, sessions.GetSession)
+			swclient, err = client.GetClient(region, cfgCopy, sessions.GetSessionWithAuthSettings, authSettings)
 			return
 		}
 	}
