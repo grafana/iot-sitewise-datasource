@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.22.0
+
+- Update to use GetSessionWithAuthSettings [#330](https://github.com/grafana/iot-sitewise-datasource/pull/330)
+
 ## 1.21.0
 
 - Refactor Paginator [#313](https://github.com/grafana/iot-sitewise-datasource/pull/313)
