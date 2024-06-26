@@ -42,7 +42,7 @@ func NewDatasource(ctx context.Context, settings backend.DataSourceInstanceSetti
 	}
 
 	sessions := awsds.NewSessionCache()
-	authSettings, _ := awsds.ReadAuthSettingsFromContext(ctx)
+	authSettings := awsds.ReadAuthSettings(ctx)
 	clientGetter := func(region string) (swclient client.SitewiseClient, err error) {
 		swclient, err = client.GetClient(region, cfg, sessions.GetSessionWithAuthSettings, authSettings)
 		return

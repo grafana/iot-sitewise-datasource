@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.22.1
+
+- Fix: use ReadAuthSettings to get authSettings in [#333](https://github.com/grafana/iot-sitewise-datasource/pull/333)
+
 ## 1.22.0
 
 - Update to use GetSessionWithAuthSettings [#330](https://github.com/grafana/iot-sitewise-datasource/pull/330)
