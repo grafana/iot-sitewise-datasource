@@ -12,25 +12,19 @@ import {
   ListAssociatedAssetsQuery,
   isListAssociatedAssetsQuery,
   isAssetPropertyInterpolatedQuery,
-  shouldShowLastObserved,
   shouldShowOptionsRow,
-  shouldShowL4eOptions,
 } from 'types';
-import { InlineField, LinkButton, Select, Input, Icon, InlineSwitch } from '@grafana/ui';
+import { LinkButton, Select, Input, Icon } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetBrowser } from '../browser/AssetBrowser';
 import { AggregatePicker, aggReg } from '../AggregatePicker';
 import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
 import { QualityAndOrderRow } from './QualityAndOrderRow';
-import { firstLabelWith } from './QueryEditor';
 import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/experimental';
 import { css } from '@emotion/css';
 import { QueryOptions } from './QueryOptions';
 
-interface Props
-  extends SitewiseQueryEditorProps<SitewiseQuery | AssetPropertyAggregatesQuery | ListAssociatedAssetsQuery> {
-  newFormStylingEnabled?: boolean;
-}
+type Props = SitewiseQueryEditorProps<SitewiseQuery | AssetPropertyAggregatesQuery | ListAssociatedAssetsQuery>;
 
 const resolutions: Array<SelectableValue<SiteWiseResolution>> = [
   {
@@ -232,7 +226,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
   renderAggregateRow(query: AssetPropertyAggregatesQuery) {
     const { property } = this.state;
 
-    return this.props.newFormStylingEnabled ? (
+    return (
       <EditorFieldGroup>
         <EditorField label="Aggregate" htmlFor="aggregate-picker" width={40}>
           <AggregatePicker
@@ -253,27 +247,6 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
           />
         </EditorField>
       </EditorFieldGroup>
-    ) : (
-      <div className="gf-form">
-        <InlineField htmlFor="aggregate-picker" label="Aggregate" labelWidth={firstLabelWith} grow={true}>
-          <AggregatePicker
-            stats={query.aggregates ?? []}
-            onChange={this.onAggregateChange}
-            defaultStat={getDefaultAggregate(property)}
-            menuPlacement="bottom"
-          />
-        </InlineField>
-        <InlineField htmlFor="resolution" label="Resolution" labelWidth={10}>
-          <Select
-            inputId="resolution"
-            width={18}
-            options={resolutions}
-            value={resolutions.find((v) => v.value === query.resolution) || resolutions[0]}
-            onChange={this.onResolutionChange}
-            menuPlacement="bottom"
-          />
-        </InlineField>
-      </div>
     );
   }
 
@@ -296,7 +269,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         current = query.loadAllChildren ? hierarchies[1] /* all */ : hierarchies[0]; // parent
       }
     }
-    return this.props.newFormStylingEnabled ? (
+    return (
       <EditorField label="Show" htmlFor="show">
         <Select
           id="show"
@@ -315,26 +288,6 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
           menuPlacement="auto"
         />
       </EditorField>
-    ) : (
-      <div className="gf-form">
-        <InlineField label="Show" htmlFor="show" labelWidth={firstLabelWith} grow={true}>
-          <Select
-            inputId="show"
-            isLoading={loading}
-            options={hierarchies}
-            value={current}
-            onChange={this.onHierarchyIdChange}
-            placeholder="Select..."
-            allowCustomValue={true}
-            backspaceRemovesValue={true}
-            isClearable={true}
-            isSearchable={true}
-            onCreateOption={this.onSetHierarchyId}
-            formatCreateLabel={(txt) => `Hierarchy Id: ${txt}`}
-            menuPlacement="bottom"
-          />
-        </InlineField>
-      </div>
     );
   }
 
@@ -388,7 +341,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       </div>
     );
 
-    return this.props.newFormStylingEnabled ? (
+    return (
       <>
         <EditorRow>
           <EditorField label="Property Alias" tooltip={queryTooltip} tooltipInteractive htmlFor="alias" width={80}>
@@ -490,106 +443,6 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             </EditorFieldGroup>
           </EditorRow>
         ) : null}
-      </>
-    ) : (
-      <>
-        <div className="gf-form">
-          <InlineField
-            htmlFor="alias"
-            label="Property Alias"
-            labelWidth={firstLabelWith}
-            grow={true}
-            tooltip={queryTooltip}
-            interactive
-          >
-            <Input
-              id="alias"
-              value={query.propertyAlias}
-              onChange={this.onAliasChange}
-              placeholder="optional alias that identifies the property, such as an OPC-UA server data stream path"
-            />
-          </InlineField>
-        </div>
-
-        {!Boolean(query.propertyAlias) && (
-          <>
-            <div className="gf-form">
-              <InlineField htmlFor="asset" label="Asset" labelWidth={firstLabelWith} grow={true}>
-                <Select
-                  inputId="asset"
-                  isMulti={true}
-                  key={query.region ? query.region : 'default'}
-                  isLoading={loading}
-                  options={assets}
-                  value={current}
-                  onChange={(sel) => this.onAssetChange(sel)}
-                  placeholder="Select an asset"
-                  allowCustomValue={true}
-                  isClearable={true}
-                  isSearchable={true}
-                  onCreateOption={this.onSetAssetId}
-                  formatCreateLabel={(txt) => `Asset ID: ${txt}`}
-                  menuPlacement="bottom"
-                />
-              </InlineField>
-
-              <AssetBrowser
-                datasource={datasource}
-                region={query.region}
-                assetId={query.assetIds?.[0]}
-                onAssetChanged={this.onSetAssetId}
-              />
-            </div>
-
-            {showProp && (
-              <div className="gf-form">
-                <InlineField htmlFor="property" label="Property" labelWidth={firstLabelWith} grow={true}>
-                  <Select
-                    inputId="property"
-                    isLoading={loading}
-                    options={assetPropertyOptions}
-                    value={currentAssetPropertyOption ?? null}
-                    onChange={this.onPropertyChange}
-                    placeholder="Select a property"
-                    isSearchable={true}
-                    allowCustomValue={true}
-                    onCreateOption={this.onSetPropertyId}
-                    formatCreateLabel={(txt) => `Property ID: ${txt}`}
-                    menuPlacement="bottom"
-                  />
-                </InlineField>
-
-                {shouldShowLastObserved(query.queryType) && (
-                  <InlineField
-                    label="Expand Time Range"
-                    tooltip="Expand query to include last observed value before the current time range, and next observed value after the time range. "
-                  >
-                    <InlineSwitch value={query.lastObservation} onChange={this.onLastObservationChange} />
-                  </InlineField>
-                )}
-
-                {shouldShowL4eOptions(query.queryType) && (
-                  <InlineField
-                    label="Format L4E Anomaly Result"
-                    htmlFor="l4e"
-                    tooltip="Format query to parse L4E anomaly result."
-                  >
-                    <InlineSwitch value={query.flattenL4e} onChange={this.onFlattenL4eChange} />
-                  </InlineField>
-                )}
-              </div>
-            )}
-          </>
-        )}
-
-        {(showProp || query.propertyAlias) && showQuality && (
-          <>
-            {isAssetPropertyAggregatesQuery(query) && this.renderAggregateRow(query)}
-            <QualityAndOrderRow {...(this.props as any)} />
-          </>
-        )}
-
-        {isAssociatedAssets && this.renderAssociatedAsset(query as ListAssociatedAssetsQuery)}
       </>
     );
   }

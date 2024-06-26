@@ -3,7 +3,6 @@ import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import { ConfigEditor } from './ConfigEditor';
 import { render, screen } from '@testing-library/react';
 import { SitewiseOptions, SitewiseSecureJsonData } from 'types';
-import { config } from '@grafana/runtime';
 const datasourceOptions = {
   id: 1,
   uid: 'sitewise',
@@ -28,15 +27,6 @@ const defaultProps: DataSourcePluginOptionsEditorProps<SitewiseOptions, Sitewise
   options: datasourceOptions,
   onOptionsChange: jest.fn(),
 };
-const originalToggleValue = config.featureToggles.awsDatasourcesNewFormStyling
-
-describe('ConfigEditor', () => {
-  beforeEach(() => {
-    config.featureToggles.awsDatasourcesNewFormStyling = true;
-  })
- afterEach(() => {
-     config.featureToggles.awsDatasourcesNewFormStyling = originalToggleValue;
- })
   describe('edge configuration', () => {
     it('should show correct fields if Standard authentication', () => {
       render(
@@ -76,4 +66,3 @@ describe('ConfigEditor', () => {
       expect(screen.getByText('Authentication Provider')).toBeInTheDocument();
     });
   });
-});

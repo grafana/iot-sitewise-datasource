@@ -21,10 +21,7 @@ export default defineConfig<PluginOptions>({
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:3000',
-    trace: 'on-first-retry',
-    featureToggles: {
-      awsDatasourcesNewFormStyling: true,
-    }
+    trace: 'on-first-retry'
   },
 
   projects: [

@@ -11,17 +11,13 @@ import {
   SiteWiseResponseFormat,
   QueryType,
 } from 'types';
-import { InlineField, Select } from '@grafana/ui';
+import { Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
-import { firstLabelWith } from './QueryEditor';
 import { EditorField } from '@grafana/experimental';
 
-interface Props
-  extends SitewiseQueryEditorProps<
-    AssetPropertyValueHistoryQuery | AssetPropertyAggregatesQuery | AssetPropertyInterpolatedQuery
-  > {
-  newFormStylingEnabled?: boolean;
-}
+type Props = SitewiseQueryEditorProps<
+  AssetPropertyValueHistoryQuery | AssetPropertyAggregatesQuery | AssetPropertyInterpolatedQuery
+>;
 
 const interpolatedResolutions: Array<SelectableValue<SiteWiseResolution>> = [
   {
@@ -91,7 +87,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
       onChange({ ...query, timeOrdering: sel.value });
     };
 
-    return this.props.newFormStylingEnabled ? (
+    return (
       <EditorField label="Time" width={10} htmlFor="time">
         <Select
           id="time"
@@ -103,23 +99,12 @@ export class QualityAndOrderRow extends PureComponent<Props> {
           menuPlacement="auto"
         />
       </EditorField>
-    ) : (
-      <InlineField htmlFor="time" label="Time" labelWidth={8}>
-        <Select
-          inputId="time"
-          options={ordering}
-          value={ordering.find((v) => v.value === query.timeOrdering) ?? ordering[0]}
-          onChange={onOrderChange}
-          isSearchable={true}
-          menuPlacement="bottom"
-        />
-      </InlineField>
     );
   };
 
   render() {
     const { query } = this.props;
-    return this.props.newFormStylingEnabled ? (
+    return (
       <>
         <EditorField label="Quality" width={15} htmlFor="quality">
           <Select
@@ -154,57 +139,6 @@ export class QualityAndOrderRow extends PureComponent<Props> {
             />
           </EditorField>
         )}
-      </>
-    ) : (
-      <>
-        <div className="gf-form">
-          <InlineField htmlFor="quality" label="Quality" labelWidth={firstLabelWith}>
-            <Select
-              inputId="quality"
-              width={20}
-              options={qualities}
-              value={qualities.find((v) => v.value === query.quality) ?? qualities[0]}
-              onChange={this.onQualityChange}
-              isSearchable={true}
-              menuPlacement="bottom"
-            />
-          </InlineField>
-          {this.timeOrderField()}
-
-          <InlineField htmlFor="format" label="Format" labelWidth={8}>
-            <Select
-              inputId="format"
-              value={query.responseFormat || SiteWiseResponseFormat.Table}
-              onChange={this.onResponseFormatChange}
-              options={FORMAT_OPTIONS}
-            />
-          </InlineField>
-
-          {isAssetPropertyInterpolatedQuery(query) && (
-            <InlineField htmlFor="resolution" label="Resolution" labelWidth={10}>
-              <Select
-                inputId="resolution"
-                width={18}
-                options={interpolatedResolutions}
-                value={interpolatedResolutions.find((v) => v.value === query.resolution) || interpolatedResolutions[0]}
-                onChange={this.onResolutionChange}
-                menuPlacement="bottom"
-              />
-            </InlineField>
-          )}
-
-          {/*<InlineField label="Pages per Query" labelWidth={8}>*/}
-          {/*  <Input*/}
-          {/*    type="number"*/}
-          {/*    min="0"*/}
-          {/*    value={query.maxPageAggregations ?? 1}*/}
-          {/*    placeholder="enter a number"*/}
-          {/*    onChange={this.onMaxPageAggregations}*/}
-          {/*    width={8}*/}
-          {/*    css=""*/}
-          {/*  />*/}
-          {/*</InlineField>*/}
-        </div>
       </>
     );
   }
