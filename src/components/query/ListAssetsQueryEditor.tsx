@@ -1,15 +1,10 @@
 import React, { PureComponent } from 'react';
 import { DataFrameView, SelectableValue } from '@grafana/data';
 import { ListAssetsQuery } from 'types';
-import { InlineField, Select } from '@grafana/ui';
+import { Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetModelSummary } from 'queryResponseTypes';
-import { firstLabelWith } from './QueryEditor';
 import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/experimental';
-
-interface Props extends SitewiseQueryEditorProps<ListAssetsQuery> {
-  newFormStylingEnabled?: boolean;
-}
 
 interface State {
   models?: DataFrameView<AssetModelSummary>;
@@ -24,7 +19,7 @@ const filters = [
   { label: 'All', value: 'ALL', description: 'The list includes all assets for a given asset model ID' },
 ];
 
-export class ListAssetsQueryEditor extends PureComponent<Props, State> {
+export class ListAssetsQueryEditor extends PureComponent<SitewiseQueryEditorProps<ListAssetsQuery>, State> {
   state: State = {};
 
   async componentDidMount() {
@@ -63,7 +58,7 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
       };
     }
 
-    return this.props.newFormStylingEnabled ? (
+    return (
       <EditorRow>
         <EditorFieldGroup>
           <EditorField label="Model ID" htmlFor="model" width={30}>
@@ -95,38 +90,6 @@ export class ListAssetsQueryEditor extends PureComponent<Props, State> {
           </EditorField>
         </EditorFieldGroup>
       </EditorRow>
-    ) : (
-      <>
-        <div className="gf-form">
-          <InlineField htmlFor="model" label="Model ID" labelWidth={firstLabelWith} grow={true}>
-            <Select
-              inputId="model"
-              isLoading={!models}
-              options={modelIds}
-              value={currentModel}
-              onChange={this.onAssetModelIdChange}
-              placeholder="Select an asset model id"
-              allowCustomValue={true}
-              isClearable={true}
-              isSearchable={true}
-              formatCreateLabel={(txt) => `Model ID: ${txt}`}
-              menuPlacement="bottom"
-            />
-          </InlineField>
-        </div>
-        <div className="gf-form">
-          <InlineField htmlFor="filter" label="Filter" labelWidth={firstLabelWith} grow={true}>
-            <Select
-              inputId="filter"
-              options={filters}
-              value={filters.find((v) => v.value === query.filter) || filters[0]}
-              onChange={this.onFilterChange}
-              placeholder="Select a property"
-              menuPlacement="bottom"
-            />
-          </InlineField>
-        </div>
-      </>
     );
   }
 }

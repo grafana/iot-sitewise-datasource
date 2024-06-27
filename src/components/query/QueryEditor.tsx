@@ -3,13 +3,12 @@ import React from 'react';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from 'DataSource';
 import { SitewiseQuery, SitewiseOptions, QueryType, ListAssetsQuery } from 'types';
-import { Icon, InlineField, LinkButton, Select } from '@grafana/ui';
+import { Icon, LinkButton, Select } from '@grafana/ui';
 import { QueryTypeInfo, siteWiseQueryTypes, changeQueryType } from 'queryInfo';
 import { standardRegionOptions } from 'regions';
 import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
 import { PropertyQueryEditor } from './PropertyQueryEditor';
 import { EditorField, EditorFieldGroup, EditorRow, EditorRows } from '@grafana/experimental';
-import { config } from '@grafana/runtime';
 import { QueryEditorHeader } from '@grafana/aws-sdk';
 import { ClientCacheRow } from './ClientCacheRow';
 
@@ -24,8 +23,6 @@ const queryDefaults: Partial<SitewiseQuery> = {
 export const firstLabelWith = 20;
 
 export function QueryEditor(props: Props) {
-  const newFormStylingEnabled = config.featureToggles.awsDatasourcesNewFormStyling;
-
   const { datasource } = props;
   const query = defaults(props.query, queryDefaults);
 
@@ -53,7 +50,7 @@ export function QueryEditor(props: Props) {
     onChange({ ...query, clientCache: evt.currentTarget.checked });
   };
 
-  const renderQuery = (query: SitewiseQuery, newFormStylingEnabled?: boolean) => {
+  const renderQuery = (query: SitewiseQuery) => {
     if (!query.queryType) {
       return;
     }
@@ -61,19 +58,13 @@ export function QueryEditor(props: Props) {
       case QueryType.ListAssetModels:
         return null; // nothing required
       case QueryType.ListAssets:
-        return (
-          <ListAssetsQueryEditor
-            {...props}
-            query={query as ListAssetsQuery}
-            newFormStylingEnabled={newFormStylingEnabled}
-          />
-        );
+        return <ListAssetsQueryEditor {...props} query={query as ListAssetsQuery} />;
       case QueryType.ListAssociatedAssets:
       case QueryType.PropertyValue:
       case QueryType.PropertyInterpolated:
       case QueryType.PropertyAggregate:
       case QueryType.PropertyValueHistory:
-        return <PropertyQueryEditor {...props} newFormStylingEnabled={newFormStylingEnabled} />;
+        return <PropertyQueryEditor {...props} />;
     }
     return <div>Missing UI for query type: {query.queryType}</div>;
   };
@@ -87,95 +78,49 @@ export function QueryEditor(props: Props) {
     </div>
   ) : undefined;
 
-  const clientCacheRow = <ClientCacheRow clientCache={query.clientCache} newFormStylingEnabled={newFormStylingEnabled} onClientCacheChange={onClientCacheChange}></ClientCacheRow>;
+  const clientCacheRow = (
+    <ClientCacheRow clientCache={query.clientCache} onClientCacheChange={onClientCacheChange}></ClientCacheRow>
+  );
 
   return (
     <>
-      {newFormStylingEnabled ? (
-        <>
-          {props?.app !== 'explore' && (
-            <QueryEditorHeader<DataSource, SitewiseQuery, SitewiseOptions>
-              {...props}
-              enableRunButton
-              showAsyncQueryButtons={false}
-            />
-          )}
-          <EditorRows>
-            <EditorRow>
-              <EditorFieldGroup>
-                <EditorField htmlFor="query" label="Query type" tooltip={queryTooltip} tooltipInteractive width={30}>
-                  <Select
-                    id="query"
-                    aria-label="Query type"
-                    options={siteWiseQueryTypes}
-                    value={currentQueryType}
-                    onChange={onQueryTypeChange}
-                    placeholder="Select query type"
-                    menuPlacement="auto"
-                  />
-                </EditorField>
-                <EditorField label="Region" width={15}>
-                  <Select
-                    options={regions}
-                    value={standardRegionOptions.find((v) => v.value === query.region) || defaultRegion}
-                    onChange={onRegionChange}
-                    backspaceRemovesValue={true}
-                    allowCustomValue={true}
-                    isClearable={true}
-                    menuPlacement="auto"
-                  />
-                </EditorField>
-              </EditorFieldGroup>
-            </EditorRow>
-            {renderQuery(query, true)}
-            {clientCacheRow}
-          </EditorRows>
-        </>
-      ) : (
-        <>
-          {props?.app !== 'explore' && (
-            <QueryEditorHeader<DataSource, SitewiseQuery, SitewiseOptions>
-              {...props}
-              enableRunButton
-              showAsyncQueryButtons={false}
-            />
-          )}
-          <div className="gf-form">
-            <InlineField
-              htmlFor="query"
-              label="Query type"
-              labelWidth={firstLabelWith}
-              grow={true}
-              tooltip={queryTooltip}
-              interactive
-            >
+      {props?.app !== 'explore' && (
+        <QueryEditorHeader<DataSource, SitewiseQuery, SitewiseOptions>
+          {...props}
+          enableRunButton
+          showAsyncQueryButtons={false}
+        />
+      )}
+      <EditorRows>
+        <EditorRow>
+          <EditorFieldGroup>
+            <EditorField htmlFor="query" label="Query type" tooltip={queryTooltip} tooltipInteractive width={30}>
               <Select
-                inputId="query"
+                id="query"
+                aria-label="Query type"
                 options={siteWiseQueryTypes}
                 value={currentQueryType}
                 onChange={onQueryTypeChange}
                 placeholder="Select query type"
-                menuPlacement="bottom"
+                menuPlacement="auto"
               />
-            </InlineField>
-            <InlineField label="Region" labelWidth={14}>
+            </EditorField>
+            <EditorField label="Region" width={15}>
               <Select
-                width={18}
                 options={regions}
                 value={standardRegionOptions.find((v) => v.value === query.region) || defaultRegion}
                 onChange={onRegionChange}
                 backspaceRemovesValue={true}
                 allowCustomValue={true}
                 isClearable={true}
-                menuPlacement="bottom"
+                menuPlacement="auto"
               />
-            </InlineField>
-          </div>
-
-          {renderQuery(query)}
-          {clientCacheRow}
-        </>
-      )}
+            </EditorField>
+          </EditorFieldGroup>
+        </EditorRow>
+        {renderQuery(query)}
+        {clientCacheRow}
+      </EditorRows>
     </>
   );
 }
