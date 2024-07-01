@@ -41,6 +41,8 @@ function generateSiteWiseQueryCacheId(query: SitewiseQueriesUnion): QueryCacheId
     modelId,
     filter,
     aggregates,
+    timeSeriesType,
+    aliasPrefix,
   } = query;
 
   /*
@@ -68,5 +70,7 @@ function generateSiteWiseQueryCacheId(query: SitewiseQueriesUnion): QueryCacheId
     modelId,
     filter,
     aggregates,
+    timeSeriesType,
+    aliasPrefix,
   ]);
 }

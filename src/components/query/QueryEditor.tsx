@@ -11,6 +11,7 @@ import { PropertyQueryEditor } from './PropertyQueryEditor';
 import { EditorField, EditorFieldGroup, EditorRow, EditorRows } from '@grafana/experimental';
 import { QueryEditorHeader } from '@grafana/aws-sdk';
 import { ClientCacheRow } from './ClientCacheRow';
+import { ListTimeSeriesQueryEditorFunction } from './ListTimeSeriesQueryEditor';
 
 type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 
@@ -59,6 +60,8 @@ export function QueryEditor(props: Props) {
         return null; // nothing required
       case QueryType.ListAssets:
         return <ListAssetsQueryEditor {...props} query={query as ListAssetsQuery} />;
+        case QueryType.ListTimeSeries:
+        return <ListTimeSeriesQueryEditorFunction {...props} query={query as ListTimeSeriesQuery} />
       case QueryType.ListAssociatedAssets:
       case QueryType.PropertyValue:
       case QueryType.PropertyInterpolated:

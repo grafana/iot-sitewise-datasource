@@ -20,6 +20,13 @@ type ListAssetsQuery struct {
 	Filter  string `json:"filter,omitempty"`
 }
 
+type ListTimeSeriesQuery struct {
+	BaseQuery
+	TimeSeriesType string `json:"timeSeriesType,omitempty"`
+	AssetId        string `json:"assetId,omitempty"`
+	AliasPrefix    string `json:"aliasPrefix,omitempty"`
+}
+
 type ListAssociatedAssetsQuery struct {
 	BaseQuery
 	HierarchyId     string `json:"hierarchyId,omitempty"`
