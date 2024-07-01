@@ -1,5 +1,5 @@
 import { DataFrame } from '@grafana/data';
-import { AssetPropertyAggregatesQuery, AssetPropertyValueHistoryQuery, ListAssetsQuery, ListAssociatedAssetsQuery, QueryType, SitewiseQuery } from 'types';
+import { AssetPropertyAggregatesQuery, AssetPropertyValueHistoryQuery, ListAssetsQuery, ListAssociatedAssetsQuery, ListTimeSeriesQuery, QueryType, SitewiseQuery } from 'types';
 
 const TIME_SERIES_QUERY_TYPES = new Set<QueryType>([
   QueryType.PropertyAggregate,
@@ -33,4 +33,6 @@ export type SitewiseQueriesUnion = SitewiseQuery
   & Partial<Pick<ListAssociatedAssetsQuery, 'loadAllChildren'>>
   & Partial<Pick<ListAssociatedAssetsQuery, 'hierarchyId'>>
   & Partial<Pick<ListAssetsQuery, 'modelId'>>
-  & Partial<Pick<ListAssetsQuery, 'filter'>>;
+  & Partial<Pick<ListAssetsQuery, 'filter'>>
+  & Partial<Pick<ListTimeSeriesQuery, 'timeSeriesType'>>
+  & Partial<Pick<ListTimeSeriesQuery, 'aliasPrefix'>>;

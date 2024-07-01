@@ -110,3 +110,41 @@ func PredictionReasonField(length int) *data.Field {
 func DiagnosticField(length int, assetId string) *data.Field {
 	return NewFieldWithName(assetId, data.FieldTypeFloat64, length)
 }
+
+// for time series 
+
+func AliasField(length int) *data.Field {
+	return NewFieldWithName(Alias, data.FieldTypeString, length)
+}
+
+func AssetIdField(length int) *data.Field {
+	return NewFieldWithName(AssetId, data.FieldTypeString, length)
+}
+
+func DataTypeField(length int) *data.Field {
+	return NewFieldWithName(DataType, data.FieldTypeString, length)
+}
+
+func DataTypeSpecField(length int) *data.Field {
+	return NewFieldWithName(DataTypeSpec, data.FieldTypeString, length)
+}
+
+func PropertyIdField(length int) *data.Field {
+	return NewFieldWithName(PropertyId, data.FieldTypeString, length)
+}
+
+func TimeSeriesArnField(length int) *data.Field {
+	return NewFieldWithName(TimeSeriesArn, data.FieldTypeString, length)
+}
+
+func TimeSeriesIdField(length int) *data.Field {
+	return NewFieldWithName(TimeSeriesId, data.FieldTypeString, length)
+}
+
+func TimeSeriesCreationDateField(length int) *data.Field {
+	return NewFieldWithName(TimeSeriesCreationDate, data.FieldTypeTime, length)
+}
+
+func TimeSeriesLastUpdateDateField(length int) *data.Field {
+	return NewFieldWithName(TimeSeriesLastUpdateDate, data.FieldTypeTime, length)
+}

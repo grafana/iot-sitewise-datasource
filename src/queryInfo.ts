@@ -14,6 +14,7 @@ import {
   AssetPropertyInfo,
   ListAssociatedAssetsQuery,
   isListAssociatedAssetsQuery,
+  ListTimeSeriesQuery
 } from './types';
 
 export interface QueryTypeInfo extends SelectableValue<QueryType> {
@@ -79,6 +80,13 @@ export const siteWiseQueryTypes: QueryTypeInfo[] = [
     description: 'Retrieves a paginated list of associated assets.',
     defaultQuery: {} as ListAssociatedAssetsQuery,
     helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListAssociatedAssets.html',
+  },
+  {
+    label: 'List time series',
+    value: QueryType.ListTimeSeries,
+    description: 'Retrieves a paginated list of time series (data streams)',
+    defaultQuery: {} as ListTimeSeriesQuery,
+    helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListTimeSeries.html',
   },
 ];
 
