@@ -945,7 +945,7 @@
     "@grafana/async-query-data" "0.1.4"
     "@grafana/experimental" "1.7.0"
 
-"@grafana/data@10.4.5", "@grafana/data@^10.4.0":
+"@grafana/data@10.4.5", "@grafana/data@^10.4.5":
   version "10.4.5"
   resolved "https://registry.yarnpkg.com/@grafana/data/-/data-10.4.5.tgz#86a4d46a27097343ab97d6cf9c5ea8b918f07479"
   integrity sha512-SYyaPTKIO3p4MoS0PvZ+bIW7Q8EHYbu/czQENyk0/rFmodfBzcJA0AVuafFBY0T4oCQENFHfmhM9q7209B3oOw==
@@ -1047,7 +1047,7 @@
     uuid "^9.0.1"
     yaml "^2.3.4"
 
-"@grafana/runtime@^10.4.0":
+"@grafana/runtime@^10.4.5":
   version "10.4.5"
   resolved "https://registry.yarnpkg.com/@grafana/runtime/-/runtime-10.4.5.tgz#704f3ab08624d1da7de003798c61a2a1aa4da641"
   integrity sha512-C+AAVz6T7g4TRmNHK/G0vmkJQ/i33tHNnsNg1wS6gzeSv6Jqu/xmDrws/wIe8oDBS5Asf68fXfyrrSnPs1KpyQ==
@@ -1064,7 +1064,7 @@
     systemjs-cjs-extra "0.2.0"
     tslib "2.6.2"
 
-"@grafana/schema@10.4.5", "@grafana/schema@^10.4.0":
+"@grafana/schema@10.4.5", "@grafana/schema@^10.4.5":
   version "10.4.5"
   resolved "https://registry.yarnpkg.com/@grafana/schema/-/schema-10.4.5.tgz#e496cc5e247f58f4eb6e908b0ba156f96a9f886a"
   integrity sha512-Qi8GuMk5X8J+cIe18JZpU1QpagEeu+BdES97FmHXmBIR69i+sGebjzwH9NN++cjZZvq+x8tvXUxOpLL84VnYsg==
@@ -1081,7 +1081,7 @@
   resolved "https://registry.yarnpkg.com/@grafana/tsconfig/-/tsconfig-1.3.0-rc1.tgz#ca5ffa03edb3cb59bd503a7e6b3a3e15ac528d77"
   integrity sha512-bi+qFOptejg/a2/WmCDVxQLQtobhKd3y+B6mxFBOMmzElqgr30MPnN60THTou6dGwtfw+ExX1H5FGm9DM35Qrw==
 
-"@grafana/ui@10.4.5", "@grafana/ui@^10.4.0":
+"@grafana/ui@10.4.5", "@grafana/ui@^10.4.5":
   version "10.4.5"
   resolved "https://registry.yarnpkg.com/@grafana/ui/-/ui-10.4.5.tgz#3780cdef9774dfb7b09cf051d61329c08be635dd"
   integrity sha512-BO9GTjm8AeXk+rgOYSaQ4XvRJ3otPRtHbQhIJ9D96ZFpYPbbLHno5DBOPazKcp3ukiW7SA72ymgDRbpcdND18Q==
