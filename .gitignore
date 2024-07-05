@@ -4,6 +4,7 @@ ci/
 dist/
 .idea/
 .DS_Store
+.eslintcache
 # until we can figure out how to install the mockery executable on circleci, leave this commented out
 #**/mocks/*.*
 __debug_bin

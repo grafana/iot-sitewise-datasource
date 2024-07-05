@@ -65,6 +65,8 @@
     "struct",
     "combobox",
     "Cacheable",
-    "Stalebot"
+    "Stalebot",
+    "gofmt",
+    "eslintcache"
   ]
 }

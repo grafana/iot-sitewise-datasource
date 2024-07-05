@@ -12,7 +12,6 @@ pre-commit:
       run: gofmt -w -s {staged_files}
       stage_fixed: true
     spellcheck:
-      glob: '**/*.{ts,tsx,js,go,md,mdx,yml,yaml,json,scss,css}'
-      run: yarn cspell -c cspell.config.json {staged_files}
+      run: yarn cspell -c cspell.config.json \"**/*.{ts,tsx,js,go,md,mdx,yml,yaml,json,scss,css}\" {staged_files}
 
 
