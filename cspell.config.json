@@ -67,6 +67,7 @@
     "Cacheable",
     "Stalebot",
     "gofmt",
-    "eslintcache"
+    "eslintcache",
+    "lefthook"
   ]
 }
