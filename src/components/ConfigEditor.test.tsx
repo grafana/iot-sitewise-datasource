@@ -1,6 +1,7 @@
 import React from 'react';
 import { DataSourcePluginOptionsEditorProps } from '@grafana/data';
 import { ConfigEditor } from './ConfigEditor';
+import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { SitewiseOptions, SitewiseSecureJsonData } from 'types';
 const datasourceOptions = {
@@ -27,42 +28,40 @@ const defaultProps: DataSourcePluginOptionsEditorProps<SitewiseOptions, Sitewise
   options: datasourceOptions,
   onOptionsChange: jest.fn(),
 };
-  describe('edge configuration', () => {
-    it('should show correct fields if Standard authentication', () => {
-      render(
-        <ConfigEditor {...defaultProps} options={{ ...datasourceOptions, jsonData: { defaultRegion: 'Edge' } }} />
-      );
-      expect(screen.getByText('Edge settings')).toBeInTheDocument();
-      expect(screen.getByText('Authentication Provider')).toBeInTheDocument();
-    });
-    it('should show correct fields if linux authentication', () => {
-      render(
-        <ConfigEditor
-          {...defaultProps}
-          options={{ ...datasourceOptions, jsonData: { defaultRegion: 'Edge', edgeAuthMode: 'linux' } }}
-        />
-      );
-      expect(screen.getByText('Edge settings')).toBeInTheDocument();
-      expect(screen.getByText('Username')).toBeInTheDocument();
-      expect(screen.getByText('Password')).toBeInTheDocument();
-    });
-    it('should display warning if region is Edge but no endpoint is specified', () => {
-      render(
-        <ConfigEditor
-          {...defaultProps}
-          options={{ ...datasourceOptions, jsonData: { defaultRegion: 'Edge', endpoint: '' } }}
-        />
-      );
-      expect(screen.getByText('Edge settings')).toBeInTheDocument();
-      expect(screen.getByTestId('endpoint-warning')).toBeInTheDocument();
-    });
+describe('edge configuration', () => {
+  it('should show correct fields if Standard authentication', () => {
+    render(<ConfigEditor {...defaultProps} options={{ ...datasourceOptions, jsonData: { defaultRegion: 'Edge' } }} />);
+    expect(screen.getByText('Edge settings')).toBeInTheDocument();
+    expect(screen.getByText('Authentication Provider')).toBeInTheDocument();
   });
-  describe('non-edge configuration', () => {
-    it('should show correct fields if region is not edge', () => {
-      render(
-        <ConfigEditor {...defaultProps} options={{ ...datasourceOptions, jsonData: { defaultRegion: 'us-east-2' } }} />
-      );
-      expect(screen.queryByText('Edge settings')).not.toBeInTheDocument();
-      expect(screen.getByText('Authentication Provider')).toBeInTheDocument();
-    });
+  it('should show correct fields if linux authentication', () => {
+    render(
+      <ConfigEditor
+        {...defaultProps}
+        options={{ ...datasourceOptions, jsonData: { defaultRegion: 'Edge', edgeAuthMode: 'linux' } }}
+      />
+    );
+    expect(screen.getByText('Edge settings')).toBeInTheDocument();
+    expect(screen.getByText('Username')).toBeInTheDocument();
+    expect(screen.getByText('Password')).toBeInTheDocument();
   });
+  it('should display warning if region is Edge but no endpoint is specified', () => {
+    render(
+      <ConfigEditor
+        {...defaultProps}
+        options={{ ...datasourceOptions, jsonData: { defaultRegion: 'Edge', endpoint: '' } }}
+      />
+    );
+    expect(screen.getByText('Edge settings')).toBeInTheDocument();
+    expect(screen.getByTestId('endpoint-warning')).toBeInTheDocument();
+  });
+});
+describe('non-edge configuration', () => {
+  it('should show correct fields if region is not edge', () => {
+    render(
+      <ConfigEditor {...defaultProps} options={{ ...datasourceOptions, jsonData: { defaultRegion: 'us-east-2' } }} />
+    );
+    expect(screen.queryByText('Edge settings')).not.toBeInTheDocument();
+    expect(screen.getByText('Authentication Provider')).toBeInTheDocument();
+  });
+});

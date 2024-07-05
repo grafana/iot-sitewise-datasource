@@ -1,9 +1,8 @@
-import { DataFrame, DataQueryRequest, DataQueryResponse } from "@grafana/data";
-import { SitewiseCustomMeta, SitewiseNextQuery, SitewiseQuery } from "types";
+import { DataFrame, DataQueryRequest, DataQueryResponse } from '@grafana/data';
+import { SitewiseCustomMeta, SitewiseNextQuery, SitewiseQuery } from 'types';
 
-
-export function getNextQueries(request: DataQueryRequest<SitewiseQuery>, rsp: DataQueryResponse) {
-  if (rsp.data?.length) {
+export function getNextQueries(request: DataQueryRequest<SitewiseQuery>, rsp?: DataQueryResponse) {
+  if (rsp?.data?.length) {
     const next: SitewiseNextQuery[] = [];
     for (const frame of rsp.data as DataFrame[]) {
       const meta = frame.meta?.custom as SitewiseCustomMeta;

@@ -300,7 +300,7 @@ describe('QueryEditor', () => {
 });
 
 async function openOptionsCollapse() {
-  const collapseLabel = await screen.queryByTestId('collapse-title');
+  const collapseLabel = screen.queryByTestId('collapse-title');
   if (collapseLabel) {
     return userEvent.click(collapseLabel);
   }
