@@ -210,6 +210,12 @@ func (ds *Datasource) HandleListAssetsQuery(ctx context.Context, req *backend.Qu
 	})
 }
 
+func (ds *Datasource) HandleListTimeSeriesQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListTimeSeriesQuery) (data.Frames, error) {
+	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
+		return api.ListTimeSeries(ctx, sw, *query)
+	})
+}
+
 func (ds *Datasource) HandleDescribeAssetQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.DescribeAssetQuery) (data.Frames, error) {
 	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return api.DescribeAsset(ctx, sw, *query)
