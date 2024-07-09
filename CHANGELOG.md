@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.23.0
+
+- Feat: add list time series to query editor by @ssjagad in [#336](https://github.com/grafana/iot-sitewise-datasource/pull/336)
+- Chore: update dependencies in [#337](https://github.com/grafana/iot-sitewise-datasource/pull/337)
+- Migrate to new form styling in config and query editors [#332](https://github.com/grafana/iot-sitewise-datasource/pull/332)
+
 ## 1.22.1
 
 - Fix: use ReadAuthSettings to get authSettings in [#333](https://github.com/grafana/iot-sitewise-datasource/pull/333)
