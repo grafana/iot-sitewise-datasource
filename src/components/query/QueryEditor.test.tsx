@@ -111,6 +111,10 @@ describe('QueryEditor', () => {
       expect(screen.getByText('Quality')).toBeInTheDocument();
       expect(screen.getByText('Resolution')).toBeInTheDocument();
       expect(screen.getByText('Format')).toBeInTheDocument();
+
+      // Interpolatged Property queries should not have ANY as the quality default
+      expect(screen.getByText('GOOD')).toBeInTheDocument();
+      expect(screen.queryByText('ANY')).not.toBeInTheDocument();
     });
   });
 
