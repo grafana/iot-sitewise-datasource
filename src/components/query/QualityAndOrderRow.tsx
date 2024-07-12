@@ -104,9 +104,9 @@ export class QualityAndOrderRow extends PureComponent<Props> {
 
   render() {
     const { query } = this.props;
-    let currQualites = qualities;
+    let currQualities = qualities;
     if (query.queryType === QueryType.PropertyInterpolated) {
-      currQualites = qualities.slice(1);
+      currQualities = qualities.slice(1);
     }
     return (
       <>
@@ -114,8 +114,8 @@ export class QualityAndOrderRow extends PureComponent<Props> {
           <Select
             id="quality"
             aria-label="Quality"
-            options={currQualites}
-            value={currQualites.find((v) => v.value === query.quality) ?? currQualites[0]}
+            options={currQualities}
+            value={currQualities.find((v) => v.value === query.quality) ?? currQualities[0]}
             onChange={this.onQualityChange}
             isSearchable={true}
             menuPlacement="auto"
