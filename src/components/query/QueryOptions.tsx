@@ -1,4 +1,4 @@
-import { SitewiseQuery, shouldShowL4eOptions, shouldShowLastObserved } from 'types';
+import { SitewiseQuery, shouldShowL4eOptions, shouldShowLastObserved, shouldShowQualityAndOrderComponent } from 'types';
 import { CollapsableSection, Switch, useTheme2 } from '@grafana/ui';
 import React from 'react';
 import { EditorField, EditorFieldGroup } from '@grafana/experimental';
@@ -55,7 +55,10 @@ export function QueryOptions({
               <Switch value={query.flattenL4e} onChange={onFlattenL4eChange} />
             </EditorField>
           )}
-          {(showProp || query.propertyAlias) && showQuality && qualityAndOrderComponent}
+          {shouldShowQualityAndOrderComponent(query.queryType) &&
+            (showProp || query.propertyAlias) &&
+            showQuality &&
+            qualityAndOrderComponent}
         </EditorFieldGroup>
       </CollapsableSection>
     </div>
