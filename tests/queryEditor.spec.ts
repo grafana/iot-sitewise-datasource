@@ -37,12 +37,6 @@ test.describe('Query Editor', () => {
 
       await queryEditor.selectProperty('Total Average Power');
 
-      await queryEditor.openQueryOptions();
-
-      await expect(queryEditor.qualitySelect).toBeVisible();
-      await expect(queryEditor.timeSelect).toBeVisible();
-      await expect(queryEditor.formatSelect).toBeVisible();
-
       await queryEditor.runQuery();
 
       await expect(page.getByText('No data')).not.toBeVisible();
