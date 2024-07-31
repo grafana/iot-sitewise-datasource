@@ -60,7 +60,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       rangeRaw: options.rangeRaw,
     } as DataQueryRequest<SitewiseQuery>;
 
-    let res: DataQueryResponse;
+    let res: DataQueryResponse | undefined;
 
     try {
       res = await this.query(request).toPromise();
@@ -153,16 +153,18 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
         return super.query(request).toPromise();
       },
       cachedResponse: cachedInfo?.cachedResponse,
-    }).toObservable().pipe(
-      // Cache the last (done) response
-      tap({
-        next: (response) => {
-          if (response.state === LoadingState.Done) {
-            this.relativeRangeCache.set(request, response);
-          }
-        },
-      },)
-    );
+    })
+      .toObservable()
+      .pipe(
+        // Cache the last (done) response
+        tap({
+          next: (response) => {
+            if (response.state === LoadingState.Done) {
+              this.relativeRangeCache.set(request, response);
+            }
+          },
+        })
+      );
   }
 }
 

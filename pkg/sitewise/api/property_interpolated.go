@@ -37,7 +37,7 @@ func interpolatedQueryToInputs(query models.AssetPropertyValueQuery) []*iotsitew
 	endTimeInSeconds := to.Unix()
 
 	quality := query.Quality
-	if quality == "" {
+	if quality == "" || query.Quality == "ANY" {
 		quality = "GOOD"
 	}
 

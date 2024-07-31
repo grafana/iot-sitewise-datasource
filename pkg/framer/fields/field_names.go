@@ -18,4 +18,13 @@ const (
 	CompositeModels  = "composite_models"
 	AnomalyScore     = "anomaly_score"
 	PredictionReason = "prediction_reason"
+	Alias    		 = "alias"     		
+	AssetId 		 = "asset_id"       
+	DataType  		 = "dataType"         
+	DataTypeSpec  	 = "dataTypeSpec"    
+	PropertyId  	 = "propertyId" 
+	TimeSeriesArn    = "timeSeriesArn"
+	TimeSeriesId  	 = "timeSeriesId"
+	TimeSeriesCreationDate = "timeSeriesCreationDate"
+	TimeSeriesLastUpdateDate = "timeSeriesLastUpdateDate"
 )

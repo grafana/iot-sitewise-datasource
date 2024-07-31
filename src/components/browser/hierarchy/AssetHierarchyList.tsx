@@ -55,7 +55,7 @@ export const AssetHierarchyList: FunctionComponent<Props> = ({
     // try to load children if none passed in
     if (!children && asset && cache) {
       const fetchData = async () => {
-        const results = await cache.getAssociatedAssets(asset.id, hierarchy.id);
+        const results = (await cache.getAssociatedAssets(asset.id, hierarchy.id)) || [];
         setChildren(results.toArray());
       };
       fetchData();

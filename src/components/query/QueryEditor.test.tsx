@@ -111,6 +111,10 @@ describe('QueryEditor', () => {
       expect(screen.getByText('Quality')).toBeInTheDocument();
       expect(screen.getByText('Resolution')).toBeInTheDocument();
       expect(screen.getByText('Format')).toBeInTheDocument();
+
+      // Interpolated Property queries should not have ANY as the quality default
+      expect(screen.getByText('GOOD')).toBeInTheDocument();
+      expect(screen.queryByText('ANY')).not.toBeInTheDocument();
     });
   });
 
@@ -155,11 +159,8 @@ describe('QueryEditor', () => {
       expect(screen.getByText('Property Alias')).toBeInTheDocument();
       expect(screen.getByText('Asset')).toBeInTheDocument();
       expect(screen.getByText('Property')).toBeInTheDocument();
-      expect(screen.getByText('Quality')).toBeInTheDocument();
       expect(screen.getByText('Format L4E Anomaly Result')).toBeInTheDocument();
       expect(screen.getByText('Client cache')).toBeInTheDocument();
-      expect(screen.getByText('Time')).toBeInTheDocument();
-      expect(screen.getByText('Format')).toBeInTheDocument();
     });
   });
 
@@ -170,10 +171,6 @@ describe('QueryEditor', () => {
     });
     await waitFor(() => {
       expect(screen.getByText('Property Alias')).toBeInTheDocument();
-      // temporary condition - in the old form version, the following fields are not displayed, but they should be in the new one
-      expect(screen.getByText('Quality')).toBeInTheDocument();
-      expect(screen.getByText('Time')).toBeInTheDocument();
-      expect(screen.getByText('Format')).toBeInTheDocument();
     });
   });
 
@@ -300,7 +297,7 @@ describe('QueryEditor', () => {
 });
 
 async function openOptionsCollapse() {
-  const collapseLabel = await screen.queryByTestId('collapse-title');
+  const collapseLabel = screen.queryByTestId('collapse-title');
   if (collapseLabel) {
     return userEvent.click(collapseLabel);
   }

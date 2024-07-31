@@ -9,14 +9,14 @@ import { SitewiseNextQuery, SitewiseQuery } from 'types';
  */
 export interface SitewiseQueryPaginatorOptions {
   // The initial query request.
-  request: DataQueryRequest<SitewiseQuery>,
+  request: DataQueryRequest<SitewiseQuery>;
   // The function to call to execute the query.
-  queryFn: (request: DataQueryRequest<SitewiseQuery>) => Promise<DataQueryResponse>;
+  queryFn: (request: DataQueryRequest<SitewiseQuery>) => Promise<DataQueryResponse | undefined>;
   // The cached response to set as the initial response.
   cachedResponse?: {
-    start?: DataQueryResponse,
-    end?: DataQueryResponse,
-  },
+    start?: DataQueryResponse;
+    end?: DataQueryResponse;
+  };
 }
 
 /**
@@ -39,7 +39,10 @@ export class SitewiseQueryPaginator {
    * @returns An observable that emits the paginated query responses.
    */
   toObservable() {
-    const { request: { requestId }, cachedResponse } = this.options;
+    const {
+      request: { requestId },
+      cachedResponse,
+    } = this.options;
     const subject = new Subject<DataQueryResponse>();
 
     if (cachedResponse?.start) {
@@ -63,7 +66,7 @@ export class SitewiseQueryPaginator {
     try {
       let retrievedData = cachedResponse?.start?.data;
       let nextQueries: SitewiseNextQuery[] | undefined;
-      const errorEncountered = false;  // whether there's a error response
+      const errorEncountered = false; // whether there's a error response
       let count = 1;
 
       do {
@@ -77,12 +80,12 @@ export class SitewiseQueryPaginator {
 
         const response = await queryFn(paginatingRequest);
         if (retrievedData == null) {
-          retrievedData = response.data;
+          retrievedData = response?.data || [];
         } else {
-          retrievedData = appendMatchingFrames(retrievedData, response.data);
+          retrievedData = appendMatchingFrames(retrievedData, response?.data || []);
         }
 
-        if (response.state === LoadingState.Error) {
+        if (response?.state === LoadingState.Error) {
           subject.next({ ...response, data: retrievedData, state: LoadingState.Error, key: requestId });
           break;
         }
@@ -95,7 +98,7 @@ export class SitewiseQueryPaginator {
 
       if (cachedResponse?.end != null && !errorEncountered) {
         retrievedData = appendMatchingFrames(retrievedData, cachedResponse.end.data);
-        subject.next({ ...cachedResponse.end, data: retrievedData , state: LoadingState.Done, key: requestId });
+        subject.next({ ...cachedResponse.end, data: retrievedData, state: LoadingState.Done, key: requestId });
       }
 
       subject.complete();

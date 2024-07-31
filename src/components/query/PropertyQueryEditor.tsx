@@ -69,7 +69,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       try {
         update.asset = await cache.getAssetInfo(query.assetIds![0]);
         const ps = await cache.listAssetProperties(query.assetIds[0]);
-        update.assetProperties = ps.map(({ id, name }) => ({ id, name }));
+        update.assetProperties = ps?.map(({ id, name }) => ({ id, name })) || [];
       } catch (err) {
         console.warn('error reading asset info', err);
         update.property = undefined;
@@ -362,6 +362,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                 <EditorField label="Asset" htmlFor="asset" width={30}>
                   <Select
                     id="asset"
+                    inputId="asset"
                     aria-label="Asset"
                     isMulti={true}
                     key={query.region ? query.region : 'default'}
@@ -396,6 +397,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                   <EditorField label="Property" htmlFor="property" width={30}>
                     <Select
                       id="property"
+                      inputId="property"
                       aria-label="Property"
                       isLoading={loading}
                       options={assetPropertyOptions}

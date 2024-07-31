@@ -43,6 +43,8 @@ const qualities: Array<SelectableValue<SiteWiseQuality>> = [
   { value: SiteWiseQuality.UNCERTAIN, label: 'UNCERTAIN' },
 ];
 
+const interpolatedPropertyQualities: Array<SelectableValue<SiteWiseQuality>> = qualities.slice(1);
+
 const ordering: Array<SelectableValue<SiteWiseTimeOrder>> = [
   { value: SiteWiseTimeOrder.ASCENDING, label: 'ASCENDING' },
   { value: SiteWiseTimeOrder.DESCENDING, label: 'DESCENDING' },
@@ -104,14 +106,16 @@ export class QualityAndOrderRow extends PureComponent<Props> {
 
   render() {
     const { query } = this.props;
+    const currQualities =
+      query.queryType === QueryType.PropertyInterpolated ? interpolatedPropertyQualities : qualities;
     return (
       <>
         <EditorField label="Quality" width={15} htmlFor="quality">
           <Select
             id="quality"
             aria-label="Quality"
-            options={qualities}
-            value={qualities.find((v) => v.value === query.quality) ?? qualities[0]}
+            options={currQualities}
+            value={currQualities.find((v) => v.value === query.quality) ?? currQualities[0]}
             onChange={this.onQualityChange}
             isSearchable={true}
             menuPlacement="auto"

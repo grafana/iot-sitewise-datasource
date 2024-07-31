@@ -13,6 +13,7 @@ export enum QueryType {
   PropertyValueHistory = 'PropertyValueHistory',
   PropertyAggregate = 'PropertyAggregate',
   PropertyInterpolated = 'PropertyInterpolated',
+  ListTimeSeries = 'ListTimeSeries',
 }
 
 export enum SiteWiseQuality {
@@ -193,6 +194,21 @@ export function isAssetPropertyInterpolatedQuery(q?: SitewiseQuery): q is AssetP
   return q?.queryType === QueryType.PropertyInterpolated;
 }
 
+/**
+ * {@link https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListTimeSeries.html}
+ */
+
+export interface ListTimeSeriesQuery extends SitewiseQuery {
+  queryType: QueryType.ListTimeSeries;
+  aliasPrefix?: string;
+  assetId?: string;
+  timeSeriesType?: 'ASSOCIATED' | 'DISASSOCIATED' | 'ALL';
+}
+
+export function isListTimeSeriesQuery(q?: SitewiseQuery): q is ListTimeSeriesQuery {
+  return q?.queryType === QueryType.ListTimeSeries;
+}
+
 export function isPropertyQueryType(queryType?: QueryType): boolean {
   return (
     queryType === QueryType.PropertyAggregate ||
@@ -217,6 +233,10 @@ export function shouldShowOptionsRow(query: SitewiseQuery, showProp: boolean): b
 
 export function shouldShowL4eOptions(queryType?: QueryType): boolean {
   return queryType === QueryType.PropertyValue || queryType === QueryType.PropertyValueHistory;
+}
+
+export function shouldShowQualityAndOrderComponent(queryType?: QueryType): boolean {
+  return queryType !== QueryType.PropertyValue;
 }
 
 // matches native sitewise API with capitals
