@@ -66,6 +66,10 @@
     "combobox",
     "Cacheable",
     "Stalebot",
-    "ssjagad"
+    "gofmt",
+    "eslintcache",
+    "lefthook",
+    "ssjagad",
+    "jackspeak"
   ]
 }
