@@ -1,5 +1,5 @@
 import { DataFrameView, SelectableValue } from '@grafana/data';
-import { DataSource } from 'DataSource';
+import { DataSource } from 'SitewiseDataSource';
 import { ListAssetsQuery, ListAssociatedAssetsQuery, QueryType } from 'types';
 import { AssetModelSummary, AssetSummary, DescribeAssetResult } from './queryResponseTypes';
 import { AssetInfo, AssetPropertyInfo } from './types';
@@ -15,10 +15,7 @@ export class SitewiseCache {
   private topLevelAssets?: DataFrameView<AssetSummary>;
   private assetPropertiesByAssetId = new Map<string, DataFrameView<{ id: string; name: string }>>();
 
-  constructor(
-    private ds: DataSource,
-    private region: string
-  ) {}
+  constructor(private ds: DataSource, private region: string) {}
 
   async getAssetInfo(id: string): Promise<AssetInfo | undefined> {
     const v = this.assetsById.get(id);

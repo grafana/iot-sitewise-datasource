@@ -1,4 +1,4 @@
-import { DataSource } from './DataSource';
+import { DataSource } from './SitewiseDataSource';
 import { DataSourceInstanceSettings, PluginMeta, ScopedVar, ScopedVars } from '@grafana/data';
 import { QueryType, SitewiseOptions, SitewiseQuery } from './types';
 
