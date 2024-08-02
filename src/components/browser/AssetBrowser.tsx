@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Icon, Modal, Spinner, Tab, TabContent, TabsBar } from '@grafana/ui';
 import { AssetInfo } from '../../types';
-import { DataSource } from 'DataSource';
+import { DataSource } from 'SitewiseDataSource';
 import { SitewiseCache } from 'sitewiseCache';
 import { BrowseModels } from './BrowseModels';
 import { BrowseHierarchy } from './BrowseHierarchy';

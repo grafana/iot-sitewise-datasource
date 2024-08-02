@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { DataQueryRequest, DataSourceInstanceSettings, QueryEditorProps } from '@grafana/data';
-import { DataSource } from 'DataSource';
+import { DataSource } from 'SitewiseDataSource';
 import { QueryType, SitewiseOptions, SitewiseQuery } from 'types';
 import { QueryEditor } from './QueryEditor';
 import { of } from 'rxjs';
