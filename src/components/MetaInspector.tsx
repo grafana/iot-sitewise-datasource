@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { MetadataInspectorProps, DataFrame } from '@grafana/data';
-import { DataSource } from '../DataSource';
+import { DataSource } from '../SitewiseDataSource';
 import { SitewiseQuery, SitewiseOptions, SitewiseCustomMeta } from '../types';
 import { Tag } from '@grafana/ui';
 

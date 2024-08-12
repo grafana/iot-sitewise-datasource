@@ -1,5 +1,5 @@
 import { DataSourcePlugin } from '@grafana/data';
-import { DataSource } from './DataSource';
+import { DataSource } from './SitewiseDataSource';
 import { SitewiseQuery, SitewiseOptions } from './types';
 import { MetaInspector } from 'components/MetaInspector';
 import { ConfigEditor } from 'components/ConfigEditor';
