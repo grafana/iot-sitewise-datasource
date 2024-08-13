@@ -68,6 +68,8 @@ describe('QueryEditor', () => {
       expect(screen.getByText('Expand Time Range')).toBeInTheDocument();
       expect(screen.getByText('Time')).toBeInTheDocument();
       expect(screen.getByText('Format')).toBeInTheDocument();
+      // GOOD as the quality default
+      expect(screen.getByText('GOOD')).toBeInTheDocument();
     });
   });
 
@@ -82,6 +84,8 @@ describe('QueryEditor', () => {
       expect(screen.getByText('Quality')).toBeInTheDocument();
       expect(screen.getByText('Time')).toBeInTheDocument();
       expect(screen.getByText('Format')).toBeInTheDocument();
+      // GOOD as the quality default
+      expect(screen.getByText('GOOD')).toBeInTheDocument();
     });
   });
 
@@ -98,6 +102,8 @@ describe('QueryEditor', () => {
       expect(screen.getByText('Quality')).toBeInTheDocument();
       expect(screen.getByText('Format')).toBeInTheDocument();
       expect(screen.getByText('Resolution')).toBeInTheDocument();
+      // GOOD as the quality default
+      expect(screen.getByText('GOOD')).toBeInTheDocument();
     });
   });
 
@@ -111,10 +117,8 @@ describe('QueryEditor', () => {
       expect(screen.getByText('Quality')).toBeInTheDocument();
       expect(screen.getByText('Resolution')).toBeInTheDocument();
       expect(screen.getByText('Format')).toBeInTheDocument();
-
-      // Interpolated Property queries should not have ANY as the quality default
+      // GOOD as the quality default
       expect(screen.getByText('GOOD')).toBeInTheDocument();
-      expect(screen.queryByText('ANY')).not.toBeInTheDocument();
     });
   });
 
@@ -134,6 +138,8 @@ describe('QueryEditor', () => {
       expect(screen.getByText('Client cache')).toBeInTheDocument();
       expect(screen.getByText('Time')).toBeInTheDocument();
       expect(screen.getByText('Format')).toBeInTheDocument();
+      // GOOD as the quality default
+      expect(screen.getByText('GOOD')).toBeInTheDocument();
     });
   });
 
