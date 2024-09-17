@@ -27,9 +27,9 @@ func (p AssetPropertyValue) Frames(ctx context.Context, resources resource.Resou
 	valueField := fields.PropertyValueField(property, length)
 	qualityField := fields.QualityField(length)
 
-  frame := data.NewFrame(getFrameName(property), timeField, valueField, qualityField)
+	frame := data.NewFrame(getFrameName(property), timeField, valueField, qualityField)
 
-	if p.PropertyValue != nil {
+	if p.PropertyValue != nil && getPropertyVariantValue(p.PropertyValue.Value) != nil {
 		timeField.Set(0, getTime(p.PropertyValue.Timestamp))
 		valueField.Set(0, getPropertyVariantValue(p.PropertyValue.Value))
 		qualityField.Set(0, *p.PropertyValue.Quality)

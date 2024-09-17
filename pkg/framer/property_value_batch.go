@@ -71,7 +71,7 @@ func (AssetPropertyValueBatch) framePropertyValue(property *iotsitewise.Describe
 
 	frame := data.NewFrame(*property.AssetName, timeField, valueField, qualityField)
 
-	if assetPropertyValue != nil {
+	if assetPropertyValue != nil && getPropertyVariantValue(assetPropertyValue.Value) != nil {
 		timeField.Append(getTime(assetPropertyValue.Timestamp))
 		valueField.Append(getPropertyVariantValue(assetPropertyValue.Value))
 		qualityField.Append(*assetPropertyValue.Quality)
