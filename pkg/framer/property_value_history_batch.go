@@ -56,7 +56,6 @@ func (p AssetPropertyValueHistoryBatch) Frames(ctx context.Context, resources re
 
 func (p AssetPropertyValueHistoryBatch) Frame(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, h []*iotsitewise.AssetPropertyValue) (*data.Frame, error) {
 	length := len(h)
-
 	// TODO: make this work with the API instead of ad-hoc dataType inference
 	// https://github.com/grafana/iot-sitewise-datasource/issues/98#issuecomment-892947756
 	if util.IsAssetProperty(property) && *property.AssetProperty.DataType == *aws.String("?") {
@@ -102,9 +101,11 @@ func (p AssetPropertyValueHistoryBatch) framePropertyValues(property *iotsitewis
 	}
 
 	for i, v := range h {
-		timeField.Set(i, getTime(v.Timestamp))
-		valueField.Set(i, getPropertyVariantValue(v.Value))
-		qualityField.Set(i, *v.Quality)
+		if v.Value != nil && getPropertyVariantValue(v.Value) != nil {
+			timeField.Set(i, getTime(v.Timestamp))
+			valueField.Set(i, getPropertyVariantValue(v.Value))
+			qualityField.Set(i, *v.Quality)
+		}
 	}
 
 	return frame, nil
