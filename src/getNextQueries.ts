@@ -11,7 +11,7 @@ export function getNextQueries(request: DataQueryRequest<SitewiseQuery>, rsp?: D
         if (query) {
           const existingNextQuery = next.find((v) => v.refId === frame.refId);
           if (existingNextQuery) {
-            if (existingNextQuery.nextToken !== meta.nextToken && meta.entryId && meta.nextToken) {
+            if (meta.entryId && meta.nextToken) {
               if (!existingNextQuery.nextTokens) {
                 existingNextQuery.nextTokens = {};
               }

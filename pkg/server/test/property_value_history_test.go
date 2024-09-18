@@ -18,6 +18,7 @@ import (
 	"github.com/grafana/grafana-plugin-sdk-go/experimental"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/server"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -93,7 +94,7 @@ func Test_get_property_value_history_with_default_aka_table_response_format(t *t
 		data.NewField("Wind Speed", nil, []float64{23.8}).SetConfig(&data.FieldConfig{Unit: "m/s"}),
 		data.NewField("quality", nil, []string{"GOOD"}),
 	).SetMeta(&data.FrameMeta{
-		Custom: models.SitewiseCustomMeta{Resolution: "RAW"},
+		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: "1assetid-aaaa-2222-bbbb-3333cccc4444"},
 	})
 	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
 		t.Errorf("Result mismatch (-want +got):\n%s", diff)
@@ -188,7 +189,7 @@ func Test_get_property_value_history_with_time_series_response_format(t *testing
 		data.NewField("Wind Speed", data.Labels{"quality": "GOOD"}, []*float64{Pointer(23.8)}),
 	).SetMeta(&data.FrameMeta{
 		Type:   data.FrameTypeTimeSeriesWide,
-		Custom: models.SitewiseCustomMeta{Resolution: "RAW"},
+		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: "1assetid-aaaa-2222-bbbb-3333cccc4444"},
 	})
 	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
 		t.Errorf("Result mismatch (-want +got):\n%s", diff)
@@ -358,7 +359,7 @@ func Test_get_property_value_history_with_flatten_l4e(t *testing.T) {
 		data.NewField("RPM", nil, []float64{0.44856}),
 		data.NewField("Torque", nil, []float64{0.55144}),
 	).SetMeta(&data.FrameMeta{
-		Custom: models.SitewiseCustomMeta{Resolution: "RAW"},
+		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: "1assetid-aaaa-2222-bbbb-3333cccc4444"},
 	})
 	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
 		t.Errorf("Result mismatch (-want +got):\n%s", diff)
@@ -443,7 +444,7 @@ func Test_get_property_value_history_with_struct_type(t *testing.T) {
 		data.NewField("AWS/L4E_ANOMALY_RESULT", nil, []string{structValue}).SetConfig(&data.FieldConfig{}),
 		data.NewField("quality", nil, []string{"GOOD"}),
 	).SetMeta(&data.FrameMeta{
-		Custom: models.SitewiseCustomMeta{Resolution: "RAW"},
+		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: "1assetid-aaaa-2222-bbbb-3333cccc4444"},
 	})
 	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
 		t.Errorf("Result mismatch (-want +got):\n%s", diff)
@@ -898,7 +899,7 @@ func Test_get_property_value_history_from_expression_query_with_time_series_resp
 		data.NewField("Wind Speed", data.Labels{"quality": "GOOD"}, []*float64{Pointer(23.8)}),
 	).SetMeta(&data.FrameMeta{
 		Type:   data.FrameTypeTimeSeriesWide,
-		Custom: models.SitewiseCustomMeta{Resolution: "RAW"},
+		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: "1assetid-aaaa-2222-bbbb-3333cccc4444"},
 	})
 	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
 		t.Errorf("Result mismatch (-want +got):\n%s", diff)
@@ -920,4 +921,124 @@ func Test_get_property_value_history_from_expression_query_with_time_series_resp
 			PropertyId: Pointer("11propid-aaaa-2222-bbbb-3333cccc4444"),
 		},
 	)
+}
+
+func Test_get_property_value_history_with_batched_queries(t *testing.T) {
+	mockSw := &mocks.SitewiseClient{}
+	mockedSuccessEntriesFirstBatch := []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{}
+	for i := 1; i <= api.BatchGetAssetPropertyValueHistoryMaxEntries; i++ {
+		mockedSuccessEntriesFirstBatch = append(mockedSuccessEntriesFirstBatch, &iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{
+			AssetPropertyValueHistory: []*iotsitewise.AssetPropertyValue{
+				{
+					Quality: Pointer("GOOD"),
+					Timestamp: &iotsitewise.TimeInNanos{
+						OffsetInNanos: Pointer(int64(0)),
+						TimeInSeconds: Pointer(int64(1612207200)),
+					},
+					Value: &iotsitewise.Variant{
+						DoubleValue: Pointer(float64(23.8)),
+					},
+				},
+			},
+			EntryId: Pointer(fmt.Sprintf("%dassetid-aaaa-2222-bbbb-3333cccc4444", i)),
+		})
+	}
+	mockSw.On(
+		"BatchGetAssetPropertyValueHistoryPageAggregation",
+		mock.Anything,
+		mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyValueHistoryInput) bool {
+			return len(input.Entries) == api.BatchGetAssetPropertyValueHistoryMaxEntries
+		}),
+		mock.Anything,
+		mock.Anything,
+	).Return(&iotsitewise.BatchGetAssetPropertyValueHistoryOutput{
+		NextToken:      Pointer("some-next-token-1"),
+		SuccessEntries: mockedSuccessEntriesFirstBatch,
+	}, nil)
+	mockedSuccessEntriesSecondBatch := []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{{
+		AssetPropertyValueHistory: []*iotsitewise.AssetPropertyValue{
+			{
+				Quality: Pointer("GOOD"),
+				Timestamp: &iotsitewise.TimeInNanos{
+					OffsetInNanos: Pointer(int64(0)),
+					TimeInSeconds: Pointer(int64(1612207200)),
+				},
+				Value: &iotsitewise.Variant{
+					DoubleValue: Pointer(float64(23.8)),
+				},
+			},
+		},
+		EntryId: Pointer(fmt.Sprintf("%dassetid-aaaa-2222-bbbb-3333cccc4444", api.BatchGetAssetPropertyValueHistoryMaxEntries+1)),
+	}}
+	mockSw.On(
+		"BatchGetAssetPropertyValueHistoryPageAggregation",
+		mock.Anything,
+		mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyValueHistoryInput) bool {
+			return len(input.Entries) < api.BatchGetAssetPropertyValueHistoryMaxEntries
+		}),
+		mock.Anything,
+		mock.Anything,
+	).Return(&iotsitewise.BatchGetAssetPropertyValueHistoryOutput{
+		NextToken:      Pointer("some-next-token-2"),
+		SuccessEntries: mockedSuccessEntriesSecondBatch,
+	}, nil)
+	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+		AssetName: Pointer("Demo Turbine Asset 1"),
+		AssetProperty: &iotsitewise.Property{
+			DataType: Pointer("DOUBLE"),
+			Name:     Pointer("Wind Speed"),
+			Unit:     Pointer("m/s"),
+		},
+	}, nil)
+
+	srvr := &server.Server{
+		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
+	}
+
+	sitewise.GetCache = func() *cache.Cache {
+		return cache.New(cache.DefaultExpiration, cache.NoExpiration)
+	}
+
+	qdr, err := srvr.HandlePropertyValueHistory(context.Background(), &backend.QueryDataRequest{
+		PluginContext: backend.PluginContext{},
+		Queries: []backend.DataQuery{
+			{
+				QueryType:     models.QueryTypePropertyValueHistory,
+				RefID:         "A",
+				MaxDataPoints: 100,
+				Interval:      1000,
+				TimeRange:     timeRange,
+				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
+					BaseQuery: models.BaseQuery{
+						AwsRegion: testdata.AwsRegion,
+						AssetIds: []string{
+							"1assetid-aaaa-2222-bbbb-3333cccc4444",
+							"2assetid-aaaa-2222-bbbb-3333cccc4444",
+							"3assetid-aaaa-2222-bbbb-3333cccc4444",
+							"4assetid-aaaa-2222-bbbb-3333cccc4444",
+							"5assetid-aaaa-2222-bbbb-3333cccc4444",
+							"6assetid-aaaa-2222-bbbb-3333cccc4444",
+							"7assetid-aaaa-2222-bbbb-3333cccc4444",
+							"8assetid-aaaa-2222-bbbb-3333cccc4444",
+							"9assetid-aaaa-2222-bbbb-3333cccc4444",
+							"10assetid-aaaa-2222-bbbb-3333cccc4444",
+							"11assetid-aaaa-2222-bbbb-3333cccc4444",
+							"12assetid-aaaa-2222-bbbb-3333cccc4444",
+							"13assetid-aaaa-2222-bbbb-3333cccc4444",
+							"14assetid-aaaa-2222-bbbb-3333cccc4444",
+							"15assetid-aaaa-2222-bbbb-3333cccc4444",
+							"16assetid-aaaa-2222-bbbb-3333cccc4444",
+							"17assetid-aaaa-2222-bbbb-3333cccc4444",
+						},
+					},
+				}),
+			},
+		},
+	})
+	require.Nil(t, err)
+
+	for i, dr := range qdr.Responses {
+		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-with-batched-queries", i)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+	}
 }

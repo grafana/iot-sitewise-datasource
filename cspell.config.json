@@ -9,6 +9,7 @@
     "pkg/**/*_test.go",
     "provisioning/**/*.yaml",
     "**/testdata/*.json",
+    "**/testdata/*.jsonc",
     "**/dashboards/*.json",
     "src/static/**",
     "vendor/**",
@@ -70,7 +71,7 @@
     "eslintcache",
     "lefthook",
     "ssjagad",
-    "jackspeak", 
+    "jackspeak",
     "nvmrc",
     "golangci"
   ]
