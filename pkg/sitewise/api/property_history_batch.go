@@ -79,10 +79,15 @@ func BatchGetAssetPropertyValues(ctx context.Context, client client.SitewiseClie
 		return models.AssetPropertyValueQuery{}, nil, err
 	}
 
-	awsReq := historyBatchQueryToInput(modifiedQuery)
-	resp, err := client.BatchGetAssetPropertyValueHistoryPageAggregation(ctx, awsReq, query.MaxPageAggregations, maxDps)
-	if err != nil {
-		return models.AssetPropertyValueQuery{}, nil, err
+	batchedQueries := batchQueries(modifiedQuery, BatchGetAssetPropertyValueHistoryMaxEntries)
+	responses := []*iotsitewise.BatchGetAssetPropertyValueHistoryOutput{}
+	for _, q := range batchedQueries {
+		awsReq := historyBatchQueryToInput(q)
+		resp, err := client.BatchGetAssetPropertyValueHistoryPageAggregation(ctx, awsReq, query.MaxPageAggregations, maxDps)
+		if err != nil {
+			return models.AssetPropertyValueQuery{}, nil, err
+		}
+		responses = append(responses, resp)
 	}
 
 	anomalyAssetIds := []string{}
@@ -95,10 +100,10 @@ func BatchGetAssetPropertyValues(ctx context.Context, client client.SitewiseClie
 
 	return modifiedQuery,
 		&framer.AssetPropertyValueHistoryBatch{
-			BatchGetAssetPropertyValueHistoryOutput: resp,
-			Query:                                   modifiedQuery,
-			AnomalyAssetIds:                         anomalyAssetIds,
-			SitewiseClient:                          client,
+			Responses:       responses,
+			Query:           modifiedQuery,
+			AnomalyAssetIds: anomalyAssetIds,
+			SitewiseClient:  client,
 		},
 		nil
 }

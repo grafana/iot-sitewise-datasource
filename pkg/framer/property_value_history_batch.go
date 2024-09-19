@@ -17,38 +17,52 @@ import (
 )
 
 type AssetPropertyValueHistoryBatch struct {
-	*iotsitewise.BatchGetAssetPropertyValueHistoryOutput
+	Responses       []*iotsitewise.BatchGetAssetPropertyValueHistoryOutput
 	Query           models.AssetPropertyValueQuery
 	AnomalyAssetIds []string
 	SitewiseClient  client.SitewiseClient
 }
 
 func (p AssetPropertyValueHistoryBatch) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
-	frames := make(data.Frames, 0, len(p.SuccessEntries))
+	successEntriesLength := 0
+	for _, r := range p.Responses {
+		successEntriesLength += len(r.SuccessEntries)
+	}
+	frames := make(data.Frames, 0, successEntriesLength)
+
 	properties, err := resources.Properties(ctx)
 	if err != nil {
 		return frames, err
 	}
 
-	for _, h := range p.SuccessEntries {
-		frame, err := p.Frame(ctx, properties[*h.EntryId], h.AssetPropertyValueHistory)
-		if err != nil {
-			return nil, err
-		}
-		if frame != nil {
-			frames = append(frames, frame)
-		}
-	}
-
-	for _, e := range p.ErrorEntries {
-		property := properties[*e.EntryId]
-		frame := data.NewFrame(getFrameName(property))
-		if e.ErrorMessage != nil {
+	for _, r := range p.Responses {
+		for _, s := range r.SuccessEntries {
+			frame, err := p.Frame(ctx, properties[*s.EntryId], s.AssetPropertyValueHistory)
 			frame.Meta = &data.FrameMeta{
-				Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: *e.ErrorMessage}},
+				Custom: models.SitewiseCustomMeta{
+					NextToken:  aws.StringValue(r.NextToken),
+					EntryId:    *s.EntryId,
+					Resolution: models.PropertyQueryResolutionRaw,
+				},
+			}
+			if err != nil {
+				return nil, err
+			}
+			if frame != nil {
+				frames = append(frames, frame)
 			}
 		}
-		frames = append(frames, frame)
+
+		for _, e := range r.ErrorEntries {
+			property := properties[*e.EntryId]
+			frame := data.NewFrame(getFrameName(property))
+			if e.ErrorMessage != nil {
+				frame.Meta = &data.FrameMeta{
+					Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: *e.ErrorMessage}},
+				}
+			}
+			frames = append(frames, frame)
+		}
 	}
 
 	return frames, nil
@@ -93,13 +107,6 @@ func (p AssetPropertyValueHistoryBatch) framePropertyValues(property *iotsitewis
 		valueField,
 		qualityField)
 
-	frame.Meta = &data.FrameMeta{
-		Custom: models.SitewiseCustomMeta{
-			NextToken:  aws.StringValue(p.NextToken),
-			Resolution: models.PropertyQueryResolutionRaw,
-		},
-	}
-
 	for i, v := range h {
 		if v.Value != nil && getPropertyVariantValue(v.Value) != nil {
 			timeField.Set(i, getTime(v.Timestamp))
@@ -128,13 +135,6 @@ func (p AssetPropertyValueHistoryBatch) frameL4ePropertyValues(ctx context.Conte
 	frame := data.NewFrame(
 		frameName,
 		dataFields...)
-
-	frame.Meta = &data.FrameMeta{
-		Custom: models.SitewiseCustomMeta{
-			NextToken:  aws.StringValue(p.NextToken),
-			Resolution: models.PropertyQueryResolutionRaw,
-		},
-	}
 
 	return frame, nil
 }

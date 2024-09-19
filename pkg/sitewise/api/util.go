@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"math"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
@@ -102,4 +103,46 @@ func filterAnomalyAssetIds(ctx context.Context, client client.SitewiseClient, qu
 	}
 
 	return anomalyAssetIds, nil
+}
+
+func batchQueries(query models.AssetPropertyValueQuery, maxBatchSize int) []models.AssetPropertyValueQuery {
+	numAssetIds := len(query.AssetIds)
+	if numAssetIds <= maxBatchSize {
+		return []models.AssetPropertyValueQuery{query}
+	}
+
+	queries := []models.AssetPropertyValueQuery{}
+	if len(query.NextTokens) > 0 {
+		assetIdsGroupedByNextToken := map[string][]string{}
+		for _, id := range query.AssetIds {
+			nextToken := query.NextTokens[id]
+			if _, exists := assetIdsGroupedByNextToken[nextToken]; exists {
+				assetIdsGroupedByNextToken[nextToken] = append(assetIdsGroupedByNextToken[nextToken], id)
+			} else {
+				ids := []string{id}
+				assetIdsGroupedByNextToken[nextToken] = ids
+			}
+		}
+		for _, v := range assetIdsGroupedByNextToken {
+			q := query
+			q.AssetIds = v
+			queries = append(queries, q)
+		}
+	} else {
+		var idx = 0
+		numBatches := int(math.Ceil(float64(numAssetIds) / float64(maxBatchSize)))
+		for i := 0; i < numBatches; i++ {
+			q := query
+			batchEndIndex := idx + maxBatchSize
+			if batchEndIndex <= numAssetIds {
+				q.AssetIds = query.AssetIds[idx:batchEndIndex]
+				idx += maxBatchSize
+			} else {
+				q.AssetIds = query.AssetIds[idx:]
+			}
+			queries = append(queries, q)
+		}
+	}
+
+	return queries
 }
