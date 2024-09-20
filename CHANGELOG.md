@@ -1,6 +1,10 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
+## 1.25.0
+
+- Fix: batch entries up to the limit specified in the API [#355](https://github.com/grafana/iot-sitewise-datasource/pull/355)
+
 ## 1.24.0
 
 - fix: add check for nil for property value [#352](https://github.com/grafana/iot-sitewise-datasource/pull/352)
