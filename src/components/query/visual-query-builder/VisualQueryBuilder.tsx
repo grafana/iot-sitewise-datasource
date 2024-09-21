@@ -8,7 +8,7 @@ import { QueryTypeInfo, siteWiseQueryTypes, changeQueryType } from 'queryInfo';
 import { standardRegionOptions } from 'regions';
 import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
 import { PropertyQueryEditor } from './PropertyQueryEditor';
-import { migrateQuery } from '../../migrations/migrateQuery';
+import { migrateQuery } from '../../../migrations/migrateQuery';
 import { EditorField, EditorFieldGroup, EditorRow, EditorRows } from '@grafana/experimental';
 import { QueryEditorHeader } from '@grafana/aws-sdk';
 import { ClientCacheRow } from './ClientCacheRow';
@@ -24,7 +24,7 @@ const queryDefaults: Partial<SitewiseQuery> = {
 
 export const firstLabelWith = 20;
 
-export function QueryEditor(props: Props) {
+export function VisualQueryBuilder(props: Props) {
   const { datasource } = props;
   const query = defaults(props.query, queryDefaults);
 
@@ -34,7 +34,7 @@ export function QueryEditor(props: Props) {
     if (query !== migratedQuery) {
       props.onChange(migratedQuery);
     }
-  }, [query.assetIds]);
+  }, [query.assetId]);
 
   const defaultRegion: SelectableValue<string> = {
     label: `Default`,
