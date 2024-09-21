@@ -34,7 +34,7 @@ export function QueryEditor(props: Props) {
     if (query !== migratedQuery) {
       props.onChange(migratedQuery);
     }
-  }, [query.assetId]);
+  }, [query.assetIds]);
 
   const defaultRegion: SelectableValue<string> = {
     label: `Default`,
