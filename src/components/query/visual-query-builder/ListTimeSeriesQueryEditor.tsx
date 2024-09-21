@@ -3,7 +3,7 @@ import { SelectableValue } from '@grafana/data';
 import { ListTimeSeriesQuery } from 'types';
 import { Input, Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
-import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
+import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/experimental';
 
 interface Props extends SitewiseQueryEditorProps<ListTimeSeriesQuery> {
   newFormStylingEnabled?: boolean;
