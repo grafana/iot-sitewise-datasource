@@ -1,10 +1,10 @@
-import { AbsoluteTimeRange, ArrayVector, DataFrame, FieldType } from '@grafana/data';
+import { AbsoluteTimeRange, DataFrame, FieldType } from '@grafana/data';
 
 interface TrimParams {
   dataFrame: DataFrame;
   timeRange: AbsoluteTimeRange;
   lastObservation?: boolean;
-};
+}
 
 /**
  * Trim the time series data frame to the specified time range.
@@ -25,37 +25,37 @@ export function trimTimeSeriesDataFrame({
       ...dataFrame,
       fields: [],
       length: 0,
-    }
+    };
   }
 
-  const timeField = fields.find(field => field.name === 'time' && field.type === FieldType.time);
+  const timeField = fields.find((field) => field.name === 'time' && field.type === FieldType.time);
   if (timeField == null) {
     // return the original data frame if a time field cannot be found
     return dataFrame;
   }
 
-  const timeValues = timeField.values.toArray();
+  const timeValues = timeField.values;
 
-  let fromIndex = timeValues.findIndex(time => time > from);  // from is exclusive
+  let fromIndex = timeValues.findIndex((time) => time > from); // from is exclusive
   if (fromIndex === -1) {
     // no time value within range; include no data in the slice
-    fromIndex = timeValues.length ;
+    fromIndex = timeValues.length;
   } else if (lastObservation) {
     // Keeps 1 extra data point before the range
     fromIndex = Math.max(fromIndex - 1, 0);
   }
 
-  let toIndex = timeValues.findIndex(time => time > to);  // to is inclusive
+  let toIndex = timeValues.findIndex((time) => time > to); // to is inclusive
   if (toIndex === -1) {
     // all time values before `to`
     toIndex = timeValues.length;
   }
 
-  const trimmedFields = fields.map(field => ({
+  const trimmedFields = fields.map((field) => ({
     ...field,
-    values: new ArrayVector(field.values.toArray().slice(fromIndex, toIndex)),
+    values: field.values.slice(fromIndex, toIndex),
   }));
-  
+
   return {
     ...dataFrame,
     fields: trimmedFields,
@@ -82,42 +82,42 @@ export function trimTimeSeriesDataFrameReversedTime({
       ...dataFrame,
       fields: [],
       length: 0,
-    }
+    };
   }
 
-  const timeField = fields.find(field => field.name === 'time' && field.type === FieldType.time);
+  const timeField = fields.find((field) => field.name === 'time' && field.type === FieldType.time);
   if (timeField == null) {
     // return the original data frame if a time field cannot be found
     return dataFrame;
   }
 
   // Copy before reverse in place
-  const timeValues = [...timeField.values.toArray()].reverse();
-  
-  let fromIndex = timeValues.findIndex(time => time > from);  // from is exclusive
+  const timeValues = [...timeField.values].reverse();
+
+  let fromIndex = timeValues.findIndex((time) => time > from); // from is exclusive
   if (fromIndex === -1) {
     // no time value within range; include no data in the slice
-    fromIndex = timeValues.length ;
+    fromIndex = timeValues.length;
   } else if (lastObservation) {
     // Keeps 1 extra data point before the range
     fromIndex = Math.max(fromIndex - 1, 0);
   }
 
-  let toIndex = timeValues.findIndex(time => time > to);  // to is inclusive
+  let toIndex = timeValues.findIndex((time) => time > to); // to is inclusive
   if (toIndex === -1) {
     // all time values before `to`
     toIndex = timeValues.length;
   }
 
-  const trimmedFields = fields.map(field => {
-    const dataValues = [...field.values.toArray()].reverse().slice(fromIndex, toIndex);
+  const trimmedFields = fields.map((field) => {
+    const dataValues = [...field.values].reverse().slice(fromIndex, toIndex);
 
     return {
       ...field,
-      values: new ArrayVector(dataValues.reverse()),
+      values: dataValues.reverse(),
     };
   });
-  
+
   return {
     ...dataFrame,
     fields: trimmedFields,
