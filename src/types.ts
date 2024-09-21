@@ -16,6 +16,11 @@ export enum QueryType {
   ListTimeSeries = 'ListTimeSeries',
 }
 
+export enum QueryEditorMode {
+  Builder = 'builder',
+  Code = 'code',
+}
+
 export enum SiteWiseQuality {
   ANY = 'ANY',
   GOOD = 'GOOD',
@@ -58,6 +63,10 @@ export interface SitewiseQuery extends DataQuery {
   queryType: QueryType;
   region?: string; // aws region string
   responseFormat?: SiteWiseResponseFormat;
+
+  // Query Editor
+  expression?: string;
+  editorMode?: QueryEditorMode;
 
   /** @deprecated -- this is migrated to assetIds */
   assetId?: string;

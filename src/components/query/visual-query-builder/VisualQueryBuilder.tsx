@@ -10,7 +10,6 @@ import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
 import { PropertyQueryEditor } from './PropertyQueryEditor';
 import { migrateQuery } from '../../../migrations/migrateQuery';
 import { EditorField, EditorFieldGroup, EditorRow, EditorRows } from '@grafana/experimental';
-import { QueryEditorHeader } from '@grafana/aws-sdk';
 import { ClientCacheRow } from './ClientCacheRow';
 import { ListTimeSeriesQueryEditorFunction } from './ListTimeSeriesQueryEditor';
 
@@ -96,13 +95,6 @@ export function VisualQueryBuilder(props: Props) {
 
   return (
     <>
-      {props?.app !== 'explore' && (
-        <QueryEditorHeader<DataSource, SitewiseQuery, SitewiseOptions>
-          {...props}
-          enableRunButton
-          showAsyncQueryButtons={false}
-        />
-      )}
       <EditorRows>
         <EditorRow>
           <EditorFieldGroup>
