@@ -33,7 +33,7 @@ export function VisualQueryBuilder(props: Props) {
     if (query !== migratedQuery) {
       props.onChange(migratedQuery);
     }
-  }, [query.assetIds]);
+  }, [query.assetId]);
 
   const defaultRegion: SelectableValue<string> = {
     label: `Default`,
