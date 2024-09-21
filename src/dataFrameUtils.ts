@@ -34,7 +34,7 @@ export function trimTimeSeriesDataFrame({
     return dataFrame;
   }
 
-  const timeValues = timeField.values.toArray();
+  const timeValues = timeField.values;
 
   let fromIndex = timeValues.findIndex((time) => time > from); // from is exclusive
   if (fromIndex === -1) {
@@ -53,7 +53,7 @@ export function trimTimeSeriesDataFrame({
 
   const trimmedFields = fields.map((field) => ({
     ...field,
-    values: field.values.toArray().slice(fromIndex, toIndex),
+    values: field.values.slice(fromIndex, toIndex),
   }));
 
   return {
@@ -92,7 +92,7 @@ export function trimTimeSeriesDataFrameReversedTime({
   }
 
   // Copy before reverse in place
-  const timeValues = [...timeField.values.toArray()].reverse();
+  const timeValues = [...timeField.values].reverse();
 
   let fromIndex = timeValues.findIndex((time) => time > from); // from is exclusive
   if (fromIndex === -1) {
@@ -110,7 +110,7 @@ export function trimTimeSeriesDataFrameReversedTime({
   }
 
   const trimmedFields = fields.map((field) => {
-    const dataValues = [...field.values.toArray()].reverse().slice(fromIndex, toIndex);
+    const dataValues = [...field.values].reverse().slice(fromIndex, toIndex);
 
     return {
       ...field,
