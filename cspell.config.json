@@ -71,6 +71,7 @@
     "lefthook",
     "ssjagad",
     "jackspeak", 
-    "nvmrc"
+    "nvmrc",
+    "gomod"
   ]
 }
