@@ -42,9 +42,11 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 	}
 
 	for i, v := range p.AssetPropertyValueHistory {
-		timeField.Set(i, getTime(v.Timestamp))
-		valueField.Set(i, getPropertyVariantValue(v.Value))
-		qualityField.Set(i, *v.Quality)
+		if v.Value != nil && getPropertyVariantValue(v.Value) != nil {
+			timeField.Set(i, getTime(v.Timestamp))
+			valueField.Set(i, getPropertyVariantValue(v.Value))
+			qualityField.Set(i, *v.Quality)
+		}
 	}
 
 	return data.Frames{frame}, nil

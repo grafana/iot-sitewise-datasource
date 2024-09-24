@@ -48,11 +48,15 @@ func BatchGetAssetPropertyValue(ctx context.Context, client client.SitewiseClien
 		return models.AssetPropertyValueQuery{}, nil, err
 	}
 
-	req := valueBatchQueryToInput(modifiedQuery)
-
-	resp, err := client.BatchGetAssetPropertyValueWithContext(ctx, req)
-	if err != nil {
-		return models.AssetPropertyValueQuery{}, nil, err
+	batchedQueries := batchQueries(modifiedQuery, BatchGetAssetPropertyValueMaxEntries)
+	responses := []*iotsitewise.BatchGetAssetPropertyValueOutput{}
+	for _, q := range batchedQueries {
+		req := valueBatchQueryToInput(q)
+		resp, err := client.BatchGetAssetPropertyValueWithContext(ctx, req)
+		if err != nil {
+			return models.AssetPropertyValueQuery{}, nil, err
+		}
+		responses = append(responses, resp)
 	}
 
 	anomalyAssetIds := []string{}
@@ -65,9 +69,9 @@ func BatchGetAssetPropertyValue(ctx context.Context, client client.SitewiseClien
 
 	return modifiedQuery,
 		&framer.AssetPropertyValueBatch{
-			BatchGetAssetPropertyValueOutput: resp,
-			AnomalyAssetIds:                  anomalyAssetIds,
-			SitewiseClient:                   client,
+			Responses:       responses,
+			AnomalyAssetIds: anomalyAssetIds,
+			SitewiseClient:  client,
 		},
 		nil
 }

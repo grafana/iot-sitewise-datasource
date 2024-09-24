@@ -14,8 +14,8 @@ import (
 )
 
 type AssetPropertyAggregatesBatch struct {
-	Request  iotsitewise.BatchGetAssetPropertyAggregatesInput
-	Response iotsitewise.BatchGetAssetPropertyAggregatesOutput
+	Requests  []iotsitewise.BatchGetAssetPropertyAggregatesInput
+	Responses []iotsitewise.BatchGetAssetPropertyAggregatesOutput
 }
 
 // getAggregationFields enforces ordering of aggregate fields
@@ -86,40 +86,49 @@ func addAggregateFieldValues(idx int, fields map[string]*data.Field, aggs *iotsi
 }
 
 func (a AssetPropertyAggregatesBatch) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
-	resp := a.Response
-	frames := data.Frames{}
+	successEntriesLength := 0
+	for _, r := range a.Responses {
+		successEntriesLength += len(r.SuccessEntries)
+	}
+	frames := make(data.Frames, 0, successEntriesLength)
 
 	properties, err := resources.Properties(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	for i, e := range resp.SuccessEntries {
-		property := properties[*e.EntryId]
-		frame, err := a.Frame(ctx, property, e.AggregatedValues)
-		if err != nil {
-			return nil, err
+	for i, r := range a.Responses {
+		request := a.Requests[i]
+		for j, e := range r.SuccessEntries {
+			property := properties[*e.EntryId]
+			frame, err := a.Frame(ctx, property, e.AggregatedValues)
+			if err != nil {
+				return nil, err
+			}
+
+			frame.Meta = &data.FrameMeta{
+				Custom: models.SitewiseCustomMeta{
+					NextToken:  aws.StringValue(r.NextToken),
+					EntryId:    *e.EntryId,
+					Resolution: aws.StringValue(request.Entries[j].Resolution),
+					Aggregates: aws.StringValueSlice(request.Entries[j].AggregateTypes),
+				},
+			}
+			frames = append(frames, frame)
 		}
-		frame.Meta = &data.FrameMeta{
-			Custom: models.SitewiseCustomMeta{
-				NextToken:  aws.StringValue(resp.NextToken),
-				Resolution: aws.StringValue(a.Request.Entries[i].Resolution),
-				Aggregates: aws.StringValueSlice(a.Request.Entries[i].AggregateTypes),
-			},
+
+		for _, e := range r.ErrorEntries {
+			property := properties[*e.EntryId]
+			frame := data.NewFrame(getFrameName(property))
+			if e.ErrorMessage != nil {
+				frame.Meta = &data.FrameMeta{
+					Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: *e.ErrorMessage}},
+				}
+			}
+			frames = append(frames, frame)
 		}
-		frames = append(frames, frame)
 	}
 
-	for _, e := range resp.ErrorEntries {
-		property := properties[*e.EntryId]
-		frame := data.NewFrame(getFrameName(property))
-		if e.ErrorMessage != nil {
-			frame.Meta = &data.FrameMeta{
-				Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: *e.ErrorMessage}},
-			}
-		}
-		frames = append(frames, frame)
-	}
 	return frames, nil
 }
 

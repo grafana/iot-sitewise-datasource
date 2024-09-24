@@ -9,6 +9,7 @@
     "pkg/**/*_test.go",
     "provisioning/**/*.yaml",
     "**/testdata/*.json",
+    "**/testdata/*.jsonc",
     "**/dashboards/*.json",
     "src/static/**",
     "vendor/**",
@@ -72,6 +73,7 @@
     "ssjagad",
     "jackspeak", 
     "nvmrc",
-    "gomod"
+    "gomod",
+    "golangci"
   ]
 }

@@ -96,22 +96,22 @@ func BatchGetAssetPropertyAggregates(ctx context.Context, client client.Sitewise
 		return models.AssetPropertyValueQuery{}, nil, err
 	}
 
-	awsReq := aggregateBatchQueryToInput(modifiedQuery)
-
-	resp, err := client.BatchGetAssetPropertyAggregatesPageAggregation(ctx, awsReq, modifiedQuery.MaxPageAggregations, maxDps)
-
-	if err != nil {
-		return models.AssetPropertyValueQuery{}, nil, err
+	batchedQueries := batchQueries(modifiedQuery, BatchGetAssetPropertyAggregatesMaxEntries)
+	requests := []iotsitewise.BatchGetAssetPropertyAggregatesInput{}
+	responses := []iotsitewise.BatchGetAssetPropertyAggregatesOutput{}
+	for _, q := range batchedQueries {
+		awsReq := aggregateBatchQueryToInput(q)
+		requests = append(requests, *awsReq)
+		resp, err := client.BatchGetAssetPropertyAggregatesPageAggregation(ctx, awsReq, modifiedQuery.MaxPageAggregations, maxDps)
+		if err != nil {
+			return models.AssetPropertyValueQuery{}, nil, err
+		}
+		responses = append(responses, *resp)
 	}
 
 	return modifiedQuery,
 		&framer.AssetPropertyAggregatesBatch{
-			Request: *awsReq,
-			Response: iotsitewise.BatchGetAssetPropertyAggregatesOutput{
-				SuccessEntries: resp.SuccessEntries,
-				SkippedEntries: resp.SkippedEntries,
-				ErrorEntries:   resp.ErrorEntries,
-				NextToken:      resp.NextToken,
-			},
+			Requests:  requests,
+			Responses: responses,
 		}, nil
 }

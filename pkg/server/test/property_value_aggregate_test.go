@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"fmt"
 	"math"
 	"testing"
 	"time"
@@ -20,6 +21,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
 )
 
@@ -171,6 +173,7 @@ func TestPropertyValueAggregate(t *testing.T) {
 			).SetMeta(&data.FrameMeta{
 				Custom: models.SitewiseCustomMeta{
 					NextToken:  "some-next-token",
+					EntryId:    "1assetid-aaaa-2222-bbbb-3333cccc4444",
 					Resolution: "1m",
 					Aggregates: []string{models.AggregateSum},
 				},
@@ -281,6 +284,7 @@ func TestPropertyValueAggregateWithDisassociatedStream(t *testing.T) {
 		).SetMeta(&data.FrameMeta{
 			Custom: models.SitewiseCustomMeta{
 				NextToken:  "some-next-token",
+				EntryId:    "61e4e1a8ab39463fa0b9418d9be2923e364f40a8b935b69d006b999516cdecef",
 				Resolution: "1m",
 				Aggregates: []string{models.AggregateSum},
 			},
@@ -415,6 +419,122 @@ func TestPropertyValueAggregate_with_error(t *testing.T) {
 
 	})
 
+}
+
+func TestPropertyValueAggregate_with_batched_queries(t *testing.T) {
+	mockSw := &mocks.SitewiseClient{}
+
+	mockedSuccessEntriesFirstBatch := []*iotsitewise.BatchGetAssetPropertyAggregatesSuccessEntry{}
+	for i := 1; i <= api.BatchGetAssetPropertyAggregatesMaxEntries; i++ {
+		mockedSuccessEntriesFirstBatch = append(mockedSuccessEntriesFirstBatch, &iotsitewise.BatchGetAssetPropertyAggregatesSuccessEntry{
+			AggregatedValues: []*iotsitewise.AggregatedValue{{
+				Timestamp: Pointer(time.Date(2021, 2, 1, 16, 27, 0, 0, time.UTC)),
+				Value:     &iotsitewise.Aggregates{Sum: Pointer(1688.6)},
+			}},
+			EntryId: aws.String(fmt.Sprintf("%dassetid-aaaa-2222-bbbb-3333cccc4444", i)),
+		})
+	}
+	mockSw.On(
+		"BatchGetAssetPropertyAggregatesPageAggregation",
+		mock.Anything,
+		mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyAggregatesInput) bool {
+			return len(input.Entries) == api.BatchGetAssetPropertyAggregatesMaxEntries
+		}),
+		mock.Anything,
+		mock.Anything,
+	).Return(&iotsitewise.BatchGetAssetPropertyAggregatesOutput{
+		NextToken:      Pointer("some-next-token-1"),
+		SuccessEntries: mockedSuccessEntriesFirstBatch,
+	}, nil)
+	mockedSuccessEntriesSecondBatch := []*iotsitewise.BatchGetAssetPropertyAggregatesSuccessEntry{{
+		AggregatedValues: []*iotsitewise.AggregatedValue{{
+			Timestamp: Pointer(time.Date(2021, 2, 1, 16, 27, 0, 0, time.UTC)),
+			Value:     &iotsitewise.Aggregates{Sum: Pointer(1688.6)},
+		}},
+		EntryId: aws.String(fmt.Sprintf("%dassetid-aaaa-2222-bbbb-3333cccc4444", api.BatchGetAssetPropertyAggregatesMaxEntries+1)),
+	}}
+	mockSw.On(
+		"BatchGetAssetPropertyAggregatesPageAggregation",
+		mock.Anything,
+		mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyAggregatesInput) bool {
+			return len(input.Entries) < api.BatchGetAssetPropertyAggregatesMaxEntries
+		}),
+		mock.Anything,
+		mock.Anything,
+	).Return(&iotsitewise.BatchGetAssetPropertyAggregatesOutput{
+		NextToken:      Pointer("some-next-token-2"),
+		SuccessEntries: mockedSuccessEntriesSecondBatch,
+	}, nil)
+
+	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+		AssetName: Pointer("Demo Turbine Asset 1"),
+		AssetProperty: &iotsitewise.Property{
+			DataType: Pointer("DOUBLE"),
+			Name:     Pointer("Wind Speed"),
+			Unit:     Pointer("m/s"),
+		},
+	}, nil)
+
+	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
+
+	sitewise.GetCache = func() *cache.Cache {
+		return cache.New(cache.DefaultExpiration, cache.NoExpiration)
+	}
+
+	query := &backend.QueryDataRequest{
+		PluginContext: backend.PluginContext{},
+		Queries: []backend.DataQuery{
+			{
+				RefID:     "A",
+				QueryType: models.QueryTypePropertyAggregate,
+				TimeRange: timeRange,
+				JSON: []byte(`{
+					"region":"us-west-2",
+					"assetIds":[
+						"1assetid-aaaa-2222-bbbb-3333cccc4444",
+						"2assetid-aaaa-2222-bbbb-3333cccc4444",
+						"3assetid-aaaa-2222-bbbb-3333cccc4444",
+						"4assetid-aaaa-2222-bbbb-3333cccc4444",
+						"5assetid-aaaa-2222-bbbb-3333cccc4444",
+						"6assetid-aaaa-2222-bbbb-3333cccc4444",
+						"7assetid-aaaa-2222-bbbb-3333cccc4444",
+						"8assetid-aaaa-2222-bbbb-3333cccc4444",
+						"9assetid-aaaa-2222-bbbb-3333cccc4444",
+						"10assetid-aaaa-2222-bbbb-3333cccc4444",
+						"11assetid-aaaa-2222-bbbb-3333cccc4444",
+						"12assetid-aaaa-2222-bbbb-3333cccc4444",
+						"13assetid-aaaa-2222-bbbb-3333cccc4444",
+						"14assetid-aaaa-2222-bbbb-3333cccc4444",
+						"15assetid-aaaa-2222-bbbb-3333cccc4444",
+						"16assetid-aaaa-2222-bbbb-3333cccc4444",
+						"17assetid-aaaa-2222-bbbb-3333cccc4444"
+					],
+					"propertyId":"11propid-aaaa-2222-bbbb-3333cccc4444",
+					"aggregates":["SUM"],
+					"resolution":"1m"
+				}`),
+			},
+		},
+	}
+
+	qdr, err := srvr.HandlePropertyAggregate(context.Background(), query)
+	require.Nil(t, err)
+	_, ok := qdr.Responses["A"]
+	require.True(t, ok)
+	expectedNumFrames := len(mockedSuccessEntriesFirstBatch) + len(mockedSuccessEntriesSecondBatch)
+	require.Len(t, qdr.Responses["A"].Frames, expectedNumFrames)
+
+	for i, f := range qdr.Responses["A"].Frames {
+		require.NotNil(t, f)
+		expectedNextToken := "some-next-token-1"
+		if (i + 1) > api.BatchGetAssetPropertyAggregatesMaxEntries {
+			expectedNextToken = "some-next-token-2"
+		}
+		require.Equal(t, f.Meta.Custom.(models.SitewiseCustomMeta).EntryId, fmt.Sprintf("%dassetid-aaaa-2222-bbbb-3333cccc4444", i+1))
+		require.Equal(t, f.Meta.Custom.(models.SitewiseCustomMeta).NextToken, expectedNextToken)
+	}
+
+	mockSw.AssertExpectations(t)
 }
 
 func Pointer[T any](v T) *T { return &v }

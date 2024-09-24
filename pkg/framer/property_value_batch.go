@@ -18,47 +18,58 @@ import (
 )
 
 type AssetPropertyValueBatch struct {
-	*iotsitewise.BatchGetAssetPropertyValueOutput
+	Responses       []*iotsitewise.BatchGetAssetPropertyValueOutput
 	AnomalyAssetIds []string
 	SitewiseClient  client.SitewiseClient
 }
 
 func (p AssetPropertyValueBatch) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
-	frames := data.Frames{}
+	successEntriesLength := 0
+	for _, r := range p.Responses {
+		successEntriesLength += len(r.SuccessEntries)
+	}
+	frames := make(data.Frames, 0, successEntriesLength)
 
 	properties, err := resources.Properties(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, e := range p.SuccessEntries {
-		property := properties[*e.EntryId]
-		if util.IsAssetProperty(property) && *property.AssetProperty.DataType == *aws.String("?") && e.AssetPropertyValue != nil {
-			property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(e.AssetPropertyValue.Value))
-		}
-
-		var frame *data.Frame
-		if property.AssetId != nil && slices.Contains(p.AnomalyAssetIds, *property.AssetId) {
-			frame, err = p.frameL4ePropertyValue(ctx, property, e.AssetPropertyValue)
-			if err != nil {
-				return nil, err
+	for _, r := range p.Responses {
+		for _, e := range r.SuccessEntries {
+			property := properties[*e.EntryId]
+			if util.IsAssetProperty(property) && *property.AssetProperty.DataType == *aws.String("?") && e.AssetPropertyValue != nil {
+				property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(e.AssetPropertyValue.Value))
 			}
-		} else {
-			frame = p.framePropertyValue(property, e.AssetPropertyValue)
-		}
 
-		frames = append(frames, frame)
-	}
-
-	for _, e := range p.ErrorEntries {
-		property := properties[*e.EntryId]
-		frame := data.NewFrame(*property.AssetName)
-		if e.ErrorMessage != nil {
+			var frame *data.Frame
+			if property.AssetId != nil && slices.Contains(p.AnomalyAssetIds, *property.AssetId) {
+				frame, err = p.frameL4ePropertyValue(ctx, property, e.AssetPropertyValue)
+				if err != nil {
+					return nil, err
+				}
+			} else {
+				frame = p.framePropertyValue(property, e.AssetPropertyValue)
+			}
 			frame.Meta = &data.FrameMeta{
-				Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: *e.ErrorMessage}},
+				Custom: models.SitewiseCustomMeta{
+					NextToken: aws.StringValue(r.NextToken),
+					EntryId:   *e.EntryId,
+				},
 			}
+			frames = append(frames, frame)
 		}
-		frames = append(frames, frame)
+
+		for _, e := range r.ErrorEntries {
+			property := properties[*e.EntryId]
+			frame := data.NewFrame(*property.AssetName)
+			if e.ErrorMessage != nil {
+				frame.Meta = &data.FrameMeta{
+					Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: *e.ErrorMessage}},
+				}
+			}
+			frames = append(frames, frame)
+		}
 	}
 
 	return frames, nil
@@ -71,7 +82,7 @@ func (AssetPropertyValueBatch) framePropertyValue(property *iotsitewise.Describe
 
 	frame := data.NewFrame(*property.AssetName, timeField, valueField, qualityField)
 
-	if assetPropertyValue != nil {
+	if assetPropertyValue != nil && getPropertyVariantValue(assetPropertyValue.Value) != nil {
 		timeField.Append(getTime(assetPropertyValue.Timestamp))
 		valueField.Append(getPropertyVariantValue(assetPropertyValue.Value))
 		qualityField.Append(*assetPropertyValue.Quality)

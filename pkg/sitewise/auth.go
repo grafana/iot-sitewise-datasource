@@ -70,7 +70,7 @@ func (a *EdgeAuthenticator) Authenticate() (models.AuthInfo, error) {
 				for i, asn1Data := range rawCerts {
 					cert, err := x509.ParseCertificate(asn1Data)
 					if err != nil {
-						return fmt.Errorf("tls: failed to parse certificate from server: " + err.Error())
+						return fmt.Errorf("tls: failed to parse certificate from server: %w", err)
 					}
 					certs[i] = cert
 				}

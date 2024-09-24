@@ -1,5 +1,5 @@
 import defaults from 'lodash/defaults';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { DataSource } from 'SitewiseDataSource';
 import { SitewiseQuery, SitewiseOptions, QueryType, ListAssetsQuery, ListTimeSeriesQuery } from 'types';
@@ -8,6 +8,7 @@ import { QueryTypeInfo, siteWiseQueryTypes, changeQueryType } from 'queryInfo';
 import { standardRegionOptions } from 'regions';
 import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
 import { PropertyQueryEditor } from './PropertyQueryEditor';
+import { migrateQuery } from '../../migrations/migrateQuery';
 import { EditorField, EditorFieldGroup, EditorRow, EditorRows } from '@grafana/experimental';
 import { QueryEditorHeader } from '@grafana/aws-sdk';
 import { ClientCacheRow } from './ClientCacheRow';
@@ -26,6 +27,14 @@ export const firstLabelWith = 20;
 export function QueryEditor(props: Props) {
   const { datasource } = props;
   const query = defaults(props.query, queryDefaults);
+
+  useEffect(() => {
+    const migratedQuery = migrateQuery(query);
+
+    if (query !== migratedQuery) {
+      props.onChange(migratedQuery);
+    }
+  }, [query.assetId]);
 
   const defaultRegion: SelectableValue<string> = {
     label: `Default`,

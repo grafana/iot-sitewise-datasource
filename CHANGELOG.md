@@ -1,6 +1,21 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
+## 1.25.0
+
+- Fix: batch entries up to the limit specified in the API [#355](https://github.com/grafana/iot-sitewise-datasource/pull/355)
+
+## 1.24.0
+
+- fix: add check for nil for property value [#352](https://github.com/grafana/iot-sitewise-datasource/pull/352)
+- Fix golangci-lint errors [#353](https://github.com/grafana/iot-sitewise-datasource/pull/353)
+- fix: migrate asset id on the frontend in the query editor [#350](https://github.com/grafana/iot-sitewise-datasource/pull/350)
+- Remove "ANY" as a query quality option [#347](https://github.com/grafana/iot-sitewise-datasource/pull/347)
+- Chore: Rename datasource file [#344](https://github.com/grafana/iot-sitewise-datasource/pull/344)
+- Add precommit hook [#338](https://github.com/grafana/iot-sitewise-datasource/pull/338)
+- Remove unused fields from Get property value query editor [#343](https://github.com/grafana/iot-sitewise-datasource/pull/343)
+- Remove ANY option for interpolated property quality [#342](https://github.com/grafana/iot-sitewise-datasource/pull/342)
+
 
 ## 1.23.0
 
