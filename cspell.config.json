@@ -71,8 +71,9 @@
     "eslintcache",
     "lefthook",
     "ssjagad",
-    "jackspeak",
+    "jackspeak", 
     "nvmrc",
+    "gomod",
     "golangci"
   ]
 }
