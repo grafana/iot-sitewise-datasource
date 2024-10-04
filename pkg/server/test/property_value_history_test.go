@@ -189,6 +189,7 @@ func Test_get_property_value_history_with_time_series_response_format(t *testing
 		data.NewField("Wind Speed", data.Labels{"quality": "GOOD"}, []*float64{Pointer(23.8)}),
 	).SetMeta(&data.FrameMeta{
 		Type:   data.FrameTypeTimeSeriesWide,
+		TypeVersion: data.FrameTypeVersion{0,1},
 		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: "1assetid-aaaa-2222-bbbb-3333cccc4444"},
 	})
 	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
@@ -899,6 +900,7 @@ func Test_get_property_value_history_from_expression_query_with_time_series_resp
 		data.NewField("Wind Speed", data.Labels{"quality": "GOOD"}, []*float64{Pointer(23.8)}),
 	).SetMeta(&data.FrameMeta{
 		Type:   data.FrameTypeTimeSeriesWide,
+		TypeVersion: data.FrameTypeVersion{0,1},
 		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: "1assetid-aaaa-2222-bbbb-3333cccc4444"},
 	})
 	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
