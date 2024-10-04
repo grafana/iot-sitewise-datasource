@@ -2,9 +2,7 @@ package testdata
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
-	"os"
 	"testing"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
@@ -21,9 +19,6 @@ func SerializeStruct(t *testing.T, val interface{}) []byte {
 }
 
 func UnmarshalFileContents(path string, val interface{}) error {
-	cwd, _ := os.Getwd()
-	fmt.Println(cwd)
-
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
 		return err
