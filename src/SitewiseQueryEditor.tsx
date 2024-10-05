@@ -1,11 +1,10 @@
-import { isEqual } from 'lodash';
 import React, { useCallback, useState } from 'react';
 import { ConfirmModal, Space } from '@grafana/ui';
 import { QueryEditorProps } from '@grafana/data';
 import { QueryEditorHeader } from '@grafana/aws-sdk';
 import { reportInteraction } from '@grafana/runtime';
 import { EditorRows, QueryEditorMode, QueryEditorModeToggle } from '@grafana/experimental';
-import { SitewiseQuery, SitewiseOptions } from 'types';
+import { SitewiseQuery, SitewiseOptions, QueryType, SqlQuery } from 'types';
 import { DataSource } from 'SitewiseDataSource';
 import { RawQueryEditor } from 'components/query/query-editor-raw/RawQueryEditor';
 import { VisualQueryBuilder } from 'components/query/visual-query-builder/VisualQueryBuilder';
@@ -13,7 +12,7 @@ import { VisualQueryBuilder } from 'components/query/visual-query-builder/Visual
 type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 
 export function SitewiseQueryEditor(props: Props) {
-  const { query, onChange } = props;
+  const { query, onChange, onRunQuery } = props;
   const editorMode = query.editorMode || QueryEditorMode.Builder;
 
   const onEditorModeChange = useCallback(
@@ -21,44 +20,32 @@ export function SitewiseQueryEditor(props: Props) {
       reportInteraction('grafana_sitewise_editor_mode_clicked', {
         newEditor: newEditorMode,
         previousEditor: query.editorMode ?? '',
-        newQuery: !query.expression,
       });
 
-      // if (newEditorMode === QueryEditorMode.Builder) {
-      //     const result = buildVisualQueryFromString(query.expression || '');
-      //     // If there are errors, give user a chance to decide if they want to go to builder as that can lose some data.
-      //     if (result.errors.length) {
-      //         setParseModalOpen(true);
-      //         return;
-      //     }
-      // }
+      if (newEditorMode === QueryEditorMode.Code) {
+        query.queryType = QueryType.SQL;
+      }
       changeEditorMode(query, newEditorMode, onChange);
     },
-    [onChange, query] // , app
+    [onChange, query]
   );
 
   const onChangeInternal = (query: SitewiseQuery) => {
-    if (!isEqual(query, props.query)) {
-      // setDataIsStale(true);
-    }
     onChange(query);
   };
 
   const [parseModalOpen, setParseModalOpen] = useState(false);
-
-  const queryEditorModeDefaultLocalStorageKey = 'SitewiseQueryEditorModeDefault';
 
   function changeEditorMode(
     query: SitewiseQuery,
     editorMode: QueryEditorMode,
     onChange: (query: SitewiseQuery) => void
   ) {
-    // If empty query store new mode as default
-    if (query.expression === '') {
-      window.localStorage.setItem(queryEditorModeDefaultLocalStorageKey, editorMode);
-    }
-
     onChange({ ...query, editorMode });
+  }
+
+  function onRunQueryInternal() {
+    onRunQuery();
   }
 
   return (
@@ -87,19 +74,17 @@ export function SitewiseQueryEditor(props: Props) {
           <RawQueryEditor
             {...props}
             datasource={props.datasource}
-            query={query}
+            query={query as SqlQuery}
             onChange={onChangeInternal}
-            onRunQuery={props.onRunQuery}
-          /> // showExplain={explain} />
+            onRunQuery={onRunQueryInternal}
+          />
         )}
         {editorMode === QueryEditorMode.Builder && (
           <VisualQueryBuilder
             datasource={props.datasource}
             query={query}
             onChange={onChangeInternal}
-            onRunQuery={props.onRunQuery}
-            // showExplain={explain}
-            // timeRange={timeRange}
+            onRunQuery={onRunQueryInternal}
           />
         )}
       </EditorRows>

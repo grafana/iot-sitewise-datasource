@@ -1,43 +1,36 @@
-// import defaults from 'lodash/defaults';
 import React from 'react';
-import { SQLEditor } from '@grafana/experimental'; // LanguageDefinition
+import { CodeEditor } from '@grafana/ui';
 import { QueryEditorProps } from '@grafana/data';
 import { DataSource } from 'SitewiseDataSource';
-import { SitewiseQuery, SitewiseOptions } from 'types'; // , QueryType, ListAssetsQuery, ListTimeSeriesQuery
+import { SitewiseQuery, SitewiseOptions } from 'types';
 
 type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 
 export const firstLabelWith = 20;
 
 export function RawQueryEditor(props: Props) {
-  // const queryRef = useRef<SitewiseRawQuery>(query);
-  // useEffect(() => {
-  //     queryRef.current = query;
-  // }, [query]);
+  const query = props.query;
+  const updateQueryExpression = (queryText: string) => {
+    query.expression = queryText;
+  };
 
-  // const onRawQueryChange = useCallback(
-  //     (rawSql: string, processQuery: boolean) => {
-  //         const newQuery = {
-  //             ...queryRef.current,
-  //             rawQuery: true,
-  //             rawSql,
-  //         };
-  //         onChange(newQuery, processQuery);
-  //     },
-  //     [onChange]
-  // );
+  const onChange = (query: SitewiseQuery) => {
+    console.log(query.expression);
+  };
 
-  // const onQueryTextChange = (event: ChangeEvent<HTMLInputElement>) => {
-  //     onChange({ ...query, queryText: event.target.value });
-  // };
+  const onSqlChange = (text: string) => {
+    console.log(text);
+    updateQueryExpression(text);
+  };
 
   return (
-    <SQLEditor
-      query="select * from sitewise"
-      // onChange={onQueryTextChange}
-      // language={editorLanguageDefinition}
+    <CodeEditor
+      aria-label="SQL"
+      language="sql"
+      value={query.expression || ''}
+      onSave={onSqlChange}
+      onBlur={(text) => onChange({ ...query, expression: text })}
+      height={'45vh'}
     />
-    //     {children}
-    // </SQLEditor>
   );
 }
