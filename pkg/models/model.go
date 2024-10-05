@@ -15,6 +15,11 @@ type DescribeAssetModelQuery struct {
 	AssetModelId string `json:"assetModelId"`
 }
 
+type ExecuteQuery struct {
+	BaseQuery
+	QueryStatement string `json:"queryStatement"`
+}
+
 func GetListAssetModelsQuery(dq *backend.DataQuery) (*ListAssetModelsQuery, error) {
 
 	query := &ListAssetModelsQuery{}
