@@ -14,6 +14,7 @@ export enum QueryType {
   PropertyAggregate = 'PropertyAggregate',
   PropertyInterpolated = 'PropertyInterpolated',
   ListTimeSeries = 'ListTimeSeries',
+  SQL = 'SQL',
 }
 
 export enum QueryEditorMode {
@@ -79,6 +80,12 @@ export interface SitewiseQuery extends DataQuery {
   flattenL4e?: boolean;
   maxPageAggregations?: number;
   clientCache?: boolean;
+}
+
+// https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ExecuteQuery.html
+export interface SqlQuery extends SitewiseQuery {
+  queryType: QueryType.SQL;
+  queryStatement: string;
 }
 
 export interface SitewiseNextQuery extends SitewiseQuery {
