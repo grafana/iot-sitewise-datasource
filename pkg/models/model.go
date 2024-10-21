@@ -51,3 +51,14 @@ func GetDescribeAssetModelQuery(dq *backend.DataQuery) (*DescribeAssetModelQuery
 
 	return query, nil
 }
+
+func GetExecuteQuery(dq *backend.DataQuery) (*ExecuteQuery, error) {
+	backend.Logger.Debug("Running GetExecuteQuery", "JSON", dq.JSON)
+	query := &ExecuteQuery{}
+	if err := json.Unmarshal(dq.JSON, &query); err != nil {
+		return nil, err
+	}
+
+	query.QueryType = dq.QueryType
+	return query, nil
+}
