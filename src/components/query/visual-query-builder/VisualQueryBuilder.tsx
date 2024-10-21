@@ -64,6 +64,7 @@ export function VisualQueryBuilder(props: Props) {
       return;
     }
     switch (query.queryType) {
+      case QueryType.ExecuteQuery:
       case QueryType.ListAssetModels:
         return null; // nothing required
       case QueryType.ListAssets:
