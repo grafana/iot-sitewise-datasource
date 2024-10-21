@@ -7,6 +7,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 
@@ -64,11 +65,13 @@ func getQueryHandlers(s *Server) *datasource.QueryTypeMux {
 	mux.HandleFunc(models.QueryTypeDescribeAsset, s.HandleDescribeAsset)
 	mux.HandleFunc(models.QueryTypeListAssetProperties, s.HandleListAssetProperties)
 	mux.HandleFunc(models.QueryTypeListTimeSeries, s.HandleListTimeSeries)
+	mux.HandleFunc(models.QueryTypeExecuteQuery, s.HandleExecuteQuery)
 
 	return mux
 }
 
 func NewServerInstance(ctx context.Context, settings backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
+	log.DefaultLogger.FromContext(ctx).Debug("Creating new Server Instance")
 	ds, err := sitewise.NewDatasource(ctx, settings)
 	if err != nil {
 		return nil, err

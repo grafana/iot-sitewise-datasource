@@ -19,8 +19,10 @@ func FieldTypeForPropertyValue(property *iotsitewise.DescribeAssetPropertyOutput
 		return data.FieldTypeString
 	case "STRUCT":
 		return data.FieldTypeString
-	default:
+	case "DOUBLE":
 		return data.FieldTypeFloat64
+	default:
+		return data.FieldTypeString
 	}
 }
 

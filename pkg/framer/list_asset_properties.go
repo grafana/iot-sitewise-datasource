@@ -14,8 +14,8 @@ import (
 type AssetProperties iotsitewise.ListAssetPropertiesOutput
 
 type assetPropertySummaryFields struct {
-	Id 		*data.Field
-	Name  *data.Field
+	Id   *data.Field
+	Name *data.Field
 }
 
 func (f *assetPropertySummaryFields) fields() data.Fields {
@@ -27,8 +27,8 @@ func (f *assetPropertySummaryFields) fields() data.Fields {
 
 func newAssetPropertySummaryFields(length int) *assetPropertySummaryFields {
 	return &assetPropertySummaryFields{
-		Id: 	 fields.IdField(length),
-		Name:  fields.NameField(length),
+		Id:   fields.IdField(length),
+		Name: fields.NameField(length),
 	}
 }
 
@@ -39,7 +39,7 @@ func (a AssetProperties) Frames(_ context.Context, _ resource.ResourceProvider) 
 
 	for i, assetProperty := range a.AssetPropertySummaries {
 		assetPropertyFields.Id.Set(i, *assetProperty.Id)
-		assetPropertyFields.Name.Set(i, *assetProperty.Path[len(assetProperty.Path) - 1].Name)
+		assetPropertyFields.Name.Set(i, *assetProperty.Path[len(assetProperty.Path)-1].Name)
 	}
 
 	frame := data.NewFrame("", assetPropertyFields.fields()...)
