@@ -15,7 +15,10 @@ export class SitewiseCache {
   private topLevelAssets?: DataFrameView<AssetSummary>;
   private assetPropertiesByAssetId = new Map<string, DataFrameView<{ id: string; name: string }>>();
 
-  constructor(private ds: DataSource, private region: string) {}
+  constructor(
+    private ds: DataSource,
+    private region: string
+  ) {}
 
   async getAssetInfo(id: string): Promise<AssetInfo | undefined> {
     const v = this.assetsById.get(id);
@@ -217,8 +220,17 @@ export class SitewiseCache {
 }
 
 export function frameToAssetInfo(res: DescribeAssetResult): AssetInfo {
-  const properties: AssetPropertyInfo[] = JSON.parse(res.properties);
-  const hierarchy: AssetPropertyInfo[] = JSON.parse(res.hierarchies); // has Id, Name
+  let properties: AssetPropertyInfo[] = [];
+  let hierarchy: AssetPropertyInfo[] = [];
+
+  console.log(res);
+  try {
+    properties = JSON.parse(res.properties);
+    hierarchy = JSON.parse(res.hierarchies); // has Id, Name
+  } catch (e) {
+    console.log(res.properties, res.hierarchies);
+    console.error('Error parsing JSON:', e);
+  }
 
   for (const p of properties) {
     p.value = p.Id;
@@ -250,8 +262,10 @@ export function frameToAssetInfo(res: DescribeAssetResult): AssetInfo {
       };
     });
 
+  const { hierarchies: _, ...rest } = res;
+
   return {
-    ...res,
+    ...rest,
     properties: [...options, ...properties],
     hierarchy: hierarchy.map((v) => ({
       label: v.Name,
