@@ -74,6 +74,12 @@
     "jackspeak", 
     "nvmrc",
     "gomod",
-    "golangci"
+    "golangci",
+    "sqlutil",
+    "stdev",
+    "sqlds",
+    "errorsource",
+    "viant",
+    "WithMessagef"
   ]
 }
