@@ -88,7 +88,7 @@ func NewDatasource(ctx context.Context, settings backend.DataSourceInstanceSetti
 	}, nil
 }
 
-func (ds *Datasource) invoke(ctx context.Context, req *backend.QueryDataRequest, baseQuery *models.BaseQuery, invoker invokerFunc) (data.Frames, error) {
+func (ds *Datasource) invoke(ctx context.Context, _ *backend.QueryDataRequest, baseQuery *models.BaseQuery, invoker invokerFunc) (data.Frames, error) {
 	sw, err := ds.GetClient(baseQuery.AwsRegion)
 	if err != nil {
 		return nil, err
@@ -236,6 +236,7 @@ func (ds *Datasource) HandleListAssetPropertiesQuery(ctx context.Context, req *b
 
 func (ds *Datasource) HandleExecuteQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ExecuteQuery) (data.Frames, error) {
 	log.DefaultLogger.FromContext(ctx).Debug("Running DS.HandleExecuteQuery")
+
 	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return api.ExecuteQuery(ctx, sw, *query)
 	})

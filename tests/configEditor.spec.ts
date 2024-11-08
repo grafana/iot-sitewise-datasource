@@ -61,6 +61,22 @@ test.describe('ConfigEditor', () => {
     const successMessage = page.getByText('OK');
     expect(successMessage).toBeVisible();
   });
+
+  test('"Save & test" should be successful when configuration is valid', async ({
+    createDataSourceConfigPage,
+    readProvisionedDataSource,
+    page,
+  }) => {
+    const { accessKey, secretKey } = await getTestCredentials(readProvisionedDataSource);
+    const ds = await readProvisionedDataSource<SitewiseOptions, SitewiseSecureJsonData>({
+      fileName: 'iot-sitewise.yaml',
+    });
+    const configPage = await createDataSourceConfigPage({ type: ds.type });
+    await page.getByLabel('Access Key ID').fill(accessKey);
+    await page.getByLabel('Secret Access Key').fill(secretKey);
+    await page.getByRole('combobox', { name: 'Default Region' }).click();
+    await expect(configPage.saveAndTest()).toBeOK();
+  });
 });
 
 async function getTestCredentials(

@@ -310,9 +310,9 @@ func GetClient(region string, settings models.AWSSiteWiseDataSourceSetting, prov
 }
 
 func ExecuteQuery(ctx context.Context, client ExecuteQueryClient, query models.ExecuteQuery) (*iotsitewise.ExecuteQueryOutput, error) {
-	backend.Logger.Error("Execute Query", "query", query.QueryStatement)
+	backend.Logger.Error("Execute Query", "query", query.RawSQL)
 	input := &iotsitewise.ExecuteQueryInput{
-		QueryStatement: &query.QueryStatement,
+		QueryStatement: &query.RawSQL,
 		NextToken:      &query.NextToken,
 	}
 

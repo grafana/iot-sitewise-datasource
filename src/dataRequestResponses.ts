@@ -1,5 +1,5 @@
 import { AssetInfo } from 'types';
-import { Field, FieldType } from '@grafana/data';
+import { FieldType } from '@grafana/data';
 
 export const mockedAssetInfo: AssetInfo = {
   id: '1',
