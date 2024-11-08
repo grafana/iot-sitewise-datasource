@@ -84,7 +84,7 @@ export interface SitewiseQuery extends DataQuery {
 // https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ExecuteQuery.html
 export interface SqlQuery extends SitewiseQuery {
   queryType: QueryType.ExecuteQuery;
-  queryStatement: string;
+  rawSQL: string;
 }
 
 export interface SitewiseNextQuery extends SitewiseQuery {

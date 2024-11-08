@@ -12,9 +12,9 @@ import (
 )
 
 func ExecuteQuery(ctx context.Context, client client.ExecuteQueryClient, query models.ExecuteQuery) (*framer.QueryResults, error) {
-	backend.Logger.FromContext(ctx).Debug("Running ExecuteQuery", "query", query.QueryStatement)
+	backend.Logger.FromContext(ctx).Debug("Running ExecuteQuery", "query", query.RawSQL)
 	input := &iotsitewise.ExecuteQueryInput{
-		QueryStatement: aws.String(query.QueryStatement),
+		QueryStatement: aws.String(query.RawSQL),
 	}
 	if query.NextToken != "" {
 		input.NextToken = aws.String(query.NextToken)

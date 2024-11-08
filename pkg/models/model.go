@@ -17,7 +17,7 @@ type DescribeAssetModelQuery struct {
 
 type ExecuteQuery struct {
 	BaseQuery
-	QueryStatement string `json:"queryStatement"`
+	sqlutil.Query
 }
 
 func GetListAssetModelsQuery(dq *backend.DataQuery) (*ListAssetModelsQuery, error) {
@@ -60,5 +60,17 @@ func GetExecuteQuery(dq *backend.DataQuery) (*ExecuteQuery, error) {
 	}
 
 	query.QueryType = dq.QueryType
+	return query, nil
+}
+
+func GetQuery(eq *ExecuteQuery) (*sqlutil.Query, error) {
+	query := &sqlutil.Query{}
+
+	query.RawSQL = eq.RawSQL
+
+	query.Interval = eq.Query.Interval
+	query.TimeRange = eq.Query.TimeRange
+	query.MaxDataPoints = eq.Query.MaxDataPoints
+
 	return query, nil
 }

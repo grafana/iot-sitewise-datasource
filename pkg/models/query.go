@@ -31,7 +31,11 @@ const (
 )
 
 type BaseQuery struct {
+	// General
 	AwsRegion string `json:"region,omitempty"`
+	QueryType string `json:"-"`
+
+	// Sitewise specific
 	// Deprecated: use assetIds
 	AssetId             string            `json:"assetId,omitempty"`
 	AssetIds            []string          `json:"assetIds,omitempty"`
@@ -42,10 +46,10 @@ type BaseQuery struct {
 	MaxPageAggregations int               `json:"maxPageAggregations,omitempty"`
 	ResponseFormat      string            `json:"responseFormat,omitempty"`
 
+	// Also provided by sqlutil.Query. Migrate to that
 	Interval      time.Duration     `json:"-"`
 	TimeRange     backend.TimeRange `json:"-"`
 	MaxDataPoints int64             `json:"-"`
-	QueryType     string            `json:"-"`
 }
 
 // MigrateAssetId handles AssetId <--> AssetIds backward compatibility.
