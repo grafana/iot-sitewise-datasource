@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/data/sqlutil"
 )
 
 type ListAssetModelsQuery struct {
