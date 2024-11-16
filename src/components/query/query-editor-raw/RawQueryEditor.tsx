@@ -7,10 +7,11 @@ import { SitewiseCompletionProvider } from 'language/autoComplete';
 
 type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 
-export const firstLabelWith = 20;
-
 export function RawQueryEditor(props: Props) {
   const query = props.query as SqlQuery;
+  const defaultQuery = 'select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestamp)';
+
+  query.rawSQL = query.rawSQL || defaultQuery;
 
   const onChange = (query: SqlQuery) => {
     props.onChange(query);
@@ -21,7 +22,7 @@ export function RawQueryEditor(props: Props) {
     <CodeEditor
       aria-label="SQL"
       language="sql"
-      value={query.rawSQL || ''}
+      value={query.rawSQL}
       onSave={(text) => onChange({ ...query, rawSQL: text })}
       onBlur={(text) => onChange({ ...query, rawSQL: text })}
       onBeforeEditorMount={(monaco) => {
