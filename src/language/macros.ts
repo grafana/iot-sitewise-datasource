@@ -7,9 +7,9 @@ export const TABLE_MACRO = '$__table';
 
 export const MACROS = [
   {
-    id: '*',
-    name: '*',
-    text: '*',
+    id: '$__selectAll',
+    name: '$__selectAll',
+    text: '$__selectAll',
     args: [],
     type: MacroType.Column,
     description: 'Will be replaced by all the fields of the current table',
