@@ -119,9 +119,6 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
     } else {
       suggestionType = SuggestionType.all;
     }
-    console.log('last word', words[words.length - 1]);
-    console.log('current space', this.currentSpace);
-    console.log('suggestion type', suggestionType);
 
     return {
       suggestions: this.fetchSuggestions(range, suggestionType).suggestions,
