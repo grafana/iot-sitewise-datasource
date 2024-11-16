@@ -20,7 +20,6 @@ func processQueries(ctx context.Context, req *backend.QueryDataRequest, handler 
 	return &backend.QueryDataResponse{
 		Responses: res,
 	}
-
 }
 
 func (s *Server) HandleInterpolatedPropertyValue(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
