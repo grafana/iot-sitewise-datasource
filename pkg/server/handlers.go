@@ -312,16 +312,21 @@ func (s *Server) handleDescribeAssetModelQuery(ctx context.Context, req *backend
 }
 
 func (s *Server) handleExecuteQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
-	log.DefaultLogger.FromContext(ctx).Debug("Running S.handleExecuteQuery")
 	query, err := models.GetExecuteQuery(&q)
 	if err != nil {
-		backend.Logger.Warn("Error un-marshalling query", "error", err)
+		log.DefaultLogger.FromContext(ctx).Warn("Error un-marshalling query", "error", err)
 		return DataResponseErrorUnmarshal(err)
+	}
+
+	query.RawSQL, err = sqlutil.Interpolate(&query.Query, s.Datasource.Macros())
+	if err != nil {
+		log.DefaultLogger.Warn("Error interpolating query", "error", err)
+		return backend.ErrDataResponse(backend.StatusBadRequest, "macro interpolate: "+err.Error())
 	}
 
 	frames, err := s.Datasource.HandleExecuteQuery(ctx, req, query)
 	if err != nil {
-		backend.Logger.Warn("Error executing query", "error", err)
+		log.DefaultLogger.FromContext(ctx).Warn("Error executing query", "error", err)
 		return DataResponseErrorRequestFailed(err)
 	}
 

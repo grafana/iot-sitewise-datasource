@@ -54,11 +54,11 @@ func macroSelectAll(query *sqlutil.Query, args []string) (string, error) {
 	// find the table name and return all columns
 	tableName, err := extractTableName(query)
 	if err != nil {
-		return "*", TableColumnsNotFoundError
+		return "selectAll", TableColumnsNotFoundError
 	}
 	columns, ok := tableColumns[tableName]
 	if !ok {
-		return "*", TableColumnsNotFoundError
+		return "selectAll", TableColumnsNotFoundError
 	}
 	return strings.Join(columns, ", "), nil
 }
@@ -86,7 +86,7 @@ func macroUnixEpochFilter(query *sqlutil.Query, args []string) (string, error) {
 	return fmt.Sprintf("%s >= %d and %s <= %d", column, from, column, to), nil
 }
 
-var macros = map[string]sqlds.MacroFunc{
+var macros = map[string]sqlutil.MacroFunc{
 	"selectAll":       macroSelectAll,
 	"rawTimeFrom":     macroRawTimeFrom,
 	"rawTimeTo":       macroRawTimeTo,
