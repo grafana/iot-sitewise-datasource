@@ -53,7 +53,6 @@ describe('SitewiseCache', () => {
         .mockImplementation((request: DataQueryRequest<SitewiseQuery>) => of(mocked.mockedAssetInfoResponse));
 
       const result = await cache.getAssetInfo('1');
-      console.log(result);
       expect(result).toEqual(mocked.mockedAssetInfo);
       expect(cache['assetsById'].get('1')).toEqual(result);
     });
