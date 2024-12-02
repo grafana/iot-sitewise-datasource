@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { DataQueryRequest, DataSourceInstanceSettings, QueryEditorProps } from '@grafana/data';
 import { DataSource } from 'SitewiseDataSource';
 import { QueryType, SitewiseOptions, SitewiseQuery } from 'types';
-import { QueryEditor } from './QueryEditor';
+import { VisualQueryBuilder } from './VisualQueryBuilder';
 import { of } from 'rxjs';
 import userEvent from '@testing-library/user-event';
 
@@ -25,7 +25,7 @@ const instanceSettings: DataSourceInstanceSettings<SitewiseOptions> = {
 
 const setup = async (query: Partial<SitewiseQuery>, props = defaultProps) => {
   render(
-    <QueryEditor
+    <VisualQueryBuilder
       {...props}
       query={{
         ...defaultProps.query,
@@ -51,7 +51,7 @@ const defaultProps: QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>
   onChange: jest.fn(),
 };
 
-describe('QueryEditor', () => {
+describe('VisualQueryBuilder', () => {
   it('should display correct fields for query type PropertyAggregate', async () => {
     await setup({
       queryType: QueryType.PropertyAggregate,

@@ -95,6 +95,10 @@ func PropertyValueFieldNamed(name string, property *iotsitewise.DescribeAssetPro
 	return valueField
 }
 
+func DatumField(col iotsitewise.ColumnInfo, length int) *data.Field {
+	return NewFieldWithName(*col.Name, FieldTypeForQueryResult(col), length)
+}
+
 func AggregationField(length int, name string) *data.Field {
 	return NewFieldWithName(name, data.FieldTypeFloat64, length)
 }
@@ -111,7 +115,7 @@ func DiagnosticField(length int, assetId string) *data.Field {
 	return NewFieldWithName(assetId, data.FieldTypeFloat64, length)
 }
 
-// for time series 
+// for time series
 
 func AliasField(length int) *data.Field {
 	return NewFieldWithName(Alias, data.FieldTypeString, length)
