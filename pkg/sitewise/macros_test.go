@@ -31,7 +31,7 @@ func TestMacros(t *testing.T) {
 				RawSQL: "SELECT $__selectAll FROM asset",
 			},
 			args:        []string{},
-			expected:    "asset_id, asset_name, asset_description, asset_model_id, asset_root_id",
+			expected:    "asset_id, asset_name, asset_description, asset_model_id",
 			expectedErr: nil,
 		},
 		{

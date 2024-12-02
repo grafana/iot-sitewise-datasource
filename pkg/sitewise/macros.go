@@ -15,7 +15,7 @@ var TableColumnsNotFoundError = errors.New("Table name not found in tableColumns
 
 var tableColumns = map[string][]string{
 	"asset": {
-		"asset_id", "asset_name", "asset_description", "asset_model_id", "asset_root_id",
+		"asset_id", "asset_name", "asset_description", "asset_model_id",
 	},
 	"asset_property": {
 		"property_id", "asset_id", "property_name", "property_data_type", "property_alias", "asset_composite_model_id",
