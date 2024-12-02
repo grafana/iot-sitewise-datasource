@@ -17,7 +17,7 @@ enum SuggestionType {
 }
 
 const tableColumns: KeyValue = {
-  asset: ['asset_id', 'asset_name', 'asset_description', 'asset_model_id', 'asset_root_id'],
+  asset: ['asset_id', 'asset_name', 'asset_description', 'asset_model_id'],
   asset_property: [
     'property_id',
     'asset_id',

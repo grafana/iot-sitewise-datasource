@@ -223,7 +223,6 @@ export function frameToAssetInfo(res: DescribeAssetResult): AssetInfo {
   let properties: AssetPropertyInfo[] = [];
   let hierarchy: AssetPropertyInfo[] = [];
 
-  console.log(res);
   try {
     properties = JSON.parse(res.properties);
     hierarchy = JSON.parse(res.hierarchies); // has Id, Name
