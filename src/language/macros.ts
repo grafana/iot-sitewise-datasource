@@ -40,6 +40,15 @@ export const MACROS = [
       'Will be replaced by a time range filter using the specified column name with times represented as Unix timestamp. For example, column >= 1624406400 AND column <= 1624410000',
   },
   {
+    id: '$__resolution()',
+    name: '$__resolution()',
+    text: '$__resolution',
+    args: [],
+    type: MacroType.Value,
+    description:
+      'Will be replaced by an appropriate resolution (1m, 15m, 1h, 1d) based on the panel interval to be used on precomputed_aggregates queries.',
+  },
+  {
     id: '$__column',
     name: '$__column',
     text: '$__column',

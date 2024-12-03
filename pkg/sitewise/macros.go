@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data/sqlutil"
 	"github.com/grafana/grafana-plugin-sdk-go/experimental/errorsource"
 	"github.com/grafana/sqlds/v4"
@@ -18,7 +17,7 @@ var tableColumns = map[string][]string{
 		"asset_id", "asset_name", "asset_description", "asset_model_id",
 	},
 	"asset_property": {
-		"property_id", "asset_id", "property_name", "property_data_type", "property_alias", "asset_composite_model_id",
+		"property_id", "asset_id", "property_name", "property_alias", "asset_composite_model_id",
 	},
 	"raw_time_series": {
 		"asset_id", "property_id", "property_alias", "event_timestamp", "quality", "boolean_value", "int_value", "double_value", "string_value",
@@ -81,9 +80,25 @@ func macroUnixEpochFilter(query *sqlutil.Query, args []string) (string, error) {
 		from   = query.TimeRange.From.UTC().Unix()
 		to     = query.TimeRange.To.UTC().Unix()
 	)
-	backend.Logger.Debug("macroUnixEpochFilter", "from", query.TimeRange.From, "to", query.TimeRange.To, "from stamp", from, "to stamp", to)
 
 	return fmt.Sprintf("%s >= %d and %s <= %d", column, from, column, to), nil
+}
+
+func macroResolution(query *sqlutil.Query, args []string) (string, error) {
+	secondInterval := query.Interval.Seconds()
+	//'1m', '15m', '1h', and '1d'
+	switch true {
+	case secondInterval <= 60:
+		return "1m", nil
+	case secondInterval <= 900:
+		return "15m", nil
+	case secondInterval <= 3600:
+		return "1h", nil
+	case secondInterval <= 86400:
+		return "1d", nil
+	default:
+		return "1m", nil
+	}
 }
 
 var macros = map[string]sqlutil.MacroFunc{
@@ -91,6 +106,7 @@ var macros = map[string]sqlutil.MacroFunc{
 	"rawTimeFrom":     macroRawTimeFrom,
 	"rawTimeTo":       macroRawTimeTo,
 	"unixEpochFilter": macroUnixEpochFilter,
+	"resolution":      macroResolution,
 }
 
 func (s *Datasource) Macros() sqlutil.Macros {
