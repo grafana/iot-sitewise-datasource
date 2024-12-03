@@ -117,6 +117,87 @@ func TestMacros(t *testing.T) {
 			expected:    "",
 			expectedErr: sqlds.ErrorBadArgumentCount,
 		},
+		// resolution
+		{
+			name:  "resolution less than 1m",
+			macro: "resolution",
+			query: &sqlutil.Query{
+				Interval: 30,
+			},
+			args:        []string{},
+			expected:    "1m",
+			expectedErr: nil,
+		},
+		{
+			name:  "resolution 1m",
+			macro: "resolution",
+			query: &sqlutil.Query{
+				Interval: 60,
+			},
+			args:        []string{},
+			expected:    "1m",
+			expectedErr: nil,
+		},
+		{
+			name:  "resolution less than 15m",
+			macro: "resolution",
+			query: &sqlutil.Query{
+				Interval: 90,
+			},
+			args:        []string{},
+			expected:    "15m",
+			expectedErr: nil,
+		},
+		{
+			name:  "resolution 15m",
+			macro: "resolution",
+			query: &sqlutil.Query{
+				Interval: 900,
+			},
+			args:        []string{},
+			expected:    "15m",
+			expectedErr: nil,
+		},
+		{
+			name:  "resolution less than 1h",
+			macro: "resolution",
+			query: &sqlutil.Query{
+				Interval: 1000,
+			},
+			args:        []string{},
+			expected:    "1h",
+			expectedErr: nil,
+		},
+		{
+			name:  "resolution 1h",
+			macro: "resolution",
+			query: &sqlutil.Query{
+				Interval: 3600,
+			},
+			args:        []string{},
+			expected:    "1h",
+			expectedErr: nil,
+		},
+		{
+			name:  "resolution less than 1d",
+			macro: "resolution",
+			query: &sqlutil.Query{
+				Interval: 4000,
+			},
+			args:        []string{},
+			expected:    "1d",
+			expectedErr: nil,
+		},
+		{
+			name:  "resolution 1d",
+			macro: "resolution",
+			query: &sqlutil.Query{
+				Interval: 86400,
+			},
+			args:        []string{},
+			expected:    "1d",
+			expectedErr: nil,
+		},
 	}
 
 	for _, tt := range tests {
