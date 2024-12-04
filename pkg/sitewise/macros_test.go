@@ -122,7 +122,7 @@ func TestMacros(t *testing.T) {
 			name:  "resolution less than 1m",
 			macro: "resolution",
 			query: &sqlutil.Query{
-				Interval: 30,
+				Interval: time.Duration(30 * time.Second),
 			},
 			args:        []string{},
 			expected:    "1m",
@@ -132,7 +132,7 @@ func TestMacros(t *testing.T) {
 			name:  "resolution 1m",
 			macro: "resolution",
 			query: &sqlutil.Query{
-				Interval: 60,
+				Interval: time.Duration(60 * time.Second),
 			},
 			args:        []string{},
 			expected:    "1m",
@@ -142,7 +142,7 @@ func TestMacros(t *testing.T) {
 			name:  "resolution less than 15m",
 			macro: "resolution",
 			query: &sqlutil.Query{
-				Interval: 90,
+				Interval: time.Duration(90 * time.Second),
 			},
 			args:        []string{},
 			expected:    "15m",
@@ -152,7 +152,7 @@ func TestMacros(t *testing.T) {
 			name:  "resolution 15m",
 			macro: "resolution",
 			query: &sqlutil.Query{
-				Interval: 900,
+				Interval: time.Duration(900 * time.Second),
 			},
 			args:        []string{},
 			expected:    "15m",
@@ -162,7 +162,7 @@ func TestMacros(t *testing.T) {
 			name:  "resolution less than 1h",
 			macro: "resolution",
 			query: &sqlutil.Query{
-				Interval: 1000,
+				Interval: time.Duration(1000 * time.Second),
 			},
 			args:        []string{},
 			expected:    "1h",
@@ -172,7 +172,7 @@ func TestMacros(t *testing.T) {
 			name:  "resolution 1h",
 			macro: "resolution",
 			query: &sqlutil.Query{
-				Interval: 3600,
+				Interval: time.Duration(3600 * time.Second),
 			},
 			args:        []string{},
 			expected:    "1h",
@@ -182,7 +182,7 @@ func TestMacros(t *testing.T) {
 			name:  "resolution less than 1d",
 			macro: "resolution",
 			query: &sqlutil.Query{
-				Interval: 4000,
+				Interval: time.Duration(4000 * time.Second),
 			},
 			args:        []string{},
 			expected:    "1d",
@@ -192,7 +192,7 @@ func TestMacros(t *testing.T) {
 			name:  "resolution 1d",
 			macro: "resolution",
 			query: &sqlutil.Query{
-				Interval: 86400,
+				Interval: time.Duration(86400 * time.Second),
 			},
 			args:        []string{},
 			expected:    "1d",
