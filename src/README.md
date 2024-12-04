@@ -14,7 +14,7 @@ The IoT SiteWise plugin authentication matches the standard Cloudwatch plugin sy
 
 Once authentication is configured, click "Save and Test" to verify the service is working. Once this is configured, you can specify default values for the configuration.
 
-## Query editor
+## Query builder
 
 Use the "query type" selector to pick an appropriate query.
 ![query-editor](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/editor.png)
@@ -24,6 +24,19 @@ Click on the "Explore" button to open an asset/model navigation interface:
 
 Multiple aggregations can be shown for a single property:
 ![query-editor](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/editor2.png)
+
+## Query code editor
+
+You can run [Iot Sitewise query language](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/sql.html) queries in the code editor:
+![raw-query-editor](../docs/editor-switch.png)
+
+The query editor supports the following macros:
+
+* $__selectAll - Shortcut to select available fields in the current table: `select $__selectAll from raw_time_series`
+* $__rawTimeFrom - Lower limit of the time range as a timestamp: `select $__selectAll from raw_time_series where event_timestamp > $__rawTimeFrom`
+* $__rawTimeTo - Upper limit of the time range as a timestamp: `select $__selectAll from raw_time_series where event_timestamp <= $__rawTimeTo`
+* $__unixEpochFilter(column) - Filter the specified field according to the time range: `select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestamp)`
+* $__resolution - Shortcut to the applicable aggregate resolution based on the panel interval: `select $__selectAll from precomputed_aggregates where $__unixEpochFilter(event_timestamp) and resolution = '$__resolution'`
 
 ### Alerting
 
