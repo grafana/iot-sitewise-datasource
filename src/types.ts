@@ -14,6 +14,12 @@ export enum QueryType {
   PropertyAggregate = 'PropertyAggregate',
   PropertyInterpolated = 'PropertyInterpolated',
   ListTimeSeries = 'ListTimeSeries',
+  ExecuteQuery = 'ExecuteQuery',
+}
+
+export enum QueryEditorMode {
+  Builder = 'builder',
+  Code = 'code',
 }
 
 export enum SiteWiseQuality {
@@ -58,6 +64,9 @@ export interface SitewiseQuery extends DataQuery {
   region?: string; // aws region string
   responseFormat?: SiteWiseResponseFormat;
 
+  // QueryEditor
+  editorMode?: QueryEditorMode;
+
   /** @deprecated -- this is migrated to assetIds */
   assetId?: string;
   // One or more assets to filter -- when multiple, they should share the same properties, the batch API will be called
@@ -70,6 +79,12 @@ export interface SitewiseQuery extends DataQuery {
   flattenL4e?: boolean;
   maxPageAggregations?: number;
   clientCache?: boolean;
+}
+
+// https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ExecuteQuery.html
+export interface SqlQuery extends SitewiseQuery {
+  queryType: QueryType.ExecuteQuery;
+  rawSQL: string;
 }
 
 export interface SitewiseNextQuery extends SitewiseQuery {

@@ -9,7 +9,7 @@ const migrateAssetId = (query: SitewiseQuery): SitewiseQuery => {
 };
 
 export const migrateQuery = (query: SitewiseQuery): SitewiseQuery => {
-  let migratedQuery = migrateAssetId(query);
+  const migratedQuery = migrateAssetId(query);
 
   return migratedQuery;
 };

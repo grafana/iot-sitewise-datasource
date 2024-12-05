@@ -5,7 +5,9 @@ import (
 	"math"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/grafana/grafana-plugin-sdk-go/data/sqlutil"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
@@ -18,7 +20,6 @@ func processQueries(ctx context.Context, req *backend.QueryDataRequest, handler 
 	return &backend.QueryDataResponse{
 		Responses: res,
 	}
-
 }
 
 func (s *Server) HandleInterpolatedPropertyValue(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
@@ -63,6 +64,10 @@ func (s *Server) HandleListAssociatedAssets(ctx context.Context, req *backend.Qu
 
 func (s *Server) HandleDescribeAssetModel(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
 	return processQueries(ctx, req, s.handleDescribeAssetModelQuery), nil
+}
+
+func (s *Server) HandleExecuteQuery(ctx context.Context, req *backend.QueryDataRequest) (*backend.QueryDataResponse, error) {
+	return processQueries(ctx, req, s.handleExecuteQuery), nil
 }
 
 func (s *Server) handleInterpolatedPropertyValueQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
@@ -242,7 +247,7 @@ func (s *Server) handleListTimeSeriesQuery(ctx context.Context, req *backend.Que
 	}
 
 	frames, err := s.Datasource.HandleListTimeSeriesQuery(ctx, req, query)
-	
+
 	if err != nil {
 		return DataResponseErrorRequestFailed(err)
 	}
@@ -297,6 +302,31 @@ func (s *Server) handleDescribeAssetModelQuery(ctx context.Context, req *backend
 
 	frames, err := s.Datasource.HandleDescribeAssetModelQuery(ctx, req, query)
 	if err != nil {
+		return DataResponseErrorRequestFailed(err)
+	}
+
+	return backend.DataResponse{
+		Frames: frames,
+		Error:  nil,
+	}
+}
+
+func (s *Server) handleExecuteQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
+	query, err := models.GetExecuteQuery(&q)
+	if err != nil {
+		log.DefaultLogger.FromContext(ctx).Warn("Error un-marshalling query", "error", err)
+		return DataResponseErrorUnmarshal(err)
+	}
+
+	query.RawSQL, err = sqlutil.Interpolate(&query.Query, s.Datasource.Macros())
+	if err != nil {
+		log.DefaultLogger.Warn("Error interpolating query", "error", err)
+		return backend.ErrDataResponse(backend.StatusBadRequest, "macro interpolate: "+err.Error())
+	}
+
+	frames, err := s.Datasource.HandleExecuteQuery(ctx, req, query)
+	if err != nil {
+		log.DefaultLogger.FromContext(ctx).Warn("Error executing query", "error", err)
 		return DataResponseErrorRequestFailed(err)
 	}
 
