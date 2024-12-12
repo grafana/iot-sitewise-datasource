@@ -1,6 +1,0 @@
-{
-  "extends": "./.config/.eslintrc",
-  "rules": {
-    "prefer-const": "warn"
-  }
-}
