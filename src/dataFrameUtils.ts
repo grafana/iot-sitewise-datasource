@@ -53,7 +53,7 @@ export function trimTimeSeriesDataFrame({
 
   const trimmedFields = fields.map((field) => ({
     ...field,
-    values: [field.values.toArray().slice(fromIndex, toIndex)],
+    values: field.values.toArray().slice(fromIndex, toIndex),
   }));
 
   return {
@@ -114,7 +114,7 @@ export function trimTimeSeriesDataFrameReversedTime({
 
     return {
       ...field,
-      values: [dataValues.reverse()],
+      values: dataValues.reverse(),
     };
   });
 
