@@ -3,6 +3,7 @@
   "ignorePaths": [
     "coverage/**",
     "dist/**",
+    "go.mod",
     "go.sum",
     "mage_output_file.go",
     "node_modules/**",
@@ -71,7 +72,7 @@
     "eslintcache",
     "lefthook",
     "ssjagad",
-    "jackspeak", 
+    "jackspeak",
     "nvmrc",
     "gomod",
     "golangci"
