@@ -1,6 +1,14 @@
 # Change Log
 
 All notable changes to this project will be documented in this file.
+
+## 1.25.1
+
+- Chore: Update plugin.json keywords [#359](https://github.com/grafana/iot-sitewise-datasource/pull/359)
+- Bump the all-github-action-dependencies group with 3 updates [#372](https://github.com/grafana/iot-sitewise-datasource/pull/372)
+- Bump the all-go-dependencies group with 4 updates [#373](https://github.com/grafana/iot-sitewise-datasource/pull/373)
+- Bump the all-node-dependencies group with 30 updates [#374](https://github.com/grafana/iot-sitewise-datasource/pull/374)
+
 ## 1.25.0
 
 - Fix: batch entries up to the limit specified in the API [#355](https://github.com/grafana/iot-sitewise-datasource/pull/355)
@@ -15,7 +23,6 @@ All notable changes to this project will be documented in this file.
 - Add precommit hook [#338](https://github.com/grafana/iot-sitewise-datasource/pull/338)
 - Remove unused fields from Get property value query editor [#343](https://github.com/grafana/iot-sitewise-datasource/pull/343)
 - Remove ANY option for interpolated property quality [#342](https://github.com/grafana/iot-sitewise-datasource/pull/342)
-
 
 ## 1.23.0
 
