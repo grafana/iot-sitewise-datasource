@@ -16,10 +16,10 @@ export const cacheStore: { [key: string]: StorageItem } = Object.create(null);
 
 const SVG_FILE_NAME_REGEX = /(.+)\/(.+)\.svg$/;
 
-const InlineSVG = ({ src, innerRef, ...rest }: { src: string; innerRef: React.ForwardedRef<SVGElement> }) => {
+const InlineSVG = ({ src }: { src: string }) => {
   // testId will be the file name without extension (e.g. `public/img/icons/angle-double-down.svg` -> `angle-double-down`)
   const testId = src.replace(SVG_FILE_NAME_REGEX, '$2');
-  return <svg xmlns="http://www.w3.org/2000/svg" data-testid={testId} {...rest} viewBox="0 0 24 24" />;
+  return <svg xmlns="http://www.w3.org/2000/svg" data-testid={testId} viewBox="0 0 24 24" />;
 };
 
 export default InlineSVG;
