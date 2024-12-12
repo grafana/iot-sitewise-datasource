@@ -2,6 +2,7 @@ package fields
 
 import (
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
@@ -18,8 +19,30 @@ func FieldTypeForPropertyValue(property *iotsitewise.DescribeAssetPropertyOutput
 		return data.FieldTypeString
 	case "STRUCT":
 		return data.FieldTypeString
-	default:
+	case "DOUBLE":
 		return data.FieldTypeFloat64
+	default:
+		return data.FieldTypeString
+	}
+}
+
+func FieldTypeForQueryResult(column iotsitewise.ColumnInfo) data.FieldType {
+	switch *column.Type.ScalarType {
+	case "BOOLEAN":
+		return data.FieldTypeBool
+	case "INTEGER":
+		return data.FieldTypeInt64
+	case "STRING":
+		if *column.Name == "event_timestamp" {
+			return data.FieldTypeTime
+		}
+
+		return data.FieldTypeString
+	case "DOUBLE":
+		return data.FieldTypeFloat64
+	default:
+		backend.Logger.Debug("Unknown scalar type", "type", *column.Type.ScalarType)
+		return data.FieldTypeString
 	}
 }
 
