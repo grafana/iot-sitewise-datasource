@@ -14,6 +14,7 @@ enum SuggestionType {
   'all',
   'macros',
   'tables',
+  'fields',
 }
 
 const tableColumns: KeyValue = {
@@ -57,7 +58,7 @@ const tableColumns: KeyValue = {
 };
 
 interface SitewiseCompletionProviderType extends languages.CompletionItemProvider {
-  fetchSuggestions(range: IRange, types: SuggestionType): languages.CompletionList;
+  fetchSuggestions(range: IRange, types: SuggestionType): languages.CompletionItem[];
   tableDefinitions(): SuggestionDefinition[];
   fieldDefinitions(table: string): SuggestionDefinition[];
   macroDefinitions(): SuggestionDefinition[];
@@ -65,6 +66,7 @@ interface SitewiseCompletionProviderType extends languages.CompletionItemProvide
   buildAutocompleteSuggestion(definition: SuggestionDefinition, range: IRange): languages.CompletionItem;
   monaco: null | Monaco;
   currentSpace: string;
+  currentTable: null | string;
 }
 
 export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
@@ -73,6 +75,7 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
   monaco: null,
 
   currentSpace: 'start',
+  currentTable: null,
 
   provideCompletionItems(model, position, context): languages.ProviderResult<languages.CompletionList> {
     // Setup
@@ -83,7 +86,7 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
       startColumn: word.startColumn,
       endColumn: word.endColumn,
     };
-    let suggestionType = SuggestionType.all;
+    let suggestionType = [SuggestionType.all];
 
     var last_chars = model.getValueInRange({
       startLineNumber: position.lineNumber,
@@ -93,29 +96,38 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
     });
     var words = last_chars.trim().replace('\t', '').split(' ');
 
-    // TODO Find the table so that we can return the fields as well
-
     const lastWord = words[words.length - 1].toLowerCase();
+
+    const regResult = /from\s(\w+)/g.exec(last_chars);
+    this.currentTable = regResult === null ? null : regResult[1];
+
     // First the last word
     if (lastWord === 'from') {
       this.currentSpace = 'from';
-      suggestionType = SuggestionType.tables;
-    } else if (lastWord === 'where') {
+      suggestionType = [SuggestionType.tables];
+    } else if (['where', 'and', 'or'].includes(lastWord)) {
       this.currentSpace = 'where';
-      suggestionType = SuggestionType.macros;
-      // Then the current space
+      if (this.currentTable === null) {
+        suggestionType = [SuggestionType.macros];
+      } else {
+        suggestionType = [SuggestionType.fields, SuggestionType.macros];
+      }
     } else if (this.currentSpace === 'from') {
+      // Then the current space
       suggestionType;
     } else if (this.currentSpace === 'where') {
-      suggestionType = SuggestionType.macros;
+      suggestionType = [SuggestionType.macros];
       // Then everything
     } else {
-      suggestionType = SuggestionType.all;
+      suggestionType = [SuggestionType.all];
     }
 
-    return {
-      suggestions: this.fetchSuggestions(range, suggestionType).suggestions,
-    };
+    let suggestions: languages.CompletionItem[] = [];
+    suggestionType.forEach((value) => {
+      suggestions = suggestions.concat(this.fetchSuggestions(range, value));
+    });
+
+    return { suggestions: suggestions };
   },
 
   buildAutocompleteSuggestion(
@@ -137,7 +149,7 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
     };
   },
 
-  fetchSuggestions(range: IRange, types: SuggestionType): languages.CompletionList {
+  fetchSuggestions(range: IRange, types: SuggestionType): languages.CompletionItem[] {
     let definitions: SuggestionDefinition[] = [];
 
     switch (types) {
@@ -147,18 +159,19 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
       case SuggestionType.tables:
         definitions = this.tableDefinitions();
         break;
+      case SuggestionType.fields:
+        if (this.currentTable != null) {
+          definitions = this.fieldDefinitions(this.currentTable);
+        }
+        break;
       default:
         definitions = this.allDefinitions();
         break;
     }
 
-    const suggestions = definitions.map((definition) => {
+    return definitions.map((definition) => {
       return this.buildAutocompleteSuggestion(definition, range);
     });
-
-    return {
-      suggestions,
-    };
   },
 
   tableDefinitions(): SuggestionDefinition[] {
