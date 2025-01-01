@@ -58,24 +58,23 @@ const tableColumns: KeyValue = {
 };
 
 interface SitewiseCompletionProviderType extends languages.CompletionItemProvider {
-  fetchSuggestions(range: IRange, types: SuggestionType): languages.CompletionItem[];
+  fetchSuggestions(range: IRange, types: SuggestionType, table: null | string): languages.CompletionItem[];
   tableDefinitions(): SuggestionDefinition[];
   fieldDefinitions(table: string): SuggestionDefinition[];
-  macroDefinitions(): SuggestionDefinition[];
-  allDefinitions(): SuggestionDefinition[];
+  macroDefinitions(range: IRange): SuggestionDefinition[];
+  allDefinitions(range: IRange, table: null | string): SuggestionDefinition[];
   buildAutocompleteSuggestion(definition: SuggestionDefinition, range: IRange): languages.CompletionItem;
   monaco: null | Monaco;
   currentSpace: string;
-  currentTable: null | string;
 }
 
+// TODO: Check out getStandardSQLCompletionProvider to get standard SQL completion
 export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
   triggerCharacters: ['.', ' ', '$', ',', '(', "'"],
 
   monaco: null,
 
   currentSpace: 'start',
-  currentTable: null,
 
   provideCompletionItems(model, position, context): languages.ProviderResult<languages.CompletionList> {
     // Setup
@@ -99,7 +98,7 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
     const lastWord = words[words.length - 1].toLowerCase();
 
     const regResult = /from\s(\w+)/g.exec(last_chars);
-    this.currentTable = regResult === null ? null : regResult[1];
+    let currentTable = regResult === null ? null : regResult[1];
 
     // First the last word
     if (lastWord === 'from') {
@@ -107,7 +106,7 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
       suggestionType = [SuggestionType.tables];
     } else if (['where', 'and', 'or'].includes(lastWord)) {
       this.currentSpace = 'where';
-      if (this.currentTable === null) {
+      if (currentTable === null) {
         suggestionType = [SuggestionType.macros];
       } else {
         suggestionType = [SuggestionType.fields, SuggestionType.macros];
@@ -124,7 +123,7 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
 
     let suggestions: languages.CompletionItem[] = [];
     suggestionType.forEach((value) => {
-      suggestions = suggestions.concat(this.fetchSuggestions(range, value));
+      suggestions = suggestions.concat(this.fetchSuggestions(range, value, currentTable));
     });
 
     return { suggestions: suggestions };
@@ -149,23 +148,23 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
     };
   },
 
-  fetchSuggestions(range: IRange, types: SuggestionType): languages.CompletionItem[] {
+  fetchSuggestions(range: IRange, types: SuggestionType, table: null | string): languages.CompletionItem[] {
     let definitions: SuggestionDefinition[] = [];
 
     switch (types) {
       case SuggestionType.macros:
-        definitions = this.macroDefinitions();
+        definitions = this.macroDefinitions(range);
         break;
       case SuggestionType.tables:
         definitions = this.tableDefinitions();
         break;
       case SuggestionType.fields:
-        if (this.currentTable != null) {
-          definitions = this.fieldDefinitions(this.currentTable);
+        if (table != null) {
+          definitions = this.fieldDefinitions(table);
         }
         break;
       default:
-        definitions = this.allDefinitions();
+        definitions = this.allDefinitions(range, table);
         break;
     }
 
@@ -194,18 +193,24 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
     });
   },
 
-  macroDefinitions(): SuggestionDefinition[] {
+  macroDefinitions(range: IRange): SuggestionDefinition[] {
     return MACROS.map((macro) => {
       return {
         label: macro.id,
         kind: this.monaco?.languages.CompletionItemKind.Function || 0,
         documentation: macro.description,
-        insertText: macro.id,
+        insertText: macro.id.substring(1, macro.id.length),
+        range,
+        //        insertText: macro.id,
       };
     });
   },
 
-  allDefinitions(): SuggestionDefinition[] {
-    return this.tableDefinitions().concat(this.macroDefinitions());
+  allDefinitions(range: IRange, table: string): SuggestionDefinition[] {
+    let definitions = this.tableDefinitions().concat(this.macroDefinitions(range));
+    if (table != null) {
+      definitions = definitions.concat(this.fieldDefinitions(table));
+    }
+    return definitions;
   },
 };

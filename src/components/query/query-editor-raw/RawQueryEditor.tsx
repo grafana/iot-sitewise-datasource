@@ -27,8 +27,10 @@ export function RawQueryEditor(props: Props) {
       onSave={(text) => onChange({ ...query, rawSQL: text })}
       onBlur={(text) => onChange({ ...query, rawSQL: text })}
       onBeforeEditorMount={(monaco) => {
-        SitewiseCompletionProvider.monaco = monaco;
-        monaco.languages.registerCompletionItemProvider('sql', SitewiseCompletionProvider);
+        if (SitewiseCompletionProvider.monaco === null) {
+          SitewiseCompletionProvider.monaco = monaco;
+          monaco.languages.registerCompletionItemProvider('sql', SitewiseCompletionProvider);
+        }
       }}
       height={'45vh'}
     />
