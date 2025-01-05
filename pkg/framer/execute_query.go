@@ -2,6 +2,7 @@ package framer
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
+	"github.com/pkg/errors"
 )
 
 type Rows []*iotsitewise.Row
@@ -59,22 +61,27 @@ func SetValue(col *iotsitewise.ColumnInfo, scalarValue string, field *data.Field
 		"INTEGER": func(s string) (interface{}, error) {
 			return strconv.ParseInt(s, 10, 64)
 		},
+		"INT": func(s string) (interface{}, error) {
+			return strconv.ParseInt(s, 10, 64)
+		},
 		"STRING": func(s string) (interface{}, error) {
-			if col.Name != nil && *col.Name == "event_timestamp" {
-				if t, err := strconv.ParseInt(s, 10, 64); err == nil {
-					return time.Unix(0, t*int64(time.Nanosecond)), nil
-				}
-			}
 			return s, nil
 		},
 		"DOUBLE": func(s string) (interface{}, error) {
 			return strconv.ParseFloat(s, 64)
 		},
+		"TIMESTAMP": func(s string) (interface{}, error) {
+			if t, err := strconv.ParseInt(s, 10, 64); err == nil {
+				return time.Unix(0, t*int64(time.Second)), nil
+			} else {
+				return nil, err
+			}
+		},
 	}
 
 	converter, exists := typeConverter[*col.Type.ScalarType]
 	if !exists {
-		return nil // or return an error if you want to handle unsupported types
+		return errors.New(fmt.Sprintf("Unsupported scalar type: %s", *col.Type.ScalarType))
 	}
 
 	value, err := converter(scalarValue)
