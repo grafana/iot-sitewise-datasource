@@ -4,7 +4,7 @@ import { ListAssetsQuery } from 'types';
 import { Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetModelSummary } from 'queryResponseTypes';
-import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/experimental';
+import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
 
 interface State {
   models?: DataFrameView<AssetModelSummary>;
