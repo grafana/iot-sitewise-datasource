@@ -9,7 +9,7 @@ import { standardRegionOptions } from 'regions';
 import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
 import { PropertyQueryEditor } from './PropertyQueryEditor';
 import { migrateQuery } from '../../migrations/migrateQuery';
-import { EditorField, EditorFieldGroup, EditorRow, EditorRows } from '@grafana/experimental';
+import { EditorField, EditorFieldGroup, EditorRow, EditorRows } from '@grafana/plugin-ui';
 import { QueryEditorHeader } from '@grafana/aws-sdk';
 import { ClientCacheRow } from './ClientCacheRow';
 import { ListTimeSeriesQueryEditorFunction } from './ListTimeSeriesQueryEditor';
