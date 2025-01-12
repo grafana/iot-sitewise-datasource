@@ -63,6 +63,48 @@ from asset a, asset_property p, raw_time_series r
 where $__unixEpochFilter(event_timestamp)
 ```
 
+#### Querying time series data
+
+The following needs to be noted when querying and graphing time series data from `raw_time_series`:
+
+* The values in the `event_timestamp` will be Integer, and represents the timestamp in nanoseconds.
+* When filtering on the `event_timestamp` field, it must be a timestamp specified in seconds.
+
+So a typical setup will be to use the filters as shown in the example queries, and then applying the transforms as shown below.
+
+For this example, we'll be using the following query:
+
+```sql
+select event_timestamp, double_value
+from raw_time_series
+where $__unixEpochFilter(event_timestamp)
+```
+
+This will result in a Grafana telling you that the `Data is missing a time field`:
+
+![data_missing_time_field](../docs/data_missing_time_field.png)
+
+However, if you switch to the Table view, you'll see the data, including the `event_timestamp` values in nanoseconds:
+
+![table_view_of_data](../docs/table_view_of_data.png)
+
+By converting the event_timestamp to seconds by using transforms, you can see a proper time series graph:
+
+* Using `Add field from calculation`, convert the event timestamp nanoseconds into milliseconds:
+  * Mode: `Binary operation`
+  * Operation: `event_timestamp / 1000000`
+  * Alias: `event_timestamp_ms`
+* Using `Convert field type`, convert the event timestamp integer into a timestamp:
+  * Field: `event_timestamp_ms`
+  * as: `Time`
+* Using `Organize fields by name`, hide the `event_timestamp` field
+
+![data_transforms](../docs/data_transforms.png)
+
+This will result in a time series graph as shown below.
+
+![timeseries_data](../docs/timeseries_data.png)
+
 ## Alerting
 
 Standard grafana alerting is support with this plugin, however note that alert queries may not include template variables.
