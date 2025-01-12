@@ -1,15 +1,114 @@
 package framer
 
 import (
+	"context"
 	"testing"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func TestFrames(t *testing.T) {
+	tests := []struct {
+		name     string
+		results  QueryResults
+		expected int
+	}{
+		{
+			name: "Empty results",
+			results: QueryResults{
+				Rows: []*iotsitewise.Row{},
+			},
+			expected: 0,
+		},
+		{
+			name: "Single row",
+			results: QueryResults{
+				Rows: []*iotsitewise.Row{
+					{
+						Data: []*iotsitewise.Datum{
+							{ScalarValue: aws.String("true")},
+						},
+					},
+				},
+				Columns: []*iotsitewise.ColumnInfo{
+					{
+						Name: aws.String("Test Field"),
+						Type: &iotsitewise.ColumnType{ScalarType: aws.String("BOOLEAN")},
+					},
+				},
+			},
+			expected: 1,
+		},
+		{
+			name: "Multiple rows",
+			results: QueryResults{
+				Rows: []*iotsitewise.Row{
+					{
+						Data: []*iotsitewise.Datum{
+							{ScalarValue: aws.String("true")},
+						},
+					},
+					{
+						Data: []*iotsitewise.Datum{
+							{ScalarValue: aws.String("false")},
+						},
+					},
+				},
+				Columns: []*iotsitewise.ColumnInfo{
+					{
+						Name: aws.String("Test Field"),
+						Type: &iotsitewise.ColumnType{ScalarType: aws.String("BOOLEAN")},
+					},
+				},
+			},
+			expected: 2,
+		},
+		{
+			name: "Null values",
+			results: QueryResults{
+				Rows: []*iotsitewise.Row{
+					{
+						Data: []*iotsitewise.Datum{
+							{ScalarValue: nil},
+						},
+					},
+					{
+						Data: []*iotsitewise.Datum{
+							{ScalarValue: aws.String("null")},
+						},
+					},
+				},
+				Columns: []*iotsitewise.ColumnInfo{
+					{
+						Name: aws.String("Test Field"),
+						Type: &iotsitewise.ColumnType{ScalarType: aws.String("BOOLEAN")},
+					},
+				},
+			},
+			expected: 2,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			frames, err := tt.results.Frames(context.Background(), nil)
+			require.NoError(t, err)
+			require.Len(t, frames, 1)
+			if tt.expected > 0 {
+				assert.Equal(t, tt.expected, frames[0].Fields[0].Len())
+			} else {
+				assert.Equal(t, 0, len(frames[0].Fields))
+				backend.Logger.Debug("weirdness", "frames", frames)
+			}
+		})
+	}
+}
 
 func TestSetValue(t *testing.T) {
 	tests := []struct {
