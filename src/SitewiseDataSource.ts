@@ -169,8 +169,6 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
             if (response.state === LoadingState.Done) {
               if (response.data.length > 0) {
                 this.relativeRangeCache.set(request, response);
-              } else {
-                throw new Error('No data returned');
               }
             }
           },
