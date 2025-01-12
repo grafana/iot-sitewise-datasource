@@ -88,7 +88,9 @@ func SetValue(col *iotsitewise.ColumnInfo, scalarValue string, field *data.Field
 	if err != nil {
 		return err
 	}
+	if value != nil {
+		field.Set(index, value)
+	}
 
-	field.Set(index, value)
 	return nil
 }
