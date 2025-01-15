@@ -1,6 +1,6 @@
 import React from 'react';
 import { Switch } from '@grafana/ui';
-import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/experimental';
+import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
 
 interface Props {
   clientCache?: boolean;

@@ -1,7 +1,7 @@
 import { SitewiseQuery, shouldShowL4eOptions, shouldShowLastObserved, shouldShowQualityAndOrderComponent } from 'types';
 import { CollapsableSection, Switch, useTheme2 } from '@grafana/ui';
 import React from 'react';
-import { EditorField, EditorFieldGroup } from '@grafana/experimental';
+import { EditorField, EditorFieldGroup } from '@grafana/plugin-ui';
 import { css } from '@emotion/css';
 import { GrafanaTheme2 } from '@grafana/data';
 

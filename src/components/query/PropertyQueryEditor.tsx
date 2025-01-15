@@ -20,7 +20,7 @@ import { AssetBrowser } from '../browser/AssetBrowser';
 import { AggregatePicker, aggReg } from '../AggregatePicker';
 import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
 import { QualityAndOrderRow } from './QualityAndOrderRow';
-import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/experimental';
+import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
 import { css } from '@emotion/css';
 import { QueryOptions } from './QueryOptions';
 
