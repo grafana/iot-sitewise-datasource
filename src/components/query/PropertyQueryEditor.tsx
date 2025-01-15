@@ -26,6 +26,8 @@ import { QueryOptions } from './QueryOptions';
 
 type Props = SitewiseQueryEditorProps<SitewiseQuery | AssetPropertyAggregatesQuery | ListAssociatedAssetsQuery>;
 
+const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89abAB][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 const resolutions: Array<SelectableValue<SiteWiseResolution>> = [
   {
     value: SiteWiseResolution.Auto,
@@ -40,6 +42,7 @@ const resolutions: Array<SelectableValue<SiteWiseResolution>> = [
 ];
 
 interface State {
+  assetId?: string;
   asset?: AssetInfo;
   property?: AssetPropertyInfo;
   assets: Array<SelectableValue<string>>;
@@ -52,6 +55,7 @@ const ALL_HIERARCHIES = '*';
 
 export class PropertyQueryEditor extends PureComponent<Props, State> {
   state: State = {
+    assetId: this.props.query.assetIds && this.props.query.assetIds[0],
     assets: [],
     assetProperties: [],
     loading: true,
@@ -59,7 +63,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
   };
 
   async updateInfo() {
-    const { query, datasource } = this.props;
+    const { onChange, query, datasource } = this.props;
     const update: State = {
       loading: false,
     } as State;
@@ -67,9 +71,14 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const cache = datasource.getCache(query.region);
     if (query?.assetIds?.length) {
       try {
-        update.asset = await cache.getAssetInfo(query.assetIds![0]);
+        update.asset = await cache.getAssetInfo(query.assetIds[0]);
         const ps = await cache.listAssetProperties(query.assetIds[0]);
         update.assetProperties = ps?.map(({ id, name }) => ({ id, name })) || [];
+        // Update external ids to asset ids in the query
+        if (update.asset?.id && query.assetIds[0].startsWith('externalId')) {
+          query.assetIds[0] = update.asset.id;
+          onChange(query);
+        }
       } catch (err) {
         console.warn('error reading asset info', err);
         update.property = undefined;
@@ -98,7 +107,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
     if (assetChanged || propChanged || regionChanged) {
       if (!query.assetIds?.length && !regionChanged) {
-        this.setState({ asset: undefined, property: undefined, loading: false });
+        this.setState({ assetId: undefined, asset: undefined, property: undefined, loading: false });
       } else {
         this.setState({ loading: true });
         this.updateInfo();
@@ -168,7 +177,15 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
   onSetAssetId = (assetId?: string) => {
     const { onChange, query } = this.props;
-    onChange({ ...query, assetIds: assetId ? [assetId] : undefined });
+    if (!assetId) {
+      this.setState({ assetId: undefined });
+      onChange({ ...query, assetIds: undefined });
+    } else {
+      const assetIds =
+        uuidRegex.test(assetId) || assetId.startsWith('externalId:') ? [assetId] : [`externalId:${assetId}`];
+      this.setState({ assetId: assetIds[0] });
+      onChange({ ...query, assetIds });
+    }
   };
 
   onSetPropertyId = (propertyId?: string) => {
@@ -300,7 +317,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       if (loading) {
         current = query.assetIds.map((assetId) => ({ label: 'loading...', value: assetId }));
       } else {
-        current = query.assetIds.map((assetId) => ({ label: `ID: ${assetId}`, value: assetId }));
+        current = query.assetIds.map((assetId) => ({ label: `ID: ${this.state.assetId}`, value: assetId }));
       }
     }
 
