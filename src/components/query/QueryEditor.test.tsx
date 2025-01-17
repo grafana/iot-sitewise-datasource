@@ -192,15 +192,15 @@ describe('QueryEditor', () => {
     });
   });
 
-  it('should display correct fields for query type ListAssociatedAssets if assetId is defined', async () => {
+  it('should display correct fields for query type ListAssociatedAssets', async () => {
     await setup({
       queryType: QueryType.ListAssociatedAssets,
       assetIds: ['asset'],
     });
     await waitFor(() => {
-      expect(screen.getByText('Show')).toBeInTheDocument();
+      expect(screen.getByText('Asset Hierarchy')).toBeInTheDocument();
       expect(screen.getByText('Asset')).toBeInTheDocument();
-      expect(screen.getByText('Property Alias')).toBeInTheDocument();
+      expect(screen.queryByText('Property Alias')).toBeNull();
     });
   });
 
@@ -210,7 +210,9 @@ describe('QueryEditor', () => {
       propertyAlias: 'prop',
     });
     await waitFor(() => {
-      expect(screen.getByText('Show')).toBeInTheDocument();
+      expect(screen.getByText('Asset Hierarchy')).toBeInTheDocument();
+      expect(screen.getByText('Asset')).toBeInTheDocument();
+      expect(screen.queryByText('Property Alias')).toBeNull();
     });
   });
 

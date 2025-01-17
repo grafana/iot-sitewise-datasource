@@ -270,10 +270,10 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       }
     }
     return (
-      <EditorField label="Show" htmlFor="show">
+      <EditorField label="Asset Hierarchy" htmlFor="assetHierarchy">
         <Select
-          id="show"
-          aria-label="Show"
+          id="assetHierarchy"
+          aria-label="Asset Hierarchy"
           isLoading={loading}
           options={hierarchies}
           value={current}
@@ -343,19 +343,21 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
     return (
       <>
-        <EditorRow>
-          <EditorField label="Property Alias" tooltip={queryTooltip} tooltipInteractive htmlFor="alias" width={80}>
-            <Input
-              id="alias"
-              aria-label="Property alias"
-              value={query.propertyAlias}
-              onChange={this.onAliasChange}
-              placeholder="optional alias that identifies the property, such as an OPC-UA server data stream path"
-            />
-          </EditorField>
-        </EditorRow>
+        {!isAssociatedAssets && (
+          <EditorRow>
+            <EditorField label="Property Alias" tooltip={queryTooltip} tooltipInteractive htmlFor="alias" width={80}>
+              <Input
+                id="alias"
+                aria-label="Property alias"
+                value={query.propertyAlias}
+                onChange={this.onAliasChange}
+                placeholder="optional alias that identifies the property, such as an OPC-UA server data stream path"
+              />
+            </EditorField>
+          </EditorRow>
+        )}
 
-        {!Boolean(query.propertyAlias) && (
+        {(!Boolean(query.propertyAlias) || isAssociatedAssets) && (
           <>
             <EditorRow>
               <EditorFieldGroup>
