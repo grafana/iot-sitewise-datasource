@@ -162,15 +162,15 @@ test.describe('Query Editor', () => {
     test('List associated assets', async ({ panelEditPage, queryEditor }) => {
       await expect(queryEditor.propertyAliasInput).not.toBeVisible();
       await expect(queryEditor.assetSelect).not.toBeVisible();
-      await expect(queryEditor.showSelect).not.toBeVisible();
+      await expect(queryEditor.hierarchySelect).not.toBeVisible();
 
       await queryEditor.selectQueryType('List associated assets');
 
-      await expect(queryEditor.propertyAliasInput).toBeVisible();
+      await expect(queryEditor.propertyAliasInput).not.toBeVisible();
       await expect(queryEditor.assetSelect).toBeVisible();
-      await expect(queryEditor.showSelect).toBeVisible();
+      await expect(queryEditor.hierarchySelect).toBeVisible();
 
-      await queryEditor.selectShow('** All **');
+      await queryEditor.selectHierarchy('** All **');
       await queryEditor.runQuery();
 
       await expect(panelEditPage.panel.data).toContainText(['Demo Turbine Asset']);

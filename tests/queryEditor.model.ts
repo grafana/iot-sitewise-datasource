@@ -16,14 +16,14 @@ export class QueryEditor {
   readonly resolutionSelect: Locator;
   readonly modelIdSelect: Locator;
   readonly filterSelect: Locator;
-  readonly showSelect: Locator;
+  readonly hierarchySelect: Locator;
   readonly queryOptionsSelect: Locator;
   readonly #page: Page;
   readonly featureToggles: Record<string, boolean>;
 
   constructor(page: Page, featureToggles: Record<string, boolean>) {
     this.queryTypeSelect = page.getByLabel('Query type');
-    this.assetSelect = page.getByLabel('Asset');
+    this.assetSelect = page.getByLabel('Asset', { exact: true });
     this.propertySelect = page.getByLabel('Property', { exact: true });
     this.propertyAliasInput = page.getByLabel('Property alias');
     this.qualitySelect = page.getByLabel('Quality');
@@ -33,7 +33,7 @@ export class QueryEditor {
     this.resolutionSelect = page.getByLabel('Resolution');
     this.modelIdSelect = page.getByLabel('Model ID');
     this.filterSelect = page.getByLabel('Filter', { exact: true });
-    this.showSelect = page.getByLabel('Show', { exact: true });
+    this.hierarchySelect = page.getByLabel('Asset Hierarchy', { exact: true });
     this.queryOptionsSelect = page.getByTestId('collapse-title');
     this.#page = page;
     this.featureToggles = featureToggles;
@@ -67,8 +67,8 @@ export class QueryEditor {
     await propertyOption.click();
   }
 
-  async selectShow(show: '** Parent **' | '** All **') {
-    await this.showSelect.click();
+  async selectHierarchy(show: '** Parent **' | '** All **') {
+    await this.hierarchySelect.click();
 
     const showOption = this.#page.getByText(show, { exact: true });
 
