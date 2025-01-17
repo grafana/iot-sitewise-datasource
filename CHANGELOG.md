@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.25.2
+
+- Bump the all-node-dependencies group across 1 directory with 17 updates in [#389](https://github.com/grafana/iot-sitewise-datasource/pull/389)
+- Bump the all-go-dependencies group with 3 updates in [#388](https://github.com/grafana/iot-sitewise-datasource/pull/388)
+- Bump github.com/grafana/grafana-plugin-sdk-go from 0.260.3 to 0.261.0 in the all-go-dependencies group in [#385](https://github.com/grafana/iot-sitewise-datasource/pull/385)
+- Bump the all-node-dependencies group across 1 directory with 20 updates in [#382](https://github.com/grafana/iot-sitewise-datasource/pull/382)
+- Bump the all-go-dependencies group across 1 directory with 2 updates in [#379](https://github.com/grafana/iot-sitewise-datasource/pull/379)
+
 ## 1.25.1
 
 - Chore: Update plugin.json keywords [#359](https://github.com/grafana/iot-sitewise-datasource/pull/359)
