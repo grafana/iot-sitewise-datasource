@@ -77,6 +77,8 @@
     "nvmrc",
     "gomod",
     "golangci",
-    "subresource"
+    "subresource",
+    "seccomp",
+    "PTRACE"
   ]
 }

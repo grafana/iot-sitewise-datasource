@@ -1,16 +1,40 @@
-version: '3.0'
-
 services:
   grafana:
+    user: root
     container_name: 'grafana-iot-sitewise-datasource'
-    platform: 'linux/amd64'
+
     build:
       context: ./.config
       args:
         grafana_image: ${GRAFANA_IMAGE:-grafana-enterprise}
-        grafana_version: ${GRAFANA_VERSION:-10.4.5}
+        grafana_version: ${GRAFANA_VERSION:-10.4.14}
+        development: ${DEVELOPMENT:-false}
+        anonymous_auth_enabled: ${ANONYMOUS_AUTH_ENABLED:-true}
     ports:
       - 3000:3000/tcp
+      - 2345:2345/tcp # delve
+    # `security_opt` and `cap_add` are necessary to allow delve to attach to the
+    # running process and debug it and should not be used in production environments.
+    security_opt:
+      - 'apparmor:unconfined'
+      - 'seccomp:unconfined'
+    cap_add:
+      - SYS_PTRACE
     volumes:
+      # The built plugin
       - ./dist:/var/lib/grafana/plugins/grafana-iot-sitewise-datasource
+      # For automatically provisioning data sources and dashboards
       - ./provisioning:/etc/grafana/provisioning
+      # For watching code changes so the backend can rebuilt and reloaded automatically
+      - .:/root/grafana-iot-sitewise-datasource
+      # Volume for persisting changes
+      - grafana:/var/lib/grafana
+
+    environment:
+      # Sets the log level to debug only for this plugin
+      GF_LOG_FILTERS: plugin.grafana-iot-sitewise-datasource:debug
+      # Allows loading this plugin without needing it to be signed
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: grafana-iot-sitewise-datasource
+
+volumes:
+  grafana:
