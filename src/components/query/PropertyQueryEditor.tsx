@@ -358,6 +358,19 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       </div>
     );
 
+    const assetTooltip = (
+      <div>
+        Set the asset ID. It can be either the actual ID in UUID format, or else "externalId:" followed by the external
+        ID, if it has one.
+        <LinkButton
+          href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids"
+          target="_blank"
+        >
+          API Docs <Icon name="external-link-alt" />
+        </LinkButton>
+      </div>
+    );
+
     return (
       <>
         <EditorRow>
@@ -376,7 +389,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
           <>
             <EditorRow>
               <EditorFieldGroup>
-                <EditorField label="Asset" htmlFor="asset" width={30}>
+                <EditorField label="Asset" tooltip={assetTooltip} tooltipInteractive htmlFor="asset" width={30}>
                   <Select
                     id="asset"
                     inputId="asset"
