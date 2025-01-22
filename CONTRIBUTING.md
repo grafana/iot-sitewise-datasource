@@ -26,12 +26,6 @@ yarn install
 yarn dev
 ```
 
-or
-
-```BASH
-yarn watch
-```
-
 3. Build plugin in production mode
 
 ```BASH
@@ -58,7 +52,7 @@ mage buildAll
 mage test
 ```
 
-### Install
+### Local Grafana development setup
 
 Instructions to install grafana server locally can be found, here:
 
@@ -82,29 +76,20 @@ aws_secret_access_key=<your aws secret access key>
 EOF
 ```
 
+See https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html for more details on configuring the credentials file.
+
 2. Start Grafana docker
 
 ```BASH
 cd /Workspace/iot-sitewise-datasource
-yarn server
+yarn server:dev
 ```
 
-OR
-
-```BASH
-# Run from directory containing iot-sitewise-datasource clone
-cd /Workspace/iot-sitewise-datasource
-docker run -e GF_DEFAULT_APP_MODE=development -e AWS_SHARED_CREDENTIALS_FILE="/Users/grafana/.aws/credentials" -d -p 3000:3000 -v ~/.aws/:/Users/grafana/.aws/ -v "$(pwd)"/dist:/var/lib/grafana/plugins --name=grafana grafana/grafana:latest
-```
-
-3. Reload plugin
-
-```BASH
-docker restart grafana
-```
+Starting the docker image with `yarn server:dev` will automatically rebuild and reload the plugin whenever changes are made.
 
 Access from `http://localhost:3000`.
-First time login will be user:**admin** password:**admin**
+
+If you run `yarn server:dev` with `ANONYMOUS_AUTH_ENABLED=false` the first time login will be user:**admin** password:**admin**.
 
 ### Build a release
 
