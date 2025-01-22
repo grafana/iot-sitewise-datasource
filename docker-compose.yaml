@@ -29,8 +29,14 @@ services:
       - .:/root/grafana-iot-sitewise-datasource
       # Volume for persisting changes
       - grafana:/var/lib/grafana
+      # For shared AWS config and credentials files
+      - ~/.aws:/usr/share/grafana/.aws
 
     environment:
+      # Specifies the location of the file that the AWS CLI uses to store configuration profiles
+      AWS_CONFIG_FILE: /usr/share/grafana/.aws/config
+      # Specifies the location of the file that the AWS CLI uses to store access keys
+      AWS_SHARED_CREDENTIALS_FILE: /usr/share/grafana/.aws/credentials
       # Sets the log level to debug only for this plugin
       GF_LOG_FILTERS: plugin.grafana-iot-sitewise-datasource:debug
       # Allows loading this plugin without needing it to be signed

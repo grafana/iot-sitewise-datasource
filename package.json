@@ -18,8 +18,7 @@
     "test:ci": "jest --passWithNoTests --maxWorkers 4",
     "test:coverage": "jest --coverage",
     "test:coverage:changes": "jest --coverage --changedSince=origin/main",
-    "typecheck": "tsc --noEmit",
-    "watch": "webpack -w -c ./.config/webpack/webpack.config.ts --env development"
+    "typecheck": "tsc --noEmit"
   },
   "repository": "github:grafana/iot-sitewise-datasource",
   "author": "Grafana Labs <team@grafana.com> (https://grafana.com)",
