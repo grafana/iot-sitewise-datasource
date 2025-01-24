@@ -31,6 +31,11 @@ func FieldTypeForPropertyValue(property *iotsitewise.DescribeAssetPropertyOutput
 }
 
 func FieldTypeForQueryResult(column iotsitewise.ColumnInfo) data.FieldType {
+	// Override the type for event_timestamp
+	if *column.Name == "event_timestamp" {
+		return data.FieldTypeTime
+	}
+
 	switch *column.Type.ScalarType {
 	case "BOOLEAN":
 		return data.FieldTypeBool
@@ -39,10 +44,6 @@ func FieldTypeForQueryResult(column iotsitewise.ColumnInfo) data.FieldType {
 	case "INT":
 		return data.FieldTypeInt64
 	case "STRING":
-		if *column.Name == "event_timestamp" {
-			return data.FieldTypeTime
-		}
-
 		return data.FieldTypeString
 	case "DOUBLE":
 		return data.FieldTypeFloat64

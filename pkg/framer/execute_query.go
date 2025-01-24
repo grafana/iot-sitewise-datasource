@@ -88,6 +88,12 @@ func SetValue(col *iotsitewise.ColumnInfo, scalarValue string, field *data.Field
 	if err != nil {
 		return err
 	}
+
+	// Override event_timestamp columns to be time values
+	if *col.Name == "event_timestamp" {
+		value = time.Unix(0, value.(int64))
+	}
+
 	if value != nil {
 		field.Set(index, value)
 	}
