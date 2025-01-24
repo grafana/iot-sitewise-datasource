@@ -2,7 +2,7 @@ import { DataSource } from './SitewiseDataSource';
 import { DataSourceInstanceSettings, PluginMeta, ScopedVar, ScopedVars } from '@grafana/data';
 import { QueryType, SitewiseOptions, SitewiseQuery } from './types';
 
-export const testInstanceSettings = (
+const testInstanceSettings = (
   overrides?: Partial<DataSourceInstanceSettings<SitewiseOptions>>
 ): DataSourceInstanceSettings<SitewiseOptions> => ({
   id: 1,

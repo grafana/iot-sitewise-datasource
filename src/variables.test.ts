@@ -1,15 +1,29 @@
-import { CoreApp, DataQueryRequest, dateTime } from '@grafana/data';
+import { CoreApp, DataQueryRequest, DataSourceInstanceSettings, dateTime } from '@grafana/data';
 import { DataSource } from 'SitewiseDataSource';
-import { testInstanceSettings } from 'SitewiseDataSource.test';
-import { QueryType, SitewiseQuery } from 'types';
+import { QueryType, SitewiseOptions, SitewiseQuery } from 'types';
 import { SitewiseVariableSupport } from 'variables';
 import { of } from 'rxjs';
 
-const mockedDatasourceQuery = jest.fn().mockReturnValue(of({ data: [] }));
+const request: DataQueryRequest<SitewiseQuery> = {
+  targets: [],
+  range: { from: dateTime(), to: dateTime(), raw: { from: dateTime(), to: dateTime() } },
+  interval: '1s',
+  intervalMs: 1000,
+  scopedVars: {},
+  timezone: 'UTC',
+  requestId: '1',
+  app: CoreApp.Dashboard,
+  startTime: 1234567890,
+};
 
-describe('template variable support', () => {
+const mockedDatasourceQuery = jest.fn(() => of({ data: [] }));
+
+describe('SiteWiseVariableSupport', () => {
   describe('query filtering', () => {
-    const mockDatasource = new DataSource(testInstanceSettings());
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+    const mockDatasource = new DataSource({} as DataSourceInstanceSettings<SitewiseOptions>);
     mockDatasource.query = mockedDatasourceQuery;
     const variableSupport = new SitewiseVariableSupport(mockDatasource);
     test.each([
@@ -25,18 +39,7 @@ describe('template variable support', () => {
       { refId: 'A', queryType: QueryType.ListAssociatedAssets },
       { refId: 'A', queryType: QueryType.ListAssets },
     ])('Filters out queries that are missing any required fields', (query: SitewiseQuery) => {
-      const request: DataQueryRequest<SitewiseQuery> = {
-        targets: [query],
-        range: { from: dateTime(), to: dateTime(), raw: { from: dateTime(), to: dateTime() } },
-        interval: '1s',
-        intervalMs: 1000,
-        scopedVars: {},
-        timezone: 'UTC',
-        requestId: '1',
-        app: CoreApp.Dashboard,
-        startTime: 1234567890,
-      };
-      variableSupport.query(request);
+      variableSupport.query({ ...request, targets: [query] });
       expect(mockedDatasourceQuery).not.toHaveBeenCalled();
     });
     test.each([
@@ -50,19 +53,7 @@ describe('template variable support', () => {
       { refId: 'A', queryType: QueryType.ListTimeSeries },
       { refId: 'A', queryType: QueryType.ListTimeSeries },
     ])('Does not filter out queries that have all the required data', (query: SitewiseQuery) => {
-      jest.clearAllMocks();
-      const request: DataQueryRequest<SitewiseQuery> = {
-        targets: [query],
-        range: { from: dateTime(), to: dateTime(), raw: { from: dateTime(), to: dateTime() } },
-        interval: '1s',
-        intervalMs: 1000,
-        scopedVars: {},
-        timezone: 'UTC',
-        requestId: '1',
-        app: CoreApp.Dashboard,
-        startTime: 1234567890,
-      };
-      variableSupport.query(request);
+      variableSupport.query({ ...request, targets: [query] });
       expect(mockedDatasourceQuery).toHaveBeenCalled();
     });
   });
