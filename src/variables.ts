@@ -65,6 +65,9 @@ export class SitewiseVariableSupport extends CustomVariableSupport<DataSource, S
       case QueryType.ListAssets:
       case QueryType.ListAssociatedAssets:
         return Boolean(query.assetIds?.length);
+      case QueryType.ListTimeSeries:
+      case QueryType.DescribeAsset:
+      case QueryType.ListAssetProperties:
       default:
         return true;
     }
