@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { assign } from 'lodash';
 import { QueryType, SitewiseQuery } from './types';
@@ -17,15 +17,19 @@ export class SitewiseVariableSupport extends CustomVariableSupport<DataSource, S
   editor = QueryEditor;
 
   query(request: DataQueryRequest<SitewiseQuery>): Observable<DataQueryResponse> {
-    assign(request.targets, [{ ...request.targets[0], refId: 'A' }]);
-    const response = this.datasource.query(request);
-    switch (request.targets[0].queryType) {
-      case QueryType.ListAssetModels:
-      case QueryType.ListAssets:
-      case QueryType.ListAssociatedAssets:
-        return this.parseOptions(response);
-      default:
-        return response;
+    if (this.isValidQuery(request.targets[0])) {
+      assign(request.targets, [{ ...request.targets[0], refId: 'A' }]);
+      const response = this.datasource.query(request);
+      switch (request.targets[0].queryType) {
+        case QueryType.ListAssetModels:
+        case QueryType.ListAssets:
+        case QueryType.ListAssociatedAssets:
+          return this.parseOptions(response);
+        default:
+          return response;
+      }
+    } else {
+      return of({ data: [], error: { message: 'Invalid query' } });
     }
   }
 
@@ -48,5 +52,24 @@ export class SitewiseVariableSupport extends CustomVariableSupport<DataSource, S
         return { data: newData };
       })
     );
+  }
+
+  private isValidQuery(query: SitewiseQuery): boolean {
+    switch (query.queryType) {
+      case QueryType.PropertyValue:
+      case QueryType.PropertyValueHistory:
+      case QueryType.PropertyInterpolated:
+      case QueryType.PropertyAggregate:
+        return Boolean((query.assetIds?.length || query.assetId) && query.propertyId);
+      case QueryType.ListAssetModels:
+      case QueryType.ListAssets:
+      case QueryType.ListAssociatedAssets:
+        return Boolean(query.assetIds?.length);
+      case QueryType.ListTimeSeries:
+      case QueryType.DescribeAsset:
+      case QueryType.ListAssetProperties:
+      default:
+        return true;
+    }
   }
 }
