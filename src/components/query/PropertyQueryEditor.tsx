@@ -181,8 +181,8 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
       this.setState({ assetId: undefined });
       onChange({ ...query, assetIds: undefined });
     } else {
-      const assetIds =
-        uuidRegex.test(assetId) || assetId.startsWith('externalId:') ? [assetId] : [`externalId:${assetId}`];
+      const validId = uuidRegex.test(assetId) || assetId.startsWith('externalId:') || assetId.startsWith('$');
+      const assetIds = validId ? [assetId] : [`externalId:${assetId}`];
       this.setState({ assetId: assetIds[0] });
       onChange({ ...query, assetIds });
     }
