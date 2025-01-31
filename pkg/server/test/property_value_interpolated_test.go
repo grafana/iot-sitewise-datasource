@@ -71,7 +71,7 @@ func TestPropertyValueInterpolatedQuery(t *testing.T) {
 		},
 	}, nil)
 
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
 		AssetId:    aws.String("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 		PropertyId: aws.String("11propid-aaaa-2222-bbbb-3333cccc4444"),
 	}, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
@@ -84,7 +84,7 @@ func TestPropertyValueInterpolatedQuery(t *testing.T) {
 		},
 	}, nil)
 
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
 		AssetId:    aws.String("2assetid-aaaa-2222-bbbb-3333cccc4444"),
 		PropertyId: aws.String("11propid-aaaa-2222-bbbb-3333cccc4444"),
 	}, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{

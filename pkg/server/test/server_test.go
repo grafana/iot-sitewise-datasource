@@ -47,6 +47,8 @@ func testDataRelativePath(filename string) string {
 }
 
 func mockedDatasource(swmock *mocks.SitewiseAPIClient) server.Datasource {
+	// FIXME: GetClient isn't called
+	// FIXME: need a way to add EdgeAuthenticator
 	return &sitewise.Datasource{
 		GetClient: func(_ context.Context, _ string) (client.SitewiseAPIClient, error) {
 			return swmock, nil

@@ -36,7 +36,7 @@ var listAssociatedAssetsChildrenHappyCase testServerScenarioFn = func(t *testing
 			testdata.TurbineAssetModelHierarchyId == *hierarchyId
 	})
 
-	mockSw.On("ListAssociatedAssetsWithContext", mock.Anything, argMatcher).Return(&assets, nil)
+	mockSw.On("ListAssociatedAssets", mock.Anything, argMatcher).Return(&assets, nil)
 
 	query := models.ListAssociatedAssetsQuery{}
 	query.AssetIds = []string{testdata.DemoWindFarmAssetId}
@@ -75,7 +75,7 @@ var listAssociatedAssetsParentHappyCase testServerScenarioFn = func(t *testing.T
 		return *assetId == testdata.DemoTurbineAsset1 && traversal == types.TraversalDirectionParent
 	})
 
-	mockSw.On("ListAssociatedAssetsWithContext", mock.Anything, argMatcher).Return(&assets, nil)
+	mockSw.On("ListAssociatedAssets", mock.Anything, argMatcher).Return(&assets, nil)
 
 	query := models.ListAssociatedAssetsQuery{}
 	query.AssetIds = []string{testdata.DemoTurbineAsset1}

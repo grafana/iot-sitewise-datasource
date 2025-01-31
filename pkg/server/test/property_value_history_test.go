@@ -53,7 +53,7 @@ func Test_get_property_value_history_with_default_aka_table_response_format(t *t
 			},
 		},
 	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
 		AssetProperty: &iotsitewisetypes.Property{
 			DataType: iotsitewisetypes.PropertyDataTypeDouble,
@@ -111,7 +111,7 @@ func Test_get_property_value_history_with_default_aka_table_response_format(t *t
 		100,
 	)
 	mockSw.AssertCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		&iotsitewise.DescribeAssetPropertyInput{
 			AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
@@ -147,7 +147,7 @@ func Test_get_property_value_history_with_time_series_response_format(t *testing
 			},
 		},
 	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
 		AssetProperty: &iotsitewisetypes.Property{
 			DataType: iotsitewisetypes.PropertyDataTypeDouble,
@@ -207,7 +207,7 @@ func Test_get_property_value_history_with_time_series_response_format(t *testing
 		100,
 	)
 	mockSw.AssertCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		&iotsitewise.DescribeAssetPropertyInput{
 			AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
@@ -221,7 +221,7 @@ func Test_getPropertyValueBoolean(t *testing.T) {
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-is-windy.json"))
 	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&propDesc, nil)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -290,7 +290,7 @@ func Test_get_property_value_history_with_flatten_l4e(t *testing.T) {
 			},
 		},
 	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
 		return req.PropertyId != nil && *req.PropertyId == assetPropertyIdQuery
 	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetId:   Pointer(assetId),
@@ -303,7 +303,7 @@ func Test_get_property_value_history_with_flatten_l4e(t *testing.T) {
 			},
 		},
 	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
 		return req.PropertyId != nil && *req.PropertyId == assetPropertyIdDiagnosticOne
 	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
@@ -313,7 +313,7 @@ func Test_get_property_value_history_with_flatten_l4e(t *testing.T) {
 			Name:     Pointer("Torque"),
 		},
 	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
 		return req.PropertyId != nil && *req.PropertyId == assetPropertyIdDiagnosticTwo
 	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
@@ -401,7 +401,7 @@ func Test_get_property_value_history_with_struct_type(t *testing.T) {
 			},
 		},
 	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetId:   Pointer(assetId),
 		AssetName: Pointer("Demo Turbine Asset 1"),
 		CompositeModel: &iotsitewisetypes.CompositeModelProperty{
@@ -462,8 +462,8 @@ func Test_getPropertyValueHistoryFromAliasCaseTable(t *testing.T) {
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
 	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&propDesc, nil)
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -504,7 +504,7 @@ func Test_getPropertyValueHistoryFromAliasCaseTable_disassociated_stream(t *test
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series-without-property.json"))
 	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -544,7 +544,7 @@ func Test_getPropertyValueHistoryFromAliasCaseTable_disassociated_stream_empty_r
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series-without-property.json"))
 	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -586,8 +586,8 @@ func Test_getPropertyValueHistoryFromAliasCaseTimeSeries(t *testing.T) {
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
 	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&propDesc, nil)
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -628,7 +628,7 @@ func Test_getPropertyValueHistoryFromAliasCaseTimeSeries_disassociated_stream(t 
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series-without-property.json"))
 	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -669,7 +669,7 @@ func Test_getPropertyValueHistoryFromAliasCaseTimeSeries_disassociated_stream_wi
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series-without-property.json"))
 	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -711,8 +711,8 @@ func Test_getPropertyValueBooleanFromAlias(t *testing.T) {
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
 	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&propDesc, nil)
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -753,7 +753,7 @@ func Test_getPropertyValueBooleanFromAliasWithDisassociatedStream(t *testing.T) 
 	propTimeSeriesWithoutPropertyId := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series-without-property.json"))
 	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeriesWithoutPropertyId, nil)
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&propTimeSeriesWithoutPropertyId, nil)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -794,7 +794,7 @@ func Test_getPropertyValueBooleanFromAlias_disassociated_stream_with_empty_respo
 	propTimeSeriesWithoutPropertyId := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series-without-property.json"))
 	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeriesWithoutPropertyId, nil)
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&propTimeSeriesWithoutPropertyId, nil)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -857,7 +857,7 @@ func Test_get_property_value_history_from_expression_query_with_time_series_resp
 			},
 		},
 	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
 		AssetProperty: &iotsitewisetypes.Property{
 			DataType: iotsitewisetypes.PropertyDataTypeDouble,
@@ -918,7 +918,7 @@ func Test_get_property_value_history_from_expression_query_with_time_series_resp
 		math.MaxInt32,
 	)
 	mockSw.AssertCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		&iotsitewise.DescribeAssetPropertyInput{
 			AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
@@ -986,7 +986,7 @@ func Test_get_property_value_history_with_batched_queries(t *testing.T) {
 		NextToken:      Pointer("some-next-token-2"),
 		SuccessEntries: mockedSuccessEntriesSecondBatch,
 	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
 		AssetProperty: &iotsitewisetypes.Property{
 			DataType: iotsitewisetypes.PropertyDataTypeDouble,

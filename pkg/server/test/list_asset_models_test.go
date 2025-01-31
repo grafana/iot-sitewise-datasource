@@ -21,7 +21,7 @@ var listAssetModelsHappyCase testServerScenarioFn = func(t *testing.T) *testScen
 
 	assetModels := testdata.GetIoTSitewiseAssetModels(t, testDataRelativePath("list-asset-models.json"))
 
-	mockSw.On("ListAssetModelsWithContext", mock.Anything, mock.Anything).Return(&assetModels, nil)
+	mockSw.On("ListAssetModels", mock.Anything, mock.Anything).Return(&assetModels, nil)
 
 	query := models.ListAssetModelsQuery{
 		BaseQuery: models.BaseQuery{},

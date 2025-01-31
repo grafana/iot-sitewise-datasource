@@ -26,11 +26,11 @@ var listAssetsHappyCase testServerScenarioFn = func(t *testing.T) *testScenario 
 	topLevelAssets := testdata.GetIoTSitewiseAssets(t, testDataRelativePath("list-assets-top-level.json"))
 	childAssets := testdata.GetIoTSitewiseAssets(t, testDataRelativePath("list-assets.json"))
 
-	mockSw.On("ListAssetsWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.ListAssetsInput) bool {
+	mockSw.On("ListAssets", mock.Anything, mock.MatchedBy(func(req *iotsitewise.ListAssetsInput) bool {
 		return req.AssetModelId == nil && req.Filter == types.ListAssetsFilterTopLevel
 	})).Return(&topLevelAssets, nil)
 
-	mockSw.On("ListAssetsWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.ListAssetsInput) bool {
+	mockSw.On("ListAssets", mock.Anything, mock.MatchedBy(func(req *iotsitewise.ListAssetsInput) bool {
 		if req.AssetModelId == nil {
 			return false
 		}

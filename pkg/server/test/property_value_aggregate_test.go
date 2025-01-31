@@ -27,12 +27,12 @@ import (
 )
 
 type test struct {
-	name                                      string
-	query                                     string
-	isExpression                              bool
-	expectedMaxPages                          int
-	expectedMaxResults                        int
-	expectedDescribeTimeSeriesWithContextArgs *iotsitewise.DescribeTimeSeriesInput
+	name                           string
+	query                          string
+	isExpression                   bool
+	expectedMaxPages               int
+	expectedMaxResults             int
+	expectedDescribeTimeSeriesArgs *iotsitewise.DescribeTimeSeriesInput
 }
 
 func TestPropertyValueAggregate(t *testing.T) {
@@ -70,9 +70,9 @@ func TestPropertyValueAggregate(t *testing.T) {
 				"aggregates":["SUM"],
 				"resolution":"1m"
 			}`,
-			expectedDescribeTimeSeriesWithContextArgs: &iotsitewise.DescribeTimeSeriesInput{Alias: Pointer("/amazon/renton/1/rpm")},
-			expectedMaxPages:   1,
-			expectedMaxResults: 0,
+			expectedDescribeTimeSeriesArgs: &iotsitewise.DescribeTimeSeriesInput{Alias: Pointer("/amazon/renton/1/rpm")},
+			expectedMaxPages:               1,
+			expectedMaxResults:             0,
 		},
 		{
 			name:         "expression query by property alias",
@@ -83,9 +83,9 @@ func TestPropertyValueAggregate(t *testing.T) {
 				"aggregates":["SUM"],
 				"resolution":"1m"
 			}`,
-			expectedDescribeTimeSeriesWithContextArgs: &iotsitewise.DescribeTimeSeriesInput{Alias: Pointer("/amazon/renton/1/rpm")},
-			expectedMaxPages:   math.MaxInt32,
-			expectedMaxResults: math.MaxInt32,
+			expectedDescribeTimeSeriesArgs: &iotsitewise.DescribeTimeSeriesInput{Alias: Pointer("/amazon/renton/1/rpm")},
+			expectedMaxPages:               math.MaxInt32,
+			expectedMaxResults:             math.MaxInt32,
 		},
 	}
 
@@ -93,8 +93,8 @@ func TestPropertyValueAggregate(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			mockSw := &mocks.SitewiseAPIClient{}
 
-			if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
-				mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+			if tc.expectedDescribeTimeSeriesArgs != nil {
+				mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
 					Alias:      Pointer("/amazon/renton/1/rpm"),
 					AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 					PropertyId: Pointer("11propid-aaaa-2222-bbbb-3333cccc4444"),
@@ -107,7 +107,7 @@ func TestPropertyValueAggregate(t *testing.T) {
 				mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyAggregatesInput) bool {
 					entries := input.Entries[0]
 
-					if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
+					if tc.expectedDescribeTimeSeriesArgs != nil {
 						return *entries.EntryId == "1assetid-aaaa-2222-bbbb-3333cccc4444" &&
 							*entries.PropertyAlias == "/amazon/renton/1/rpm" &&
 							entries.AggregateTypes[0] == iotsitewisetypes.AggregateTypeSum
@@ -131,7 +131,7 @@ func TestPropertyValueAggregate(t *testing.T) {
 				}},
 			}, nil)
 
-			mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+			mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 				AssetName: Pointer("Demo Turbine Asset 1"),
 				AssetProperty: &iotsitewisetypes.Property{
 					DataType: iotsitewisetypes.PropertyDataTypeDouble,
@@ -184,14 +184,14 @@ func TestPropertyValueAggregate(t *testing.T) {
 			}
 
 			mockSw.AssertExpectations(t)
-			if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
+			if tc.expectedDescribeTimeSeriesArgs != nil {
 				mockSw.AssertCalled(t,
-					"DescribeTimeSeriesWithContext",
+					"DescribeTimeSeries",
 					mock.Anything,
-					tc.expectedDescribeTimeSeriesWithContextArgs,
+					tc.expectedDescribeTimeSeriesArgs,
 				)
 			}
-			mockSw.AssertCalled(t, "DescribeAssetPropertyWithContext", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
+			mockSw.AssertCalled(t, "DescribeAssetProperty", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
 				AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 				PropertyId: Pointer("11propid-aaaa-2222-bbbb-3333cccc4444"),
 			})
@@ -201,7 +201,7 @@ func TestPropertyValueAggregate(t *testing.T) {
 
 func TestPropertyValueAggregateWithDisassociatedStream(t *testing.T) {
 	tc := test{
-		// an disassociated stream will return nil in DescribeTimeSeriesWithContext for assetId and propertyId
+		// an disassociated stream will return nil in DescribeTimeSeries for assetId and propertyId
 		name: "query by property alias of an disassociated stream",
 		query: `{
 					"region":"us-west-2",
@@ -209,20 +209,20 @@ func TestPropertyValueAggregateWithDisassociatedStream(t *testing.T) {
 					"aggregates":["SUM"],
 					"resolution":"1m"
 				}`,
-		expectedDescribeTimeSeriesWithContextArgs: &iotsitewise.DescribeTimeSeriesInput{Alias: Pointer("/amazon/renton/1/rpm")},
-		expectedMaxPages:   1,
-		expectedMaxResults: 0,
+		expectedDescribeTimeSeriesArgs: &iotsitewise.DescribeTimeSeriesInput{Alias: Pointer("/amazon/renton/1/rpm")},
+		expectedMaxPages:               1,
+		expectedMaxResults:             0,
 	}
 
 	t.Run(tc.name, func(t *testing.T) {
 		mockSw := &mocks.SitewiseAPIClient{}
 
-		if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
+		if tc.expectedDescribeTimeSeriesArgs != nil {
 			alias := Pointer("/amazon/renton/1/rpm")
 			var assetId *string
 			var propertyId *string
 
-			mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+			mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
 				Alias:      alias,
 				AssetId:    assetId,
 				PropertyId: propertyId,
@@ -295,14 +295,14 @@ func TestPropertyValueAggregateWithDisassociatedStream(t *testing.T) {
 		}
 
 		mockSw.AssertExpectations(t)
-		if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
+		if tc.expectedDescribeTimeSeriesArgs != nil {
 			mockSw.AssertCalled(t,
-				"DescribeTimeSeriesWithContext",
+				"DescribeTimeSeries",
 				mock.Anything,
-				tc.expectedDescribeTimeSeriesWithContextArgs,
+				tc.expectedDescribeTimeSeriesArgs,
 			)
 		}
-		mockSw.AssertNotCalled(t, "DescribeAssetPropertyWithContext", mock.Anything, mock.Anything)
+		mockSw.AssertNotCalled(t, "DescribeAssetProperty", mock.Anything, mock.Anything)
 
 	})
 
@@ -324,8 +324,8 @@ func TestPropertyValueAggregate_with_error(t *testing.T) {
 	t.Run(tc.name, func(t *testing.T) {
 		mockSw := &mocks.SitewiseAPIClient{}
 
-		if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
-			mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+		if tc.expectedDescribeTimeSeriesArgs != nil {
+			mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
 				Alias:      Pointer("/amazon/renton/1/rpm"),
 				AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 				PropertyId: Pointer("11propid-aaaa-2222-bbbb-3333cccc4444"),
@@ -338,7 +338,7 @@ func TestPropertyValueAggregate_with_error(t *testing.T) {
 			mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyAggregatesInput) bool {
 				entries := input.Entries[0]
 
-				if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
+				if tc.expectedDescribeTimeSeriesArgs != nil {
 					return *entries.EntryId == "1assetid-aaaa-2222-bbbb-3333cccc4444" &&
 						*entries.PropertyAlias == "/amazon/renton/1/rpm" &&
 						entries.AggregateTypes[0] == iotsitewisetypes.AggregateTypeSum
@@ -360,7 +360,7 @@ func TestPropertyValueAggregate_with_error(t *testing.T) {
 			}},
 		}, nil)
 
-		mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+		mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 			AssetName: Pointer("Demo Turbine Asset 1"),
 			AssetProperty: &iotsitewisetypes.Property{
 				DataType: iotsitewisetypes.PropertyDataTypeDouble,
@@ -406,14 +406,14 @@ func TestPropertyValueAggregate_with_error(t *testing.T) {
 		}
 
 		mockSw.AssertExpectations(t)
-		if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
+		if tc.expectedDescribeTimeSeriesArgs != nil {
 			mockSw.AssertCalled(t,
-				"DescribeTimeSeriesWithContext",
+				"DescribeTimeSeries",
 				mock.Anything,
-				tc.expectedDescribeTimeSeriesWithContextArgs,
+				tc.expectedDescribeTimeSeriesArgs,
 			)
 		}
-		mockSw.AssertCalled(t, "DescribeAssetPropertyWithContext", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
+		mockSw.AssertCalled(t, "DescribeAssetProperty", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
 			AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 			PropertyId: Pointer("11propid-aaaa-2222-bbbb-3333cccc4444"),
 		})
@@ -467,7 +467,7 @@ func TestPropertyValueAggregate_with_batched_queries(t *testing.T) {
 		SuccessEntries: mockedSuccessEntriesSecondBatch,
 	}, nil)
 
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
 		AssetProperty: &iotsitewisetypes.Property{
 			DataType: iotsitewisetypes.PropertyDataTypeDouble,

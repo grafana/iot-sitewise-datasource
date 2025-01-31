@@ -25,11 +25,11 @@ var describeAssetHappyCase testServerScenarioFn = func(t *testing.T) *testScenar
 	asset := testdata.GetIoTSitewiseAssetDescription(t, testDataRelativePath("describe-asset.json"))
 	assetWithHierarchy := testdata.GetIoTSitewiseAssetDescription(t, testDataRelativePath("describe-asset-top-level.json"))
 
-	mockSw.On("DescribeAssetWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetInput) bool {
+	mockSw.On("DescribeAsset", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetInput) bool {
 		return req.AssetId != nil && *req.AssetId == testdata.DemoTurbineAsset1
 	})).Return(&asset, nil)
 
-	mockSw.On("DescribeAssetWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetInput) bool {
+	mockSw.On("DescribeAsset", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetInput) bool {
 		return req.AssetId != nil && *req.AssetId == testdata.DemoWindFarmAssetId
 	})).Return(&assetWithHierarchy, nil)
 

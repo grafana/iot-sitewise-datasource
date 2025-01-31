@@ -24,7 +24,7 @@ var describeAssetModelHappyCase testServerScenarioFn = func(t *testing.T) *testS
 
 	assetModel := testdata.GetIoTSitewiseAssetModelDescription(t, testDataRelativePath("describe-asset-model.json"))
 
-	mockSw.On("DescribeAssetModelWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetModelInput) bool {
+	mockSw.On("DescribeAssetModel", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetModelInput) bool {
 		return req.AssetModelId != nil && *req.AssetModelId == testdata.DemoTurbineAssetModelId
 	})).Return(&assetModel, nil)
 
