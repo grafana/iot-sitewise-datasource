@@ -1,7 +1,7 @@
 package fields
 
 import (
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
@@ -111,7 +111,7 @@ func DiagnosticField(length int, assetId string) *data.Field {
 	return NewFieldWithName(assetId, data.FieldTypeFloat64, length)
 }
 
-// for time series 
+// for time series
 
 func AliasField(length int) *data.Field {
 	return NewFieldWithName(Alias, data.FieldTypeString, length)

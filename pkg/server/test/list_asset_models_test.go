@@ -17,7 +17,7 @@ func TestHandleListAssetModels(t *testing.T) {
 
 var listAssetModelsHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 
 	assetModels := testdata.GetIoTSitewiseAssetModels(t, testDataRelativePath("list-asset-models.json"))
 

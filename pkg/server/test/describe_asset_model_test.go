@@ -3,17 +3,15 @@ package test
 import (
 	"testing"
 
-	"github.com/grafana/iot-sitewise-datasource/pkg/server"
+	"github.com/stretchr/testify/mock"
+
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
-
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
-	"github.com/stretchr/testify/mock"
-
-	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
-
+	"github.com/grafana/iot-sitewise-datasource/pkg/server"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
+	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
 )
 
 func TestHandleDescribeAssetModel(t *testing.T) {
@@ -22,7 +20,7 @@ func TestHandleDescribeAssetModel(t *testing.T) {
 
 var describeAssetModelHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 
 	assetModel := testdata.GetIoTSitewiseAssetModelDescription(t, testDataRelativePath("describe-asset-model.json"))
 

@@ -1,7 +1,8 @@
 package fields
 
 import (
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
@@ -10,20 +11,20 @@ func FieldTypeForPropertyValue(property *iotsitewise.DescribeAssetPropertyOutput
 	dataType := util.GetPropertyDataType(property)
 
 	switch dataType {
-	case "BOOLEAN":
+	case types.PropertyDataTypeBoolean:
 		return data.FieldTypeBool
-	case "INTEGER":
+	case types.PropertyDataTypeInteger:
 		return data.FieldTypeInt64
-	case "STRING":
+	case types.PropertyDataTypeString:
 		return data.FieldTypeString
-	case "STRUCT":
+	case types.PropertyDataTypeStruct:
 		return data.FieldTypeString
 	default:
 		return data.FieldTypeFloat64
 	}
 }
 
-// Map values from ???:
+// ToGrafanaUnit maps values from ???:
 //
 //	https://docs.microsoft.com/en-us/rest/api/monitor/metrics/list#unit
 //

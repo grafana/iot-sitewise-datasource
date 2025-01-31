@@ -2,12 +2,12 @@ package framer
 
 import (
 	"context"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 
-	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 )
@@ -52,9 +52,9 @@ func (a AssetPropertyAggregates) Frames(ctx context.Context, resources resource.
 
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{
-			NextToken:  aws.StringValue(resp.NextToken),
-			Resolution: aws.StringValue(a.Request.Resolution),
-			Aggregates: aws.StringValueSlice(a.Request.AggregateTypes),
+			NextToken:  util.Dereference(resp.NextToken),
+			Resolution: util.Dereference(a.Request.Resolution),
+			Aggregates: aggregateTypesToStrings(a.Request.AggregateTypes),
 		},
 	}
 

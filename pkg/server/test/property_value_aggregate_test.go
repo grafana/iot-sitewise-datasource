@@ -7,20 +7,21 @@ import (
 	"testing"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
 	"github.com/google/go-cmp/cmp"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
-	"github.com/grafana/iot-sitewise-datasource/pkg/server"
-	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise"
 	"github.com/patrickmn/go-cache"
-
-	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/server"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
 )
@@ -90,7 +91,7 @@ func TestPropertyValueAggregate(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			mockSw := &mocks.SitewiseClient{}
+			mockSw := &mocks.SitewiseAPIClient{}
 
 			if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
 				mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
@@ -104,27 +105,27 @@ func TestPropertyValueAggregate(t *testing.T) {
 				"BatchGetAssetPropertyAggregatesPageAggregation",
 				mock.Anything,
 				mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyAggregatesInput) bool {
-					entries := *input.Entries[0]
+					entries := input.Entries[0]
 
 					if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
 						return *entries.EntryId == "1assetid-aaaa-2222-bbbb-3333cccc4444" &&
 							*entries.PropertyAlias == "/amazon/renton/1/rpm" &&
-							*entries.AggregateTypes[0] == "SUM"
+							entries.AggregateTypes[0] == iotsitewisetypes.AggregateTypeSum
 					} else {
 						return *entries.EntryId == "1assetid-aaaa-2222-bbbb-3333cccc4444" &&
 							*entries.AssetId == "1assetid-aaaa-2222-bbbb-3333cccc4444" &&
 							*entries.PropertyId == "11propid-aaaa-2222-bbbb-3333cccc4444" &&
-							*entries.AggregateTypes[0] == "SUM"
+							entries.AggregateTypes[0] == iotsitewisetypes.AggregateTypeSum
 					}
 				}),
 				tc.expectedMaxPages,
 				tc.expectedMaxResults,
 			).Return(&iotsitewise.BatchGetAssetPropertyAggregatesOutput{
 				NextToken: Pointer("some-next-token"),
-				SuccessEntries: []*iotsitewise.BatchGetAssetPropertyAggregatesSuccessEntry{{
-					AggregatedValues: []*iotsitewise.AggregatedValue{{
+				SuccessEntries: []iotsitewisetypes.BatchGetAssetPropertyAggregatesSuccessEntry{{
+					AggregatedValues: []iotsitewisetypes.AggregatedValue{{
 						Timestamp: Pointer(time.Date(2021, 2, 1, 16, 27, 0, 0, time.UTC)),
-						Value:     &iotsitewise.Aggregates{Sum: Pointer(1688.6)},
+						Value:     &iotsitewisetypes.Aggregates{Sum: Pointer(1688.6)},
 					}},
 					EntryId: aws.String("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 				}},
@@ -132,8 +133,8 @@ func TestPropertyValueAggregate(t *testing.T) {
 
 			mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 				AssetName: Pointer("Demo Turbine Asset 1"),
-				AssetProperty: &iotsitewise.Property{
-					DataType: Pointer("DOUBLE"),
+				AssetProperty: &iotsitewisetypes.Property{
+					DataType: iotsitewisetypes.PropertyDataTypeDouble,
 					Name:     Pointer("Wind Speed"),
 					Unit:     Pointer("m/s"),
 				},
@@ -214,7 +215,7 @@ func TestPropertyValueAggregateWithDisassociatedStream(t *testing.T) {
 	}
 
 	t.Run(tc.name, func(t *testing.T) {
-		mockSw := &mocks.SitewiseClient{}
+		mockSw := &mocks.SitewiseAPIClient{}
 
 		if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
 			alias := Pointer("/amazon/renton/1/rpm")
@@ -231,20 +232,20 @@ func TestPropertyValueAggregateWithDisassociatedStream(t *testing.T) {
 			"BatchGetAssetPropertyAggregatesPageAggregation",
 			mock.Anything,
 			mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyAggregatesInput) bool {
-				entries := *input.Entries[0]
+				entries := input.Entries[0]
 				return *entries.EntryId == "61e4e1a8ab39463fa0b9418d9be2923e364f40a8b935b69d006b999516cdecef" &&
 					*entries.PropertyAlias == "/amazon/renton/1/rpm" &&
-					*entries.AggregateTypes[0] == "SUM"
+					entries.AggregateTypes[0] == iotsitewisetypes.AggregateTypeSum
 
 			}),
 			tc.expectedMaxPages,
 			tc.expectedMaxResults,
 		).Return(&iotsitewise.BatchGetAssetPropertyAggregatesOutput{
 			NextToken: Pointer("some-next-token"),
-			SuccessEntries: []*iotsitewise.BatchGetAssetPropertyAggregatesSuccessEntry{{
-				AggregatedValues: []*iotsitewise.AggregatedValue{{
+			SuccessEntries: []iotsitewisetypes.BatchGetAssetPropertyAggregatesSuccessEntry{{
+				AggregatedValues: []iotsitewisetypes.AggregatedValue{{
 					Timestamp: Pointer(time.Date(2021, 2, 1, 16, 27, 0, 0, time.UTC)),
-					Value:     &iotsitewise.Aggregates{Sum: Pointer(1688.6)},
+					Value:     &iotsitewisetypes.Aggregates{Sum: Pointer(1688.6)},
 				}},
 				EntryId: aws.String("61e4e1a8ab39463fa0b9418d9be2923e364f40a8b935b69d006b999516cdecef"),
 			}},
@@ -321,7 +322,7 @@ func TestPropertyValueAggregate_with_error(t *testing.T) {
 		expectedMaxResults: 0,
 	}
 	t.Run(tc.name, func(t *testing.T) {
-		mockSw := &mocks.SitewiseClient{}
+		mockSw := &mocks.SitewiseAPIClient{}
 
 		if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
 			mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
@@ -335,25 +336,25 @@ func TestPropertyValueAggregate_with_error(t *testing.T) {
 			"BatchGetAssetPropertyAggregatesPageAggregation",
 			mock.Anything,
 			mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyAggregatesInput) bool {
-				entries := *input.Entries[0]
+				entries := input.Entries[0]
 
 				if tc.expectedDescribeTimeSeriesWithContextArgs != nil {
 					return *entries.EntryId == "1assetid-aaaa-2222-bbbb-3333cccc4444" &&
 						*entries.PropertyAlias == "/amazon/renton/1/rpm" &&
-						*entries.AggregateTypes[0] == "SUM"
+						entries.AggregateTypes[0] == iotsitewisetypes.AggregateTypeSum
 				} else {
 					return *entries.EntryId == "1assetid-aaaa-2222-bbbb-3333cccc4444" &&
 						*entries.AssetId == "1assetid-aaaa-2222-bbbb-3333cccc4444" &&
 						*entries.PropertyId == "11propid-aaaa-2222-bbbb-3333cccc4444" &&
-						*entries.AggregateTypes[0] == "SUM"
+						entries.AggregateTypes[0] == iotsitewisetypes.AggregateTypeSum
 				}
 			}),
 			tc.expectedMaxPages,
 			tc.expectedMaxResults,
 		).Return(&iotsitewise.BatchGetAssetPropertyAggregatesOutput{
 			NextToken: Pointer("some-next-token"),
-			ErrorEntries: []*iotsitewise.BatchGetAssetPropertyAggregatesErrorEntry{{
-				ErrorCode:    Pointer("404"),
+			ErrorEntries: []iotsitewisetypes.BatchGetAssetPropertyAggregatesErrorEntry{{
+				ErrorCode:    iotsitewisetypes.BatchGetAssetPropertyAggregatesErrorCodeResourceNotFoundException,
 				ErrorMessage: Pointer("Asset property not found."),
 				EntryId:      aws.String("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 			}},
@@ -361,8 +362,8 @@ func TestPropertyValueAggregate_with_error(t *testing.T) {
 
 		mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 			AssetName: Pointer("Demo Turbine Asset 1"),
-			AssetProperty: &iotsitewise.Property{
-				DataType: Pointer("DOUBLE"),
+			AssetProperty: &iotsitewisetypes.Property{
+				DataType: iotsitewisetypes.PropertyDataTypeDouble,
 				Name:     Pointer("Wind Speed"),
 				Unit:     Pointer("m/s"),
 			},
@@ -422,14 +423,14 @@ func TestPropertyValueAggregate_with_error(t *testing.T) {
 }
 
 func TestPropertyValueAggregate_with_batched_queries(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 
-	mockedSuccessEntriesFirstBatch := []*iotsitewise.BatchGetAssetPropertyAggregatesSuccessEntry{}
+	mockedSuccessEntriesFirstBatch := []iotsitewisetypes.BatchGetAssetPropertyAggregatesSuccessEntry{}
 	for i := 1; i <= api.BatchGetAssetPropertyAggregatesMaxEntries; i++ {
-		mockedSuccessEntriesFirstBatch = append(mockedSuccessEntriesFirstBatch, &iotsitewise.BatchGetAssetPropertyAggregatesSuccessEntry{
-			AggregatedValues: []*iotsitewise.AggregatedValue{{
+		mockedSuccessEntriesFirstBatch = append(mockedSuccessEntriesFirstBatch, iotsitewisetypes.BatchGetAssetPropertyAggregatesSuccessEntry{
+			AggregatedValues: []iotsitewisetypes.AggregatedValue{{
 				Timestamp: Pointer(time.Date(2021, 2, 1, 16, 27, 0, 0, time.UTC)),
-				Value:     &iotsitewise.Aggregates{Sum: Pointer(1688.6)},
+				Value:     &iotsitewisetypes.Aggregates{Sum: Pointer(1688.6)},
 			}},
 			EntryId: aws.String(fmt.Sprintf("%dassetid-aaaa-2222-bbbb-3333cccc4444", i)),
 		})
@@ -446,10 +447,10 @@ func TestPropertyValueAggregate_with_batched_queries(t *testing.T) {
 		NextToken:      Pointer("some-next-token-1"),
 		SuccessEntries: mockedSuccessEntriesFirstBatch,
 	}, nil)
-	mockedSuccessEntriesSecondBatch := []*iotsitewise.BatchGetAssetPropertyAggregatesSuccessEntry{{
-		AggregatedValues: []*iotsitewise.AggregatedValue{{
+	mockedSuccessEntriesSecondBatch := []iotsitewisetypes.BatchGetAssetPropertyAggregatesSuccessEntry{{
+		AggregatedValues: []iotsitewisetypes.AggregatedValue{{
 			Timestamp: Pointer(time.Date(2021, 2, 1, 16, 27, 0, 0, time.UTC)),
-			Value:     &iotsitewise.Aggregates{Sum: Pointer(1688.6)},
+			Value:     &iotsitewisetypes.Aggregates{Sum: Pointer(1688.6)},
 		}},
 		EntryId: aws.String(fmt.Sprintf("%dassetid-aaaa-2222-bbbb-3333cccc4444", api.BatchGetAssetPropertyAggregatesMaxEntries+1)),
 	}}
@@ -468,8 +469,8 @@ func TestPropertyValueAggregate_with_batched_queries(t *testing.T) {
 
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
-			DataType: Pointer("DOUBLE"),
+		AssetProperty: &iotsitewisetypes.Property{
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
 			Name:     Pointer("Wind Speed"),
 			Unit:     Pointer("m/s"),
 		},

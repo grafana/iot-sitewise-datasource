@@ -2,9 +2,9 @@ package framer
 
 import (
 	"context"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
@@ -42,11 +42,11 @@ func (p InterpolatedAssetPropertyValue) Frames(ctx context.Context, resources re
 	return frames, nil
 }
 
-func (p InterpolatedAssetPropertyValue) Frame(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, v []*iotsitewise.InterpolatedAssetPropertyValue) (*data.Frame, error) {
+func (p InterpolatedAssetPropertyValue) Frame(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, v []iotsitewisetypes.InterpolatedAssetPropertyValue) (*data.Frame, error) {
 	// TODO: make this work with the API instead of ad-hoc dataType inference
 	// https://github.com/grafana/iot-sitewise-datasource/issues/98#issuecomment-892947756
-	if util.IsAssetProperty(property) && *property.AssetProperty.DataType == *aws.String("?") {
-		property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(v[0].Value))
+	if util.IsAssetProperty(property) && property.AssetProperty.DataType == "?" {
+		property.AssetProperty.DataType = getPropertyVariantValueType(v[0].Value)
 	}
 
 	timeField := fields.TimeField(0)
@@ -65,7 +65,7 @@ func (p InterpolatedAssetPropertyValue) Frame(ctx context.Context, property *iot
 	}
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{
-			NextToken:  aws.StringValue(p.Responses[entryId].NextToken),
+			NextToken:  util.Dereference(p.Responses[entryId].NextToken),
 			EntryId:    entryId,
 			Resolution: p.Query.Resolution,
 		},

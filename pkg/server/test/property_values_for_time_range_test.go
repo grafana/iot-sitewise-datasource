@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 	"testing"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
@@ -24,7 +25,7 @@ func Test_propertyValueForTimeRange_raw_data_for_time_range(t *testing.T) {
 	propAggregates := testdata.GetIoTSitewisePropAggregateVals(t, testDataRelativePath("property-aggregate-values.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -52,7 +53,7 @@ func Test_propertyValueForTimeRange_raw_data_for_time_range(t *testing.T) {
 						AssetId:    testdata.DemoTurbineAsset1,
 						PropertyId: testdata.TurbinePropWindSpeed,
 					},
-					AggregateTypes: []string{"avg"},
+					AggregateTypes: []types.AggregateType{types.AggregateTypeAverage},
 					Resolution:     "AUTO",
 				}),
 			},
@@ -65,6 +66,7 @@ func Test_propertyValueForTimeRange_raw_data_for_time_range(t *testing.T) {
 	actual, ok := frame.Meta.Custom.(models.SitewiseCustomMeta)
 	assert.True(t, ok, "unable to cast custom metadata")
 	assert.Equal(t, propvals.ResolutionRaw, actual.Resolution)
+	// FIXME: what is this meant to be testing?
 	if propvals.ResolutionRaw == "RAW" {
 		assert.Equal(t, "raw", frame.Fields[1].Name)
 	}
@@ -80,7 +82,7 @@ func Test_propertyValueForTimeRange_1m_data_for_time_range(t *testing.T) {
 	propAggregates := testdata.GetIoTSitewisePropAggregateVals(t, testDataRelativePath("property-aggregate-values.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -108,7 +110,7 @@ func Test_propertyValueForTimeRange_1m_data_for_time_range(t *testing.T) {
 						AssetId:    testdata.DemoTurbineAsset1,
 						PropertyId: testdata.TurbinePropWindSpeed,
 					},
-					AggregateTypes: []string{"avg"},
+					AggregateTypes: []types.AggregateType{types.AggregateTypeAverage},
 					Resolution:     "AUTO",
 				}),
 			},
@@ -136,7 +138,7 @@ func Test_propertyValueForTimeRange_1h_data_for_time_range(t *testing.T) {
 	propAggregates := testdata.GetIoTSitewisePropAggregateVals(t, testDataRelativePath("property-aggregate-values.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -164,7 +166,7 @@ func Test_propertyValueForTimeRange_1h_data_for_time_range(t *testing.T) {
 						AssetId:    testdata.DemoTurbineAsset1,
 						PropertyId: testdata.TurbinePropWindSpeed,
 					},
-					AggregateTypes: []string{"avg"},
+					AggregateTypes: []types.AggregateType{types.AggregateTypeAverage},
 					Resolution:     "AUTO",
 				}),
 			},
@@ -192,7 +194,7 @@ func Test_propertyValueForTimeRange_1d_data_for_time_range(t *testing.T) {
 	propAggregates := testdata.GetIoTSitewisePropAggregateVals(t, testDataRelativePath("property-aggregate-values.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -220,7 +222,7 @@ func Test_propertyValueForTimeRange_1d_data_for_time_range(t *testing.T) {
 						AssetId:    testdata.DemoTurbineAsset1,
 						PropertyId: testdata.TurbinePropWindSpeed,
 					},
-					AggregateTypes: []string{"avg"},
+					AggregateTypes: []types.AggregateType{types.AggregateTypeAverage},
 					Resolution:     "AUTO",
 				}),
 			},
@@ -248,7 +250,7 @@ func Test_propertyValueForTimeRange_1m_data_for_reduced_max_data_point(t *testin
 	propAggregates := testdata.GetIoTSitewisePropAggregateVals(t, testDataRelativePath("property-aggregate-values.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -276,7 +278,7 @@ func Test_propertyValueForTimeRange_1m_data_for_reduced_max_data_point(t *testin
 						AssetId:    testdata.DemoTurbineAsset1,
 						PropertyId: testdata.TurbinePropWindSpeed,
 					},
-					AggregateTypes: []string{"avg"},
+					AggregateTypes: []types.AggregateType{types.AggregateTypeAverage},
 					Resolution:     "AUTO",
 				}),
 			},
@@ -304,7 +306,7 @@ func Test_propertyValueForTimeRange_raw_data_for_time_range_from_alias(t *testin
 	propAggregates := testdata.GetIoTSitewisePropAggregateVals(t, testDataRelativePath("property-aggregate-values.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -331,7 +333,7 @@ func Test_propertyValueForTimeRange_raw_data_for_time_range_from_alias(t *testin
 						AwsRegion:     testdata.AwsRegion,
 						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
 					},
-					AggregateTypes: []string{"avg"},
+					AggregateTypes: []types.AggregateType{types.AggregateTypeAverage},
 					Resolution:     "AUTO",
 				}),
 			},
@@ -359,7 +361,7 @@ func Test_propertyValueForTimeRange_1m_data_for_time_range_from_alias(t *testing
 	propAggregates := testdata.GetIoTSitewisePropAggregateVals(t, testDataRelativePath("property-aggregate-values.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -386,7 +388,7 @@ func Test_propertyValueForTimeRange_1m_data_for_time_range_from_alias(t *testing
 						AwsRegion:     testdata.AwsRegion,
 						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
 					},
-					AggregateTypes: []string{"avg"},
+					AggregateTypes: []types.AggregateType{types.AggregateTypeAverage},
 					Resolution:     "AUTO",
 				}),
 			},
@@ -414,7 +416,7 @@ func Test_propertyValueForTimeRange_1h_data_for_time_range_from_alias(t *testing
 	propAggregates := testdata.GetIoTSitewisePropAggregateVals(t, testDataRelativePath("property-aggregate-values.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -441,7 +443,7 @@ func Test_propertyValueForTimeRange_1h_data_for_time_range_from_alias(t *testing
 						AwsRegion:     testdata.AwsRegion,
 						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
 					},
-					AggregateTypes: []string{"avg"},
+					AggregateTypes: []types.AggregateType{types.AggregateTypeAverage},
 					Resolution:     "AUTO",
 				}),
 			},
@@ -469,7 +471,7 @@ func Test_propertyValueForTimeRange_1d_data_for_time_range_from_alias(t *testing
 	propAggregates := testdata.GetIoTSitewisePropAggregateVals(t, testDataRelativePath("property-aggregate-values.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -496,7 +498,7 @@ func Test_propertyValueForTimeRange_1d_data_for_time_range_from_alias(t *testing
 						AwsRegion:     testdata.AwsRegion,
 						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
 					},
-					AggregateTypes: []string{"avg"},
+					AggregateTypes: []types.AggregateType{types.AggregateTypeAverage},
 					Resolution:     "AUTO",
 				}),
 			},
@@ -524,7 +526,7 @@ func Test_propertyValueForTimeRange_1m_data_for_reduced_max_data_point_from_alia
 	propAggregates := testdata.GetIoTSitewisePropAggregateVals(t, testDataRelativePath("property-aggregate-values.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -551,7 +553,7 @@ func Test_propertyValueForTimeRange_1m_data_for_reduced_max_data_point_from_alia
 						AwsRegion:     testdata.AwsRegion,
 						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
 					},
-					AggregateTypes: []string{"avg"},
+					AggregateTypes: []types.AggregateType{types.AggregateTypeAverage},
 					Resolution:     "AUTO",
 				}),
 			},
@@ -564,6 +566,7 @@ func Test_propertyValueForTimeRange_1m_data_for_reduced_max_data_point_from_alia
 	actual, ok := frame.Meta.Custom.(models.SitewiseCustomMeta)
 	assert.True(t, ok, "unable to cast custom metadata")
 	assert.Equal(t, propvals.ResolutionMinute, actual.Resolution)
+	// FIXME: what is this supposed to be testing?
 	if propvals.ResolutionMinute == "RAW" {
 		assert.Equal(t, "raw", frame.Fields[1].Name)
 	}

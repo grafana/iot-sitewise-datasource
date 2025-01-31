@@ -15,8 +15,8 @@ func tdpath(filename string) string {
 	return "../testdata/" + filename
 }
 
-func setupMocks() (*mocks.SitewiseClient, *cachingResourceProvider) {
-	client := &mocks.SitewiseClient{}
+func setupMocks() (*mocks.SitewiseAPIClient, *cachingResourceProvider) {
+	client := &mocks.SitewiseAPIClient{}
 	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
 	return client, NewCachingResourceProvider(&SitewiseResources{client}, c)
 }

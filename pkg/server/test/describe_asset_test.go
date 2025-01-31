@@ -3,14 +3,15 @@ package test
 import (
 	"testing"
 
-	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/stretchr/testify/mock"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/server"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
-	"github.com/stretchr/testify/mock"
+	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
 )
 
 func TestHandleDescribeAsset(t *testing.T) {
@@ -19,7 +20,7 @@ func TestHandleDescribeAsset(t *testing.T) {
 
 var describeAssetHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 
 	asset := testdata.GetIoTSitewiseAssetDescription(t, testDataRelativePath("describe-asset.json"))
 	assetWithHierarchy := testdata.GetIoTSitewiseAssetDescription(t, testDataRelativePath("describe-asset-top-level.json"))
