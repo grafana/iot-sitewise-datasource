@@ -59,7 +59,7 @@ type SitewiseClient struct {
 	*iotsitewise.Client
 }
 
-// NewSitewiseClientForRegion is mainly for testing in thise case
+// NewSitewiseClientForRegion is mainly for testing in this case
 // TODO: move this into one of the test files
 func NewSitewiseClientForRegion(region string) SitewiseAPIClient {
 	cfg, _ := awsconfig.LoadDefaultConfig(context.TODO(), awsconfig.WithRegion(region))
