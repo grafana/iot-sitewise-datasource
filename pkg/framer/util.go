@@ -32,7 +32,7 @@ func getPropertyVariantValue(variant *iotsitewisetypes.Variant) interface{} {
 	}
 
 	if val := variant.IntegerValue; val != nil {
-		return *val
+		return int64(*val)
 	}
 
 	if val := variant.StringValue; val != nil {

@@ -39,7 +39,7 @@ func (a AssetModels) Frames(_ context.Context, _ resource.ResourceProvider) (dat
 				fStatusError.Set(i, val)
 			}
 		}
-		fStatusState.Set(i, asset.Status.State)
+		fStatusState.Set(i, string(asset.Status.State))
 	}
 
 	frame := data.NewFrame("",

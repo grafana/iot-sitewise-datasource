@@ -24,7 +24,7 @@ func (a AssociatedAssets) Frames(_ context.Context, _ resource.ResourceProvider)
 		assetFields.Id.Set(i, *asset.Id)
 		assetFields.Arn.Set(i, *asset.Arn)
 		assetFields.ModelId.Set(i, *asset.AssetModelId)
-		assetFields.StatusState.Set(i, asset.Status.State)
+		assetFields.StatusState.Set(i, string(asset.Status.State))
 		assetFields.CreationDate.Set(i, *asset.CreationDate)
 		assetFields.LastUpdate.Set(i, *asset.LastUpdateDate)
 

@@ -32,7 +32,7 @@ func (p AssetPropertyValue) Frames(ctx context.Context, resources resource.Resou
 	if p.PropertyValue != nil && getPropertyVariantValue(p.PropertyValue.Value) != nil {
 		timeField.Set(0, getTime(p.PropertyValue.Timestamp))
 		valueField.Set(0, getPropertyVariantValue(p.PropertyValue.Value))
-		qualityField.Set(0, p.PropertyValue.Quality)
+		qualityField.Set(0, string(p.PropertyValue.Quality))
 	}
 
 	return data.Frames{frame}, nil

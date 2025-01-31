@@ -43,7 +43,6 @@ func NewDatasource(_ context.Context, settings backend.DataSourceInstanceSetting
 		sessions: awsds.NewSessionCache(),
 		cfg:      cfg,
 	}
-	ds.GetClient = ds.getClient
 
 	if cfg.Region == models.EDGE_REGION && cfg.EdgeAuthMode != models.EDGE_AUTH_MODE_DEFAULT {
 		ds.edgeAuthenticator = &EdgeAuthenticator{
@@ -64,6 +63,9 @@ func (ds *Datasource) Authenticate() error {
 	if err != nil {
 		return err
 	}
+	if authInfo == nil {
+		return nil
+	}
 	ds.cfg.AuthType = awsds.AuthTypeKeys
 	ds.cfg.AccessKey = authInfo.AccessKeyId
 	ds.cfg.SecretKey = authInfo.SecretAccessKey
@@ -72,6 +74,9 @@ func (ds *Datasource) Authenticate() error {
 }
 
 func (ds *Datasource) getClient(ctx context.Context, region string) (client.SitewiseAPIClient, error) {
+	if ds.GetClient != nil {
+		return ds.GetClient(ctx, region)
+	}
 	if err := ds.Authenticate(); err != nil {
 		return nil, err
 	}

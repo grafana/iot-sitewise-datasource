@@ -66,7 +66,7 @@ func (a AssetModelDescription) Frames(_ context.Context, _ resource.ResourceProv
 	assetModelFields.Id.Set(0, *a.AssetModelId)
 	assetModelFields.CreationDate.Set(0, *a.AssetModelCreationDate)
 	assetModelFields.LastUpdate.Set(0, *a.AssetModelLastUpdateDate)
-	assetModelFields.StatusState.Set(0, a.AssetModelStatus.State)
+	assetModelFields.StatusState.Set(0, string(a.AssetModelStatus.State))
 
 	if a.AssetModelStatus.Error != nil {
 		statusErr, err := getErrorDescription(a.AssetModelStatus.Error)

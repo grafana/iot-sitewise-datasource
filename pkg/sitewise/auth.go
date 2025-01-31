@@ -30,6 +30,9 @@ type AuthRequest struct {
 }
 
 func (a *EdgeAuthenticator) GetAuthInfo() (*models.AuthInfo, error) {
+	if a == nil {
+		return nil, nil
+	}
 	if a.authInfo == nil || time.Now().After(a.authInfo.SessionExpiryTime) {
 		err := a.Authenticate()
 		if err != nil {
@@ -41,6 +44,9 @@ func (a *EdgeAuthenticator) GetAuthInfo() (*models.AuthInfo, error) {
 }
 
 func (a *EdgeAuthenticator) Authenticate() error {
+	if a == nil {
+		return nil
+	}
 	reqBodyJson, err := json.Marshal(
 		&AuthRequest{
 			Username:      a.Settings.EdgeAuthUser,

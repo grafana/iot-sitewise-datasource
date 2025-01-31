@@ -86,7 +86,7 @@ func (AssetPropertyValueBatch) framePropertyValue(property *iotsitewise.Describe
 	if assetPropertyValue != nil && getPropertyVariantValue(assetPropertyValue.Value) != nil {
 		timeField.Append(getTime(assetPropertyValue.Timestamp))
 		valueField.Append(getPropertyVariantValue(assetPropertyValue.Value))
-		qualityField.Append(assetPropertyValue.Quality)
+		qualityField.Append(string(assetPropertyValue.Quality))
 	}
 	return frame
 }
@@ -118,7 +118,7 @@ func (p AssetPropertyValueBatch) frameL4ePropertyValue(ctx context.Context, prop
 	}
 
 	timeField.Append(getTime(assetPropertyValue.Timestamp))
-	qualityField.Append(assetPropertyValue.Quality)
+	qualityField.Append(string(assetPropertyValue.Quality))
 	anomalyScoreField.Append(l4eAnomalyResult.AnomalyScore)
 	predictionReasonField.Append(l4eAnomalyResult.PredictionReason)
 

@@ -113,7 +113,7 @@ func (p AssetPropertyValueHistoryBatch) framePropertyValues(property *iotsitewis
 		if v.Value != nil && getPropertyVariantValue(v.Value) != nil {
 			timeField.Set(i, getTime(v.Timestamp))
 			valueField.Set(i, getPropertyVariantValue(v.Value))
-			qualityField.Set(i, v.Quality)
+			qualityField.Set(i, string(v.Quality))
 		}
 	}
 
@@ -169,7 +169,7 @@ func (p AssetPropertyValueHistoryBatch) parseL4eFields(ctx context.Context, asse
 		}
 
 		timeField.Set(i, getTime(v.Timestamp))
-		qualityField.Set(i, v.Quality)
+		qualityField.Set(i, string(v.Quality))
 		anomalyScoreField.Set(i, l4eAnomalyResult.AnomalyScore)
 		predictionReasonField.Set(i, l4eAnomalyResult.PredictionReason)
 
