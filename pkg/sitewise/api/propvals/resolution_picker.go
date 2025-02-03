@@ -61,7 +61,7 @@ func dataPointsForResolution(resolution string, timeRange backend.TimeRange) int
 func Resolution(query models.BaseQuery) string {
 
 	timeRange := query.TimeRange
-	maxDp := query.MaxDataPoints
+	maxDp := int64(query.MaxDataPoints)
 
 	for _, resolution := range []string{ResolutionSecond, ResolutionMinute, ResolutionHour} {
 		pages := pagesForResolution(resolution, timeRange, maxHistoryResponseSize)
@@ -77,7 +77,7 @@ func Resolution(query models.BaseQuery) string {
 
 func InterpolatedResolution(query models.AssetPropertyValueQuery) string {
 	timeRange := query.TimeRange
-	maxDp := query.MaxDataPoints
+	maxDp := int64(query.MaxDataPoints)
 
 	for _, resolution := range []string{ResolutionSecond, ResolutionTenSeconds, ResolutionMinute, ResolutionTenMinutes, ResolutionHour, ResolutionTenHours} {
 		pages := pagesForResolution(resolution, timeRange, maxInterpolatedResponseSize)

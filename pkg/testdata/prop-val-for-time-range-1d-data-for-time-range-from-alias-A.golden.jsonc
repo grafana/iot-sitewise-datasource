@@ -10,7 +10,7 @@
 //          "entryId": "e64c9075-9d89-47cb-8ee5-d3251bd253f4",
 //          "resolution": "1d",
 //          "aggregates": [
-//              "avg"
+//              "AVERAGE"
 //          ]
 //      }
 //  }
@@ -51,7 +51,7 @@
             "entryId": "e64c9075-9d89-47cb-8ee5-d3251bd253f4",
             "resolution": "1d",
             "aggregates": [
-              "avg"
+              "AVERAGE"
             ]
           }
         },
