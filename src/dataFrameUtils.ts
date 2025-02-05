@@ -53,11 +53,7 @@ export function trimTimeSeriesDataFrame({
 
   const trimmedFields = fields.map((field) => ({
     ...field,
-<<<<<<< HEAD
-    values: field.values.toArray().slice(fromIndex, toIndex),
-=======
     values: field.values.slice(fromIndex, toIndex),
->>>>>>> 1283b34 (chore: Update packages and remove simple deprecations)
   }));
 
   return {
@@ -96,11 +92,7 @@ export function trimTimeSeriesDataFrameReversedTime({
   }
 
   // Copy before reverse in place
-<<<<<<< HEAD
-  const timeValues = [...timeField.values.toArray()].reverse();
-=======
   const timeValues = [...timeField.values].reverse();
->>>>>>> 1283b34 (chore: Update packages and remove simple deprecations)
 
   let fromIndex = timeValues.findIndex((time) => time > from); // from is exclusive
   if (fromIndex === -1) {
@@ -118,11 +110,7 @@ export function trimTimeSeriesDataFrameReversedTime({
   }
 
   const trimmedFields = fields.map((field) => {
-<<<<<<< HEAD
-    const dataValues = [...field.values.toArray()].reverse().slice(fromIndex, toIndex);
-=======
     const dataValues = [...field.values].reverse().slice(fromIndex, toIndex);
->>>>>>> 1283b34 (chore: Update packages and remove simple deprecations)
 
     return {
       ...field,
