@@ -14,10 +14,13 @@ import (
 )
 
 type fakeExecuteQueryClient struct {
-	assetId string
+	queryStatement string
 }
 
 func (f *fakeExecuteQueryClient) ExecuteQueryWithContext(ctx aws.Context, input *iotsitewise.ExecuteQueryInput, opts ...request.Option) (*iotsitewise.ExecuteQueryOutput, error) {
+	if input.QueryStatement != nil {
+		f.queryStatement = *input.QueryStatement
+	}
 	retVal := iotsitewise.ExecuteQueryOutput{NextToken: aws.String("bar")} // Fixme
 	return &retVal, nil
 }
@@ -25,10 +28,10 @@ func (f *fakeExecuteQueryClient) ExecuteQueryWithContext(ctx aws.Context, input 
 func TestExecuteQuery(t *testing.T) {
 	client := fakeExecuteQueryClient{}
 	query := models.ExecuteQuery{
-		BaseQuery: models.BaseQuery{AssetIds: []string{"foo"}},
+		QueryStatement: "SELECT * FROM assets",
 	}
 	framer, err := api.ExecuteQuery(context.Background(), &client, query)
 	require.NoError(t, err)
-	assert.Equal(t, "foo", client.assetId)
+	assert.Equal(t, "SELECT * FROM assets", client.queryStatement)
 	assert.Equal(t, "bar", *framer.NextToken)
 }
