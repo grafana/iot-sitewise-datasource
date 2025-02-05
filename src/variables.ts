@@ -4,7 +4,7 @@ import { assign } from 'lodash';
 import { QueryType, SitewiseQuery } from './types';
 import { DataSource } from './SitewiseDataSource';
 import { DataQueryRequest, DataQueryResponse, CustomVariableSupport, DataFrameView } from '@grafana/data';
-import { QueryEditor } from './components/query/QueryEditor';
+import { VisualQueryBuilder } from './components/query/visual-query-builder/VisualQueryBuilder';
 import { AssetModelSummary } from 'queryResponseTypes';
 
 export class SitewiseVariableSupport extends CustomVariableSupport<DataSource, SitewiseQuery, SitewiseQuery> {
@@ -14,7 +14,7 @@ export class SitewiseVariableSupport extends CustomVariableSupport<DataSource, S
     this.query = this.query.bind(this);
   }
 
-  editor = QueryEditor;
+  editor = VisualQueryBuilder;
 
   query(request: DataQueryRequest<SitewiseQuery>): Observable<DataQueryResponse> {
     if (this.isValidQuery(request.targets[0])) {

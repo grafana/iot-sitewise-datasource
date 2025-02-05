@@ -15,6 +15,11 @@ type DescribeAssetModelQuery struct {
 	AssetModelId string `json:"assetModelId"`
 }
 
+type ExecuteQuery struct {
+	BaseQuery
+	QueryStatement string `json:"queryStatement"`
+}
+
 func GetListAssetModelsQuery(dq *backend.DataQuery) (*ListAssetModelsQuery, error) {
 
 	query := &ListAssetModelsQuery{}
@@ -44,5 +49,16 @@ func GetDescribeAssetModelQuery(dq *backend.DataQuery) (*DescribeAssetModelQuery
 	// add on the DataQuery params
 	query.QueryType = dq.QueryType
 
+	return query, nil
+}
+
+func GetExecuteQuery(dq *backend.DataQuery) (*ExecuteQuery, error) {
+	backend.Logger.Debug("Running GetExecuteQuery", "JSON", dq.JSON)
+	query := &ExecuteQuery{}
+	if err := json.Unmarshal(dq.JSON, &query); err != nil {
+		return nil, err
+	}
+
+	query.QueryType = dq.QueryType
 	return query, nil
 }
