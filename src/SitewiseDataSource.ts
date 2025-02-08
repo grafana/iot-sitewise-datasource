@@ -160,7 +160,9 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
         tap({
           next: (response) => {
             if (response.state === LoadingState.Done) {
-              this.relativeRangeCache.set(request, response);
+              if (response.data.length > 0) {
+                this.relativeRangeCache.set(request, response);
+              }
             }
           },
         })

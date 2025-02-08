@@ -176,4 +176,38 @@ test.describe('Query Editor', () => {
       await expect(panelEditPage.panel.data).toContainText(['Demo Turbine Asset']);
     });
   });
+
+  test.describe('Raw Code Editor', () => {
+    test.beforeEach(async ({ page, panelEditPage, readProvisionedDataSource }) => {
+      await interceptRequests(page);
+
+      /* Configure data source */
+
+      const ds = await readProvisionedDataSource<SitewiseOptions, SitewiseSecureJsonData>({
+        fileName: 'mock-iot-sitewise.e2e.yaml',
+      });
+      await panelEditPage.datasource.set(ds.name);
+      await panelEditPage.setVisualization('Table');
+    });
+
+    test('Switch to Code Editor', async ({ page, panelEditPage }) => {
+      // pass in panelEditPage to trigger the panel
+      await page.getByTestId('QueryEditorModeToggle').getByLabel('Code').click();
+      await expect(page.getByRole('code')).toBeVisible();
+    });
+
+    test('Displays the correct initial value', async ({ page, panelEditPage }) => {
+      await page.getByTestId('QueryEditorModeToggle').getByLabel('Code').click();
+      await expect(page.getByRole('code')).toContainText(
+        'select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestamp)'
+      );
+    });
+
+    test('Accepts keyboard input', async ({ page, panelEditPage, queryEditor }) => {
+      await page.getByTestId('QueryEditorModeToggle').getByLabel('Code').click();
+      await page.getByRole('code').click();
+      await page.keyboard.insertText('SELECT * FROM new_table');
+      await expect(page.getByRole('code')).toContainText('SELECT * FROM new_table');
+    });
+  });
 });
