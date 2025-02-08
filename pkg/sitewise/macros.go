@@ -5,12 +5,11 @@ import (
 	"strings"
 
 	"github.com/grafana/grafana-plugin-sdk-go/data/sqlutil"
-	"github.com/grafana/grafana-plugin-sdk-go/experimental/errorsource"
-	"github.com/grafana/sqlds/v4"
 	"github.com/pkg/errors"
 )
 
 var TableColumnsNotFoundError = errors.New("Table name not found in tableColumns")
+var ErrorBadArgumentCount = errors.New("Bad argument count")
 
 var tableColumns = map[string][]string{
 	"asset": {
@@ -72,7 +71,7 @@ func macroRawTimeTo(query *sqlutil.Query, args []string) (string, error) {
 
 func macroUnixEpochFilter(query *sqlutil.Query, args []string) (string, error) {
 	if len(args) != 1 {
-		return "", errorsource.DownstreamError(errors.WithMessagef(sqlds.ErrorBadArgumentCount, "expected one argument"), false)
+		return "", ErrorBadArgumentCount
 	}
 
 	var (
