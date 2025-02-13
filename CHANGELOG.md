@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0
+
+- (Breaking change:) Migrate to plugin-ui from grafana/experimental in [#384](https://github.com/grafana/iot-sitewise-datasource/pull/384)
+- chore(deps): bump the all-go-dependencies group across 1 directory with 2 updates in [#413](https://github.com/grafana/iot-sitewise-datasource/pull/413)
+- chore(deps): bump the all-node-dependencies group across 1 directory with 20 updates in [#405](https://github.com/grafana/iot-sitewise-datasource/pull/ 405)
+- Bugfix: Filter out invalid queries in variable editor in [#399](https://github.com/grafana/iot-sitewise-datasource/pull/399)
+- Chore: update docker compose to support improved backend development in [#397](https://github.com/grafana/iot-sitewise-datasource/pull/397)
+- Bump the all-node-dependencies group with 7 updates in [#396](https://github.com/grafana/iot-sitewise-datasource/pull/396)
+- fix: list associated assets query fields in [#394](https://github.com/grafana/iot-sitewise-datasource/pull/394)
+- feat: support asset selection by external id in [#390](https://github.com/grafana/iot-sitewise-datasource/pull/390)
+
 ## 1.25.2
 
 - Bump the all-node-dependencies group across 1 directory with 17 updates in [#389](https://github.com/grafana/iot-sitewise-datasource/pull/389)
