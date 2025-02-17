@@ -1,4 +1,4 @@
-import { MacroType } from '@grafana/experimental';
+import { MacroType } from '@grafana/plugin-ui';
 
 const COLUMN = 'column',
   TIMESTAMP_FORMAT = "'yyyy-MM-dd HH:mm:ss'";

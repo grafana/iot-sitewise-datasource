@@ -3,7 +3,7 @@ import { ConfirmModal, Label, Select, Space } from '@grafana/ui';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { QueryEditorHeader } from '@grafana/aws-sdk';
 import { reportInteraction } from '@grafana/runtime';
-import { EditorRows, QueryEditorMode, QueryEditorModeToggle } from '@grafana/experimental';
+import { EditorRows, QueryEditorMode, QueryEditorModeToggle } from '@grafana/plugin-ui';
 import { SitewiseQuery, SitewiseOptions, QueryType, SqlQuery } from 'types';
 import { DataSource } from 'SitewiseDataSource';
 import { RawQueryEditor } from 'components/query/query-editor-raw/RawQueryEditor';
