@@ -6,7 +6,7 @@ This datasource supports reading data from [AWS IoT SiteWise](https://aws.amazon
 
 1. In the side menu under the **Configuration** link, click on **Data Sources**.
 1. Click the **Add data source** button.
-1. Select **IoT sitewise** in the **Industrial & IoT** section.
+1. Select **IoT SiteWise** in the **Industrial & IoT** section.
 
 ## Authentication
 
@@ -16,7 +16,7 @@ Once authentication is configured, click "Save and Test" to verify the service i
 
 ## Querying data
 
-Users can choose between the UI driven Query builder and the Query code editor, that uses [Iot Sitewise query language](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/sql.html) queries to fetch data. The Query builder offers a guided, less technical interface, whereas the Query code editor is more technical but also more powerful.
+Users can choose between the UI driven Query builder and the Query code editor, that uses [IoT SiteWise query language](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/sql.html) queries to fetch data. The Query builder offers a guided, less technical interface, whereas the Query code editor is more technical but also more powerful.
 
 ### Query builder
 
@@ -34,7 +34,7 @@ Multiple aggregations can be shown for a single property:
 
 ### Query code editor
 
-You can run [Iot Sitewise query language](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/sql.html) queries in the code editor:
+You can run [IoT SiteWise query language](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/sql.html) queries in the code editor:
 ![raw-query-editor](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/editor-switch.png)
 
 The query editor supports the following macros:
@@ -47,7 +47,7 @@ The query editor supports the following macros:
 
 #### Example queries
 
-The queries below provide a simple introduction to the [Iot Sitewise query language](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/sql.html). See the linked documentation for more details.
+The queries below provide a simple introduction to the [IoT SiteWise query language](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/sql.html). See the linked documentation for more details.
 
 **Retrieve all raw events**
 
@@ -82,11 +82,11 @@ where $__unixEpochFilter(event_timestamp)
 
 This will result in a Grafana telling you that the `Data is missing a time field`:
 
-![data_missing_time_field](../docs/data_missing_time_field.png)
+![data_missing_time_field](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/data_missing_time_field.png)
 
 However, if you switch to the Table view, you'll see the data, including the `event_timestamp` values in nanoseconds:
 
-![table_view_of_data](../docs/table_view_of_data.png)
+![table_view_of_data](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/table_view_of_data.png)
 
 By converting the event_timestamp to seconds by using transforms, you can see a proper time series graph:
 
@@ -99,11 +99,11 @@ By converting the event_timestamp to seconds by using transforms, you can see a 
   * as: `Time`
 * Using `Organize fields by name`, hide the `event_timestamp` field
 
-![data_transforms](../docs/data_transforms.png)
+![data_transforms](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/data_transforms.png)
 
 This will result in a time series graph as shown below.
 
-![timeseries_data](../docs/timeseries_data.png)
+![timeseries_data](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/timeseries_data.png)
 
 ## Alerting
 
@@ -124,7 +124,7 @@ If you are using Credentials file authentication type, then you should use a cre
 apiVersion: 1
 
 datasources:
-  - name: IoT Sitewise
+  - name: IoT SiteWise
     type: grafana-iot-sitewise-datasource
     jsonData:
       authType: credentials
@@ -137,7 +137,7 @@ datasources:
 apiVersion: 1
 
 datasources:
-  - name: IoT Sitewise
+  - name: IoT SiteWise
     type: grafana-iot-sitewise-datasource
     jsonData:
       authType: keys
