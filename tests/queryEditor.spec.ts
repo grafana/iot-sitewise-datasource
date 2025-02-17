@@ -190,24 +190,25 @@ test.describe('Query Editor', () => {
       await panelEditPage.setVisualization('Table');
     });
 
-    test('Switch to Code Editor', async ({ page, panelEditPage }) => {
-      // pass in panelEditPage to trigger the panel
-      await page.getByTestId('QueryEditorModeToggle').getByLabel('Code').click();
-      await expect(page.getByRole('code')).toBeVisible();
+    test('Switch to Code Editor', async ({ page, panelEditPage, selectors }) => {
+      await page.getByRole('radio', { name: 'Code' }).click();
+      await page.waitForFunction(() => window.monaco);
+      await expect(panelEditPage.getByGrafanaSelector(selectors.components.CodeEditor.container)).toBeVisible();
     });
-
-    test('Displays the correct initial value', async ({ page, panelEditPage }) => {
-      await page.getByTestId('QueryEditorModeToggle').getByLabel('Code').click();
-      await expect(page.getByRole('code')).toContainText(
+    test('Displays the correct initial value', async ({ page, panelEditPage, selectors }) => {
+      await page.getByRole('radio', { name: 'Code' }).click();
+      await page.waitForFunction(() => window.monaco);
+      await expect(panelEditPage.getByGrafanaSelector(selectors.components.CodeEditor.container)).toContainText(
         'select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestamp)'
       );
     });
-
-    test('Accepts keyboard input', async ({ page, panelEditPage, queryEditor }) => {
-      await page.getByTestId('QueryEditorModeToggle').getByLabel('Code').click();
-      await page.getByRole('code').click();
+    test('Accepts keyboard input', async ({ page, panelEditPage, selectors }) => {
+      await page.getByRole('radio', { name: 'Code' }).click();
+      await page.waitForFunction(() => window.monaco);
+      const editor = panelEditPage.getByGrafanaSelector(selectors.components.CodeEditor.container);
+      await editor.click();
       await page.keyboard.insertText('SELECT * FROM new_table');
-      await expect(page.getByRole('code')).toContainText('SELECT * FROM new_table');
+      await expect(editor).toContainText('SELECT * FROM new_table');
     });
   });
 });

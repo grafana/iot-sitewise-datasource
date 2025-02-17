@@ -314,7 +314,7 @@ func (s *Server) handleDescribeAssetModelQuery(ctx context.Context, req *backend
 func (s *Server) handleExecuteQuery(ctx context.Context, req *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
 	query, err := models.GetExecuteQuery(&q)
 	if err != nil {
-		log.DefaultLogger.FromContext(ctx).Warn("Error un-marshalling query", "error", err)
+		log.DefaultLogger.FromContext(ctx).Warn("Error unmarshalling query", "error", err)
 		return DataResponseErrorUnmarshal(err)
 	}
 

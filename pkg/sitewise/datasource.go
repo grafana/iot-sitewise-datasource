@@ -235,8 +235,6 @@ func (ds *Datasource) HandleListAssetPropertiesQuery(ctx context.Context, req *b
 }
 
 func (ds *Datasource) HandleExecuteQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ExecuteQuery) (data.Frames, error) {
-	log.DefaultLogger.FromContext(ctx).Debug("Running DS.HandleExecuteQuery")
-
 	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
 		return api.ExecuteQuery(ctx, sw, *query)
 	})

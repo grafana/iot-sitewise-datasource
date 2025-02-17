@@ -24,7 +24,7 @@ func (a QueryResults) Frames(_ context.Context, _ resource.ResourceProvider) (da
 	f := make([]*data.Field, 0)
 
 	for _, col := range a.Columns {
-		f = append(f, fields.DatumField(*col, length))
+		f = append(f, fields.DatumField(length, *col))
 	}
 
 	for i, row := range a.Rows {

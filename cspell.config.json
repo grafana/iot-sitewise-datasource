@@ -84,6 +84,7 @@
     "stdev",
     "sqlds",
     "errorsource",
-    "viant"
+    "viant",
+    "unmarshalling"
   ]
 }
