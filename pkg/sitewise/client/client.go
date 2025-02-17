@@ -18,7 +18,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/aws/aws-sdk-go/service/iotsitewise/iotsitewiseiface"
 	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
-	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
@@ -307,19 +306,4 @@ func GetClient(region string, settings models.AWSSiteWiseDataSourceSetting, prov
 		r.HTTPRequest.Header.Set("User-Agent", awsds.GetUserAgentString("grafana-iot-sitewise-datasource"))
 	})
 	return &sitewiseClient{c}, nil
-}
-
-func ExecuteQuery(ctx context.Context, client ExecuteQueryClient, query models.ExecuteQuery) (*iotsitewise.ExecuteQueryOutput, error) {
-	backend.Logger.Error("Execute Query", "query", query.RawSQL)
-	input := &iotsitewise.ExecuteQueryInput{
-		QueryStatement: &query.RawSQL,
-		NextToken:      &query.NextToken,
-	}
-
-	output, err := client.ExecuteQueryWithContext(ctx, input)
-	if err != nil {
-		return nil, err
-	}
-
-	return output, err
 }

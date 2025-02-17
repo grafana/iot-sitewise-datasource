@@ -87,18 +87,18 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
     };
     let suggestionType = [SuggestionType.all];
 
-    var last_chars = model.getValueInRange({
+    const last_chars = model.getValueInRange({
       startLineNumber: position.lineNumber,
       startColumn: 0,
       endLineNumber: position.lineNumber,
       endColumn: position.column,
     });
-    var words = last_chars.trim().replace('\t', '').split(' ');
+    const words = last_chars.trim().replace('\t', '').split(' ');
 
     const lastWord = words[words.length - 1].toLowerCase();
 
     const regResult = /from\s(\w+)/g.exec(last_chars);
-    let currentTable = regResult === null ? null : regResult[1];
+    const currentTable = regResult === null ? null : regResult[1];
 
     // Check the last word first (before the current space)
     if (lastWord === 'from') {
@@ -201,7 +201,6 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
         documentation: macro.description,
         insertText: macro.id.substring(1, macro.id.length),
         range,
-        //        insertText: macro.id,
       };
     });
   },

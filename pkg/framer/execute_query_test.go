@@ -252,7 +252,7 @@ func TestSetValue(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			field := fields.DatumField(*tt.col, 1)
+			field := fields.DatumField(1, *tt.col)
 			err := SetValue(tt.col, tt.scalarValue[0], field, 0)
 			if tt.expectError {
 				require.Error(t, err)

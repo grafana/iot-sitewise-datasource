@@ -95,7 +95,7 @@ func PropertyValueFieldNamed(name string, property *iotsitewise.DescribeAssetPro
 	return valueField
 }
 
-func DatumField(col iotsitewise.ColumnInfo, length int) *data.Field {
+func DatumField(length int, col iotsitewise.ColumnInfo) *data.Field {
 	return NewFieldWithName(*col.Name, FieldTypeForQueryResult(col), length)
 }
 

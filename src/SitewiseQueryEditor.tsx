@@ -1,10 +1,9 @@
-import React, { useCallback, useState } from 'react';
-import { ConfirmModal, Label, Select, Space } from '@grafana/ui';
+import React, { useState } from 'react';
+import { ConfirmModal, InlineField, Select, Space } from '@grafana/ui';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { QueryEditorHeader } from '@grafana/aws-sdk';
-import { reportInteraction } from '@grafana/runtime';
 import { EditorRows, QueryEditorMode, QueryEditorModeToggle } from '@grafana/plugin-ui';
-import { SitewiseQuery, SitewiseOptions, QueryType, SqlQuery } from 'types';
+import { SitewiseQuery, SitewiseOptions, QueryType } from 'types';
 import { DataSource } from 'SitewiseDataSource';
 import { RawQueryEditor } from 'components/query/query-editor-raw/RawQueryEditor';
 import { VisualQueryBuilder } from 'components/query/visual-query-builder/VisualQueryBuilder';
@@ -16,42 +15,20 @@ export function SitewiseQueryEditor(props: Props) {
   const { query, onChange, onRunQuery } = props;
   const editorMode = query.editorMode || QueryEditorMode.Builder;
 
-  const onEditorModeChange = useCallback(
-    (newEditorMode: QueryEditorMode) => {
-      reportInteraction('grafana_sitewise_editor_mode_clicked', {
-        newEditor: newEditorMode,
-        previousEditor: query.editorMode ?? '',
-      });
-
-      if (newEditorMode === QueryEditorMode.Code) {
-        query.queryType = QueryType.ExecuteQuery;
-      }
-      changeEditorMode(query, newEditorMode, onChange);
-    },
-    [onChange, query]
-  );
+  const onEditorModeChange = (newEditorMode: QueryEditorMode) => {
+    const newQuery = { ...query };
+    if (newEditorMode === QueryEditorMode.Code) {
+      newQuery.queryType = QueryType.ExecuteQuery;
+      newQuery.clientCache = false;
+    }
+    onChange({ ...newQuery, editorMode: newEditorMode });
+  };
 
   const onRegionChange = (sel: SelectableValue<string>) => {
     onChange({ ...query, region: sel.value });
   };
 
-  const onChangeInternal = (query: SitewiseQuery) => {
-    onChange(query);
-  };
-
   const [parseModalOpen, setParseModalOpen] = useState(false);
-
-  function changeEditorMode(
-    query: SitewiseQuery,
-    editorMode: QueryEditorMode,
-    onChange: (query: SitewiseQuery) => void
-  ) {
-    onChange({ ...query, editorMode });
-  }
-
-  function onRunQueryInternal() {
-    onRunQuery();
-  }
 
   return (
     <>
@@ -72,21 +49,19 @@ export function SitewiseQueryEditor(props: Props) {
         extraHeaderElementRight={<QueryEditorModeToggle mode={editorMode!} onChange={onEditorModeChange} />}
         extraHeaderElementLeft={
           editorMode == QueryEditorMode.Code ? (
-            <div className="gf-form gf-form--grow">
-              <Label className="gf-form-label width-auto">AWS Region</Label>
+            <InlineField label="AWS Region">
               <Select
                 options={standardRegionOptions}
                 value={
                   standardRegionOptions.find((v) => v.value === query.region) || props.datasource.options.defaultRegion
                 }
                 onChange={onRegionChange}
-                backspaceRemovesValue={true}
-                allowCustomValue={true}
-                isClearable={true}
+                backspaceRemovesValue
+                allowCustomValue
+                isClearable
                 menuPlacement="auto"
-                width={20}
               />
-            </div>
+            </InlineField>
           ) : undefined
         }
       />
@@ -96,17 +71,17 @@ export function SitewiseQueryEditor(props: Props) {
           <RawQueryEditor
             {...props}
             datasource={props.datasource}
-            query={query as SqlQuery}
-            onChange={onChangeInternal}
-            onRunQuery={onRunQueryInternal}
+            query={query}
+            onChange={(value) => onChange(value)}
+            onRunQuery={() => onRunQuery()}
           />
         )}
         {editorMode === QueryEditorMode.Builder && (
           <VisualQueryBuilder
             datasource={props.datasource}
             query={query}
-            onChange={onChangeInternal}
-            onRunQuery={onRunQueryInternal}
+            onChange={(value) => onChange(value)}
+            onRunQuery={() => onRunQuery()}
           />
         )}
       </EditorRows>

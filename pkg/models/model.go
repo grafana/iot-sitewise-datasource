@@ -67,15 +67,3 @@ func GetExecuteQuery(dq *backend.DataQuery) (*ExecuteQuery, error) {
 	query.Query.RawSQL = query.RawSQL
 	return query, nil
 }
-
-func GetQuery(eq *ExecuteQuery) (*sqlutil.Query, error) {
-	query := &sqlutil.Query{}
-
-	query.RawSQL = eq.RawSQL
-
-	query.Interval = eq.Query.Interval
-	query.TimeRange = eq.Query.TimeRange
-	query.MaxDataPoints = eq.Query.MaxDataPoints
-
-	return query, nil
-}

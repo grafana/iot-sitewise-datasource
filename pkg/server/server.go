@@ -7,7 +7,6 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend/instancemgmt"
-	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 
@@ -71,7 +70,6 @@ func getQueryHandlers(s *Server) *datasource.QueryTypeMux {
 }
 
 func NewServerInstance(ctx context.Context, settings backend.DataSourceInstanceSettings) (instancemgmt.Instance, error) {
-	log.DefaultLogger.FromContext(ctx).Debug("Creating new Server Instance")
 	ds, err := sitewise.NewDatasource(ctx, settings)
 	if err != nil {
 		return nil, err
