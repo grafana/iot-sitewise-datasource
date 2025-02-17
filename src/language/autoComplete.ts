@@ -65,7 +65,7 @@ interface SitewiseCompletionProviderType extends languages.CompletionItemProvide
   allDefinitions(range: IRange, table: null | string): SuggestionDefinition[];
   buildAutocompleteSuggestion(definition: SuggestionDefinition, range: IRange): languages.CompletionItem;
   monaco: null | Monaco;
-  currentSpace: string;
+  currentToken: string;
 }
 
 // TODO: Check out getStandardSQLCompletionProvider to get standard SQL completion
@@ -74,7 +74,7 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
 
   monaco: null,
 
-  currentSpace: 'start',
+  currentToken: 'start',
 
   provideCompletionItems(model, position, context): languages.ProviderResult<languages.CompletionList> {
     // Setup
@@ -100,23 +100,23 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
     const regResult = /from\s(\w+)/g.exec(last_chars);
     let currentTable = regResult === null ? null : regResult[1];
 
-    // First the last word
+    // Check the last word first (before the current space)
     if (lastWord === 'from') {
-      this.currentSpace = 'from';
+      this.currentToken = 'from';
       suggestionType = [SuggestionType.tables];
     } else if (['where', 'and', 'or'].includes(lastWord)) {
-      this.currentSpace = 'where';
+      this.currentToken = 'where';
       if (currentTable === null) {
         suggestionType = [SuggestionType.macros];
       } else {
         suggestionType = [SuggestionType.fields, SuggestionType.macros];
       }
-    } else if (this.currentSpace === 'from') {
-      // Then the current space
-      suggestionType;
-    } else if (this.currentSpace === 'where') {
+      // If the last word doesn't match any of the above, check the Current Space
+    } else if (this.currentToken === 'from') {
+      suggestionType = [SuggestionType.tables];
+    } else if (this.currentToken === 'where') {
       suggestionType = [SuggestionType.macros];
-      // Then everything
+      // Otherwise suggest everything
     } else {
       suggestionType = [SuggestionType.all];
     }
