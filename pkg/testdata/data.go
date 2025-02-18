@@ -7,7 +7,7 @@ import (
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 )
 
 func SerializeStruct(t *testing.T, val interface{}) []byte {

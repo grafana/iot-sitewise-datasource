@@ -2,28 +2,29 @@ package api
 
 import (
 	"context"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 
-	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
-func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, query models.ListAssociatedAssetsQuery) (*framer.AssociatedAssets, error) {
+func ListAssociatedAssets(ctx context.Context, sw client.SitewiseAPIClient, query models.ListAssociatedAssetsQuery) (*framer.AssociatedAssets, error) {
 
 	var (
 		hierarchyId        *string
-		traversalDirection *string
-		assetId            *string = util.GetAssetId(query.BaseQuery)
-		results            []*iotsitewise.AssociatedAssetsSummary
+		traversalDirection iotsitewisetypes.TraversalDirection
+		results            []iotsitewisetypes.AssociatedAssetsSummary
 	)
+	assetId := util.GetAssetId(query.BaseQuery)
 
 	// Recursively load children
 	if query.LoadAllChildren {
-		asset, err := client.DescribeAsset(&iotsitewise.DescribeAssetInput{
+		asset, err := sw.DescribeAsset(ctx, &iotsitewise.DescribeAssetInput{
 			AssetId: assetId,
 		})
 
@@ -36,7 +37,7 @@ func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, que
 			var nextToken *string = nil
 
 			for {
-				resp, err := client.ListAssociatedAssetsWithContext(ctx, &iotsitewise.ListAssociatedAssetsInput{
+				resp, err := sw.ListAssociatedAssets(ctx, &iotsitewise.ListAssociatedAssetsInput{
 					AssetId:     assetId,
 					HierarchyId: h.Id,
 					MaxResults:  MaxSitewiseResults,
@@ -64,12 +65,12 @@ func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, que
 	} else {
 		if query.HierarchyId != "" {
 			hierarchyId = aws.String(query.HierarchyId)
-			traversalDirection = aws.String("CHILD")
+			traversalDirection = iotsitewisetypes.TraversalDirectionChild
 		} else {
-			traversalDirection = aws.String("PARENT")
+			traversalDirection = iotsitewisetypes.TraversalDirectionParent
 		}
 
-		resp, err := client.ListAssociatedAssetsWithContext(ctx, &iotsitewise.ListAssociatedAssetsInput{
+		resp, err := sw.ListAssociatedAssets(ctx, &iotsitewise.ListAssociatedAssetsInput{
 			AssetId:            assetId,
 			HierarchyId:        hierarchyId,
 			MaxResults:         MaxSitewiseResults,

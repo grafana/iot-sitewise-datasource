@@ -4,8 +4,9 @@ import (
 	"context"
 	"math"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
@@ -16,7 +17,7 @@ const (
 )
 
 var (
-	MaxSitewiseResults = aws.Int64(250)
+	MaxSitewiseResults = aws.Int32(250)
 )
 
 func getNextToken(query models.BaseQuery) *string {
@@ -26,10 +27,10 @@ func getNextToken(query models.BaseQuery) *string {
 	return aws.String(query.NextToken)
 }
 
-func getAssetIdAndPropertyId(query models.AssetPropertyValueQuery, client client.SitewiseClient, ctx context.Context) (models.AssetPropertyValueQuery, error) {
+func getAssetIdAndPropertyId(query models.AssetPropertyValueQuery, sw client.SitewiseAPIClient, ctx context.Context) (models.AssetPropertyValueQuery, error) {
 	result := query
 	if query.PropertyAlias != "" {
-		resp, err := client.DescribeTimeSeriesWithContext(ctx, &iotsitewise.DescribeTimeSeriesInput{
+		resp, err := sw.DescribeTimeSeries(ctx, &iotsitewise.DescribeTimeSeriesInput{
 			Alias: util.GetPropertyAlias(query.BaseQuery),
 		})
 		if err != nil {
@@ -72,7 +73,7 @@ func getPropertyAlias(query models.BaseQuery) *string {
 	return aws.String(query.PropertyAlias)
 }
 
-func filterAnomalyAssetIds(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) ([]string, error) {
+func filterAnomalyAssetIds(ctx context.Context, sw client.SitewiseAPIClient, query models.AssetPropertyValueQuery) ([]string, error) {
 	anomalyAssetIds := []string{}
 
 	switch {
@@ -91,7 +92,7 @@ func filterAnomalyAssetIds(ctx context.Context, client client.SitewiseClient, qu
 				PropertyId: aws.String(query.PropertyId),
 			}
 
-			resp, err := client.DescribeAssetPropertyWithContext(ctx, req)
+			resp, err := sw.DescribeAssetProperty(ctx, req)
 			if err != nil {
 				return nil, err
 			}

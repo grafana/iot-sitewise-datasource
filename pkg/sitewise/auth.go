@@ -20,6 +20,7 @@ import (
 
 type EdgeAuthenticator struct {
 	Settings models.AWSSiteWiseDataSourceSetting
+	authInfo *models.AuthInfo
 }
 
 type AuthRequest struct {
@@ -28,7 +29,24 @@ type AuthRequest struct {
 	AuthMechanism string `json:"authMechanism,omitempty"`
 }
 
-func (a *EdgeAuthenticator) Authenticate() (models.AuthInfo, error) {
+func (a *EdgeAuthenticator) GetAuthInfo() (*models.AuthInfo, error) {
+	if a == nil {
+		return nil, nil
+	}
+	if a.authInfo == nil || time.Now().After(a.authInfo.SessionExpiryTime) {
+		err := a.Authenticate()
+		if err != nil {
+			return nil, err
+		}
+	}
+	return a.authInfo, nil
+
+}
+
+func (a *EdgeAuthenticator) Authenticate() error {
+	if a == nil {
+		return nil
+	}
 	reqBodyJson, err := json.Marshal(
 		&AuthRequest{
 			Username:      a.Settings.EdgeAuthUser,
@@ -36,7 +54,7 @@ func (a *EdgeAuthenticator) Authenticate() (models.AuthInfo, error) {
 			AuthMechanism: a.Settings.EdgeAuthMode,
 		})
 	if err != nil {
-		return models.AuthInfo{}, err
+		return err
 	}
 
 	pool, _ := x509.SystemCertPool()
@@ -45,17 +63,17 @@ func (a *EdgeAuthenticator) Authenticate() (models.AuthInfo, error) {
 	}
 
 	if a.Settings.Cert == "" {
-		return models.AuthInfo{}, fmt.Errorf("certificate cannot be null")
+		return fmt.Errorf("certificate cannot be null")
 	}
 
 	block, _ := pem.Decode([]byte(a.Settings.Cert))
 	if block == nil || block.Type != "CERTIFICATE" || len(block.Headers) != 0 {
-		return models.AuthInfo{}, fmt.Errorf("decode certificate failed: %s", a.Settings.Cert)
+		return fmt.Errorf("decode certificate failed: %s", a.Settings.Cert)
 	}
 
 	cert, err := x509.ParseCertificate(block.Bytes)
 	if err != nil {
-		return models.AuthInfo{}, err
+		return err
 	}
 	pool.AddCert(cert)
 
@@ -100,27 +118,30 @@ func (a *EdgeAuthenticator) Authenticate() (models.AuthInfo, error) {
 	u, err := url.Parse(a.Settings.AWSDatasourceSettings.Endpoint)
 	if err != nil {
 		log.DefaultLogger.Error("error parsing edge endpoint url.", "endpoint url:", a.Settings.AWSDatasourceSettings.Endpoint)
-		return models.AuthInfo{}, fmt.Errorf("cannot parse edge endpoint url. url: %v", a.Settings.AWSDatasourceSettings.Endpoint)
+		return fmt.Errorf("cannot parse edge endpoint url. url: %v", a.Settings.AWSDatasourceSettings.Endpoint)
 	}
 	u.Path = path.Join(u.Path, "authenticate")
 	authEndpoint := u.String()
 
 	resp, err := client.Post(authEndpoint, "application/json", bytes.NewBuffer(reqBodyJson))
 	if err != nil {
-		return models.AuthInfo{}, err
+		return err
 	}
 
 	if resp.StatusCode != 200 {
 		log.DefaultLogger.Error("edge auth response not ok:", "response code:", strconv.Itoa(resp.StatusCode))
-		return models.AuthInfo{}, fmt.Errorf("request not ok. returned code: %v", resp.StatusCode)
+		return fmt.Errorf("request not ok. returned code: %v", resp.StatusCode)
 	}
 
 	log.DefaultLogger.Debug("edge auth response ok.")
 
 	authInfo := models.AuthInfo{}
 	err = json.NewDecoder(resp.Body).Decode(&authInfo)
-
-	return authInfo, err
+	if err != nil {
+		return err
+	}
+	a.authInfo = &authInfo
+	return nil
 }
 
 type DummyAuthenticator struct {

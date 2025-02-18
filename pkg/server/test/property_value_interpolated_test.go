@@ -6,8 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
 	"github.com/google/go-cmp/cmp"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
@@ -21,7 +23,7 @@ import (
 )
 
 func TestPropertyValueInterpolatedQuery(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 
 	mockSw.On(
 		"GetInterpolatedAssetPropertyValuesPageAggregation",
@@ -33,13 +35,13 @@ func TestPropertyValueInterpolatedQuery(t *testing.T) {
 		mock.Anything,
 	).Return(&iotsitewise.GetInterpolatedAssetPropertyValuesOutput{
 		NextToken: Pointer("asset1-next-token"),
-		InterpolatedAssetPropertyValues: []*iotsitewise.InterpolatedAssetPropertyValue{
+		InterpolatedAssetPropertyValues: []iotsitewisetypes.InterpolatedAssetPropertyValue{
 			{
-				Timestamp: &iotsitewise.TimeInNanos{
-					OffsetInNanos: Pointer(int64(0)),
+				Timestamp: &iotsitewisetypes.TimeInNanos{
+					OffsetInNanos: Pointer(int32(0)),
 					TimeInSeconds: Pointer(int64(1612207100)),
 				},
-				Value: &iotsitewise.Variant{
+				Value: &iotsitewisetypes.Variant{
 					DoubleValue: Pointer(1.1),
 				},
 			},
@@ -56,40 +58,40 @@ func TestPropertyValueInterpolatedQuery(t *testing.T) {
 		mock.Anything,
 	).Return(&iotsitewise.GetInterpolatedAssetPropertyValuesOutput{
 		NextToken: Pointer("asset2-next-token"),
-		InterpolatedAssetPropertyValues: []*iotsitewise.InterpolatedAssetPropertyValue{
+		InterpolatedAssetPropertyValues: []iotsitewisetypes.InterpolatedAssetPropertyValue{
 			{
-				Timestamp: &iotsitewise.TimeInNanos{
-					OffsetInNanos: Pointer(int64(0)),
+				Timestamp: &iotsitewisetypes.TimeInNanos{
+					OffsetInNanos: Pointer(int32(0)),
 					TimeInSeconds: Pointer(int64(1612207200)),
 				},
-				Value: &iotsitewise.Variant{
+				Value: &iotsitewisetypes.Variant{
 					DoubleValue: Pointer(2.2),
 				},
 			},
 		},
 	}, nil)
 
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
 		AssetId:    aws.String("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 		PropertyId: aws.String("11propid-aaaa-2222-bbbb-3333cccc4444"),
 	}, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetId:   Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
-			DataType: Pointer("DOUBLE"),
+		AssetProperty: &iotsitewisetypes.Property{
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
 			Name:     Pointer("Wind Speed"),
 			Unit:     Pointer("m/s"),
 		},
 	}, nil)
 
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
 		AssetId:    aws.String("2assetid-aaaa-2222-bbbb-3333cccc4444"),
 		PropertyId: aws.String("11propid-aaaa-2222-bbbb-3333cccc4444"),
 	}, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetId:   Pointer("2assetid-aaaa-2222-bbbb-3333cccc4444"),
 		AssetName: Pointer("Demo Turbine Asset 2"),
-		AssetProperty: &iotsitewise.Property{
-			DataType: Pointer("DOUBLE"),
+		AssetProperty: &iotsitewisetypes.Property{
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
 			Name:     Pointer("Wind Speed"),
 			Unit:     Pointer("m/s"),
 		},
@@ -161,7 +163,7 @@ func TestPropertyValueInterpolatedQuery(t *testing.T) {
 }
 
 func TestPropertyValueInterpolatedQueryWithPropertyAlias(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 
 	mockSw.On(
 		"GetInterpolatedAssetPropertyValuesPageAggregation",
@@ -173,13 +175,13 @@ func TestPropertyValueInterpolatedQueryWithPropertyAlias(t *testing.T) {
 		mock.Anything,
 	).Return(&iotsitewise.GetInterpolatedAssetPropertyValuesOutput{
 		NextToken: Pointer("asset1-next-token"),
-		InterpolatedAssetPropertyValues: []*iotsitewise.InterpolatedAssetPropertyValue{
+		InterpolatedAssetPropertyValues: []iotsitewisetypes.InterpolatedAssetPropertyValue{
 			{
-				Timestamp: &iotsitewise.TimeInNanos{
-					OffsetInNanos: Pointer(int64(0)),
+				Timestamp: &iotsitewisetypes.TimeInNanos{
+					OffsetInNanos: Pointer(int32(0)),
 					TimeInSeconds: Pointer(int64(1612207100)),
 				},
-				Value: &iotsitewise.Variant{
+				Value: &iotsitewisetypes.Variant{
 					DoubleValue: Pointer(1.1),
 				},
 			},

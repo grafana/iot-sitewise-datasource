@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 )
@@ -16,15 +17,15 @@ type DescribeAssetPropertyQuery struct {
 
 type ListAssetsQuery struct {
 	BaseQuery
-	ModelId string `json:"modelId,omitempty"`
-	Filter  string `json:"filter,omitempty"`
+	ModelId string                            `json:"modelId,omitempty"`
+	Filter  iotsitewisetypes.ListAssetsFilter `json:"filter,omitempty"`
 }
 
 type ListTimeSeriesQuery struct {
 	BaseQuery
-	TimeSeriesType string `json:"timeSeriesType,omitempty"`
-	AssetId        string `json:"assetId,omitempty"`
-	AliasPrefix    string `json:"aliasPrefix,omitempty"`
+	TimeSeriesType iotsitewisetypes.ListTimeSeriesType `json:"timeSeriesType,omitempty"`
+	AssetId        string                              `json:"assetId,omitempty"`
+	AliasPrefix    string                              `json:"aliasPrefix,omitempty"`
 }
 
 type ListAssociatedAssetsQuery struct {
@@ -72,7 +73,7 @@ func GetListAssetsQuery(dq *backend.DataQuery) (*ListAssetsQuery, error) {
 	query.MigrateAssetId()
 
 	// add on the DataQuery params
-	query.MaxDataPoints = dq.MaxDataPoints
+	query.MaxDataPoints = int32(dq.MaxDataPoints)
 	query.QueryType = dq.QueryType
 	return query, nil
 }
@@ -81,10 +82,10 @@ func GetListTimeSeriesQuery(dq *backend.DataQuery) (*ListTimeSeriesQuery, error)
 	query := &ListTimeSeriesQuery{}
 	if err := json.Unmarshal(dq.JSON, query); err != nil {
 		return nil, err
-	} 
+	}
 
 	// add on the DataQuery params
-	query.MaxDataPoints = dq.MaxDataPoints
+	query.MaxDataPoints = int32(dq.MaxDataPoints)
 	query.QueryType = dq.QueryType
 	return query, nil
 }
@@ -99,7 +100,7 @@ func GetListAssociatedAssetsQuery(dq *backend.DataQuery) (*ListAssociatedAssetsQ
 	query.MigrateAssetId()
 
 	// add on the DataQuery params
-	query.MaxDataPoints = dq.MaxDataPoints
+	query.MaxDataPoints = int32(dq.MaxDataPoints)
 	query.QueryType = dq.QueryType
 	return query, nil
 }

@@ -1,18 +1,18 @@
 package test
 
 import (
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 	"testing"
 
-	"github.com/grafana/iot-sitewise-datasource/pkg/server"
-
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
-
-	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
-	"github.com/stretchr/testify/mock"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/stretchr/testify/mock"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/server"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
+	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
 )
 
 func TestHandleListAssociatedAssets(t *testing.T) {
@@ -22,22 +22,21 @@ func TestHandleListAssociatedAssets(t *testing.T) {
 
 var listAssociatedAssetsChildrenHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 
 	assets := testdata.GetIoTSitewiseAssociatedAssets(t, testDataRelativePath("list-associated-assets.json"))
 
 	argMatcher := mock.MatchedBy(func(req *iotsitewise.ListAssociatedAssetsInput) bool {
 		assetId := req.AssetId
 		hierarchyId := req.HierarchyId
-		traversal := req.TraversalDirection
-		if assetId == nil || hierarchyId == nil || traversal == nil {
+		if assetId == nil || hierarchyId == nil {
 			return false
 		}
 		return testdata.DemoWindFarmAssetId == *assetId &&
 			testdata.TurbineAssetModelHierarchyId == *hierarchyId
 	})
 
-	mockSw.On("ListAssociatedAssetsWithContext", mock.Anything, argMatcher).Return(&assets, nil)
+	mockSw.On("ListAssociatedAssets", mock.Anything, argMatcher).Return(&assets, nil)
 
 	query := models.ListAssociatedAssetsQuery{}
 	query.AssetIds = []string{testdata.DemoWindFarmAssetId}
@@ -63,21 +62,20 @@ var listAssociatedAssetsChildrenHappyCase testServerScenarioFn = func(t *testing
 
 var listAssociatedAssetsParentHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 
 	assets := testdata.GetIoTSitewiseAssociatedAssets(t, testDataRelativePath("list-associated-assets-parent.json"))
 
 	argMatcher := mock.MatchedBy(func(req *iotsitewise.ListAssociatedAssetsInput) bool {
 		assetId := req.AssetId
 		traversal := req.TraversalDirection
-		if assetId == nil || traversal == nil {
+		if assetId == nil {
 			return false
 		}
-		return testdata.DemoTurbineAsset1 == *assetId &&
-			"PARENT" == *traversal
+		return *assetId == testdata.DemoTurbineAsset1 && traversal == types.TraversalDirectionParent
 	})
 
-	mockSw.On("ListAssociatedAssetsWithContext", mock.Anything, argMatcher).Return(&assets, nil)
+	mockSw.On("ListAssociatedAssets", mock.Anything, argMatcher).Return(&assets, nil)
 
 	query := models.ListAssociatedAssetsQuery{}
 	query.AssetIds = []string{testdata.DemoTurbineAsset1}

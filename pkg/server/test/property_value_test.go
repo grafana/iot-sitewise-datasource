@@ -3,47 +3,49 @@ package test
 import (
 	"context"
 	"fmt"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 	"testing"
 	"time"
 
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+
 	"github.com/google/go-cmp/cmp"
 	"github.com/patrickmn/go-cache"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
-	"github.com/grafana/iot-sitewise-datasource/pkg/server"
-	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise"
-	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
 
-	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/server"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
+	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
 )
 
 func Test_property_value_query_by_asset_id_and_property_id(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
-	mockSw.On("BatchGetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
-		SuccessEntries: []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{{
-			AssetPropertyValue: &iotsitewise.AssetPropertyValue{
-				Quality: Pointer("GOOD"),
-				Timestamp: &iotsitewise.TimeInNanos{
-					OffsetInNanos: Pointer(int64(0)),
+	mockSw := &mocks.SitewiseAPIClient{}
+	mockSw.On("BatchGetAssetPropertyValue", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
+		SuccessEntries: []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{{
+			AssetPropertyValue: &iotsitewisetypes.AssetPropertyValue{
+				Quality: iotsitewisetypes.QualityGood,
+				Timestamp: &iotsitewisetypes.TimeInNanos{
+					OffsetInNanos: Pointer(int32(0)),
 					TimeInSeconds: Pointer(int64(1612207200)),
 				},
-				Value: &iotsitewise.Variant{
+				Value: &iotsitewisetypes.Variant{
 					DoubleValue: Pointer(float64(23.8)),
 				},
 			},
 			EntryId: Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 		}}}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
-			DataType: Pointer("DOUBLE"),
+		AssetProperty: &iotsitewisetypes.Property{
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
 			Name:     Pointer("Wind Speed"),
 			Unit:     Pointer("m/s"),
 		},
@@ -89,10 +91,10 @@ func Test_property_value_query_by_asset_id_and_property_id(t *testing.T) {
 
 	mockSw.AssertExpectations(t)
 	mockSw.AssertCalled(t,
-		"BatchGetAssetPropertyValueWithContext",
+		"BatchGetAssetPropertyValue",
 		mock.Anything,
 		&iotsitewise.BatchGetAssetPropertyValueInput{
-			Entries: []*iotsitewise.BatchGetAssetPropertyValueEntry{{
+			Entries: []iotsitewisetypes.BatchGetAssetPropertyValueEntry{{
 				EntryId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 				AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 				PropertyId: Pointer("11propid-aaaa-2222-bbbb-3333cccc4444"),
@@ -100,7 +102,7 @@ func Test_property_value_query_by_asset_id_and_property_id(t *testing.T) {
 		},
 	)
 	mockSw.AssertCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		&iotsitewise.DescribeAssetPropertyInput{
 			AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
@@ -115,51 +117,51 @@ func Test_property_value_query_by_asset_id_and_property_id_of_flatten_L4E_anomal
 	assetPropertyIdDiagnosticOne := "44fa33e2-b2db-4724-ba03-48ce28902809"
 	assetPropertyIdDiagnosticTwo := "3a985085-ea71-4ae6-9395-b65990f58a05"
 
-	mockSw := &mocks.SitewiseClient{}
-	mockSw.On("BatchGetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
-		SuccessEntries: []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{{
-			AssetPropertyValue: &iotsitewise.AssetPropertyValue{
-				Quality: Pointer("GOOD"),
-				Timestamp: &iotsitewise.TimeInNanos{
-					OffsetInNanos: Pointer(int64(0)),
+	mockSw := &mocks.SitewiseAPIClient{}
+	mockSw.On("BatchGetAssetPropertyValue", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
+		SuccessEntries: []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{{
+			AssetPropertyValue: &iotsitewisetypes.AssetPropertyValue{
+				Quality: iotsitewisetypes.QualityGood,
+				Timestamp: &iotsitewisetypes.TimeInNanos{
+					OffsetInNanos: Pointer(int32(0)),
 					TimeInSeconds: Pointer(int64(1612207200)),
 				},
-				Value: &iotsitewise.Variant{
+				Value: &iotsitewisetypes.Variant{
 					StringValue: Pointer("{\"timestamp\":\"2021-02-01T19:20:00.000000\",\"prediction\":0,\"prediction_reason\":\"NO_ANOMALY_DETECTED\",\"anomaly_score\":0.2674,\"diagnostics\":[{\"name\":\"3a985085-ea71-4ae6-9395-b65990f58a05\\\\3a985085-ea71-4ae6-9395-b65990f58a05\",\"value\":0.44856},{\"name\":\"44fa33e2-b2db-4724-ba03-48ce28902809\\\\44fa33e2-b2db-4724-ba03-48ce28902809\",\"value\":0.55144}]}"),
 				},
 			},
 			EntryId: Pointer(assetId),
 		}}}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
 		return req.PropertyId != nil && *req.PropertyId == assetPropertyIdQuery
 	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetId:   Pointer(assetId),
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		CompositeModel: &iotsitewise.CompositeModelProperty{
+		CompositeModel: &iotsitewisetypes.CompositeModelProperty{
 			Name: Pointer("prediction1"),
-			AssetProperty: &iotsitewise.Property{
+			AssetProperty: &iotsitewisetypes.Property{
 				Name:     Pointer("AWS/L4E_ANOMALY_RESULT"),
-				DataType: Pointer("STRUCT"),
+				DataType: iotsitewisetypes.PropertyDataTypeStruct,
 			},
 		},
 	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
 		return req.PropertyId != nil && *req.PropertyId == assetPropertyIdDiagnosticOne
 	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
+		AssetProperty: &iotsitewisetypes.Property{
 			Id:       Pointer(assetPropertyIdDiagnosticOne),
-			DataType: Pointer("DOUBLE"),
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
 			Name:     Pointer("Torque"),
 		},
 	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
 		return req.PropertyId != nil && *req.PropertyId == assetPropertyIdDiagnosticTwo
 	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
+		AssetProperty: &iotsitewisetypes.Property{
 			Id:       Pointer(assetPropertyIdDiagnosticTwo),
-			DataType: Pointer("DOUBLE"),
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
 			Name:     Pointer("RPM"),
 		},
 	}, nil)
@@ -212,29 +214,29 @@ func Test_property_value_query_by_asset_id_and_property_id_of_flatten_L4E_anomal
 func Test_property_value_query_by_asset_id_and_property_id_of_struct_type(t *testing.T) {
 	structValue := "{\"timestamp\":\"2021-02-01T19:20:00.000000\",\"prediction\":0,\"prediction_reason\":\"NO_ANOMALY_DETECTED\",\"anomaly_score\":0.2674,\"diagnostics\":[{\"name\":\"3a985085-ea71-4ae6-9395-b65990f58a05\\\\3a985085-ea71-4ae6-9395-b65990f58a05\",\"value\":0.44856},{\"name\":\"44fa33e2-b2db-4724-ba03-48ce28902809\\\\44fa33e2-b2db-4724-ba03-48ce28902809\",\"value\":0.55144}]}"
 
-	mockSw := &mocks.SitewiseClient{}
-	mockSw.On("BatchGetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
-		SuccessEntries: []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{{
-			AssetPropertyValue: &iotsitewise.AssetPropertyValue{
-				Quality: Pointer("GOOD"),
-				Timestamp: &iotsitewise.TimeInNanos{
-					OffsetInNanos: Pointer(int64(0)),
+	mockSw := &mocks.SitewiseAPIClient{}
+	mockSw.On("BatchGetAssetPropertyValue", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
+		SuccessEntries: []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{{
+			AssetPropertyValue: &iotsitewisetypes.AssetPropertyValue{
+				Quality: iotsitewisetypes.QualityGood,
+				Timestamp: &iotsitewisetypes.TimeInNanos{
+					OffsetInNanos: Pointer(int32(0)),
 					TimeInSeconds: Pointer(int64(1612207200)),
 				},
-				Value: &iotsitewise.Variant{
+				Value: &iotsitewisetypes.Variant{
 					StringValue: Pointer(structValue),
 				},
 			},
 			EntryId: Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 		}}}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetId:   Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		CompositeModel: &iotsitewise.CompositeModelProperty{
+		CompositeModel: &iotsitewisetypes.CompositeModelProperty{
 			Name: Pointer("prediction1"),
-			AssetProperty: &iotsitewise.Property{
+			AssetProperty: &iotsitewisetypes.Property{
 				Name:     Pointer("AWS/L4E_ANOMALY_RESULT"),
-				DataType: Pointer("STRUCT"),
+				DataType: iotsitewisetypes.PropertyDataTypeStruct,
 			},
 		},
 	}, nil)
@@ -279,10 +281,10 @@ func Test_property_value_query_by_asset_id_and_property_id_of_struct_type(t *tes
 
 	mockSw.AssertExpectations(t)
 	mockSw.AssertCalled(t,
-		"BatchGetAssetPropertyValueWithContext",
+		"BatchGetAssetPropertyValue",
 		mock.Anything,
 		&iotsitewise.BatchGetAssetPropertyValueInput{
-			Entries: []*iotsitewise.BatchGetAssetPropertyValueEntry{{
+			Entries: []iotsitewisetypes.BatchGetAssetPropertyValueEntry{{
 				EntryId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 				AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 				PropertyId: Pointer("11propid-aaaa-2222-bbbb-3333cccc4444"),
@@ -290,7 +292,7 @@ func Test_property_value_query_by_asset_id_and_property_id_of_struct_type(t *tes
 		},
 	)
 	mockSw.AssertCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		&iotsitewise.DescribeAssetPropertyInput{
 			AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
@@ -300,30 +302,30 @@ func Test_property_value_query_by_asset_id_and_property_id_of_struct_type(t *tes
 }
 
 func Test_property_value_query_by_alias_associated_stream(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+	mockSw := &mocks.SitewiseAPIClient{}
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
 		Alias:      Pointer("/amazon/renton/1/rpm"),
 		AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 		PropertyId: Pointer("11propid-aaaa-2222-bbbb-3333cccc4444"),
 	}, nil)
-	mockSw.On("BatchGetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
-		SuccessEntries: []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{{
-			AssetPropertyValue: &iotsitewise.AssetPropertyValue{
-				Quality: Pointer("GOOD"),
-				Timestamp: &iotsitewise.TimeInNanos{
-					OffsetInNanos: Pointer(int64(0)),
+	mockSw.On("BatchGetAssetPropertyValue", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
+		SuccessEntries: []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{{
+			AssetPropertyValue: &iotsitewisetypes.AssetPropertyValue{
+				Quality: iotsitewisetypes.QualityGood,
+				Timestamp: &iotsitewisetypes.TimeInNanos{
+					OffsetInNanos: Pointer(int32(0)),
 					TimeInSeconds: Pointer(int64(1612207200)),
 				},
-				Value: &iotsitewise.Variant{
+				Value: &iotsitewisetypes.Variant{
 					DoubleValue: Pointer(float64(23.8)),
 				},
 			},
 			EntryId: Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 		}}}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
-			DataType: Pointer("DOUBLE"),
+		AssetProperty: &iotsitewisetypes.Property{
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
 			Name:     Pointer("Wind Speed"),
 			Unit:     Pointer("m/s"),
 		},
@@ -368,22 +370,22 @@ func Test_property_value_query_by_alias_associated_stream(t *testing.T) {
 
 	mockSw.AssertExpectations(t)
 	mockSw.AssertCalled(t,
-		"DescribeTimeSeriesWithContext",
+		"DescribeTimeSeries",
 		mock.Anything,
 		&iotsitewise.DescribeTimeSeriesInput{Alias: Pointer("/amazon/renton/1/rpm")},
 	)
 	mockSw.AssertCalled(t,
-		"BatchGetAssetPropertyValueWithContext",
+		"BatchGetAssetPropertyValue",
 		mock.Anything,
 		&iotsitewise.BatchGetAssetPropertyValueInput{
-			Entries: []*iotsitewise.BatchGetAssetPropertyValueEntry{{
+			Entries: []iotsitewisetypes.BatchGetAssetPropertyValueEntry{{
 				EntryId:       Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 				PropertyAlias: Pointer("/amazon/renton/1/rpm"),
 			}},
 		},
 	)
 	mockSw.AssertCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		&iotsitewise.DescribeAssetPropertyInput{
 			AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
@@ -392,19 +394,19 @@ func Test_property_value_query_by_alias_associated_stream(t *testing.T) {
 	)
 }
 func Test_property_value_query_by_alias_disassociated_stream(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+	mockSw := &mocks.SitewiseAPIClient{}
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
 		Alias: Pointer("/amazon/renton/1/rpm"),
 	}, nil)
-	mockSw.On("BatchGetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
-		SuccessEntries: []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{{
-			AssetPropertyValue: &iotsitewise.AssetPropertyValue{
-				Quality: Pointer("GOOD"),
-				Timestamp: &iotsitewise.TimeInNanos{
-					OffsetInNanos: Pointer(int64(0)),
+	mockSw.On("BatchGetAssetPropertyValue", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
+		SuccessEntries: []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{{
+			AssetPropertyValue: &iotsitewisetypes.AssetPropertyValue{
+				Quality: iotsitewisetypes.QualityGood,
+				Timestamp: &iotsitewisetypes.TimeInNanos{
+					OffsetInNanos: Pointer(int32(0)),
 					TimeInSeconds: Pointer(int64(1612207200)),
 				},
-				Value: &iotsitewise.Variant{
+				Value: &iotsitewisetypes.Variant{
 					DoubleValue: Pointer(float64(23.8)),
 				},
 			},
@@ -450,41 +452,41 @@ func Test_property_value_query_by_alias_disassociated_stream(t *testing.T) {
 
 	mockSw.AssertExpectations(t)
 	mockSw.AssertCalled(t,
-		"DescribeTimeSeriesWithContext",
+		"DescribeTimeSeries",
 		mock.Anything,
 		&iotsitewise.DescribeTimeSeriesInput{Alias: Pointer("/amazon/renton/1/rpm")},
 	)
 	mockSw.AssertCalled(t,
-		"BatchGetAssetPropertyValueWithContext",
+		"BatchGetAssetPropertyValue",
 		mock.Anything,
 		&iotsitewise.BatchGetAssetPropertyValueInput{
-			Entries: []*iotsitewise.BatchGetAssetPropertyValueEntry{{
+			Entries: []iotsitewisetypes.BatchGetAssetPropertyValueEntry{{
 				EntryId:       Pointer("61e4e1a8ab39463fa0b9418d9be2923e364f40a8b935b69d006b999516cdecef"),
 				PropertyAlias: Pointer("/amazon/renton/1/rpm"),
 			}},
 		},
 	)
 	mockSw.AssertNotCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		mock.Anything,
 	)
 }
 func Test_property_value_query_by_alias_disassociated_stream_with_integer_value(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+	mockSw := &mocks.SitewiseAPIClient{}
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
 		Alias: Pointer("/amazon/renton/1/rpm"),
 	}, nil)
-	mockSw.On("BatchGetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
-		SuccessEntries: []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{{
-			AssetPropertyValue: &iotsitewise.AssetPropertyValue{
-				Quality: Pointer("GOOD"),
-				Timestamp: &iotsitewise.TimeInNanos{
-					OffsetInNanos: Pointer(int64(0)),
+	mockSw.On("BatchGetAssetPropertyValue", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
+		SuccessEntries: []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{{
+			AssetPropertyValue: &iotsitewisetypes.AssetPropertyValue{
+				Quality: iotsitewisetypes.QualityGood,
+				Timestamp: &iotsitewisetypes.TimeInNanos{
+					OffsetInNanos: Pointer(int32(0)),
 					TimeInSeconds: Pointer(int64(1612207200)),
 				},
-				Value: &iotsitewise.Variant{
-					IntegerValue: Pointer(int64(23)),
+				Value: &iotsitewisetypes.Variant{
+					IntegerValue: Pointer(int32(23)),
 				},
 			},
 			EntryId: Pointer("61e4e1a8ab39463fa0b9418d9be2923e364f40a8b935b69d006b999516cdecef"),
@@ -529,37 +531,37 @@ func Test_property_value_query_by_alias_disassociated_stream_with_integer_value(
 
 	mockSw.AssertExpectations(t)
 	mockSw.AssertCalled(t,
-		"DescribeTimeSeriesWithContext",
+		"DescribeTimeSeries",
 		mock.Anything,
 		&iotsitewise.DescribeTimeSeriesInput{Alias: Pointer("/amazon/renton/1/rpm")},
 	)
 	mockSw.AssertCalled(t,
-		"BatchGetAssetPropertyValueWithContext",
+		"BatchGetAssetPropertyValue",
 		mock.Anything,
 		&iotsitewise.BatchGetAssetPropertyValueInput{
-			Entries: []*iotsitewise.BatchGetAssetPropertyValueEntry{{
+			Entries: []iotsitewisetypes.BatchGetAssetPropertyValueEntry{{
 				EntryId:       Pointer("61e4e1a8ab39463fa0b9418d9be2923e364f40a8b935b69d006b999516cdecef"),
 				PropertyAlias: Pointer("/amazon/renton/1/rpm"),
 			}},
 		},
 	)
 	mockSw.AssertNotCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		mock.Anything,
 	)
 }
 func Test_property_value_query_with_empty_property_value_results(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
-	mockSw.On("BatchGetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
-		SuccessEntries: []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{{
+	mockSw := &mocks.SitewiseAPIClient{}
+	mockSw.On("BatchGetAssetPropertyValue", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
+		SuccessEntries: []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{{
 			AssetPropertyValue: nil,
 			EntryId:            Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 		}}}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
-			DataType: Pointer("DOUBLE"),
+		AssetProperty: &iotsitewisetypes.Property{
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
 			Name:     Pointer("Wind Speed"),
 			Unit:     Pointer("m/s"),
 		},
@@ -605,10 +607,10 @@ func Test_property_value_query_with_empty_property_value_results(t *testing.T) {
 
 	mockSw.AssertExpectations(t)
 	mockSw.AssertCalled(t,
-		"BatchGetAssetPropertyValueWithContext",
+		"BatchGetAssetPropertyValue",
 		mock.Anything,
 		&iotsitewise.BatchGetAssetPropertyValueInput{
-			Entries: []*iotsitewise.BatchGetAssetPropertyValueEntry{{
+			Entries: []iotsitewisetypes.BatchGetAssetPropertyValueEntry{{
 				EntryId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 				AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
 				PropertyId: Pointer("11propid-aaaa-2222-bbbb-3333cccc4444"),
@@ -616,7 +618,7 @@ func Test_property_value_query_with_empty_property_value_results(t *testing.T) {
 		},
 	)
 	mockSw.AssertCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		&iotsitewise.DescribeAssetPropertyInput{
 			AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
@@ -626,52 +628,52 @@ func Test_property_value_query_with_empty_property_value_results(t *testing.T) {
 }
 
 func Test_property_value_query_with_batched_queries(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
-	mockedSuccessEntriesFirstBatch := []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{}
+	mockSw := &mocks.SitewiseAPIClient{}
+	mockedSuccessEntriesFirstBatch := []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{}
 	for i := 1; i <= api.BatchGetAssetPropertyValueMaxEntries; i++ {
-		mockedSuccessEntriesFirstBatch = append(mockedSuccessEntriesFirstBatch, &iotsitewise.BatchGetAssetPropertyValueSuccessEntry{
-			AssetPropertyValue: &iotsitewise.AssetPropertyValue{
-				Quality: Pointer("GOOD"),
-				Timestamp: &iotsitewise.TimeInNanos{
-					OffsetInNanos: Pointer(int64(0)),
+		mockedSuccessEntriesFirstBatch = append(mockedSuccessEntriesFirstBatch, iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{
+			AssetPropertyValue: &iotsitewisetypes.AssetPropertyValue{
+				Quality: iotsitewisetypes.QualityGood,
+				Timestamp: &iotsitewisetypes.TimeInNanos{
+					OffsetInNanos: Pointer(int32(0)),
 					TimeInSeconds: Pointer(int64(1612207200)),
 				},
-				Value: &iotsitewise.Variant{
+				Value: &iotsitewisetypes.Variant{
 					DoubleValue: Pointer(float64(23.8)),
 				},
 			},
 			EntryId: Pointer(fmt.Sprintf("%dassetid-aaaa-2222-bbbb-3333cccc4444", i)),
 		})
 	}
-	mockSw.On("BatchGetAssetPropertyValueWithContext", mock.Anything, mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyValueInput) bool {
+	mockSw.On("BatchGetAssetPropertyValue", mock.Anything, mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyValueInput) bool {
 		return len(input.Entries) == api.BatchGetAssetPropertyValueMaxEntries
 	})).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
 		NextToken:      Pointer("some-next-token-1"),
 		SuccessEntries: mockedSuccessEntriesFirstBatch,
 	}, nil)
-	mockedSuccessEntriesSecondBatch := []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{{
-		AssetPropertyValue: &iotsitewise.AssetPropertyValue{
-			Quality: Pointer("GOOD"),
-			Timestamp: &iotsitewise.TimeInNanos{
-				OffsetInNanos: Pointer(int64(0)),
+	mockedSuccessEntriesSecondBatch := []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{{
+		AssetPropertyValue: &iotsitewisetypes.AssetPropertyValue{
+			Quality: iotsitewisetypes.QualityGood,
+			Timestamp: &iotsitewisetypes.TimeInNanos{
+				OffsetInNanos: Pointer(int32(0)),
 				TimeInSeconds: Pointer(int64(1612207200)),
 			},
-			Value: &iotsitewise.Variant{
+			Value: &iotsitewisetypes.Variant{
 				DoubleValue: Pointer(float64(23.8)),
 			},
 		},
 		EntryId: Pointer(fmt.Sprintf("%dassetid-aaaa-2222-bbbb-3333cccc4444", api.BatchGetAssetPropertyValueMaxEntries+1)),
 	}}
-	mockSw.On("BatchGetAssetPropertyValueWithContext", mock.Anything, mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyValueInput) bool {
+	mockSw.On("BatchGetAssetPropertyValue", mock.Anything, mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyValueInput) bool {
 		return len(input.Entries) < api.BatchGetAssetPropertyValueMaxEntries
 	})).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
 		NextToken:      Pointer("some-next-token-2"),
 		SuccessEntries: mockedSuccessEntriesSecondBatch,
 	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
-			DataType: Pointer("DOUBLE"),
+		AssetProperty: &iotsitewisetypes.Property{
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
 			Name:     Pointer("Wind Speed"),
 			Unit:     Pointer("m/s"),
 		},

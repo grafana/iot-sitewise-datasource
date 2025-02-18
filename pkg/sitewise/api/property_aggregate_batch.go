@@ -3,13 +3,14 @@ package api
 import (
 	"context"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api/propvals"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
-
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
-	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
@@ -25,32 +26,29 @@ func aggregateBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewi
 		}
 	}
 
-	var (
-		aggregateTypes = aws.StringSlice(query.AggregateTypes)
-		qualities      []*string
-		timeOrdering   = aws.String("ASCENDING")
-	)
+	var ()
 
-	quality := query.Quality
+	qualities := make([]iotsitewisetypes.Quality, 1)
 
-	if quality == "" || quality == "ANY" {
-		qualities = aws.StringSlice([]string{"GOOD"})
+	if query.Quality == "" || query.Quality == "ANY" {
+		qualities[0] = iotsitewisetypes.QualityGood
 	} else {
-		qualities = aws.StringSlice([]string{quality})
+		qualities[0] = query.Quality
 	}
 
 	from, to := util.TimeRangeToUnix(query.TimeRange)
 
+	timeOrdering := iotsitewisetypes.TimeOrderingAscending
 	if query.TimeOrdering != "" {
-		timeOrdering = aws.String(query.TimeOrdering)
+		timeOrdering = query.TimeOrdering
 	}
 
-	entries := make([]*iotsitewise.BatchGetAssetPropertyAggregatesEntry, 0)
+	entries := make([]iotsitewisetypes.BatchGetAssetPropertyAggregatesEntry, 0)
 
 	switch {
 	case query.PropertyAlias != "":
-		entries = append(entries, &iotsitewise.BatchGetAssetPropertyAggregatesEntry{
-			AggregateTypes: aggregateTypes,
+		entries = append(entries, iotsitewisetypes.BatchGetAssetPropertyAggregatesEntry{
+			AggregateTypes: query.AggregateTypes,
 			EndDate:        to,
 			EntryId:        util.GetEntryId(query.BaseQuery),
 			PropertyAlias:  util.GetPropertyAlias(query.BaseQuery),
@@ -65,8 +63,8 @@ func aggregateBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewi
 			if assetId != "" {
 				id = aws.String(assetId)
 			}
-			entries = append(entries, &iotsitewise.BatchGetAssetPropertyAggregatesEntry{
-				AggregateTypes: aggregateTypes,
+			entries = append(entries, iotsitewisetypes.BatchGetAssetPropertyAggregatesEntry{
+				AggregateTypes: query.AggregateTypes,
 				EndDate:        to,
 				EntryId:        id,
 				AssetId:        id,
@@ -82,16 +80,16 @@ func aggregateBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewi
 	return &iotsitewise.BatchGetAssetPropertyAggregatesInput{
 		Entries: entries,
 		// performance: hardcoded to fetch the maximum number of data points
-		MaxResults: aws.Int64(BatchGetAssetPropertyAggregatesMaxResults),
+		MaxResults: aws.Int32(BatchGetAssetPropertyAggregatesMaxResults),
 		NextToken:  getNextToken(query.BaseQuery),
 	}
 }
 
-func BatchGetAssetPropertyAggregates(ctx context.Context, client client.SitewiseClient,
+func BatchGetAssetPropertyAggregates(ctx context.Context, sw client.SitewiseAPIClient,
 	query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.AssetPropertyAggregatesBatch, error) {
 	maxDps := int(query.MaxDataPoints)
 
-	modifiedQuery, err := getAssetIdAndPropertyId(query, client, ctx)
+	modifiedQuery, err := getAssetIdAndPropertyId(query, sw, ctx)
 	if err != nil {
 		return models.AssetPropertyValueQuery{}, nil, err
 	}
@@ -102,7 +100,7 @@ func BatchGetAssetPropertyAggregates(ctx context.Context, client client.Sitewise
 	for _, q := range batchedQueries {
 		awsReq := aggregateBatchQueryToInput(q)
 		requests = append(requests, *awsReq)
-		resp, err := client.BatchGetAssetPropertyAggregatesPageAggregation(ctx, awsReq, modifiedQuery.MaxPageAggregations, maxDps)
+		resp, err := sw.BatchGetAssetPropertyAggregatesPageAggregation(ctx, awsReq, modifiedQuery.MaxPageAggregations, maxDps)
 		if err != nil {
 			return models.AssetPropertyValueQuery{}, nil, err
 		}
