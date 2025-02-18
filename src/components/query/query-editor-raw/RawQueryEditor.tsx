@@ -8,20 +8,15 @@ import { SitewiseCompletionProvider } from 'language/autoComplete';
 type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 
 export function RawQueryEditor(props: Props) {
-  const query = props.query as SitewiseQuery;
   const defaultQuery = 'select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestamp)';
-
-  query.clientCache = false;
+  const { onChange, query } = props;
   query.rawSQL = query.rawSQL || defaultQuery;
-
-  const onChange = (query: SitewiseQuery) => {
-    props.onChange(query);
-  };
 
   return (
     <CodeEditor
-      aria-label="SQL"
       language="sql"
+      showLineNumbers
+      showMiniMap={false}
       monacoOptions={{ automaticLayout: true, minimap: { enabled: false } }}
       value={query.rawSQL}
       onSave={(text) => onChange({ ...query, rawSQL: text })}
@@ -32,7 +27,7 @@ export function RawQueryEditor(props: Props) {
           monaco.languages.registerCompletionItemProvider('sql', SitewiseCompletionProvider);
         }
       }}
-      height={'45vh'}
+      height={'200px'}
     />
   );
 }

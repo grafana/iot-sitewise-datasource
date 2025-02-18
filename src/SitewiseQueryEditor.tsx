@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ConfirmModal, InlineField, Select, Space } from '@grafana/ui';
+import React from 'react';
+import { InlineField, Select, Space } from '@grafana/ui';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { QueryEditorHeader } from '@grafana/aws-sdk';
 import { EditorRows, QueryEditorMode, QueryEditorModeToggle } from '@grafana/plugin-ui';
@@ -28,21 +28,8 @@ export function SitewiseQueryEditor(props: Props) {
     onChange({ ...query, region: sel.value });
   };
 
-  const [parseModalOpen, setParseModalOpen] = useState(false);
-
   return (
     <>
-      <ConfirmModal
-        isOpen={parseModalOpen}
-        title="Query parsing"
-        body="There were errors while trying to parse the query. Continuing to visual builder may lose some parts of the query."
-        confirmText="Continue"
-        onConfirm={() => {
-          onChange({ ...query, editorMode: QueryEditorMode.Builder });
-          setParseModalOpen(false);
-        }}
-        onDismiss={() => setParseModalOpen(false)}
-      />
       <QueryEditorHeader<DataSource, SitewiseQuery, SitewiseOptions>
         {...props}
         enableRunButton
