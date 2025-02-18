@@ -91,7 +91,13 @@ func SetValue(col *iotsitewise.ColumnInfo, scalarValue string, field *data.Field
 
 	// Override event_timestamp columns to be time values
 	if *col.Name == "event_timestamp" {
-		value = time.Unix(0, value.(int64))
+		intValue := value.(int64)
+		// Detect if value is in seconds or nanoseconds
+		if intValue < 10000000000 {
+			intValue = intValue * 1000000000
+		}
+		value = time.Unix(0, intValue)
+		backend.Logger.Debug("Timestamp Value", "value", value)
 	}
 
 	if value != nil {
