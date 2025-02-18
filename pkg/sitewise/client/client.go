@@ -34,6 +34,10 @@ type ListAssetPropertiesClient interface {
 	ListAssetPropertiesWithContext(aws.Context, *iotsitewise.ListAssetPropertiesInput, ...request.Option) (*iotsitewise.ListAssetPropertiesOutput, error)
 }
 
+type ExecuteQueryClient interface {
+	ExecuteQueryWithContext(aws.Context, *iotsitewise.ExecuteQueryInput, ...request.Option) (*iotsitewise.ExecuteQueryOutput, error)
+}
+
 type sitewiseClient struct {
 	iotsitewiseiface.IoTSiteWiseAPI
 }

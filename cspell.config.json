@@ -79,6 +79,12 @@
     "golangci",
     "subresource",
     "seccomp",
-    "PTRACE"
+    "PTRACE",
+    "sqlutil",
+    "stdev",
+    "sqlds",
+    "errorsource",
+    "viant",
+    "unmarshalling"
   ]
 }
