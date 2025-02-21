@@ -40,7 +40,7 @@ You can run [IoT SiteWise query language](https://docs.aws.amazon.com/iot-sitewi
 The query editor supports the following macros:
 
 * $__selectAll - Shortcut to select available fields in the current table: `select $__selectAll from raw_time_series`
-* $__rawTimeFrom - Lower limit of the time range as a timestamp: `select $__selectAll from raw_time_series where event_timestamp > $__rawTimeFrom`
+* $__rawTimeFrom - Lower limit of the time range as a timestamp: `select $__selectAll from latest_value_time_series where event_timestamp > $__rawTimeFrom`
 * $__rawTimeTo - Upper limit of the time range as a timestamp: `select $__selectAll from raw_time_series where event_timestamp <= $__rawTimeTo`
 * $__unixEpochFilter(column) - Filter the specified field according to the time range: `select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestamp)`
 * $__resolution - Shortcut to the applicable aggregate resolution based on the panel interval: `select $__selectAll from precomputed_aggregates where $__unixEpochFilter(event_timestamp) and resolution = '$__resolution'`
