@@ -1,5 +1,6 @@
 import React from 'react';
-import { InlineField, Select, Space } from '@grafana/ui';
+import { Space } from '@grafana/ui';
+import { InlineSelect } from '@grafana/plugin-ui';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { QueryEditorHeader } from '@grafana/aws-sdk';
 import { EditorRows, QueryEditorMode, QueryEditorModeToggle } from '@grafana/plugin-ui';
@@ -36,19 +37,18 @@ export function SitewiseQueryEditor(props: Props) {
         extraHeaderElementRight={<QueryEditorModeToggle mode={editorMode!} onChange={onEditorModeChange} />}
         extraHeaderElementLeft={
           editorMode == QueryEditorMode.Code ? (
-            <InlineField label="AWS Region">
-              <Select
-                options={standardRegionOptions}
-                value={
-                  standardRegionOptions.find((v) => v.value === query.region) || props.datasource.options.defaultRegion
-                }
-                onChange={onRegionChange}
-                backspaceRemovesValue
-                allowCustomValue
-                isClearable
-                menuPlacement="auto"
-              />
-            </InlineField>
+            <InlineSelect
+              label="AWS Region"
+              options={standardRegionOptions}
+              value={
+                standardRegionOptions.find((v) => v.value === query.region) || props.datasource.options.defaultRegion
+              }
+              onChange={onRegionChange}
+              backspaceRemovesValue
+              allowCustomValue
+              isClearable
+              menuPlacement="auto"
+            />
           ) : undefined
         }
       />
