@@ -6,6 +6,7 @@ import {
   DataFrame,
   MetricFindValue,
   LoadingState,
+  CoreApp,
 } from '@grafana/data';
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 
@@ -47,6 +48,13 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
 
   // This will support annotation queries for 7.2+
   annotations = {};
+
+  getDefaultQuery(_: CoreApp): Partial<SitewiseQuery> {
+    return {
+      region: this.options.defaultRegion || '',
+      rawSQL: 'select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestamp)',
+    };
+  }
 
   async metricFindQuery(query: SitewiseQuery, options: any): Promise<MetricFindValue[]> {
     const request = {
@@ -99,6 +107,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
     }
     return true; // keep the query
   }
+
   // returns string that will be shown in the panel header when the panel is collapsed
   getQueryDisplayText(query: SitewiseQuery): string {
     const cache = this.getCache(query.region);

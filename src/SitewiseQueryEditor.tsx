@@ -59,17 +59,12 @@ export function SitewiseQueryEditor(props: Props) {
             {...props}
             datasource={props.datasource}
             query={query}
-            onChange={(value) => onChange(value)}
-            onRunQuery={() => onRunQuery()}
+            onChange={onChange}
+            onRunQuery={onRunQuery}
           />
         )}
         {editorMode === QueryEditorMode.Builder && (
-          <VisualQueryBuilder
-            datasource={props.datasource}
-            query={query}
-            onChange={(value) => onChange(value)}
-            onRunQuery={() => onRunQuery()}
-          />
+          <VisualQueryBuilder datasource={props.datasource} query={query} onChange={onChange} onRunQuery={onRunQuery} />
         )}
       </EditorRows>
     </>
