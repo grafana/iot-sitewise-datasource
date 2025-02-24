@@ -10,13 +10,14 @@ import {
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 
 import { SitewiseCache } from 'sitewiseCache';
-import { SitewiseQuery, SitewiseOptions, isPropertyQueryType } from './types';
+import { SitewiseQuery, SitewiseOptions, isPropertyQueryType, isListAssetModelsQuery } from './types';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { frameToMetricFindValues } from 'utils';
 import { SitewiseVariableSupport } from 'variables';
 import { SitewiseQueryPaginator } from 'SiteWiseQueryPaginator';
 import { RelativeRangeCache } from 'RelativeRangeRequestCache/RelativeRangeCache';
+import { SitewiseQueriesUnion } from 'RelativeRangeRequestCache/types';
 
 export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
@@ -127,9 +128,9 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   /**
    * Supports template variables for region, asset and property
    */
-  applyTemplateVariables(query: SitewiseQuery, scopedVars: ScopedVars): SitewiseQuery {
+  applyTemplateVariables(query: SitewiseQueriesUnion, scopedVars: ScopedVars): SitewiseQuery {
     const templateSrv = getTemplateSrv();
-    return {
+    const interpolatedQuery = {
       ...query,
       propertyAlias: templateSrv.replace(query.propertyAlias, scopedVars),
       region: templateSrv.replace(query.region || '', scopedVars),
@@ -137,6 +138,10 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       assetId: templateSrv.replace(query.assetId || '', scopedVars),
       assetIds: query.assetIds?.flatMap((assetId) => templateSrv.replace(assetId, scopedVars, 'csv').split(',')) ?? [],
     };
+    if (isListAssetModelsQuery(interpolatedQuery)) {
+      interpolatedQuery.modelId = templateSrv.replace(interpolatedQuery.modelId || '', scopedVars);
+    }
+    return interpolatedQuery;
   }
 
   runQuery(query: SitewiseQuery, maxDataPoints?: number): Observable<DataQueryResponse> {

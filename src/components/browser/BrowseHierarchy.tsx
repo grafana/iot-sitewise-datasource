@@ -157,7 +157,7 @@ export class BrowseHierarchy extends Component<Props, State> {
             isSearchable={true}
             onCreateOption={this.onSetAssetId}
             formatCreateLabel={(txt) => `Asset ID: ${txt}`}
-            menuPlacement="bottom"
+            menuPlacement="auto"
           />
         )}
         <br />
