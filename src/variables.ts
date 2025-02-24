@@ -1,7 +1,7 @@
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { assign } from 'lodash';
-import { QueryType, SitewiseQuery } from './types';
+import { ListAssetsQuery, QueryType, SitewiseQuery } from './types';
 import { DataSource } from './SitewiseDataSource';
 import { DataQueryRequest, DataQueryResponse, CustomVariableSupport, DataFrameView } from '@grafana/data';
 import { VisualQueryBuilder } from './components/query/visual-query-builder/VisualQueryBuilder';
@@ -61,10 +61,14 @@ export class SitewiseVariableSupport extends CustomVariableSupport<DataSource, S
       case QueryType.PropertyInterpolated:
       case QueryType.PropertyAggregate:
         return Boolean((query.assetIds?.length || query.assetId) && query.propertyId);
-      case QueryType.ListAssetModels:
       case QueryType.ListAssets:
+        const listAssetsQuery = query as ListAssetsQuery;
+        return Boolean(
+          (listAssetsQuery.filter === 'ALL' && listAssetsQuery.modelId) || listAssetsQuery.filter === 'TOP_LEVEL'
+        );
       case QueryType.ListAssociatedAssets:
         return Boolean(query.assetIds?.length);
+      case QueryType.ListAssetModels:
       case QueryType.ListTimeSeries:
       case QueryType.DescribeAsset:
       case QueryType.ListAssetProperties:
