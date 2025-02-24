@@ -39,6 +39,7 @@ export enum SiteWiseResolution {
   TenSec = '10s',
   Min = '1m',
   TenMin = '10m',
+  FifteenMin = '15m',
   Hour = '1h',
   TenHour = '10h',
   Day = '1d',

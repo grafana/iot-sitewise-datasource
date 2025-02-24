@@ -1,6 +1,6 @@
 import { DataSource } from './SitewiseDataSource';
 import { DataSourceInstanceSettings, PluginMeta, ScopedVar, ScopedVars } from '@grafana/data';
-import { QueryType, SitewiseOptions, SitewiseQuery } from './types';
+import { QueryType, SitewiseOptions, SitewiseQuery, SiteWiseResolution } from './types';
 
 const testInstanceSettings = (
   overrides?: Partial<DataSourceInstanceSettings<SitewiseOptions>>
@@ -31,6 +31,7 @@ jest.mock('@grafana/runtime', () => ({
       replace(str: string, scopedVars?: ScopedVars, format?: string | Function) {
         return str.replace(variableRegex, (match, var1, var2, fmt2, var3, fieldPath, fmt3) => {
           const variableName = var1 || var2 || var3;
+
           let varMatch: ScopedVar | undefined;
           if (!!scopedVars) {
             varMatch = scopedVars[variableName];
@@ -48,6 +49,29 @@ jest.mock('@grafana/runtime', () => ({
 
 describe('Sitewise Datasource', () => {
   describe('Variable support', () => {
+    it('should correctly replace resolution in the query if variable is a constant', async () => {
+      const datasource = new DataSource(testInstanceSettings());
+      const query: SitewiseQuery = {
+        refId: 'RefA',
+        queryType: QueryType.PropertyAggregate,
+        assetId: '',
+        assetIds: [],
+        propertyAlias: '',
+        resolution: '${resolution}' as SiteWiseResolution,
+        region: 'default',
+        propertyId: '',
+      };
+
+      expect(
+        datasource.applyTemplateVariables(query, {
+          resolution: { text: '15m', value: '15m' },
+        })
+      ).toEqual({
+        ...query,
+        resolution: '15m',
+      });
+    });
+
     it('should correctly replace assetIds in the query if variable is a constant', async () => {
       const datasource = new DataSource(testInstanceSettings());
       const query: SitewiseQuery = {
@@ -59,11 +83,13 @@ describe('Sitewise Datasource', () => {
         region: 'default',
         propertyId: '',
       };
+
       expect(datasource.applyTemplateVariables(query, {} as ScopedVars)).toEqual({
         ...query,
         assetIds: ['valueConstant'],
       });
     });
+
     it('should correctly replace assetIds in the query if variable is an array of values', async () => {
       const datasource = new DataSource(testInstanceSettings());
       const query: SitewiseQuery = {
@@ -75,11 +101,13 @@ describe('Sitewise Datasource', () => {
         region: 'default',
         propertyId: '',
       };
+
       expect(datasource.applyTemplateVariables(query, {} as ScopedVars)).toEqual({
         ...query,
         assetIds: ['array1', 'array2', 'array3'],
       });
     });
+
     it('should correctly replace assetIds in the query if variable is a mix of string constant and array values', async () => {
       const datasource = new DataSource(testInstanceSettings());
       const query: SitewiseQuery = {
@@ -91,11 +119,13 @@ describe('Sitewise Datasource', () => {
         region: 'default',
         propertyId: '',
       };
+
       expect(datasource.applyTemplateVariables(query, {} as ScopedVars)).toEqual({
         ...query,
         assetIds: ['valueConstant', 'array1', 'array2', 'array3'],
       });
     });
+
     it('should correctly prioritize scopedVars over globalVars', async () => {
       const datasource = new DataSource(testInstanceSettings());
       const query: SitewiseQuery = {
@@ -107,6 +137,7 @@ describe('Sitewise Datasource', () => {
         region: 'default',
         propertyId: '',
       };
+
       expect(
         datasource.applyTemplateVariables(query, {
           assetIdConstant: { text: 'scopedValueConstant', value: 'scopedValueConstant' },
@@ -116,6 +147,7 @@ describe('Sitewise Datasource', () => {
         assetIds: ['scopedValueConstant'],
       });
     });
+
     it('should correctly prioritize scopedVars over globalVars and handle a mix of array and non array vars', async () => {
       const datasource = new DataSource(testInstanceSettings());
       const query: SitewiseQuery = {
@@ -127,6 +159,7 @@ describe('Sitewise Datasource', () => {
         region: 'default',
         propertyId: '',
       };
+
       expect(
         datasource.applyTemplateVariables(query, {
           assetIdConstant: { text: 'scopedValueConstant', value: 'scopedValueConstant' },
