@@ -1,13 +1,12 @@
 import React, { PureComponent } from 'react';
-import { DataFrameView, SelectableValue } from '@grafana/data';
+import { SelectableValue } from '@grafana/data';
 import { ListAssetsQuery } from 'types';
 import { Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
-import { AssetModelSummary } from 'queryResponseTypes';
 import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
 
 interface State {
-  models?: DataFrameView<AssetModelSummary>;
+  models?: SelectableValue<string>[];
 }
 
 const filters = [
@@ -25,7 +24,7 @@ export class ListAssetsQueryEditor extends PureComponent<SitewiseQueryEditorProp
   async componentDidMount() {
     const { query } = this.props;
     const cache = this.props.datasource.getCache(query.region);
-    const models = await cache.getModels();
+    const models = await cache.getModelsOptions();
     this.setState({ models });
   }
 
@@ -42,14 +41,8 @@ export class ListAssetsQueryEditor extends PureComponent<SitewiseQueryEditorProp
   render() {
     const { query } = this.props;
     const { models } = this.state;
-    const modelIds = models
-      ? models.map((m) => ({
-          value: m.id,
-          label: m.name,
-          description: m.description,
-        }))
-      : [];
-    let currentModel = modelIds.find((m) => m.value === query.modelId);
+
+    let currentModel = models?.find((m) => m.value === query.modelId);
     if (query.modelId && !currentModel) {
       currentModel = {
         value: query.modelId,
@@ -66,7 +59,7 @@ export class ListAssetsQueryEditor extends PureComponent<SitewiseQueryEditorProp
               id="model"
               aria-label="Model ID"
               isLoading={!models}
-              options={modelIds}
+              options={models}
               value={currentModel}
               onChange={this.onAssetModelIdChange}
               placeholder="Select an asset model id"
