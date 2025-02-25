@@ -232,6 +232,7 @@ export function frameToAssetInfo(res: DescribeAssetResult): AssetInfo {
   } catch (e) {
     console.log(res.properties, res.hierarchies);
     console.error('Error parsing JSON:', e);
+    throw 'Could not parse returned JSON';
   }
 
   for (const p of properties) {

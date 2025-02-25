@@ -44,10 +44,7 @@ func (a QueryResults) Frames(_ context.Context, _ resource.ResourceProvider) (da
 	frame := data.NewFrame("", f...)
 
 	frame.Meta = &data.FrameMeta{
-		Custom: models.SitewiseCustomMeta{
-			// Not adding the NextToken, since it leads to streaming
-			// NextToken: aws.StringValue(a.NextToken),
-		},
+		Custom: models.SitewiseCustomMeta{},
 	}
 
 	return data.Frames{frame}, nil
