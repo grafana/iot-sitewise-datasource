@@ -10,7 +10,7 @@ import {
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 
 import { SitewiseCache } from 'sitewiseCache';
-import { SitewiseQuery, SitewiseOptions, isPropertyQueryType, SiteWiseResolution } from './types';
+import { SitewiseQuery, SitewiseOptions, isPropertyQueryType, SiteWiseResolution, isListAssetsQuery } from './types';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { frameToMetricFindValues } from 'utils';
@@ -129,7 +129,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
    */
   applyTemplateVariables(query: SitewiseQuery, scopedVars: ScopedVars): SitewiseQuery {
     const templateSrv = getTemplateSrv();
-    return {
+    const interpolatedQuery = {
       ...query,
       propertyAlias: templateSrv.replace(query.propertyAlias, scopedVars),
       region: templateSrv.replace(query.region || '', scopedVars),
@@ -140,6 +140,10 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
         ? (templateSrv.replace(query.resolution, scopedVars) as SiteWiseResolution)
         : undefined,
     };
+    if (isListAssetsQuery(interpolatedQuery)) {
+      interpolatedQuery.modelId = templateSrv.replace(interpolatedQuery.modelId, scopedVars);
+    }
+    return interpolatedQuery;
   }
 
   runQuery(query: SitewiseQuery, maxDataPoints?: number): Observable<DataQueryResponse> {

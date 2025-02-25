@@ -15,7 +15,10 @@ export class SitewiseCache {
   private topLevelAssets?: DataFrameView<AssetSummary>;
   private assetPropertiesByAssetId = new Map<string, DataFrameView<{ id: string; name: string }>>();
 
-  constructor(private ds: DataSource, private region: string) {}
+  constructor(
+    private ds: DataSource,
+    private region: string
+  ) {}
 
   async getAssetInfo(id: string): Promise<AssetInfo | undefined> {
     const v = this.assetsById.get(id);
@@ -113,6 +116,23 @@ export class SitewiseCache {
       .toPromise();
   }
 
+  async getModelsOptions(): Promise<Array<SelectableValue<string>> | undefined> {
+    const options = getTemplateVariableOptions();
+
+    const models = await this.getModels();
+    if (!models) {
+      return;
+    }
+
+    return options.concat(
+      models.toArray().map((model) => ({
+        label: model.name,
+        value: model.id,
+        description: model.description,
+      }))
+    );
+  }
+
   // No cache for now
   async getAssetsOfType(modelId: string): Promise<DataFrameView<AssetSummary> | undefined> {
     const query: ListAssetsQuery = {
@@ -184,13 +204,7 @@ export class SitewiseCache {
   }
 
   async getAssetPickerOptions(): Promise<Array<SelectableValue<string>>> {
-    const options: Array<SelectableValue<string>> = getTemplateSrv()
-      .getVariables()
-      .map((variable) => ({
-        label: '${' + (variable.label ?? variable.name) + '}',
-        value: '${' + variable.name + '}',
-        icon: 'arrow-right',
-      }));
+    const options = getTemplateVariableOptions();
     try {
       const topLevel = (await this.getTopLevelAssets()) || [];
       for (const asset of topLevel) {
@@ -204,14 +218,6 @@ export class SitewiseCache {
       console.log('Error reading top level assets', err);
     }
 
-    // Also add recent values
-    //for (const asset of this.assetsById.values()) {
-    //  options.push({
-    //    label: asset.name,
-    //    value: asset.id,
-    //    description: asset.arn,
-    //  });
-    //}
     return options;
   }
 }
@@ -282,3 +288,13 @@ export function assetSummaryToAssetInfo(res?: DataFrameView<AssetSummary>): Asse
 
   return results;
 }
+
+const getTemplateVariableOptions = (): Array<SelectableValue<string>> => {
+  return getTemplateSrv()
+    .getVariables()
+    .map((variable) => ({
+      label: '${' + (variable.label ?? variable.name) + '}',
+      value: '${' + variable.name + '}',
+      icon: 'arrow-right',
+    }));
+};
