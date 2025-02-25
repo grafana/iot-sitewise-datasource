@@ -85,6 +85,9 @@
     "sqlds",
     "errorsource",
     "viant",
-    "unmarshalling"
+    "unmarshalling",
+    "resourcegroupstaggingapi",
+    "resourcegroupstaggingapiiface",
+    "ResourceGroupsTaggingAPIAPI"
   ]
 }
