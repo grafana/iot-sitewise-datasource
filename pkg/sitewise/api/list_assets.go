@@ -11,7 +11,8 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
 
-func ListAssets(ctx context.Context, client client.SitewiseClient, query models.ListAssetsQuery) (*framer.Assets, error) {
+func ListAssets(ctx context.Context, client client.SitewiseClient, query models.ListAssetsQuery, taggingApiClient client.TaggingApiClient, includedTagPatterns []map[string][]string) (*framer.Assets, error) {
+	// func ListAssets(ctx context.Context, client client.SitewiseClient, query models.ListAssetsQuery, taggingApiClient client.TaggingApiClient) (*framer.Assets, error) {
 
 	var (
 		filter       *string
@@ -37,13 +38,29 @@ func ListAssets(ctx context.Context, client client.SitewiseClient, query models.
 		MaxResults:   aws.Int64(250),
 		NextToken:    getNextToken(query.BaseQuery),
 	})
-
 	if err != nil {
 		return nil, err
 	}
 
+	assetSummaries := resp.AssetSummaries
+
+	// get assets arns
+	assetArns := make([]*string, 0, len(assetSummaries))
+	for _, asset := range assetSummaries {
+		assetArns = append(assetArns, asset.Arn)
+	}
+
+	// get resources with taggingApiClient
+	resources, err := taggingApiClient.GetResourcesPage(ctx, assetArns)
+	if err != nil {
+		return nil, err
+	}
+
+	allowArns := FilterResourcesByTags(resources, includedTagPatterns)
+	allowAssets := FilterAssetSummariesByArns(assetSummaries, allowArns)
+
 	return &framer.Assets{
-		AssetSummaries: resp.AssetSummaries,
+		AssetSummaries: allowAssets,
 		NextToken:      resp.NextToken,
 	}, nil
 }

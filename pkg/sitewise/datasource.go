@@ -26,6 +26,9 @@ type invokerFunc func(ctx context.Context, sw client.SitewiseClient) (framer.Fra
 
 type Datasource struct {
 	GetClient clientGetterFunc
+	// Refactor to work with region like clientGetterFunc
+	RGTaggingClient     client.TaggingApiClient
+	IncludedTagPatterns []map[string][]string
 }
 
 func NewDatasource(ctx context.Context, settings backend.DataSourceInstanceSettings) (*Datasource, error) {
@@ -83,8 +86,16 @@ func NewDatasource(ctx context.Context, settings backend.DataSourceInstanceSetti
 		}
 	}
 
+	// Construct a ResourceGroupsTaggingAPI client
+	rgTaggingClient, err := client.GetTaggingApiClient(cfg.Region, cfg, sessions.GetSessionWithAuthSettings, authSettings)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Datasource{
-		GetClient: clientGetter,
+		GetClient:           clientGetter,
+		RGTaggingClient:     rgTaggingClient,
+		IncludedTagPatterns: cfg.IncludedTagPatterns,
 	}, nil
 }
 
@@ -200,13 +211,15 @@ func (ds *Datasource) HandleListAssetModelsQuery(ctx context.Context, req *backe
 
 func (ds *Datasource) HandleListAssociatedAssetsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssociatedAssetsQuery) (data.Frames, error) {
 	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
-		return api.ListAssociatedAssets(ctx, sw, *query)
+		return api.ListAssociatedAssets(ctx, sw, *query, ds.RGTaggingClient, ds.IncludedTagPatterns)
+		// return api.ListAssociatedAssets(ctx, sw, *query, ds.RGTaggingClient)
 	})
 }
 
 func (ds *Datasource) HandleListAssetsQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.ListAssetsQuery) (data.Frames, error) {
 	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
-		return api.ListAssets(ctx, sw, *query)
+		return api.ListAssets(ctx, sw, *query, ds.RGTaggingClient, ds.IncludedTagPatterns)
+		// return api.ListAssets(ctx, sw, *query, ds.RGTaggingClient)
 	})
 }
 

@@ -255,6 +255,7 @@ export interface SitewiseOptions extends AwsAuthDataSourceJsonData {
   // nothing for now
   edgeAuthMode?: string;
   edgeAuthUser?: string;
+  includedTagPatterns?: string;
 }
 
 export interface SitewiseSecureJsonData extends AwsAuthDataSourceSecureJsonData {

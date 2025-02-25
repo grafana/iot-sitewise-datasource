@@ -32,6 +32,7 @@ export function ConfigEditor(props: Props) {
   return (
     <div className="width-30">
       <ConnectionConfig {...props} standardRegions={standardRegions} />{' '}
+      <IncludedTagConfig {...props} />
     </div>
   );
 }
@@ -179,5 +180,33 @@ function EdgeConfig(props: Props) {
         </Field>
       </ConfigSection>
     </div>
+  );
+}
+
+function IncludedTagConfig(props: Props) {
+  const { options } = props;
+  const includedTagPatterns = options.jsonData?.includedTagPatterns;
+  const includedTagPatternsStr = includedTagPatterns;
+
+  return (
+    <ConfigSection title="Included Tags" data-testid="included-tags-settings">
+      <Field
+        label="Included Tag Patterns"
+        description="Resources with matching tag patterns are included."
+        htmlFor="included-tag-patterns"
+      >
+        <textarea
+          id="included-tag-patterns"
+          rows={10}
+          className="gf-form-input gf-form-textarea width-30"
+          onChange={(event) => {
+            updateDatasourcePluginJsonDataOption(props, 'includedTagPatterns', event.target.value);
+          }}
+          placeholder='Structure: Record<string, string[]>; E.g. [{"tagKey1", ["tagValue1", "tagValue2", ...]}, ...]{'
+          required
+          value={includedTagPatternsStr}
+        />
+      </Field>
+    </ConfigSection>
   );
 }
