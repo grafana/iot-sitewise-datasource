@@ -15,7 +15,7 @@ export function RawQueryEditor(props: Props) {
       language="sql"
       showLineNumbers
       showMiniMap={false}
-      value={query.rawSQL || ''}
+      value={query.rawSQL || props.datasource.defaultQuery}
       onSave={(text) => onChange({ ...query, rawSQL: text })}
       onBlur={(text) => onChange({ ...query, rawSQL: text })}
       onBeforeEditorMount={(monaco) => {
