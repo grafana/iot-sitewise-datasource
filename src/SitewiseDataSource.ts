@@ -22,12 +22,14 @@ import { RelativeRangeCache } from 'RelativeRangeRequestCache/RelativeRangeCache
 export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
   readonly options: SitewiseOptions;
+  readonly defaultQuery: string;
   private cache = new Map<string, SitewiseCache>();
   private relativeRangeCache = new RelativeRangeCache();
 
   constructor(instanceSettings: DataSourceInstanceSettings<SitewiseOptions>) {
     super(instanceSettings);
     this.options = instanceSettings.jsonData;
+    this.defaultQuery = 'select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestamp)';
     this.variables = new SitewiseVariableSupport(this);
   }
 
@@ -52,7 +54,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   getDefaultQuery(_: CoreApp): Partial<SitewiseQuery> {
     return {
       region: this.options.defaultRegion || '',
-      rawSQL: 'select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestamp)',
+      rawSQL: this.defaultQuery,
     };
   }
 
