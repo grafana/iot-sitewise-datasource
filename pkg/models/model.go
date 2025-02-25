@@ -26,7 +26,7 @@ func GetListAssetModelsQuery(dq *backend.DataQuery) (*ListAssetModelsQuery, erro
 	query.MigrateAssetId()
 
 	// add on the DataQuery params
-	query.MaxDataPoints = dq.MaxDataPoints
+	query.MaxDataPoints = int32(dq.MaxDataPoints)
 	query.QueryType = dq.QueryType
 
 	return query, nil

@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 
-	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
@@ -32,7 +32,7 @@ func GetPropertyAlias(query models.BaseQuery) *string {
 func GetEntryId(query models.BaseQuery) *string {
 	// if stream is unassociated, use the hashed property alias as the entry id
 	if query.PropertyAlias != "" && len(query.AssetIds) == 0 && query.PropertyId == "" {
-		// API constraint: EntryId cannot be more than 64 characters long, so we're encoding it 
+		// API constraint: EntryId cannot be more than 64 characters long, so we're encoding it
 		return aws.String(EncodeEntryId(query.PropertyAlias))
 	}
 	return GetAssetId(query)

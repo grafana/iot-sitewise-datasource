@@ -3,8 +3,10 @@ package api
 import (
 	"context"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api/propvals"
@@ -38,7 +40,7 @@ func interpolatedQueryToInputs(query models.AssetPropertyValueQuery) []*iotsitew
 
 	quality := query.Quality
 	if quality == "" || quality == "ANY" {
-		quality = "GOOD"
+		quality = types.QualityGood
 	}
 
 	interpolationType := LINEAR_INTERPOLATION
@@ -71,12 +73,12 @@ func interpolatedQueryToInputs(query models.AssetPropertyValueQuery) []*iotsitew
 			StartTimeInSeconds: &startTimeInSeconds,
 			EndTimeInSeconds:   &endTimeInSeconds,
 			IntervalInSeconds:  aws.Int64(intervalInSeconds),
-			MaxResults:         aws.Int64(10),
+			MaxResults:         aws.Int32(10),
 			NextToken:          nextToken,
 			AssetId:            util.GetAssetId(query.BaseQuery),
 			PropertyId:         util.GetPropertyId(query.BaseQuery),
 			PropertyAlias:      util.GetPropertyAlias(query.BaseQuery),
-			Quality:            &quality,
+			Quality:            quality,
 			Type:               &interpolationType,
 		}
 		return awsReqs
@@ -91,12 +93,12 @@ func interpolatedQueryToInputs(query models.AssetPropertyValueQuery) []*iotsitew
 				StartTimeInSeconds: &startTimeInSeconds,
 				EndTimeInSeconds:   &endTimeInSeconds,
 				IntervalInSeconds:  aws.Int64(intervalInSeconds),
-				MaxResults:         aws.Int64(10),
+				MaxResults:         aws.Int32(10),
 				NextToken:          nextToken,
 				AssetId:            aws.String(assetId),
 				PropertyId:         util.GetPropertyId(query.BaseQuery),
 				PropertyAlias:      util.GetPropertyAlias(query.BaseQuery),
-				Quality:            &quality,
+				Quality:            quality,
 				Type:               &interpolationType,
 			}
 		}
@@ -105,7 +107,7 @@ func interpolatedQueryToInputs(query models.AssetPropertyValueQuery) []*iotsitew
 	return awsReqs
 }
 
-func GetInterpolatedAssetPropertyValues(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (*framer.InterpolatedAssetPropertyValue, error) {
+func GetInterpolatedAssetPropertyValues(ctx context.Context, sw client.SitewiseAPIClient, query models.AssetPropertyValueQuery) (*framer.InterpolatedAssetPropertyValue, error) {
 	maxDps := int(query.MaxDataPoints)
 	awsReqs := interpolatedQueryToInputs(query)
 
@@ -114,7 +116,7 @@ func GetInterpolatedAssetPropertyValues(ctx context.Context, client client.Sitew
 	for _, req := range awsReqs {
 		awsReq := req
 		eg.Go(func() error {
-			resp, err := client.GetInterpolatedAssetPropertyValuesPageAggregation(ectx, awsReq, query.MaxPageAggregations, maxDps)
+			resp, err := sw.GetInterpolatedAssetPropertyValuesPageAggregation(ectx, awsReq, query.MaxPageAggregations, maxDps)
 			if err != nil {
 				return err
 			}
