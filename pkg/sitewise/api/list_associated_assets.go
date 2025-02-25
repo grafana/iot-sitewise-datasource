@@ -12,7 +12,8 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
-func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, query models.ListAssociatedAssetsQuery) (*framer.AssociatedAssets, error) {
+func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, query models.ListAssociatedAssetsQuery, taggingApiClient client.TaggingApiClient, includedTagPatterns []map[string][]string) (*framer.AssociatedAssets, error) {
+	// func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, query models.ListAssociatedAssetsQuery, taggingApiClient client.TaggingApiClient) (*framer.AssociatedAssets, error) {
 
 	var (
 		hierarchyId        *string
@@ -81,8 +82,25 @@ func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, que
 			return nil, err
 		}
 
+		assetSummaries := resp.AssetSummaries
+
+		// get assets arns
+		assetArns := make([]*string, 0, len(assetSummaries))
+		for _, asset := range assetSummaries {
+			assetArns = append(assetArns, asset.Arn)
+		}
+
+		// get resources with taggingApiClient
+		resources, err := taggingApiClient.GetResourcesPage(ctx, assetArns)
+		if err != nil {
+			return nil, err
+		}
+
+		allowArns := FilterResourcesByTags(resources, includedTagPatterns)
+		allowAssets := FilterAssociatedAssetSummariesByArns(assetSummaries, allowArns)
+
 		return &framer.AssociatedAssets{
-			AssetSummaries: resp.AssetSummaries,
+			AssetSummaries: allowAssets,
 			NextToken:      resp.NextToken,
 		}, nil
 	}

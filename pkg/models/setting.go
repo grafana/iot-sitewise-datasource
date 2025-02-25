@@ -6,6 +6,7 @@ import (
 
 	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 )
 
 const EDGE_REGION string = "Edge"
@@ -15,10 +16,12 @@ const EDGE_AUTH_MODE_LINUX string = "linux"
 
 type AWSSiteWiseDataSourceSetting struct {
 	awsds.AWSDatasourceSettings
-	Cert         string `json:"-"`
-	EdgeAuthMode string `json:"edgeAuthMode"`
-	EdgeAuthUser string `json:"edgeAuthUser"`
-	EdgeAuthPass string `json:"-"`
+	Cert                   string                `json:"-"`
+	EdgeAuthMode           string                `json:"edgeAuthMode"`
+	EdgeAuthUser           string                `json:"edgeAuthUser"`
+	EdgeAuthPass           string                `json:"-"`
+	IncludedTagPatternsStr string                `json:"includedTagPatterns"`
+	IncludedTagPatterns    []map[string][]string `json:"-"`
 }
 
 func (s *AWSSiteWiseDataSourceSetting) Load(config backend.DataSourceInstanceSettings) error {
@@ -45,6 +48,16 @@ func (s *AWSSiteWiseDataSourceSetting) Load(config backend.DataSourceInstanceSet
 	s.SecretKey = config.DecryptedSecureJSONData["secretKey"]
 	s.Cert = config.DecryptedSecureJSONData["cert"]
 	s.EdgeAuthPass = config.DecryptedSecureJSONData["edgeAuthPass"]
+
+	// includedTagPatternsStr := config.DecryptedSecureJSONData["includedTagPatterns"]
+	includedTagPatterns := []map[string][]string{}
+	err := json.Unmarshal([]byte(s.IncludedTagPatternsStr), &includedTagPatterns)
+	if err != nil {
+		return err
+	}
+	s.IncludedTagPatterns = includedTagPatterns
+	log.DefaultLogger.Debug("s.IncludedTagPatterns", s.IncludedTagPatterns)
+
 	return nil
 }
 

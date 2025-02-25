@@ -178,54 +178,54 @@ func TestGenerateTestData(t *testing.T) {
 		return resp
 	}
 
-	m["list-assets.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
-		t.Skip("Integration Test") // comment line to run this
-		ctx := context.Background()
-		query := models.ListAssetsQuery{}
-		query.ModelId = testdata.DemoTurbineAssetModelId
-		query.Filter = "ALL"
-		resp, err := ListAssets(ctx, client, query)
-		if err != nil {
-			t.Fatal(err)
-		}
-		return resp
-	}
+	// m["list-assets.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
+	// 	t.Skip("Integration Test") // comment line to run this
+	// 	ctx := context.Background()
+	// 	query := models.ListAssetsQuery{}
+	// 	query.ModelId = testdata.DemoTurbineAssetModelId
+	// 	query.Filter = "ALL"
+	// 	resp, err := ListAssets(ctx, client, query)
+	// 	if err != nil {
+	// 		t.Fatal(err)
+	// 	}
+	// 	return resp
+	// }
 
-	m["list-assets-top-level.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
-		t.Skip("Integration Test") // comment line to run this
-		ctx := context.Background()
-		query := models.ListAssetsQuery{}
-		resp, err := ListAssets(ctx, client, query)
-		if err != nil {
-			t.Fatal(err)
-		}
-		return resp
-	}
+	// m["list-assets-top-level.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
+	// 	t.Skip("Integration Test") // comment line to run this
+	// 	ctx := context.Background()
+	// 	query := models.ListAssetsQuery{}
+	// 	resp, err := ListAssets(ctx, client, query)
+	// 	if err != nil {
+	// 		t.Fatal(err)
+	// 	}
+	// 	return resp
+	// }
 
-	m["list-associated-assets.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
-		t.Skip("Integration Test") // comment line to run this
-		ctx := context.Background()
-		query := models.ListAssociatedAssetsQuery{}
-		query.AssetIds = []string{testdata.DemoWindFarmAssetId}
-		query.HierarchyId = testdata.TurbineAssetModelHierarchyId
-		resp, err := ListAssociatedAssets(ctx, client, query)
-		if err != nil {
-			t.Fatal(err)
-		}
-		return resp
-	}
+	// m["list-associated-assets.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
+	// 	t.Skip("Integration Test") // comment line to run this
+	// 	ctx := context.Background()
+	// 	query := models.ListAssociatedAssetsQuery{}
+	// 	query.AssetIds = []string{testdata.DemoWindFarmAssetId}
+	// 	query.HierarchyId = testdata.TurbineAssetModelHierarchyId
+	// 	resp, err := ListAssociatedAssets(ctx, client, query)
+	// 	if err != nil {
+	// 		t.Fatal(err)
+	// 	}
+	// 	return resp
+	// }
 
-	m["list-associated-assets-parent.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
-		t.Skip("Integration Test") // comment line to run this
-		ctx := context.Background()
-		query := models.ListAssociatedAssetsQuery{}
-		query.AssetIds = []string{testdata.DemoTurbineAsset1}
-		resp, err := ListAssociatedAssets(ctx, client, query)
-		if err != nil {
-			t.Fatal(err)
-		}
-		return resp
-	}
+	// m["list-associated-assets-parent.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
+	// 	t.Skip("Integration Test") // comment line to run this
+	// 	ctx := context.Background()
+	// 	query := models.ListAssociatedAssetsQuery{}
+	// 	query.AssetIds = []string{testdata.DemoTurbineAsset1}
+	// 	resp, err := ListAssociatedAssets(ctx, client, query)
+	// 	if err != nil {
+	// 		t.Fatal(err)
+	// 	}
+	// 	return resp
+	// }
 
 	m["describe-asset-model.json"] = func(t *testing.T, client client.SitewiseClient) interface{} {
 		t.Skip("Integration Test") // comment line to run this
