@@ -15,20 +15,30 @@ func ExecuteQuery(ctx context.Context, client client.ExecuteQueryClient, query m
 	backend.Logger.FromContext(ctx).Debug("Running ExecuteQuery", "query", query.RawSQL)
 	input := &iotsitewise.ExecuteQueryInput{
 		QueryStatement: aws.String(query.RawSQL),
-	}
-	if query.NextToken != "" {
-		input.NextToken = aws.String(query.NextToken)
+		MaxResults:     aws.Int64(2000),
 	}
 
-	resp, err := client.ExecuteQueryWithContext(ctx, input)
-
-	if err != nil {
-		return nil, err
+	backend.Logger.FromContext(ctx).Debug("Beginning the query loop")
+	result := framer.QueryResults{
+		// Rows: []*iotsitewise.Row{},
 	}
 
-	return &framer.QueryResults{
-		Rows:      resp.Rows,
-		Columns:   resp.Columns,
-		NextToken: resp.NextToken,
-	}, nil
+	for {
+		resp, err := client.ExecuteQueryWithContext(ctx, input)
+		if err != nil {
+			return nil, err
+		}
+
+		result.Columns = resp.Columns
+		result.Rows = append(result.Rows, resp.Rows...)
+		backend.Logger.FromContext(ctx).Debug("Row Counts", "resultRows", len(result.Rows), "respRows", len(resp.Rows))
+
+		if resp.NextToken == nil || *resp.NextToken == "" {
+			backend.Logger.FromContext(ctx).Debug("Breaking", "nextToken", resp.NextToken)
+			break
+		}
+		input.NextToken = aws.String(*resp.NextToken)
+	}
+
+	return &result, nil
 }

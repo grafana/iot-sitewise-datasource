@@ -30,7 +30,6 @@ func (a QueryResults) Frames(_ context.Context, _ resource.ResourceProvider) (da
 	for i, row := range a.Rows {
 		for j, datum := range row.Data {
 			if datum.ScalarValue == nil {
-				backend.Logger.Debug("nil datum")
 				continue
 			}
 
@@ -94,7 +93,6 @@ func SetValue(col *iotsitewise.ColumnInfo, scalarValue string, field *data.Field
 			intValue = intValue * 1000000000
 		}
 		value = time.Unix(0, intValue)
-		backend.Logger.Debug("Timestamp Value", "value", value)
 	}
 
 	if value != nil {
