@@ -79,6 +79,9 @@
     "golangci",
     "subresource",
     "seccomp",
-    "PTRACE"
+    "PTRACE",
+    "resourcegroupstaggingapi",
+    "resourcegroupstaggingapiiface",
+    "ResourceGroupsTaggingAPIAPI"
   ]
 }
