@@ -10,14 +10,13 @@ import {
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 
 import { SitewiseCache } from 'sitewiseCache';
-import { SitewiseQuery, SitewiseOptions, isPropertyQueryType, isListAssetModelsQuery } from './types';
+import { SitewiseQuery, SitewiseOptions, isPropertyQueryType, isListAssetsQuery } from './types';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { frameToMetricFindValues } from 'utils';
 import { SitewiseVariableSupport } from 'variables';
 import { SitewiseQueryPaginator } from 'SiteWiseQueryPaginator';
 import { RelativeRangeCache } from 'RelativeRangeRequestCache/RelativeRangeCache';
-import { SitewiseQueriesUnion } from 'RelativeRangeRequestCache/types';
 
 export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
@@ -128,7 +127,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   /**
    * Supports template variables for region, asset and property
    */
-  applyTemplateVariables(query: SitewiseQueriesUnion, scopedVars: ScopedVars): SitewiseQuery {
+  applyTemplateVariables(query: SitewiseQuery, scopedVars: ScopedVars): SitewiseQuery {
     const templateSrv = getTemplateSrv();
     const interpolatedQuery = {
       ...query,
@@ -138,8 +137,8 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       assetId: templateSrv.replace(query.assetId || '', scopedVars),
       assetIds: query.assetIds?.flatMap((assetId) => templateSrv.replace(assetId, scopedVars, 'csv').split(',')) ?? [],
     };
-    if (isListAssetModelsQuery(interpolatedQuery)) {
-      interpolatedQuery.modelId = templateSrv.replace(interpolatedQuery.modelId || '', scopedVars);
+    if (isListAssetsQuery(interpolatedQuery)) {
+      interpolatedQuery.modelId = templateSrv.replace(interpolatedQuery.modelId, scopedVars);
     }
     return interpolatedQuery;
   }
