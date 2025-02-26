@@ -19,9 +19,7 @@ func ExecuteQuery(ctx context.Context, client client.ExecuteQueryClient, query m
 	}
 
 	backend.Logger.FromContext(ctx).Debug("Beginning the query loop")
-	result := framer.QueryResults{
-		// Rows: []*iotsitewise.Row{},
-	}
+	result := framer.QueryResults{}
 
 	for {
 		resp, err := client.ExecuteQueryWithContext(ctx, input)
@@ -31,7 +29,6 @@ func ExecuteQuery(ctx context.Context, client client.ExecuteQueryClient, query m
 
 		result.Columns = resp.Columns
 		result.Rows = append(result.Rows, resp.Rows...)
-		backend.Logger.FromContext(ctx).Debug("Row Counts", "resultRows", len(result.Rows), "respRows", len(resp.Rows))
 
 		if resp.NextToken == nil || *resp.NextToken == "" {
 			backend.Logger.FromContext(ctx).Debug("Breaking", "nextToken", resp.NextToken)

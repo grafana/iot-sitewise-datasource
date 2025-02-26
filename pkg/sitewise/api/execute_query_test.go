@@ -15,23 +15,49 @@ import (
 )
 
 type fakeExecuteQueryClient struct {
+	executeCount       int
 	lastQueryStatement string
 }
 
 func (f *fakeExecuteQueryClient) ExecuteQueryWithContext(ctx aws.Context, input *iotsitewise.ExecuteQueryInput, opts ...request.Option) (*iotsitewise.ExecuteQueryOutput, error) {
+	f.executeCount++
 	f.lastQueryStatement = aws.StringValue(input.QueryStatement)
-	retVal := iotsitewise.ExecuteQueryOutput{NextToken: aws.String("bar")}
+	var retVal iotsitewise.ExecuteQueryOutput
+	retVal = iotsitewise.ExecuteQueryOutput{
+		NextToken: aws.String("bar"),
+		Rows: []*iotsitewise.Row{
+			{
+				Data: []*iotsitewise.Datum{
+					{
+						ScalarValue: aws.String("123.45"),
+					},
+				},
+			},
+		},
+		Columns: []*iotsitewise.ColumnInfo{
+			{
+				Name: aws.String("example_column"),
+				Type: &iotsitewise.ColumnType{ScalarType: aws.String("DOUBLE")},
+			},
+		},
+	}
+	if f.executeCount > 1 {
+		retVal.NextToken = nil
+		retVal.Rows = nil
+	}
 	return &retVal, nil
 }
 
-func TestExecuteQuery(t *testing.T) {
+func TestExecuteQueryReturnsTheRows(t *testing.T) {
 	client := fakeExecuteQueryClient{}
 	query := models.ExecuteQuery{
 		BaseQuery: models.BaseQuery{AssetIds: []string{"foo"}},
 	}
 	framer, err := api.ExecuteQuery(context.Background(), &client, query)
 	require.NoError(t, err)
-	assert.Equal(t, "bar", *framer.NextToken)
+	assert.NotNil(t, framer.Rows)
+	assert.Len(t, framer.Rows, 1)
+	assert.NotNil(t, framer.Columns)
 }
 func TestExecuteQueryReceivesTheGivenSQL(t *testing.T) {
 	client := &fakeExecuteQueryClient{}
@@ -43,6 +69,6 @@ func TestExecuteQueryReceivesTheGivenSQL(t *testing.T) {
 	}
 	framer, err := api.ExecuteQuery(context.Background(), client, query)
 	require.NoError(t, err)
-	assert.Equal(t, "bar", *framer.NextToken)
+	assert.Equal(t, "", aws.StringValue(framer.NextToken))
 	assert.Equal(t, "SELECT * FROM assets", client.lastQueryStatement)
 }
