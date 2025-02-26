@@ -6,8 +6,8 @@ toolchain go1.23.6
 
 require (
 	github.com/aws/aws-sdk-go v1.55.6
-	github.com/google/go-cmp v0.6.0
-	github.com/grafana/grafana-aws-sdk v0.31.7
+	github.com/google/go-cmp v0.7.0
+	github.com/grafana/grafana-aws-sdk v0.31.8
 	github.com/grafana/grafana-plugin-sdk-go v0.266.0
 	github.com/magefile/mage v1.15.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
@@ -17,8 +17,8 @@ require (
 
 require (
 	github.com/apache/arrow-go/v18 v18.0.1-0.20241212180703-82be143d7c30 // indirect
-	github.com/aws/aws-sdk-go-v2 v1.32.8 // indirect
-	github.com/aws/smithy-go v1.22.1 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.36.1 // indirect
+	github.com/aws/smithy-go v1.22.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/grafana/dataplane/sdata v0.0.9 // indirect
 	github.com/grafana/otel-profiling-go v0.5.1 // indirect
