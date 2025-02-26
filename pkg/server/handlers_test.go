@@ -16,7 +16,7 @@ import (
 )
 
 func TestHandlerExecution(t *testing.T) {
-	result := iotsitewise.ExecuteQueryOutput{NextToken: aws.String("bar")}
+	result := iotsitewise.ExecuteQueryOutput{NextToken: aws.String("")}
 	mockSw := &mocks.SitewiseClient{}
 	mockSw.On("ExecuteQueryWithContext", mock.Anything, mock.Anything).Return(&result, nil)
 	mockSw.On("ListAssetsWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.ListAssetsOutput{}, nil)
