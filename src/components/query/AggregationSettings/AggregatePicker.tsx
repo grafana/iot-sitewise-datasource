@@ -39,7 +39,7 @@ export class AggregatePicker extends PureComponent<Props> {
     this.checkInput();
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate() {
     this.checkInput();
   }
 

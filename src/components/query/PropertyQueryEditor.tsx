@@ -4,8 +4,6 @@ import {
   SitewiseQuery,
   AssetInfo,
   AssetPropertyAggregatesQuery,
-  AggregateType,
-  SiteWiseResolution,
   isAssetPropertyAggregatesQuery,
   isAssetPropertyValueHistoryQuery,
   AssetPropertyInfo,
@@ -17,30 +15,17 @@ import {
 import { LinkButton, Select, Input, Icon } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetBrowser } from '../browser/AssetBrowser';
-import { AggregatePicker, aggReg } from '../AggregatePicker';
+import { aggReg } from './AggregationSettings/AggregatePicker';
 import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
 import { QualityAndOrderRow } from './QualityAndOrderRow';
 import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
 import { css } from '@emotion/css';
 import { QueryOptions } from './QueryOptions';
+import { AggregationSettings } from './AggregationSettings/AggregationSettings';
 
 type Props = SitewiseQueryEditorProps<SitewiseQuery | AssetPropertyAggregatesQuery | ListAssociatedAssetsQuery>;
 
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89abAB][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
-const resolutions: Array<SelectableValue<SiteWiseResolution>> = [
-  {
-    value: SiteWiseResolution.Auto,
-    label: 'Auto',
-    description:
-      'Picks a resolution based on the time window. ' +
-      'Will switch to raw data if higher than 1m resolution is needed',
-  },
-  { value: SiteWiseResolution.Min, label: 'Minute', description: '1 point every minute' },
-  { value: SiteWiseResolution.Hour, label: 'Hour', description: '1 point every hour' },
-  { value: SiteWiseResolution.Day, label: 'Day', description: '1 point every day' },
-];
-
 interface State {
   assetId?: string;
   asset?: AssetInfo;
@@ -216,15 +201,6 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     onChange(update);
   };
 
-  //--------------------------------------------------------------------------------
-  //
-  //--------------------------------------------------------------------------------
-
-  onAggregateChange = (aggregates: AggregateType[]) => {
-    const { onChange, query } = this.props;
-    onChange({ ...query, aggregates } as any);
-  };
-
   onLastObservationChange = () => {
     const { onChange, query } = this.props;
     onChange({ ...query, lastObservation: !query.lastObservation });
@@ -234,38 +210,6 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const { onChange, query } = this.props;
     onChange({ ...query, flattenL4e: !query.flattenL4e });
   };
-
-  onResolutionChange = (sel: SelectableValue<SiteWiseResolution>) => {
-    const { onChange, query } = this.props;
-    onChange({ ...query, resolution: sel.value } as any);
-  };
-
-  renderAggregateRow(query: AssetPropertyAggregatesQuery) {
-    const { property } = this.state;
-
-    return (
-      <EditorFieldGroup>
-        <EditorField label="Aggregate" htmlFor="aggregate-picker" width={40}>
-          <AggregatePicker
-            stats={query.aggregates ?? []}
-            onChange={this.onAggregateChange}
-            defaultStat={getDefaultAggregate(property)}
-            menuPlacement="auto"
-          />
-        </EditorField>
-        <EditorField label="Resolution" htmlFor="resolution" width={25}>
-          <Select
-            id="resolution"
-            aria-label="Resolution"
-            options={resolutions}
-            value={resolutions.find((v) => v.value === query.resolution) || resolutions[0]}
-            onChange={this.onResolutionChange}
-            menuPlacement="auto"
-          />
-        </EditorField>
-      </EditorFieldGroup>
-    );
-  }
 
   renderAssociatedAsset(query: ListAssociatedAssetsQuery) {
     const { asset, loading } = this.state;
@@ -446,7 +390,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                 </EditorFieldGroup>
 
                 <EditorFieldGroup>
-                  {showQuality && isAssetPropertyAggregatesQuery(query) && this.renderAggregateRow(query)}
+                  {showQuality && isAssetPropertyAggregatesQuery(query) && (
+                    <AggregationSettings query={query} property={this.state.property} onChange={this.props.onChange} />
+                  )}
                 </EditorFieldGroup>
               </EditorRow>
             )}
@@ -454,7 +400,9 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         )}
 
         {query.propertyAlias && isAssetPropertyAggregatesQuery(query) && (
-          <EditorRow>{this.renderAggregateRow(query)}</EditorRow>
+          <EditorRow>
+            <AggregationSettings query={query} property={this.state.property} onChange={this.props.onChange} />
+          </EditorRow>
         )}
 
         {isAssociatedAssets && (
@@ -463,7 +411,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
           </EditorRow>
         )}
 
-        {showOptionsRow ? (
+        {showOptionsRow && (
           <EditorRow>
             <EditorFieldGroup>
               <QueryOptions
@@ -476,7 +424,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
               />
             </EditorFieldGroup>
           </EditorRow>
-        ) : null}
+        )}
       </>
     );
   }

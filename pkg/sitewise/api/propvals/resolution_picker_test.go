@@ -1,11 +1,12 @@
 package propvals
 
 import (
+	"testing"
+
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 type scenario struct {
@@ -34,10 +35,19 @@ var scenarios = []scenario{
 		expected: ResolutionMinute,
 	},
 	{
+		// dps = 120, pages = 1
+		name: "selects '15m' resolution",
+		query: models.BaseQuery{
+			TimeRange:     backend.TimeRange{From: testdata.OneDay, To: testdata.Now},
+			MaxDataPoints: 720,
+		},
+		expected: ResolutionFifteenMinutes,
+	},
+	{
 		// dps = 24, pages = 1
 		name: "selects '1h' resolution",
 		query: models.BaseQuery{
-			TimeRange:     backend.TimeRange{From: testdata.OneDay, To: testdata.Now},
+			TimeRange:     backend.TimeRange{From: testdata.FifteenDays, To: testdata.Now},
 			MaxDataPoints: 720,
 		},
 		expected: ResolutionHour,
