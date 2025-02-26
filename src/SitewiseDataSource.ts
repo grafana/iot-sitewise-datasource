@@ -6,6 +6,7 @@ import {
   DataFrame,
   MetricFindValue,
   LoadingState,
+  CoreApp,
 } from '@grafana/data';
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 
@@ -21,12 +22,14 @@ import { RelativeRangeCache } from 'RelativeRangeRequestCache/RelativeRangeCache
 export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
   readonly options: SitewiseOptions;
+  readonly defaultQuery: string;
   private cache = new Map<string, SitewiseCache>();
   private relativeRangeCache = new RelativeRangeCache();
 
   constructor(instanceSettings: DataSourceInstanceSettings<SitewiseOptions>) {
     super(instanceSettings);
     this.options = instanceSettings.jsonData;
+    this.defaultQuery = 'select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestamp)';
     this.variables = new SitewiseVariableSupport(this);
   }
 
@@ -47,6 +50,13 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
 
   // This will support annotation queries for 7.2+
   annotations = {};
+
+  getDefaultQuery(_: CoreApp): Partial<SitewiseQuery> {
+    return {
+      region: this.options.defaultRegion || '',
+      rawSQL: this.defaultQuery,
+    };
+  }
 
   async metricFindQuery(query: SitewiseQuery, options: any): Promise<MetricFindValue[]> {
     const request = {
@@ -99,6 +109,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
     }
     return true; // keep the query
   }
+
   // returns string that will be shown in the panel header when the panel is collapsed
   getQueryDisplayText(query: SitewiseQuery): string {
     const cache = this.getCache(query.region);
@@ -167,7 +178,9 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
         tap({
           next: (response) => {
             if (response.state === LoadingState.Done) {
-              this.relativeRangeCache.set(request, response);
+              if (response.data.length > 0) {
+                this.relativeRangeCache.set(request, response);
+              }
             }
           },
         })

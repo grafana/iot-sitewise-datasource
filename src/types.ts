@@ -14,6 +14,12 @@ export enum QueryType {
   PropertyAggregate = 'PropertyAggregate',
   PropertyInterpolated = 'PropertyInterpolated',
   ListTimeSeries = 'ListTimeSeries',
+  ExecuteQuery = 'ExecuteQuery',
+}
+
+export enum QueryEditorMode {
+  Builder = 'builder',
+  Code = 'code',
 }
 
 export enum SiteWiseQuality {
@@ -58,6 +64,12 @@ export interface SitewiseQuery extends DataQuery {
   queryType: QueryType;
   region?: string; // aws region string
   responseFormat?: SiteWiseResponseFormat;
+
+  // QueryEditor
+  editorMode?: QueryEditorMode;
+
+  // RawQueryEditor
+  rawSQL?: string;
 
   /** @deprecated -- this is migrated to assetIds */
   assetId?: string;
