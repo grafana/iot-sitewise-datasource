@@ -22,8 +22,7 @@ type fakeExecuteQueryClient struct {
 func (f *fakeExecuteQueryClient) ExecuteQueryWithContext(ctx aws.Context, input *iotsitewise.ExecuteQueryInput, opts ...request.Option) (*iotsitewise.ExecuteQueryOutput, error) {
 	f.executeCount++
 	f.lastQueryStatement = aws.StringValue(input.QueryStatement)
-	var retVal iotsitewise.ExecuteQueryOutput
-	retVal = iotsitewise.ExecuteQueryOutput{
+	var retVal = iotsitewise.ExecuteQueryOutput{
 		NextToken: aws.String("bar"),
 		Rows: []*iotsitewise.Row{
 			{
