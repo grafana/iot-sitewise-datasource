@@ -156,7 +156,7 @@ func Test_propertyValueForTimeRange_1h_data_for_time_range(t *testing.T) {
 			{
 				RefID:         "A",
 				QueryType:     models.QueryTypePropertyAggregate,
-				TimeRange:     backend.TimeRange{From: testdata.OneDay, To: testdata.Now},
+				TimeRange:     backend.TimeRange{From: testdata.FifteenDays, To: testdata.Now},
 				MaxDataPoints: 720,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
@@ -434,7 +434,7 @@ func Test_propertyValueForTimeRange_1h_data_for_time_range_from_alias(t *testing
 			{
 				RefID:         "A",
 				QueryType:     models.QueryTypePropertyAggregate,
-				TimeRange:     backend.TimeRange{From: testdata.OneDay, To: testdata.Now},
+				TimeRange:     backend.TimeRange{From: testdata.FifteenDays, To: testdata.Now},
 				MaxDataPoints: 720,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{

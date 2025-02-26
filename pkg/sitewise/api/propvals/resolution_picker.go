@@ -15,14 +15,15 @@ const (
 	maxInterpolatedResponseSize = 10
 	maxInterpolatedPagesToLoad  = 10 // 100-200ms * 10 = 2s max on average ?
 
-	ResolutionRaw        = "RAW"
-	ResolutionSecond     = "1s"
-	ResolutionTenSeconds = "10s"
-	ResolutionMinute     = "1m"
-	ResolutionTenMinutes = "10m"
-	ResolutionHour       = "1h"
-	ResolutionTenHours   = "10h"
-	ResolutionDay        = "1d"
+	ResolutionRaw            = "RAW"
+	ResolutionSecond         = "1s"
+	ResolutionTenSeconds     = "10s"
+	ResolutionMinute         = "1m"
+	ResolutionTenMinutes     = "10m"
+	ResolutionFifteenMinutes = "15m"
+	ResolutionHour           = "1h"
+	ResolutionTenHours       = "10h"
+	ResolutionDay            = "1d"
 )
 
 func roundUp(num float64) int64 {
@@ -38,6 +39,8 @@ func durationForTimeRange(resolution string, timeRange backend.TimeRange) float6
 		return timeRange.Duration().Minutes()
 	} else if ResolutionTenMinutes == resolution {
 		return timeRange.Duration().Minutes() / 10
+	} else if ResolutionFifteenMinutes == resolution {
+		return timeRange.Duration().Minutes() / 15
 	} else if ResolutionHour == resolution {
 		return timeRange.Duration().Hours()
 	} else if ResolutionTenHours == resolution {
@@ -63,7 +66,7 @@ func Resolution(query models.BaseQuery) string {
 	timeRange := query.TimeRange
 	maxDp := query.MaxDataPoints
 
-	for _, resolution := range []string{ResolutionSecond, ResolutionMinute, ResolutionHour} {
+	for _, resolution := range []string{ResolutionSecond, ResolutionMinute, ResolutionFifteenMinutes, ResolutionHour} {
 		pages := pagesForResolution(resolution, timeRange, maxHistoryResponseSize)
 		dps := dataPointsForResolution(resolution, timeRange)
 		// TODO: once '1s' resolution is supported, will need to add threshold for determining
@@ -100,6 +103,8 @@ func ResolutionToDuration(resolution string) time.Duration {
 		return time.Minute
 	case ResolutionTenMinutes:
 		return 10 * time.Minute
+	case ResolutionFifteenMinutes:
+		return 15 * time.Minute
 	case ResolutionHour:
 		return time.Hour
 	case ResolutionTenHours:
