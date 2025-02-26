@@ -3,7 +3,6 @@ import { SelectableValue } from '@grafana/data';
 import {
   SitewiseQuery,
   AssetInfo,
-  AssetPropertyAggregatesQuery,
   isAssetPropertyAggregatesQuery,
   isAssetPropertyValueHistoryQuery,
   AssetPropertyInfo,
@@ -15,15 +14,15 @@ import {
 import { LinkButton, Select, Input, Icon } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetBrowser } from '../../browser/AssetBrowser';
-import { aggReg } from '../AggregationSettings/AggregatePicker';
+import { aggReg } from './AggregationSettings/AggregatePicker';
 import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
-import { QualityAndOrderRow } from './QualityAndOrderRow';
 import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
 import { css } from '@emotion/css';
 import { QueryOptions } from './QueryOptions';
-import { AggregationSettings } from '../AggregationSettings/AggregationSettings';
+import { AggregationSettings } from './AggregationSettings/AggregationSettings';
+import { InterpolatedResolutionSettings } from './InterpolatedResolutionSettings';
 
-type Props = SitewiseQueryEditorProps<SitewiseQuery | AssetPropertyAggregatesQuery | ListAssociatedAssetsQuery>;
+type Props = SitewiseQueryEditorProps<SitewiseQuery>;
 
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89abAB][0-9a-f]{3}-[0-9a-f]{12}$/i;
 interface State {
@@ -253,7 +252,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
   }
 
   render() {
-    const { query, datasource } = this.props;
+    const { query, datasource, onChange } = this.props;
     const { loading, assets, assetProperties } = this.state;
 
     let current = assets.filter((a) => (a.value ? query.assetIds?.includes(a.value) : false));
@@ -393,6 +392,10 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                   {showQuality && isAssetPropertyAggregatesQuery(query) && (
                     <AggregationSettings query={query} property={this.state.property} onChange={this.props.onChange} />
                   )}
+
+                  {isAssetPropertyInterpolatedQuery(query) && (
+                    <InterpolatedResolutionSettings query={query} onChange={onChange} />
+                  )}
                 </EditorFieldGroup>
               </EditorRow>
             )}
@@ -402,6 +405,12 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         {query.propertyAlias && isAssetPropertyAggregatesQuery(query) && (
           <EditorRow>
             <AggregationSettings query={query} property={this.state.property} onChange={this.props.onChange} />
+          </EditorRow>
+        )}
+
+        {query.propertyAlias && isAssetPropertyInterpolatedQuery(query) && (
+          <EditorRow>
+            <InterpolatedResolutionSettings query={query} onChange={onChange} />
           </EditorRow>
         )}
 
@@ -416,11 +425,12 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
             <EditorFieldGroup>
               <QueryOptions
                 query={query}
+                datasource={datasource}
+                onChange={onChange}
                 showProp={showProp}
                 showQuality={!!(query.propertyId || query.propertyAlias)}
                 onLastObservationChange={this.onLastObservationChange}
                 onFlattenL4eChange={this.onFlattenL4eChange}
-                qualityAndOrderComponent={<QualityAndOrderRow {...(this.props as any)} />}
               />
             </EditorFieldGroup>
           </EditorRow>

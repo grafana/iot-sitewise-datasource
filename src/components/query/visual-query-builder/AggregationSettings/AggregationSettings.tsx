@@ -4,7 +4,7 @@ import { AggregateType, SiteWiseResolution, AssetPropertyAggregatesQuery, AssetP
 import { Select } from '@grafana/ui';
 import { EditorField, EditorFieldGroup } from '@grafana/plugin-ui';
 import { getDefaultAggregate } from 'queryInfo';
-import { AggregatePicker } from 'components/query/AggregationSettings/AggregatePicker';
+import { AggregatePicker } from 'components/query/visual-query-builder/AggregationSettings/AggregatePicker';
 import { getSelectionInfo } from 'common/getSelectionInfo';
 import { getVariableOptions } from 'common/getVariableOptions';
 
