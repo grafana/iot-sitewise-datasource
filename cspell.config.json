@@ -79,6 +79,8 @@
     "golangci",
     "subresource",
     "seccomp",
-    "PTRACE"
+    "PTRACE",
+    "grafanabot",
+    "tibdex"
   ]
 }
