@@ -4,8 +4,8 @@ import { AggregateType, SiteWiseResolution, AssetPropertyAggregatesQuery, AssetP
 import { Select } from '@grafana/ui';
 import { EditorField, EditorFieldGroup } from '@grafana/plugin-ui';
 import { getDefaultAggregate } from 'queryInfo';
-import { AggregatePicker } from 'components/query/AggregationSettings/AggregatePicker';
 import { useOptionsWithVariables } from 'common/useOptionsWithVariables';
+import { AggregatePicker } from './AggregatePicker';
 
 const RESOLUTIONS: Array<SelectableValue<string>> = [
   {
