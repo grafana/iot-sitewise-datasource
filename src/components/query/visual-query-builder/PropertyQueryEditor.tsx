@@ -15,7 +15,7 @@ import {
 import { LinkButton, Select, Input, Icon } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { AssetBrowser } from '../../browser/AssetBrowser';
-import { AggregatePicker, aggReg } from '../AggregationSettings/AggregatePicker';
+import { aggReg } from '../AggregationSettings/AggregatePicker';
 import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
 import { QualityAndOrderRow } from './QualityAndOrderRow';
 import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
