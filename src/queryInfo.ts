@@ -15,6 +15,7 @@ import {
   ListAssociatedAssetsQuery,
   isListAssociatedAssetsQuery,
   ListTimeSeriesQuery,
+  SiteWiseQuality,
 } from './types';
 
 export interface QueryTypeInfo extends SelectableValue<QueryType> {
@@ -32,6 +33,7 @@ export const siteWiseQueryTypes: QueryTypeInfo[] = [
       resolution: SiteWiseResolution.Auto,
       aggregates: [AggregateType.AVERAGE],
       timeOrdering: 'ASCENDING',
+      quality: SiteWiseQuality.GOOD,
     } as AssetPropertyAggregatesQuery,
     helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyAggregates.html',
   },
@@ -39,7 +41,10 @@ export const siteWiseQueryTypes: QueryTypeInfo[] = [
     label: 'Get interpolated property values',
     value: QueryType.PropertyInterpolated,
     description: `Gets interpolated values for an asset property.`,
-    defaultQuery: {} as AssetPropertyInterpolatedQuery,
+    defaultQuery: {
+      resolution: SiteWiseResolution.Auto,
+      quality: SiteWiseQuality.GOOD,
+    } as AssetPropertyInterpolatedQuery,
     helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetInterpolatedAssetPropertyValues.html',
   },
   {
@@ -48,6 +53,7 @@ export const siteWiseQueryTypes: QueryTypeInfo[] = [
     description: `Gets the history of an asset property's value.`,
     defaultQuery: {
       timeOrdering: 'ASCENDING',
+      quality: SiteWiseQuality.GOOD,
     } as AssetPropertyValueHistoryQuery,
     helpURL: 'https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyAggregates.html',
   },
