@@ -7,7 +7,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "1assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "7cf29ef74b07b8a764bf15af316652c118d4e38c100d84fc8c33a8ad9e1c0a67",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -18,7 +18,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:00 -0500 EST | 23.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -30,7 +30,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "2assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "868baf5ea97c947dab2032daebfaaf7b5a4098ed305dc997c0e5a2b4c7d82708",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -41,7 +41,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:01 -0500 EST | 24.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -53,7 +53,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "3assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "0803fbde644661b8f3e13e3c38f25b240a48847139e2b72b6be5ff530680ebd1",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -64,7 +64,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:02 -0500 EST | 25.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -76,7 +76,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "4assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "6d34250f86844395e7576cf483600e373233ee83f1539de165007c252357053e",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -87,7 +87,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:03 -0500 EST | 26.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -99,7 +99,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "5assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "297d0461f1064397a44d87aa8efdaf86ed2694e38a7036e0478e2041c95316bb",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -110,7 +110,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:04 -0500 EST | 27.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -122,7 +122,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "6assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "569816f8b945c8863d9319e9387c5bf3cd3e4b141fb00f3114e2ef3c9ed46782",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -133,7 +133,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:05 -0500 EST | 28.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -145,7 +145,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "7assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "451a1b86f740478464eba8891a6be7521eb1f8e6955f30964ff6bff1d2fefb2e",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -156,7 +156,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:06 -0500 EST | 29.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -168,7 +168,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "8assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "73ca3dccb15de16e23cacdada92d9dcc523eb1da375f62b3f5b63fee19c9afa3",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -179,7 +179,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:07 -0500 EST | 30.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -191,7 +191,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "9assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "e723e2325b2903c179bea8edef5894fdb656736dfdf7333d577d054d6f2567da",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -202,7 +202,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:08 -0500 EST | 31.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -214,7 +214,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "10assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "1c43493bffa481adc5842dc51b6c6f5cc07fb728c4a2777297a159759465dd4a",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -225,7 +225,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:09 -0500 EST | 32.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -237,7 +237,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "11assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "d67e362a8135c55b6ae5c1297cab1f744c394b7a2956cc4a556a3c45b8d9eb19",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -248,7 +248,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:10 -0500 EST | 33.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -260,7 +260,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "12assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "b38cda1f77e86eef9be49491c0535b3a23e768a95dc2fa6de8b5e81dacbbdaf0",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -271,7 +271,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:11 -0500 EST | 34.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -283,7 +283,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "13assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "679e2ccc56238ab09847b225f3f66e85c4f2c46b4cdcf569136906003baf0424",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -294,7 +294,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:12 -0500 EST | 35.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -306,7 +306,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "14assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "ec83ef858d4aa15f33bcdd4240c19a485617e9409e1f780cfbe0f771d584905f",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -317,7 +317,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:13 -0500 EST | 36.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -329,7 +329,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "15assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "6c22ae3a142723dd49cea737dd4b4fc567ada9577f7db314e7ba3006c67bee3c",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -340,7 +340,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:14 -0500 EST | 37.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -352,7 +352,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-1",
-//          "entryId": "16assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "a946d7087a91de06546c756d177f4e93e20f56d8c24c221d697a2a476f539741",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -363,7 +363,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:15 -0500 EST | 38.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -375,7 +375,7 @@
 //      ],
 //      "custom": {
 //          "nextToken": "some-next-token-2",
-//          "entryId": "17assetid-aaaa-2222-bbbb-3333cccc4444",
+//          "entryId": "1005c27c6599df9015ab8c8c1ebf91ed291af488383139f66afac339f32258fc",
 //          "resolution": "RAW"
 //      }
 //  }
@@ -386,7 +386,7 @@
 //  | Labels:                       | Labels:          | Labels:        |
 //  | Type: []time.Time             | Type: []float64  | Type: []string |
 //  +-------------------------------+------------------+----------------+
-//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  | 2021-02-01 14:20:16 -0500 EST | 39.8             | GOOD           |
 //  +-------------------------------+------------------+----------------+
 //  
 //  
@@ -404,7 +404,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "1assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "7cf29ef74b07b8a764bf15af316652c118d4e38c100d84fc8c33a8ad9e1c0a67",
             "resolution": "RAW"
           }
         },
@@ -459,7 +459,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "2assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "868baf5ea97c947dab2032daebfaaf7b5a4098ed305dc997c0e5a2b4c7d82708",
             "resolution": "RAW"
           }
         },
@@ -493,10 +493,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207201000
           ],
           [
-            23.8
+            24.8
           ],
           [
             "GOOD"
@@ -514,7 +514,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "3assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "0803fbde644661b8f3e13e3c38f25b240a48847139e2b72b6be5ff530680ebd1",
             "resolution": "RAW"
           }
         },
@@ -548,10 +548,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207202000
           ],
           [
-            23.8
+            25.8
           ],
           [
             "GOOD"
@@ -569,7 +569,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "4assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "6d34250f86844395e7576cf483600e373233ee83f1539de165007c252357053e",
             "resolution": "RAW"
           }
         },
@@ -603,10 +603,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207203000
           ],
           [
-            23.8
+            26.8
           ],
           [
             "GOOD"
@@ -624,7 +624,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "5assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "297d0461f1064397a44d87aa8efdaf86ed2694e38a7036e0478e2041c95316bb",
             "resolution": "RAW"
           }
         },
@@ -658,10 +658,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207204000
           ],
           [
-            23.8
+            27.8
           ],
           [
             "GOOD"
@@ -679,7 +679,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "6assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "569816f8b945c8863d9319e9387c5bf3cd3e4b141fb00f3114e2ef3c9ed46782",
             "resolution": "RAW"
           }
         },
@@ -713,10 +713,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207205000
           ],
           [
-            23.8
+            28.8
           ],
           [
             "GOOD"
@@ -734,7 +734,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "7assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "451a1b86f740478464eba8891a6be7521eb1f8e6955f30964ff6bff1d2fefb2e",
             "resolution": "RAW"
           }
         },
@@ -768,10 +768,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207206000
           ],
           [
-            23.8
+            29.8
           ],
           [
             "GOOD"
@@ -789,7 +789,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "8assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "73ca3dccb15de16e23cacdada92d9dcc523eb1da375f62b3f5b63fee19c9afa3",
             "resolution": "RAW"
           }
         },
@@ -823,10 +823,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207207000
           ],
           [
-            23.8
+            30.8
           ],
           [
             "GOOD"
@@ -844,7 +844,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "9assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "e723e2325b2903c179bea8edef5894fdb656736dfdf7333d577d054d6f2567da",
             "resolution": "RAW"
           }
         },
@@ -878,10 +878,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207208000
           ],
           [
-            23.8
+            31.8
           ],
           [
             "GOOD"
@@ -899,7 +899,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "10assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "1c43493bffa481adc5842dc51b6c6f5cc07fb728c4a2777297a159759465dd4a",
             "resolution": "RAW"
           }
         },
@@ -933,10 +933,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207209000
           ],
           [
-            23.8
+            32.8
           ],
           [
             "GOOD"
@@ -954,7 +954,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "11assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "d67e362a8135c55b6ae5c1297cab1f744c394b7a2956cc4a556a3c45b8d9eb19",
             "resolution": "RAW"
           }
         },
@@ -988,10 +988,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207210000
           ],
           [
-            23.8
+            33.8
           ],
           [
             "GOOD"
@@ -1009,7 +1009,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "12assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "b38cda1f77e86eef9be49491c0535b3a23e768a95dc2fa6de8b5e81dacbbdaf0",
             "resolution": "RAW"
           }
         },
@@ -1043,10 +1043,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207211000
           ],
           [
-            23.8
+            34.8
           ],
           [
             "GOOD"
@@ -1064,7 +1064,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "13assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "679e2ccc56238ab09847b225f3f66e85c4f2c46b4cdcf569136906003baf0424",
             "resolution": "RAW"
           }
         },
@@ -1098,10 +1098,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207212000
           ],
           [
-            23.8
+            35.8
           ],
           [
             "GOOD"
@@ -1119,7 +1119,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "14assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "ec83ef858d4aa15f33bcdd4240c19a485617e9409e1f780cfbe0f771d584905f",
             "resolution": "RAW"
           }
         },
@@ -1153,10 +1153,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207213000
           ],
           [
-            23.8
+            36.8
           ],
           [
             "GOOD"
@@ -1174,7 +1174,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "15assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "6c22ae3a142723dd49cea737dd4b4fc567ada9577f7db314e7ba3006c67bee3c",
             "resolution": "RAW"
           }
         },
@@ -1208,10 +1208,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207214000
           ],
           [
-            23.8
+            37.8
           ],
           [
             "GOOD"
@@ -1229,7 +1229,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-1",
-            "entryId": "16assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "a946d7087a91de06546c756d177f4e93e20f56d8c24c221d697a2a476f539741",
             "resolution": "RAW"
           }
         },
@@ -1263,10 +1263,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207215000
           ],
           [
-            23.8
+            38.8
           ],
           [
             "GOOD"
@@ -1284,7 +1284,7 @@
           ],
           "custom": {
             "nextToken": "some-next-token-2",
-            "entryId": "17assetid-aaaa-2222-bbbb-3333cccc4444",
+            "entryId": "1005c27c6599df9015ab8c8c1ebf91ed291af488383139f66afac339f32258fc",
             "resolution": "RAW"
           }
         },
@@ -1318,10 +1318,10 @@
       "data": {
         "values": [
           [
-            1612207200000
+            1612207216000
           ],
           [
-            23.8
+            39.8
           ],
           [
             "GOOD"

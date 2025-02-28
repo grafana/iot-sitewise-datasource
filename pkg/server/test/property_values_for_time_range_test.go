@@ -13,6 +13,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api/propvals"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
 	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 	"github.com/patrickmn/go-cache"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -25,6 +26,12 @@ func Test_propertyValueForTimeRange_raw_data_for_time_range(t *testing.T) {
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
 	mockSw := &mocks.SitewiseClient{}
+
+	propDesc.AssetProperty.Id = propTimeSeries.PropertyId
+	entryId := util.GetEntryIdFromAssetProperty(*propTimeSeries.AssetId, *propTimeSeries.PropertyId)
+	propVals.SuccessEntries[0].EntryId = entryId
+	propAggregates.SuccessEntries[0].EntryId = entryId
+
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -81,6 +88,12 @@ func Test_propertyValueForTimeRange_1m_data_for_time_range(t *testing.T) {
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
 	mockSw := &mocks.SitewiseClient{}
+
+	propDesc.AssetProperty.Id = propTimeSeries.PropertyId
+	entryId := util.GetEntryIdFromAssetProperty(*propTimeSeries.AssetId, *propTimeSeries.PropertyId)
+	propVals.SuccessEntries[0].EntryId = entryId
+	propAggregates.SuccessEntries[0].EntryId = entryId
+
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -137,6 +150,12 @@ func Test_propertyValueForTimeRange_1h_data_for_time_range(t *testing.T) {
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
 	mockSw := &mocks.SitewiseClient{}
+
+	propDesc.AssetProperty.Id = propTimeSeries.PropertyId
+	entryId := util.GetEntryIdFromAssetProperty(*propTimeSeries.AssetId, *propTimeSeries.PropertyId)
+	propVals.SuccessEntries[0].EntryId = entryId
+	propAggregates.SuccessEntries[0].EntryId = entryId
+
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -193,6 +212,12 @@ func Test_propertyValueForTimeRange_1d_data_for_time_range(t *testing.T) {
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
 	mockSw := &mocks.SitewiseClient{}
+
+	propDesc.AssetProperty.Id = propTimeSeries.PropertyId
+	entryId := util.GetEntryIdFromAssetProperty(*propTimeSeries.AssetId, *propTimeSeries.PropertyId)
+	propVals.SuccessEntries[0].EntryId = entryId
+	propAggregates.SuccessEntries[0].EntryId = entryId
+
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -249,6 +274,12 @@ func Test_propertyValueForTimeRange_1m_data_for_reduced_max_data_point(t *testin
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
 	mockSw := &mocks.SitewiseClient{}
+
+	propDesc.AssetProperty.Id = propTimeSeries.PropertyId
+	entryId := util.GetEntryIdFromAssetProperty(*propTimeSeries.AssetId, *propTimeSeries.PropertyId)
+	propVals.SuccessEntries[0].EntryId = entryId
+	propAggregates.SuccessEntries[0].EntryId = entryId
+
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -305,6 +336,12 @@ func Test_propertyValueForTimeRange_raw_data_for_time_range_from_alias(t *testin
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
 	mockSw := &mocks.SitewiseClient{}
+
+	propDesc.AssetProperty.Id = propTimeSeries.PropertyId
+	entryId := util.GetEntryIdFromAssetProperty(*propTimeSeries.AssetId, *propTimeSeries.PropertyId)
+	propVals.SuccessEntries[0].EntryId = entryId
+	propAggregates.SuccessEntries[0].EntryId = entryId
+
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -360,6 +397,12 @@ func Test_propertyValueForTimeRange_1m_data_for_time_range_from_alias(t *testing
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
 	mockSw := &mocks.SitewiseClient{}
+
+	propDesc.AssetProperty.Id = propTimeSeries.PropertyId
+	entryId := util.GetEntryIdFromAssetProperty(*propTimeSeries.AssetId, *propTimeSeries.PropertyId)
+	propVals.SuccessEntries[0].EntryId = entryId
+	propAggregates.SuccessEntries[0].EntryId = entryId
+
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -415,6 +458,12 @@ func Test_propertyValueForTimeRange_1h_data_for_time_range_from_alias(t *testing
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
 	mockSw := &mocks.SitewiseClient{}
+
+	propDesc.AssetProperty.Id = propTimeSeries.PropertyId
+	entryId := util.GetEntryIdFromAssetProperty(*propTimeSeries.AssetId, *propTimeSeries.PropertyId)
+	propVals.SuccessEntries[0].EntryId = entryId
+	propAggregates.SuccessEntries[0].EntryId = entryId
+
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -470,6 +519,12 @@ func Test_propertyValueForTimeRange_1d_data_for_time_range_from_alias(t *testing
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
 	mockSw := &mocks.SitewiseClient{}
+
+	propDesc.AssetProperty.Id = propTimeSeries.PropertyId
+	entryId := util.GetEntryIdFromAssetProperty(*propTimeSeries.AssetId, *propTimeSeries.PropertyId)
+	propVals.SuccessEntries[0].EntryId = entryId
+	propAggregates.SuccessEntries[0].EntryId = entryId
+
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
@@ -525,6 +580,12 @@ func Test_propertyValueForTimeRange_1m_data_for_reduced_max_data_point_from_alia
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-avg-wind.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
 	mockSw := &mocks.SitewiseClient{}
+
+	propDesc.AssetProperty.Id = propTimeSeries.PropertyId
+	entryId := util.GetEntryIdFromAssetProperty(*propTimeSeries.AssetId, *propTimeSeries.PropertyId)
+	propVals.SuccessEntries[0].EntryId = entryId
+	propAggregates.SuccessEntries[0].EntryId = entryId
+
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)

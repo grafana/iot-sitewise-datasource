@@ -58,10 +58,13 @@ func (p InterpolatedAssetPropertyValue) Frame(ctx context.Context, property *iot
 	frame := data.NewFrame(name, timeField, valueField)
 
 	entryId := ""
-	if property.AssetId != nil {
-		entryId = *property.AssetId
+	if property.AssetId != nil && property.AssetProperty.Id != nil {
+		entryId = *util.GetEntryIdFromAssetProperty(*property.AssetId, *property.AssetProperty.Id)
 	} else {
-		entryId = util.GetPropertyName(property)
+		// In resource/sitewise.go the property resource with a disassociated alias
+		// is manually set with the alias in the name field
+		alias := util.GetPropertyName(property)
+		entryId = *util.GetEntryIdFromPropertyAlias(alias)
 	}
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{
