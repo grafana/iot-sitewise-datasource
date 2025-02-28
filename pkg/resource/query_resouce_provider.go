@@ -46,13 +46,27 @@ func (rp *queryResourceProvider) Assets(ctx context.Context) (map[string]*iotsit
 
 func (rp *queryResourceProvider) Property(ctx context.Context) (*iotsitewise.DescribeAssetPropertyOutput, error) {
 	assetId := ""
+	propertyId := ""
+	propertyAlias := ""
 
-	// use the first asset id if there are multiple
+	// ok to only use the first item in the list since this function is called for non-batch queries
+
+	// use the first assetId if there are multiple
 	if len(rp.baseQuery.AssetIds) > 0 {
 		assetId = rp.baseQuery.AssetIds[0]
 	}
 
-	return rp.resources.Property(ctx, assetId, rp.baseQuery.PropertyId, rp.baseQuery.PropertyAlias)
+	// use the first propertyId if there are multiple
+	if len(rp.baseQuery.PropertyIds) > 0 {
+		propertyId = rp.baseQuery.PropertyIds[0]
+	}
+
+	// use the first propertyAlias if there are multiple
+	if len(rp.baseQuery.PropertyAliases) > 0 {
+		propertyAlias = rp.baseQuery.PropertyAliases[0]
+	}
+
+	return rp.resources.Property(ctx, assetId, propertyId, propertyAlias)
 }
 
 func (rp *queryResourceProvider) Properties(ctx context.Context) (map[string]*iotsitewise.DescribeAssetPropertyOutput, error) {
@@ -60,21 +74,13 @@ func (rp *queryResourceProvider) Properties(ctx context.Context) (map[string]*io
 	// if the query for a PropertyAlias doesn't have an assetId or propertyId, it means it's a disassociated stream
 	// in that case, we call Property() with empty values, which will set AssetProperty.Name to the alias
 	// and will set the EntryId to the hashed alias (to access values in results)
-	if len(rp.baseQuery.AssetIds) == 0 && rp.baseQuery.PropertyId == "" && rp.baseQuery.PropertyAlias != "" {
-		prop, err := rp.resources.Property(ctx, "", "", rp.baseQuery.PropertyAlias)
+	for _, entry := range rp.baseQuery.AssetPropertyEntries {
+		prop, err := rp.resources.Property(ctx, entry.AssetId, entry.PropertyId, entry.PropertyAlias)
 		if err != nil {
 			return nil, err
 		}
-		entryId := util.GetEntryId(rp.baseQuery)
+		entryId := util.GetEntryIdFromAssetPropertyEntry(entry)
 		properties[*entryId] = prop
-	} else {
-		for _, id := range rp.baseQuery.AssetIds {
-			prop, err := rp.resources.Property(ctx, id, rp.baseQuery.PropertyId, rp.baseQuery.PropertyAlias)
-			if err != nil {
-				return nil, err
-			}
-			properties[id] = prop
-		}
 	}
 
 	return properties, nil
