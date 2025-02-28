@@ -16,24 +16,20 @@ import (
 func valueBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.BatchGetAssetPropertyValueInput {
 	entries := make([]*iotsitewise.BatchGetAssetPropertyValueEntry, 0)
 
-	switch {
-	case query.PropertyAlias != "":
-		entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueEntry{
-			EntryId:       util.GetEntryId(query.BaseQuery),
-			PropertyAlias: util.GetPropertyAlias(query.BaseQuery),
-		})
-	default:
-		for _, assetId := range query.AssetIds {
-			var id *string
-			if assetId != "" {
-				id = aws.String(assetId)
-			}
-			entries = append(entries, &iotsitewise.BatchGetAssetPropertyValueEntry{
-				EntryId:    id,
-				AssetId:    id,
-				PropertyId: aws.String(query.PropertyId),
-			})
+	// All unique properties are collected in AssetPropertyEntries and assigned to
+	// a BatchGetAssetPropertyValueEntry
+	for _, entry := range query.AssetPropertyEntries {
+		batchEntry := iotsitewise.BatchGetAssetPropertyValueEntry{}
+		if entry.AssetId != "" && entry.PropertyId != "" {
+			batchEntry.AssetId = aws.String(entry.AssetId)
+			batchEntry.PropertyId = aws.String(entry.PropertyId)
+			batchEntry.EntryId = util.GetEntryIdFromAssetProperty(entry.AssetId, entry.PropertyId)
+		} else {
+			// If there is no assetId or propertyId, then we use the propertyAlias
+			batchEntry.PropertyAlias = aws.String(entry.PropertyAlias)
+			batchEntry.EntryId = util.GetEntryIdFromPropertyAlias(entry.PropertyAlias)
 		}
+		entries = append(entries, &batchEntry)
 	}
 
 	return &iotsitewise.BatchGetAssetPropertyValueInput{

@@ -41,7 +41,7 @@ export function QueryOptions({
         isOpen={false}
       >
         <EditorFieldGroup>
-          {shouldShowLastObserved(query.queryType) && !Boolean(query.propertyAlias) && showProp && (
+          {shouldShowLastObserved(query.queryType) && !query.propertyAliases?.length && showProp && (
             <EditorField
               label="Expand Time Range"
               htmlFor="expand"
@@ -50,7 +50,7 @@ export function QueryOptions({
               <Switch value={query.lastObservation} onChange={onLastObservationChange} />
             </EditorField>
           )}
-          {shouldShowL4eOptions(query.queryType) && !Boolean(query.propertyAlias) && showProp && (
+          {shouldShowL4eOptions(query.queryType) && !query.propertyAliases?.length && showProp && (
             <EditorField
               label="Format L4E Anomaly Result"
               htmlFor="l4e"
@@ -59,7 +59,7 @@ export function QueryOptions({
               <Switch value={query.flattenL4e} onChange={onFlattenL4eChange} />
             </EditorField>
           )}
-          {shouldShowQualityAndOrderComponent(query.queryType) && (showProp || query.propertyAlias) && showQuality && (
+          {shouldShowQualityAndOrderComponent(query.queryType) && (showProp || query.propertyAliases?.length) && showQuality && (
             <QualityAndOrderRow query={query} onChange={onChange} datasource={datasource} />
           )}
         </EditorFieldGroup>

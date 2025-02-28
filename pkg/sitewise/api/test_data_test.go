@@ -43,7 +43,7 @@ func TestGenerateTestData(t *testing.T) {
 		// hard coded values from my account
 		query := models.AssetPropertyValueQuery{}
 		query.AssetIds = []string{testdata.DemoTurbineAsset1}
-		query.PropertyId = testdata.TurbinePropAvgWindSpeed
+		query.PropertyIds = []string{testdata.TurbinePropAvgWindSpeed}
 		query.TimeRange = backend.TimeRange{
 			From: time.Now().Add(time.Hour * -3), // return 3 hours of data. 60*3/5 = 36 points
 			To:   time.Now(),
@@ -65,7 +65,7 @@ func TestGenerateTestData(t *testing.T) {
 		query := models.AssetPropertyValueQuery{}
 		query.AssetIds = []string{"709e2e02-7b28-4b41-b669-3fb501a11853"}
 		//query.PropertyId = "5ff66b29-5b79-427a-978b-29f8dfc2757a"
-		query.PropertyAlias = "/amazon/renton/1/rpm"
+		query.PropertyAliases = []string{"/amazon/renton/1/rpm"}
 		query.TimeRange = backend.TimeRange{
 			From: time.Now().Add(time.Hour * -3), // return 3 hours of data. 60*3/5 = 36 points
 			To:   time.Now(),
@@ -85,7 +85,7 @@ func TestGenerateTestData(t *testing.T) {
 
 		query := models.AssetPropertyValueQuery{}
 		query.AssetIds = []string{testdata.DemoTurbineAsset1}
-		query.PropertyId = testdata.TurbinePropAvgWindSpeed
+		query.PropertyIds = []string{testdata.TurbinePropAvgWindSpeed}
 
 		_, resp, err := BatchGetAssetPropertyValue(ctx, client, query)
 		if err != nil {
@@ -104,7 +104,7 @@ func TestGenerateTestData(t *testing.T) {
 			models.AggregateCount, models.AggregateAvg, models.AggregateMin, models.AggregateMax, models.AggregateSum, models.AggregateStdDev,
 		}
 		query.AssetIds = []string{testdata.DemoTurbineAsset1}
-		query.PropertyId = testdata.TurbinePropWindSpeed
+		query.PropertyIds = []string{testdata.TurbinePropWindSpeed}
 		query.TimeRange = backend.TimeRange{
 			From: time.Now().Add(time.Hour * -3), // return 3 hours of data. 60*3/5 = 36 points
 			To:   time.Now(),
@@ -147,7 +147,7 @@ func TestGenerateTestData(t *testing.T) {
 		ctx := context.Background()
 		query := models.DescribeAssetPropertyQuery{}
 		query.AssetIds = []string{testdata.DemoTurbineAsset1}
-		query.PropertyId = testdata.TurbinePropAvgWindSpeed
+		query.PropertyIds = []string{testdata.TurbinePropAvgWindSpeed}
 		resp, err := GetAssetPropertyDescription(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)
@@ -160,7 +160,7 @@ func TestGenerateTestData(t *testing.T) {
 		ctx := context.Background()
 		query := models.DescribeAssetPropertyQuery{}
 		query.AssetIds = []string{testdata.DemoTurbineAsset1}
-		query.PropertyId = testdata.TurbinePropWindSpeed
+		query.PropertyIds = []string{testdata.TurbinePropWindSpeed}
 		resp, err := GetAssetPropertyDescription(ctx, client, query)
 		if err != nil {
 			t.Fatal(err)

@@ -3,9 +3,10 @@ import { map } from 'rxjs/operators';
 import { assign } from 'lodash';
 import { ListAssetsQuery, QueryType, SitewiseQuery } from './types';
 import { DataSource } from './SitewiseDataSource';
-import { DataQueryRequest, DataQueryResponse, CustomVariableSupport, DataFrameView } from '@grafana/data';
+import { DataQueryRequest, DataQueryResponse, CustomVariableSupport, DataFrameView, ScopedVars } from '@grafana/data';
 import { VisualQueryBuilder } from './components/query/visual-query-builder/VisualQueryBuilder';
 import { AssetModelSummary } from 'queryResponseTypes';
+import { getTemplateSrv, TemplateSrv } from '@grafana/runtime';
 
 export class SitewiseVariableSupport extends CustomVariableSupport<DataSource, SitewiseQuery, SitewiseQuery> {
   constructor(private readonly datasource: DataSource) {
@@ -60,7 +61,7 @@ export class SitewiseVariableSupport extends CustomVariableSupport<DataSource, S
       case QueryType.PropertyValueHistory:
       case QueryType.PropertyInterpolated:
       case QueryType.PropertyAggregate:
-        return Boolean((query.assetIds?.length || query.assetId) && query.propertyId);
+        return Boolean(query.assetIds?.length && query.propertyIds?.length);
       case QueryType.ListAssets:
         const listAssetsQuery = query as ListAssetsQuery;
         return Boolean(
@@ -77,3 +78,17 @@ export class SitewiseVariableSupport extends CustomVariableSupport<DataSource, S
     }
   }
 }
+
+export const getSelectableTemplateVariables = () => {
+  return getTemplateSrv()
+    .getVariables()
+    .map((variable) => ({
+      label: '${' + (variable.label ?? variable.name) + '}',
+      value: '${' + variable.name + '}',
+      icon: 'arrow-right',
+    }));
+};
+
+export const applyVariableForList = (templateSrv: TemplateSrv, scopedVars: ScopedVars, list?: string[]) => {
+  return list?.flatMap((item) => templateSrv.replace(item, scopedVars, 'csv').split(',')) ?? [];
+};

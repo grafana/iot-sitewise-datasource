@@ -11,6 +11,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 	"github.com/patrickmn/go-cache"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
@@ -24,8 +25,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func Test_get_property_value_history_with_default_aka_table_response_format(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
+func mockBatchGetAssetPropertyValueHistoryPageAggregation(mockSw *mocks.SitewiseClient, nextToken *string, successEntries []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry, errorEntries []*iotsitewise.BatchGetAssetPropertyValueHistoryErrorEntry) {
 	mockSw.On(
 		"BatchGetAssetPropertyValueHistoryPageAggregation",
 		mock.Anything,
@@ -33,32 +33,37 @@ func Test_get_property_value_history_with_default_aka_table_response_format(t *t
 		mock.Anything,
 		mock.Anything,
 	).Return(&iotsitewise.BatchGetAssetPropertyValueHistoryOutput{
-		SuccessEntries: []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{
+		NextToken:      nextToken,
+		SuccessEntries: successEntries,
+		ErrorEntries:   errorEntries,
+	}, nil).Once()
+}
+
+func mockBatchGetAssetPropertyValueHistorySuccessEntry(entryId *string, idx int) iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry {
+	return iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{
+		AssetPropertyValueHistory: []*iotsitewise.AssetPropertyValue{
 			{
-				AssetPropertyValueHistory: []*iotsitewise.AssetPropertyValue{
-					{
-						Quality: Pointer("GOOD"),
-						Timestamp: &iotsitewise.TimeInNanos{
-							OffsetInNanos: Pointer(int64(0)),
-							TimeInSeconds: Pointer(int64(1612207200)),
-						},
-						Value: &iotsitewise.Variant{
-							DoubleValue: Pointer(float64(23.8)),
-						},
-					},
+				Quality: Pointer("GOOD"),
+				Timestamp: &iotsitewise.TimeInNanos{
+					OffsetInNanos: Pointer(int64(0)),
+					TimeInSeconds: Pointer(int64(1612207200 + idx)),
 				},
-				EntryId: Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
+				Value: &iotsitewise.Variant{
+					DoubleValue: Pointer(23.8 + float64(idx)),
+				},
 			},
 		},
-	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
-		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
-			DataType: Pointer("DOUBLE"),
-			Name:     Pointer("Wind Speed"),
-			Unit:     Pointer("m/s"),
-		},
-	}, nil)
+		EntryId: entryId,
+	}
+}
+
+func Test_get_property_value_history_with_default_aka_table_response_format(t *testing.T) {
+	mockSw := &mocks.SitewiseClient{}
+
+	successEntry := mockBatchGetAssetPropertyValueHistorySuccessEntry(mockAssetPropertyEntryId, 0)
+	mockBatchGetAssetPropertyValueHistoryPageAggregation(mockSw, nil, []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{&successEntry}, nil)
+
+	mockDescribeAssetPropertyWithContext(mockSw)
 
 	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
@@ -75,12 +80,12 @@ func Test_get_property_value_history_with_default_aka_table_response_format(t *t
 				MaxDataPoints: 100,
 				Interval:      1000,
 				TimeRange:     timeRange,
-				JSON: []byte(
+				JSON: []byte(fmt.Sprintf(
 					`{
 					   "region":"us-west-2",
-					   "assetId":"1assetid-aaaa-2222-bbbb-3333cccc4444",
-						 "propertyId":"11propid-aaaa-2222-bbbb-3333cccc4444"
-					}`),
+					   "assetId":"%s",
+						 "propertyId":"%s"
+					}`, mockAssetId, mockPropertyId)),
 			},
 		},
 	})
@@ -94,7 +99,7 @@ func Test_get_property_value_history_with_default_aka_table_response_format(t *t
 		data.NewField("Wind Speed", nil, []float64{23.8}).SetConfig(&data.FieldConfig{Unit: "m/s"}),
 		data.NewField("quality", nil, []string{"GOOD"}),
 	).SetMeta(&data.FrameMeta{
-		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: "1assetid-aaaa-2222-bbbb-3333cccc4444"},
+		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: *mockAssetPropertyEntryId},
 	})
 	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
 		t.Errorf("Result mismatch (-want +got):\n%s", diff)
@@ -112,47 +117,19 @@ func Test_get_property_value_history_with_default_aka_table_response_format(t *t
 		"DescribeAssetPropertyWithContext",
 		mock.Anything,
 		&iotsitewise.DescribeAssetPropertyInput{
-			AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
-			PropertyId: Pointer("11propid-aaaa-2222-bbbb-3333cccc4444"),
+			AssetId:    Pointer(mockAssetId),
+			PropertyId: Pointer(mockPropertyId),
 		},
 	)
 }
 
 func Test_get_property_value_history_with_time_series_response_format(t *testing.T) {
 	mockSw := &mocks.SitewiseClient{}
-	mockSw.On(
-		"BatchGetAssetPropertyValueHistoryPageAggregation",
-		mock.Anything,
-		mock.Anything,
-		mock.Anything,
-		mock.Anything,
-	).Return(&iotsitewise.BatchGetAssetPropertyValueHistoryOutput{
-		SuccessEntries: []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{
-			{
-				AssetPropertyValueHistory: []*iotsitewise.AssetPropertyValue{
-					{
-						Quality: Pointer("GOOD"),
-						Timestamp: &iotsitewise.TimeInNanos{
-							OffsetInNanos: Pointer(int64(0)),
-							TimeInSeconds: Pointer(int64(1612207200)),
-						},
-						Value: &iotsitewise.Variant{
-							DoubleValue: Pointer(float64(23.8)),
-						},
-					},
-				},
-				EntryId: Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
-			},
-		},
-	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
-		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
-			DataType: Pointer("DOUBLE"),
-			Name:     Pointer("Wind Speed"),
-			Unit:     Pointer("m/s"),
-		},
-	}, nil)
+
+	successEntry := mockBatchGetAssetPropertyValueHistorySuccessEntry(mockAssetPropertyEntryId, 0)
+	mockBatchGetAssetPropertyValueHistoryPageAggregation(mockSw, nil, []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{&successEntry}, nil)
+
+	mockDescribeAssetPropertyWithContext(mockSw)
 
 	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
@@ -169,13 +146,13 @@ func Test_get_property_value_history_with_time_series_response_format(t *testing
 				MaxDataPoints: 100,
 				Interval:      1000,
 				TimeRange:     timeRange,
-				JSON: []byte(
+				JSON: []byte(fmt.Sprintf(
 					`{
 					   "region":"us-west-2",
-					   "assetId":"1assetid-aaaa-2222-bbbb-3333cccc4444",
-						 "propertyId":"11propid-aaaa-2222-bbbb-3333cccc4444",
+					   "assetId":"%s",
+						 "propertyId":"%s",
 						 "responseFormat":"timeseries"
-					}`),
+					}`, mockAssetId, mockPropertyId)),
 			},
 		},
 	})
@@ -188,9 +165,9 @@ func Test_get_property_value_history_with_time_series_response_format(t *testing
 		data.NewField("time", nil, []time.Time{time.Date(2021, 2, 1, 19, 20, 0, 0, time.UTC)}),
 		data.NewField("Wind Speed", data.Labels{"quality": "GOOD"}, []*float64{Pointer(23.8)}),
 	).SetMeta(&data.FrameMeta{
-		Type:   data.FrameTypeTimeSeriesWide,
-		TypeVersion: data.FrameTypeVersion{0,1},
-		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: "1assetid-aaaa-2222-bbbb-3333cccc4444"},
+		Type:        data.FrameTypeTimeSeriesWide,
+		TypeVersion: data.FrameTypeVersion{0, 1},
+		Custom:      models.SitewiseCustomMeta{Resolution: "RAW", EntryId: *mockAssetPropertyEntryId},
 	})
 	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
 		t.Errorf("Result mismatch (-want +got):\n%s", diff)
@@ -208,8 +185,8 @@ func Test_get_property_value_history_with_time_series_response_format(t *testing
 		"DescribeAssetPropertyWithContext",
 		mock.Anything,
 		&iotsitewise.DescribeAssetPropertyInput{
-			AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
-			PropertyId: Pointer("11propid-aaaa-2222-bbbb-3333cccc4444"),
+			AssetId:    Pointer(mockAssetId),
+			PropertyId: Pointer(mockPropertyId),
 		},
 	)
 }
@@ -257,8 +234,6 @@ func Test_getPropertyValueBoolean(t *testing.T) {
 }
 
 func Test_get_property_value_history_with_flatten_l4e(t *testing.T) {
-	assetId := "1assetid-aaaa-2222-bbbb-3333cccc4444"
-	assetPropertyIdQuery := "11propid-aaaa-2222-bbbb-3333cccc4444"
 	assetPropertyIdDiagnosticOne := "44fa33e2-b2db-4724-ba03-48ce28902809"
 	assetPropertyIdDiagnosticTwo := "3a985085-ea71-4ae6-9395-b65990f58a05"
 
@@ -284,14 +259,14 @@ func Test_get_property_value_history_with_flatten_l4e(t *testing.T) {
 						},
 					},
 				},
-				EntryId: Pointer(assetId),
+				EntryId: mockAssetPropertyEntryId,
 			},
 		},
 	}, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
-		return req.PropertyId != nil && *req.PropertyId == assetPropertyIdQuery
+		return req.PropertyId != nil && *req.PropertyId == mockPropertyId
 	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
-		AssetId:   Pointer(assetId),
+		AssetId:   Pointer(mockAssetId),
 		AssetName: Pointer("Demo Turbine Asset 1"),
 		CompositeModel: &iotsitewise.CompositeModelProperty{
 			Name: Pointer("prediction1"),
@@ -337,13 +312,13 @@ func Test_get_property_value_history_with_flatten_l4e(t *testing.T) {
 				MaxDataPoints: 100,
 				Interval:      1000,
 				TimeRange:     timeRange,
-				JSON: []byte(
+				JSON: []byte(fmt.Sprintf(
 					`{
 					   "region":"us-west-2",
-					   "assetId":"1assetid-aaaa-2222-bbbb-3333cccc4444",
-					   "propertyId":"11propid-aaaa-2222-bbbb-3333cccc4444",
+					   "assetId":"%s",
+					   "propertyId":"%s",
 					   "flattenL4E": true
-					}`),
+					}`, mockAssetId, mockPropertyId)),
 			},
 		},
 	})
@@ -360,7 +335,7 @@ func Test_get_property_value_history_with_flatten_l4e(t *testing.T) {
 		data.NewField("RPM", nil, []float64{0.44856}),
 		data.NewField("Torque", nil, []float64{0.55144}),
 	).SetMeta(&data.FrameMeta{
-		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: "1assetid-aaaa-2222-bbbb-3333cccc4444"},
+		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: *mockAssetPropertyEntryId},
 	})
 	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
 		t.Errorf("Result mismatch (-want +got):\n%s", diff)
@@ -371,7 +346,6 @@ func Test_get_property_value_history_with_flatten_l4e(t *testing.T) {
 
 func Test_get_property_value_history_with_struct_type(t *testing.T) {
 	structValue := "{\"timestamp\":\"2021-02-01T19:20:00.000000\",\"prediction\":0,\"prediction_reason\":\"NO_ANOMALY_DETECTED\",\"anomaly_score\":0.2674,\"diagnostics\":[{\"name\":\"3a985085-ea71-4ae6-9395-b65990f58a05\\\\3a985085-ea71-4ae6-9395-b65990f58a05\",\"value\":0.44856},{\"name\":\"44fa33e2-b2db-4724-ba03-48ce28902809\\\\44fa33e2-b2db-4724-ba03-48ce28902809\",\"value\":0.55144}]}"
-	assetId := "1assetid-aaaa-2222-bbbb-3333cccc4444"
 
 	mockSw := &mocks.SitewiseClient{}
 	mockSw.On(
@@ -395,12 +369,12 @@ func Test_get_property_value_history_with_struct_type(t *testing.T) {
 						},
 					},
 				},
-				EntryId: Pointer(assetId),
+				EntryId: mockAssetPropertyEntryId,
 			},
 		},
 	}, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
-		AssetId:   Pointer(assetId),
+		AssetId:   Pointer(mockAssetId),
 		AssetName: Pointer("Demo Turbine Asset 1"),
 		CompositeModel: &iotsitewise.CompositeModelProperty{
 			Name: Pointer("prediction1"),
@@ -426,12 +400,12 @@ func Test_get_property_value_history_with_struct_type(t *testing.T) {
 				MaxDataPoints: 100,
 				Interval:      1000,
 				TimeRange:     timeRange,
-				JSON: []byte(
+				JSON: []byte(fmt.Sprintf(
 					`{
 					   "region":"us-west-2",
-					   "assetId":"1assetid-aaaa-2222-bbbb-3333cccc4444",
-					   "propertyId":"11propid-aaaa-2222-bbbb-3333cccc4444"
-					}`),
+					   "assetId":"%s",
+					   "propertyId":"%s"
+					}`, mockAssetId, mockPropertyId)),
 			},
 		},
 	})
@@ -445,7 +419,7 @@ func Test_get_property_value_history_with_struct_type(t *testing.T) {
 		data.NewField("AWS/L4E_ANOMALY_RESULT", nil, []string{structValue}).SetConfig(&data.FieldConfig{}),
 		data.NewField("quality", nil, []string{"GOOD"}),
 	).SetMeta(&data.FrameMeta{
-		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: "1assetid-aaaa-2222-bbbb-3333cccc4444"},
+		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: *mockAssetPropertyEntryId},
 	})
 	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
 		t.Errorf("Result mismatch (-want +got):\n%s", diff)
@@ -462,6 +436,8 @@ func Test_getPropertyValueHistoryFromAliasCaseTable(t *testing.T) {
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
 	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+
+	propVals.SuccessEntries[0].EntryId = util.GetEntryIdFromAssetProperty(*propTimeSeries.AssetId, *propTimeSeries.PropertyId)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -587,6 +563,8 @@ func Test_getPropertyValueHistoryFromAliasCaseTimeSeries(t *testing.T) {
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
 	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
 
+	propVals.SuccessEntries[0].EntryId = util.GetEntryIdFromAssetProperty(*propTimeSeries.AssetId, *propTimeSeries.PropertyId)
+
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
 	}
@@ -704,13 +682,15 @@ func Test_getPropertyValueHistoryFromAliasCaseTimeSeries_disassociated_stream_wi
 	}
 }
 func Test_getPropertyValueBooleanFromAlias(t *testing.T) {
-	propVals := testdata.GetIoTSitewisePropHistoryVals(t, testDataRelativePath("property-history-values-boolean.json"))
+	propVals := testdata.GetIoTSitewisePropHistoryVals(t, testDataRelativePath("property-history-values-from-alias-boolean.json"))
 	propDesc := testdata.GetIotSitewiseAssetProp(t, testDataRelativePath("describe-asset-property-is-windy.json"))
 	propTimeSeries := testdata.GetIoTSitewiseTimeSeries(t, testDataRelativePath("describe-time-series.json"))
 	mockSw := &mocks.SitewiseClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&propDesc, nil)
 	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+
+	propVals.SuccessEntries[0].EntryId = util.GetEntryIdFromAssetProperty(*propTimeSeries.AssetId, *propTimeSeries.PropertyId)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -830,39 +810,11 @@ func Test_getPropertyValueBooleanFromAlias_disassociated_stream_with_empty_respo
 
 func Test_get_property_value_history_from_expression_query_with_time_series_response_format(t *testing.T) {
 	mockSw := &mocks.SitewiseClient{}
-	mockSw.On(
-		"BatchGetAssetPropertyValueHistoryPageAggregation",
-		mock.Anything,
-		mock.Anything,
-		mock.Anything,
-		mock.Anything,
-	).Return(&iotsitewise.BatchGetAssetPropertyValueHistoryOutput{
-		SuccessEntries: []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{
-			{
-				AssetPropertyValueHistory: []*iotsitewise.AssetPropertyValue{
-					{
-						Quality: Pointer("GOOD"),
-						Timestamp: &iotsitewise.TimeInNanos{
-							OffsetInNanos: Pointer(int64(0)),
-							TimeInSeconds: Pointer(int64(1612207200)),
-						},
-						Value: &iotsitewise.Variant{
-							DoubleValue: Pointer(float64(23.8)),
-						},
-					},
-				},
-				EntryId: Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
-			},
-		},
-	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
-		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
-			DataType: Pointer("DOUBLE"),
-			Name:     Pointer("Wind Speed"),
-			Unit:     Pointer("m/s"),
-		},
-	}, nil)
+
+	successEntry := mockBatchGetAssetPropertyValueHistorySuccessEntry(mockAssetPropertyEntryId, 0)
+	mockBatchGetAssetPropertyValueHistoryPageAggregation(mockSw, nil, []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{&successEntry}, nil)
+
+	mockDescribeAssetPropertyWithContext(mockSw)
 
 	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
@@ -880,13 +832,13 @@ func Test_get_property_value_history_from_expression_query_with_time_series_resp
 				MaxDataPoints: 100,
 				Interval:      1000,
 				TimeRange:     timeRange,
-				JSON: []byte(
+				JSON: []byte(fmt.Sprintf(
 					`{
 					   "region":"us-west-2",
-					   "assetId":"1assetid-aaaa-2222-bbbb-3333cccc4444",
-						 "propertyId":"11propid-aaaa-2222-bbbb-3333cccc4444",
+					   "assetId":"%s",
+						 "propertyId":"%s",
 						 "responseFormat":"timeseries"
-					}`),
+					}`, mockAssetId, mockPropertyId)),
 			},
 		},
 	})
@@ -899,9 +851,9 @@ func Test_get_property_value_history_from_expression_query_with_time_series_resp
 		data.NewField("time", nil, []time.Time{time.Date(2021, 2, 1, 19, 20, 0, 0, time.UTC)}),
 		data.NewField("Wind Speed", data.Labels{"quality": "GOOD"}, []*float64{Pointer(23.8)}),
 	).SetMeta(&data.FrameMeta{
-		Type:   data.FrameTypeTimeSeriesWide,
-		TypeVersion: data.FrameTypeVersion{0,1},
-		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: "1assetid-aaaa-2222-bbbb-3333cccc4444"},
+		Type:        data.FrameTypeTimeSeriesWide,
+		TypeVersion: data.FrameTypeVersion{0, 1},
+		Custom:      models.SitewiseCustomMeta{Resolution: "RAW", EntryId: *mockAssetPropertyEntryId},
 	})
 	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
 		t.Errorf("Result mismatch (-want +got):\n%s", diff)
@@ -919,128 +871,265 @@ func Test_get_property_value_history_from_expression_query_with_time_series_resp
 		"DescribeAssetPropertyWithContext",
 		mock.Anything,
 		&iotsitewise.DescribeAssetPropertyInput{
-			AssetId:    Pointer("1assetid-aaaa-2222-bbbb-3333cccc4444"),
-			PropertyId: Pointer("11propid-aaaa-2222-bbbb-3333cccc4444"),
+			AssetId:    Pointer(mockAssetId),
+			PropertyId: Pointer(mockPropertyId),
 		},
 	)
 }
 
 func Test_get_property_value_history_with_batched_queries(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
-	mockedSuccessEntriesFirstBatch := []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{}
-	for i := 1; i <= api.BatchGetAssetPropertyValueHistoryMaxEntries; i++ {
-		mockedSuccessEntriesFirstBatch = append(mockedSuccessEntriesFirstBatch, &iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{
-			AssetPropertyValueHistory: []*iotsitewise.AssetPropertyValue{
-				{
-					Quality: Pointer("GOOD"),
-					Timestamp: &iotsitewise.TimeInNanos{
-						OffsetInNanos: Pointer(int64(0)),
-						TimeInSeconds: Pointer(int64(1612207200)),
-					},
-					Value: &iotsitewise.Variant{
-						DoubleValue: Pointer(float64(23.8)),
-					},
-				},
-			},
-			EntryId: Pointer(fmt.Sprintf("%dassetid-aaaa-2222-bbbb-3333cccc4444", i)),
+	tests := []batch_test{
+		{
+			name:           "query by multiple assetIds and one propertyId",
+			numAssetIds:    api.BatchGetAssetPropertyValueHistoryMaxEntries + 1,
+			numPropertyIds: 1,
+		},
+		{
+			name:           "query by one assetId and multiple propertyIds",
+			numAssetIds:    1,
+			numPropertyIds: api.BatchGetAssetPropertyValueHistoryMaxEntries + 1,
+		},
+		{
+			name:           "query by multiple assetIds and multiple propertyIds",
+			numAssetIds:    api.BatchGetAssetPropertyValueHistoryMaxEntries + 1,
+			numPropertyIds: api.BatchGetAssetPropertyValueHistoryMaxEntries + 1,
+		},
+		{
+			name:               "query by multiple property aliases",
+			numPropertyAliases: api.BatchGetAssetPropertyValueHistoryMaxEntries + 1,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			mockSw := &mocks.SitewiseClient{}
+			mockedSuccessEntries := []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{}
+			numBatch := 0
+
+			if tc.numPropertyAliases > 0 {
+				propertyAliases := generateIds(tc.numPropertyAliases, mockPropertyAlias)
+				for p, propertyAlias := range propertyAliases {
+					// Build the success entry based on the propertyAlias for disassociated data streams
+					entryId := util.GetEntryIdFromPropertyAlias(propertyAlias)
+					successEntry := mockBatchGetAssetPropertyValueHistorySuccessEntry(entryId, p)
+					mockedSuccessEntries = append(mockedSuccessEntries, &successEntry)
+
+					isLastBatch := p == tc.numPropertyAliases-1
+					// When batch is complete mock the History call with the success entries
+					if len(mockedSuccessEntries) == api.BatchGetAssetPropertyValueHistoryMaxEntries || isLastBatch {
+						numBatch++
+						mockBatchGetAssetPropertyValueHistoryPageAggregation(mockSw, Pointer(fmt.Sprintf("some-next-token-%d", numBatch)), mockedSuccessEntries, nil)
+						mockedSuccessEntries = []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{}
+					}
+
+					mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+						Alias: Pointer(propertyAlias),
+					}, nil)
+				}
+			} else {
+				assetIds := generateIds(tc.numAssetIds, mockAssetId)
+				propertyIds := generateIds(tc.numPropertyIds, mockPropertyId)
+				for a, assetId := range assetIds {
+					for p, propertyId := range propertyIds {
+						// Build the success entry based on the assetId and propertyId
+						entryId := util.GetEntryIdFromAssetProperty(assetId, propertyId)
+						successEntry := mockBatchGetAssetPropertyValueHistorySuccessEntry(entryId, p)
+						mockedSuccessEntries = append(mockedSuccessEntries, &successEntry)
+
+						isLastBatch := a == tc.numAssetIds-1 && p == tc.numPropertyIds-1
+						// When batch is complete mock the History call with the success entries
+						if len(mockedSuccessEntries) == api.BatchGetAssetPropertyValueHistoryMaxEntries || isLastBatch {
+							numBatch++
+							mockBatchGetAssetPropertyValueHistoryPageAggregation(mockSw, Pointer(fmt.Sprintf("some-next-token-%d", numBatch)), mockedSuccessEntries, nil)
+							mockedSuccessEntries = []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{}
+						}
+					}
+				}
+				mockDescribeAssetPropertyWithContext(mockSw)
+			}
+
+			srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
+
+			sitewise.GetCache = func() *cache.Cache {
+				return cache.New(cache.DefaultExpiration, cache.NoExpiration)
+			}
+
+			var baseQuery models.BaseQuery
+			if tc.numPropertyAliases > 0 {
+				baseQuery = models.BaseQuery{
+					AwsRegion:       testdata.AwsRegion,
+					PropertyAliases: generateIds(tc.numPropertyAliases, mockPropertyAlias),
+				}
+			} else {
+				baseQuery = models.BaseQuery{
+					AwsRegion:   testdata.AwsRegion,
+					AssetIds:    generateIds(tc.numAssetIds, mockAssetId),
+					PropertyIds: generateIds(tc.numPropertyIds, mockPropertyId),
+				}
+			}
+
+			qdr, err := srvr.HandlePropertyValueHistory(context.Background(), &backend.QueryDataRequest{
+				PluginContext: backend.PluginContext{},
+				Queries: []backend.DataQuery{{
+					QueryType:     models.QueryTypePropertyValueHistory,
+					RefID:         "A",
+					MaxDataPoints: 100,
+					Interval:      1000,
+					TimeRange:     timeRange,
+					JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
+						BaseQuery: baseQuery,
+					}),
+				}},
+			})
+
+			require.Nil(t, err)
+			_, ok := qdr.Responses["A"]
+			require.True(t, ok)
+			var expectedNumFrames int
+			if tc.numPropertyAliases > 0 {
+				expectedNumFrames = tc.numPropertyAliases
+			} else {
+				expectedNumFrames = tc.numAssetIds * tc.numPropertyIds
+			}
+			require.Len(t, qdr.Responses["A"].Frames, expectedNumFrames)
+
+			numBatch = 1
+			for i, f := range qdr.Responses["A"].Frames {
+				require.NotNil(t, f)
+				expectedNextToken := fmt.Sprintf("some-next-token-%d", numBatch)
+				var entryId string
+				if tc.numPropertyAliases > 0 {
+					propertyAlias := fmt.Sprintf("%s%d", mockPropertyAlias, i+1)
+					entryId = *util.GetEntryIdFromPropertyAlias(propertyAlias)
+				} else {
+					assetId := fmt.Sprintf("%s%d", mockAssetId, int(math.Floor(float64(i)/float64(tc.numPropertyIds)))+1)
+					propertyId := fmt.Sprintf("%s%d", mockPropertyId, i%tc.numPropertyIds+1)
+					entryId = *util.GetEntryIdFromAssetProperty(assetId, propertyId)
+				}
+				require.Equal(t, entryId, f.Meta.Custom.(models.SitewiseCustomMeta).EntryId)
+				require.Equal(t, expectedNextToken, f.Meta.Custom.(models.SitewiseCustomMeta).NextToken)
+				// Increment to next batch
+				if (i+1)%api.BatchGetAssetPropertyAggregatesMaxEntries == 0 {
+					numBatch++
+				}
+			}
+
+			mockSw.AssertExpectations(t)
+
+			for i, dr := range qdr.Responses {
+				fname := fmt.Sprintf("%s-%s.golden", fmt.Sprintf("property-history-values-%s", tc.name), i)
+				experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+			}
 		})
 	}
-	mockSw.On(
-		"BatchGetAssetPropertyValueHistoryPageAggregation",
-		mock.Anything,
-		mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyValueHistoryInput) bool {
-			return len(input.Entries) == api.BatchGetAssetPropertyValueHistoryMaxEntries
-		}),
-		mock.Anything,
-		mock.Anything,
-	).Return(&iotsitewise.BatchGetAssetPropertyValueHistoryOutput{
-		NextToken:      Pointer("some-next-token-1"),
-		SuccessEntries: mockedSuccessEntriesFirstBatch,
-	}, nil)
-	mockedSuccessEntriesSecondBatch := []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{{
-		AssetPropertyValueHistory: []*iotsitewise.AssetPropertyValue{
-			{
-				Quality: Pointer("GOOD"),
-				Timestamp: &iotsitewise.TimeInNanos{
-					OffsetInNanos: Pointer(int64(0)),
-					TimeInSeconds: Pointer(int64(1612207200)),
-				},
-				Value: &iotsitewise.Variant{
-					DoubleValue: Pointer(float64(23.8)),
-				},
-			},
-		},
-		EntryId: Pointer(fmt.Sprintf("%dassetid-aaaa-2222-bbbb-3333cccc4444", api.BatchGetAssetPropertyValueHistoryMaxEntries+1)),
-	}}
-	mockSw.On(
-		"BatchGetAssetPropertyValueHistoryPageAggregation",
-		mock.Anything,
-		mock.MatchedBy(func(input *iotsitewise.BatchGetAssetPropertyValueHistoryInput) bool {
-			return len(input.Entries) < api.BatchGetAssetPropertyValueHistoryMaxEntries
-		}),
-		mock.Anything,
-		mock.Anything,
-	).Return(&iotsitewise.BatchGetAssetPropertyValueHistoryOutput{
-		NextToken:      Pointer("some-next-token-2"),
-		SuccessEntries: mockedSuccessEntriesSecondBatch,
-	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
-		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
-			DataType: Pointer("DOUBLE"),
-			Name:     Pointer("Wind Speed"),
-			Unit:     Pointer("m/s"),
-		},
-	}, nil)
+}
 
-	srvr := &server.Server{
-		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
+func Test_get_property_value_history_with_batched_queries_with_error(t *testing.T) {
+	tc := batch_test{
+		name:           "batch history query with one error",
+		numAssetIds:    api.BatchGetAssetPropertyValueHistoryMaxEntries + 1,
+		numPropertyIds: api.BatchGetAssetPropertyValueHistoryMaxEntries + 1,
 	}
 
-	sitewise.GetCache = func() *cache.Cache {
-		return cache.New(cache.DefaultExpiration, cache.NoExpiration)
-	}
+	t.Run(tc.name, func(t *testing.T) {
+		mockSw := &mocks.SitewiseClient{}
 
-	qdr, err := srvr.HandlePropertyValueHistory(context.Background(), &backend.QueryDataRequest{
-		PluginContext: backend.PluginContext{},
-		Queries: []backend.DataQuery{
-			{
-				QueryType:     models.QueryTypePropertyValueHistory,
-				RefID:         "A",
-				MaxDataPoints: 100,
-				Interval:      1000,
-				TimeRange:     timeRange,
-				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
-					BaseQuery: models.BaseQuery{
-						AwsRegion: testdata.AwsRegion,
-						AssetIds: []string{
-							"1assetid-aaaa-2222-bbbb-3333cccc4444",
-							"2assetid-aaaa-2222-bbbb-3333cccc4444",
-							"3assetid-aaaa-2222-bbbb-3333cccc4444",
-							"4assetid-aaaa-2222-bbbb-3333cccc4444",
-							"5assetid-aaaa-2222-bbbb-3333cccc4444",
-							"6assetid-aaaa-2222-bbbb-3333cccc4444",
-							"7assetid-aaaa-2222-bbbb-3333cccc4444",
-							"8assetid-aaaa-2222-bbbb-3333cccc4444",
-							"9assetid-aaaa-2222-bbbb-3333cccc4444",
-							"10assetid-aaaa-2222-bbbb-3333cccc4444",
-							"11assetid-aaaa-2222-bbbb-3333cccc4444",
-							"12assetid-aaaa-2222-bbbb-3333cccc4444",
-							"13assetid-aaaa-2222-bbbb-3333cccc4444",
-							"14assetid-aaaa-2222-bbbb-3333cccc4444",
-							"15assetid-aaaa-2222-bbbb-3333cccc4444",
-							"16assetid-aaaa-2222-bbbb-3333cccc4444",
-							"17assetid-aaaa-2222-bbbb-3333cccc4444",
-						},
-					},
-				}),
+		mockedSuccessEntries := []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{}
+		mockedErrorEntries := []*iotsitewise.BatchGetAssetPropertyValueHistoryErrorEntry{}
+		numBatch := 0
+		errorIndex := 20
+
+		assetIds := generateIds(tc.numAssetIds, mockAssetId)
+		propertyIds := generateIds(tc.numPropertyIds, mockPropertyId)
+		for a, assetId := range assetIds {
+			for p, propertyId := range propertyIds {
+				// Build the success entry based on the assetId and propertyId
+				entryId := util.GetEntryIdFromAssetProperty(assetId, propertyId)
+
+				// Build one error entry
+				if a*tc.numPropertyIds+p == errorIndex {
+					mockedErrorEntries = append(mockedErrorEntries, &iotsitewise.BatchGetAssetPropertyValueHistoryErrorEntry{
+						ErrorCode:    Pointer("404"),
+						ErrorMessage: Pointer("Asset property not found."),
+						EntryId:      entryId,
+					})
+				} else {
+					successEntry := mockBatchGetAssetPropertyValueHistorySuccessEntry(entryId, p)
+					mockedSuccessEntries = append(mockedSuccessEntries, &successEntry)
+				}
+
+				isLastBatch := a == tc.numAssetIds-1 && p == tc.numPropertyIds-1
+				// When batch is complete mock the History call with the success entries
+				if len(mockedSuccessEntries)+len(mockedErrorEntries) == api.BatchGetAssetPropertyValueHistoryMaxEntries || isLastBatch {
+					numBatch++
+					mockBatchGetAssetPropertyValueHistoryPageAggregation(mockSw, Pointer(fmt.Sprintf("some-next-token-%d", numBatch)), mockedSuccessEntries, mockedErrorEntries)
+					// Reset for next batch
+					mockedSuccessEntries = []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry{}
+					mockedErrorEntries = []*iotsitewise.BatchGetAssetPropertyValueHistoryErrorEntry{}
+				}
+			}
+		}
+
+		mockDescribeAssetPropertyWithContext(mockSw)
+
+		srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
+
+		sitewise.GetCache = func() *cache.Cache {
+			return cache.New(cache.DefaultExpiration, cache.NoExpiration)
+		}
+
+		var baseQuery models.BaseQuery
+		if tc.numPropertyAliases > 0 {
+			baseQuery = models.BaseQuery{
+				AwsRegion:       testdata.AwsRegion,
+				PropertyAliases: generateIds(tc.numPropertyAliases, mockPropertyAlias),
+			}
+		} else {
+			baseQuery = models.BaseQuery{
+				AwsRegion:   testdata.AwsRegion,
+				AssetIds:    generateIds(tc.numAssetIds, mockAssetId),
+				PropertyIds: generateIds(tc.numPropertyIds, mockPropertyId),
+			}
+		}
+
+		query := &backend.QueryDataRequest{
+			PluginContext: backend.PluginContext{},
+			Queries: []backend.DataQuery{
+				{
+					RefID:     "A",
+					QueryType: models.QueryTypePropertyAggregate,
+					TimeRange: timeRange,
+					JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
+						BaseQuery: baseQuery,
+					}),
+				},
 			},
-		},
+		}
+
+		qdr, err := srvr.HandlePropertyValueHistory(context.Background(), query)
+		require.Nil(t, err)
+		_, ok := qdr.Responses["A"]
+		require.True(t, ok)
+
+		expectedNumFrames := tc.numAssetIds * tc.numPropertyIds
+		require.Len(t, qdr.Responses["A"].Frames, expectedNumFrames)
+
+		// Check for the error
+		numErrors := 0
+		for _, f := range qdr.Responses["A"].Frames {
+			if len(f.Meta.Notices) > 0 {
+				expectedErrorFrame := data.NewFrame("Demo Turbine Asset 1 Wind Speed").SetMeta(&data.FrameMeta{
+					Notices: []data.Notice{{Severity: data.NoticeSeverityError, Text: "Asset property not found."}},
+				},
+				)
+				if diff := cmp.Diff(expectedErrorFrame, f, data.FrameTestCompareOptions()...); diff != "" {
+					t.Errorf("Result mismatch (-want +got):\n%s", diff)
+				}
+				numErrors++
+			}
+		}
+		require.True(t, numErrors == 1)
+
+		mockSw.AssertExpectations(t)
 	})
-	require.Nil(t, err)
-
-	for i, dr := range qdr.Responses {
-		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-with-batched-queries", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
-	}
 }

@@ -24,13 +24,6 @@ type responseWrapper struct {
 }
 
 func interpolatedQueryToInputs(query models.AssetPropertyValueQuery) []*iotsitewise.GetInterpolatedAssetPropertyValuesInput {
-	//if propertyAlias is set make sure to set the assetId and propertyId to nil
-	if query.PropertyAlias != "" {
-		query.PropertyId = ""
-		query.AssetIds = []string{}
-		// nolint:staticcheck
-		query.AssetId = ""
-	}
 
 	from, to := util.TimeRangeToUnix(query.TimeRange)
 	startTimeInSeconds := from.Unix()
@@ -56,58 +49,51 @@ func interpolatedQueryToInputs(query models.AssetPropertyValueQuery) []*iotsitew
 		intervalInSeconds = 1
 	}
 
-	awsReqsLen := len(query.AssetIds)
-	if query.PropertyAlias != "" {
-		awsReqsLen = 1
-	}
-	awsReqs := make([]*iotsitewise.GetInterpolatedAssetPropertyValuesInput, awsReqsLen)
-	if query.PropertyAlias != "" {
-		var nextToken *string
-		token, ok := query.NextTokens[query.PropertyAlias]
-		if ok {
-			nextToken = aws.String(token)
-		}
-		awsReqs[0] = &iotsitewise.GetInterpolatedAssetPropertyValuesInput{
+	awsReqs := make([]*iotsitewise.GetInterpolatedAssetPropertyValuesInput, 0)
+
+	// All unique properties are collected in AssetPropertyEntries and used in
+	// separate GetInterpolatedAssetPropertyValues requests
+	for _, entry := range query.AssetPropertyEntries {
+		interpolatedInput := iotsitewise.GetInterpolatedAssetPropertyValuesInput{
 			StartTimeInSeconds: &startTimeInSeconds,
 			EndTimeInSeconds:   &endTimeInSeconds,
 			IntervalInSeconds:  aws.Int64(intervalInSeconds),
 			MaxResults:         aws.Int64(10),
-			NextToken:          nextToken,
-			AssetId:            util.GetAssetId(query.BaseQuery),
-			PropertyId:         util.GetPropertyId(query.BaseQuery),
-			PropertyAlias:      util.GetPropertyAlias(query.BaseQuery),
 			Quality:            &quality,
 			Type:               &interpolationType,
 		}
-		return awsReqs
-	} else {
-		for idx, assetId := range query.AssetIds {
-			var nextToken *string
-			token, ok := query.NextTokens[assetId]
-			if ok {
-				nextToken = aws.String(token)
-			}
-			awsReqs[idx] = &iotsitewise.GetInterpolatedAssetPropertyValuesInput{
-				StartTimeInSeconds: &startTimeInSeconds,
-				EndTimeInSeconds:   &endTimeInSeconds,
-				IntervalInSeconds:  aws.Int64(intervalInSeconds),
-				MaxResults:         aws.Int64(10),
-				NextToken:          nextToken,
-				AssetId:            aws.String(assetId),
-				PropertyId:         util.GetPropertyId(query.BaseQuery),
-				PropertyAlias:      util.GetPropertyAlias(query.BaseQuery),
-				Quality:            &quality,
-				Type:               &interpolationType,
-			}
+		var entryId *string
+		if entry.AssetId != "" && entry.PropertyId != "" {
+			interpolatedInput.AssetId = aws.String(entry.AssetId)
+			interpolatedInput.PropertyId = aws.String(entry.PropertyId)
+			entryId = util.GetEntryIdFromAssetProperty(entry.AssetId, entry.PropertyId)
+		} else {
+			// If there is no assetId or propertyId, then we use the propertyAlias
+			interpolatedInput.PropertyAlias = aws.String(entry.PropertyAlias)
+			entryId = util.GetEntryIdFromPropertyAlias(entry.PropertyAlias)
 		}
+		var nextToken *string
+		token, ok := query.NextTokens[*entryId]
+		if ok {
+			nextToken = aws.String(token)
+		}
+		interpolatedInput.NextToken = nextToken
+		awsReqs = append(awsReqs, &interpolatedInput)
 	}
 
 	return awsReqs
 }
 
-func GetInterpolatedAssetPropertyValues(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (*framer.InterpolatedAssetPropertyValue, error) {
+func GetInterpolatedAssetPropertyValues(ctx context.Context, client client.SitewiseClient,
+	query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.InterpolatedAssetPropertyValue, error) {
 	maxDps := int(query.MaxDataPoints)
-	awsReqs := interpolatedQueryToInputs(query)
+
+	modifiedQuery, err := getAssetIdAndPropertyId(query, client, ctx)
+	if err != nil {
+		return models.AssetPropertyValueQuery{}, nil, err
+	}
+
+	awsReqs := interpolatedQueryToInputs(modifiedQuery)
 
 	resultChan := make(chan *responseWrapper, len(awsReqs))
 	eg, ectx := errgroup.WithContext(ctx)
@@ -119,10 +105,10 @@ func GetInterpolatedAssetPropertyValues(ctx context.Context, client client.Sitew
 				return err
 			}
 			entryId := ""
-			if awsReq.AssetId != nil {
-				entryId = *awsReq.AssetId
+			if awsReq.AssetId != nil && awsReq.PropertyId != nil {
+				entryId = *util.GetEntryIdFromAssetProperty(*awsReq.AssetId, *awsReq.PropertyId)
 			} else {
-				entryId = *awsReq.PropertyAlias
+				entryId = *util.GetEntryIdFromPropertyAlias(*awsReq.PropertyAlias)
 			}
 			resultChan <- &responseWrapper{
 				DataResponse: resp,
@@ -133,10 +119,10 @@ func GetInterpolatedAssetPropertyValues(ctx context.Context, client client.Sitew
 		})
 	}
 
-	err := eg.Wait()
+	err = eg.Wait()
 	close(resultChan)
 	if err != nil {
-		return nil, err
+		return models.AssetPropertyValueQuery{}, nil, err
 	}
 
 	responses := make(map[string]*iotsitewise.GetInterpolatedAssetPropertyValuesOutput, len(awsReqs))
@@ -144,8 +130,9 @@ func GetInterpolatedAssetPropertyValues(ctx context.Context, client client.Sitew
 		responses[result.EntryId] = result.DataResponse
 	}
 
-	return &framer.InterpolatedAssetPropertyValue{
-		Responses: responses,
-		Query:     query,
-	}, nil
+	return modifiedQuery,
+		&framer.InterpolatedAssetPropertyValue{
+			Responses: responses,
+			Query:     modifiedQuery,
+		}, nil
 }

@@ -72,7 +72,7 @@ func (p AssetPropertyValueHistoryBatch) Frame(ctx context.Context, property *iot
 	length := len(h)
 	// TODO: make this work with the API instead of ad-hoc dataType inference
 	// https://github.com/grafana/iot-sitewise-datasource/issues/98#issuecomment-892947756
-	if util.IsAssetProperty(property) && *property.AssetProperty.DataType == *aws.String("?") {
+	if util.IsAssetProperty(property) && !isPropertyDataTypeDefined(*property.AssetProperty.DataType) {
 		if length != 0 {
 			property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(h[0].Value))
 		} else {

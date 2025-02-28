@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { getTemplateSrv } from '@grafana/runtime';
 import { useEffect, useState } from 'react';
 import { type Region } from './regions';
+import { getSelectableTemplateVariables } from 'variables';
 
 /**
  * Keep a different cache for each region
@@ -202,7 +203,7 @@ export class SitewiseCache {
   }
 
   async getAssetPickerOptions(): Promise<Array<SelectableValue<string>>> {
-    const options = getTemplateVariableOptions();
+    const options: Array<SelectableValue<string>> = getSelectableTemplateVariables();
     try {
       const topLevel = (await this.getTopLevelAssets()) || [];
       for (const asset of topLevel) {
@@ -298,16 +299,6 @@ export function assetSummaryToAssetInfo(res?: DataFrameView<AssetSummary>): Asse
   return results;
 }
 
-const getTemplateVariableOptions = (): Array<SelectableValue<string>> => {
-  return getTemplateSrv()
-    .getVariables()
-    .map((variable) => ({
-      label: '${' + (variable.label ?? variable.name) + '}',
-      value: '${' + variable.name + '}',
-      icon: 'arrow-right',
-    }));
-};
-
 export const useModelsOptions = (cache: SitewiseCache): { isLoading: boolean; options: SelectableValue[] } => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [options, setOptions] = useState<SelectableValue[]>([]);
@@ -326,3 +317,7 @@ export const useModelsOptions = (cache: SitewiseCache): { isLoading: boolean; op
 
   return { isLoading, options };
 };
+
+export function getPropertyIdPickerOptions(asset?: AssetInfo): Array<SelectableValue<string>> {
+  return asset?.properties.map((property) => ({ label: property.Name, value: property.Id })) || [];
+}

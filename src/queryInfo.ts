@@ -118,9 +118,14 @@ export function getAssetProperty(asset?: AssetInfo, propId?: string): AssetPrope
   return asset.properties.find((p) => p.Id === propId);
 }
 
-export function getDefaultAggregate(prop?: AssetPropertyInfo): AggregateType {
-  if (prop?.DataType === 'STRING') {
-    return AggregateType.COUNT;
+export function getDefaultAggregate(): AggregateType {
+  return AggregateType.COUNT;
+}
+
+export function areAssetsFromSameModel(assets?: (AssetInfo | undefined)[]): boolean {
+  if (!assets || assets.length == 0) {
+    return true;
   }
-  return AggregateType.AVERAGE;
+  const assetModelId = assets[0]?.model_id;
+  return assets.every((assetInfo) => assetInfo?.model_id == assetModelId);
 }

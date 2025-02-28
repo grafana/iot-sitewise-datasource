@@ -47,36 +47,27 @@ func aggregateBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewi
 
 	entries := make([]*iotsitewise.BatchGetAssetPropertyAggregatesEntry, 0)
 
-	switch {
-	case query.PropertyAlias != "":
-		entries = append(entries, &iotsitewise.BatchGetAssetPropertyAggregatesEntry{
+	// All unique properties are collected in AssetPropertyEntries and assigned to
+	// a BatchGetAssetPropertyAggregatesEntry
+	for _, entry := range query.AssetPropertyEntries {
+		aggregatesEntry := iotsitewise.BatchGetAssetPropertyAggregatesEntry{
 			AggregateTypes: aggregateTypes,
 			EndDate:        to,
-			EntryId:        util.GetEntryId(query.BaseQuery),
-			PropertyAlias:  util.GetPropertyAlias(query.BaseQuery),
 			Qualities:      qualities,
 			Resolution:     aws.String(resolution),
 			StartDate:      from,
 			TimeOrdering:   timeOrdering,
-		})
-	default:
-		for _, assetId := range query.AssetIds {
-			var id *string
-			if assetId != "" {
-				id = aws.String(assetId)
-			}
-			entries = append(entries, &iotsitewise.BatchGetAssetPropertyAggregatesEntry{
-				AggregateTypes: aggregateTypes,
-				EndDate:        to,
-				EntryId:        id,
-				AssetId:        id,
-				PropertyId:     aws.String(query.PropertyId),
-				Qualities:      qualities,
-				Resolution:     aws.String(resolution),
-				StartDate:      from,
-				TimeOrdering:   timeOrdering,
-			})
 		}
+		if entry.AssetId != "" && entry.PropertyId != "" {
+			aggregatesEntry.AssetId = aws.String(entry.AssetId)
+			aggregatesEntry.PropertyId = aws.String(entry.PropertyId)
+			aggregatesEntry.EntryId = util.GetEntryIdFromAssetProperty(entry.AssetId, entry.PropertyId)
+		} else {
+			// If there is no assetId or propertyId, then we use the propertyAlias
+			aggregatesEntry.PropertyAlias = aws.String(entry.PropertyAlias)
+			aggregatesEntry.EntryId = util.GetEntryIdFromPropertyAlias(entry.PropertyAlias)
+		}
+		entries = append(entries, &aggregatesEntry)
 	}
 
 	return &iotsitewise.BatchGetAssetPropertyAggregatesInput{
