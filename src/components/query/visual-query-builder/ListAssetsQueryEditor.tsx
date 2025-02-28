@@ -1,15 +1,13 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { SelectableValue } from '@grafana/data';
 import { ListAssetsQuery } from 'types';
 import { Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
+import { useModelsOptions } from 'sitewiseCache';
+import { useOptionsWithVariables } from 'common/useOptionsWithVariables';
 
-interface State {
-  models?: SelectableValue<string>[];
-}
-
-const filters = [
+const FILTERS = [
   {
     label: 'Top Level',
     value: 'TOP_LEVEL',
@@ -18,71 +16,50 @@ const filters = [
   { label: 'All', value: 'ALL', description: 'The list includes all assets for a given asset model ID' },
 ];
 
-export class ListAssetsQueryEditor extends PureComponent<SitewiseQueryEditorProps<ListAssetsQuery>, State> {
-  state: State = {};
+export const ListAssetsQueryEditor = ({ query, datasource, onChange }: SitewiseQueryEditorProps<ListAssetsQuery>) => {
+  const cache = datasource.getCache(query.region);
+  const { isLoading, options } = useModelsOptions(cache);
+  const modelId = useOptionsWithVariables({ current: query.modelId, options });
 
-  async componentDidMount() {
-    const { query } = this.props;
-    const cache = this.props.datasource.getCache(query.region);
-    const models = await cache.getModelsOptions();
-    this.setState({ models });
-  }
-
-  onAssetModelIdChange = (sel: SelectableValue<string>) => {
-    const { onChange, query } = this.props;
+  const onAssetModelIdChange = (sel: SelectableValue<string>) => {
     onChange({ ...query, modelId: sel.value! });
   };
 
-  onFilterChange = (sel: SelectableValue<string>) => {
-    const { onChange, query } = this.props;
+  const onFilterChange = (sel: SelectableValue<string>) => {
     onChange({ ...query, filter: sel.value as 'ALL' | 'TOP_LEVEL' });
   };
 
-  render() {
-    const { query } = this.props;
-    const { models } = this.state;
-
-    let currentModel = models?.find((m) => m.value === query.modelId);
-    if (query.modelId && !currentModel) {
-      currentModel = {
-        value: query.modelId,
-        label: 'Model ID: ' + query.modelId,
-        description: '',
-      };
-    }
-
-    return (
-      <EditorRow>
-        <EditorFieldGroup>
-          <EditorField label="Model ID" htmlFor="model" width={30}>
-            <Select
-              id="model"
-              aria-label="Model ID"
-              isLoading={!models}
-              options={models}
-              value={currentModel}
-              onChange={this.onAssetModelIdChange}
-              placeholder="Select an asset model id"
-              allowCustomValue={true}
-              isClearable={true}
-              isSearchable={true}
-              formatCreateLabel={(txt) => `Model ID: ${txt}`}
-              menuPlacement="auto"
-            />
-          </EditorField>
-          <EditorField label="Filter" htmlFor="filter" width={20}>
-            <Select
-              id="filter"
-              aria-label="Filter"
-              options={filters}
-              value={filters.find((v) => v.value === query.filter) || filters[0]}
-              onChange={this.onFilterChange}
-              placeholder="Select a property"
-              menuPlacement="auto"
-            />
-          </EditorField>
-        </EditorFieldGroup>
-      </EditorRow>
-    );
-  }
-}
+  return (
+    <EditorRow>
+      <EditorFieldGroup>
+        <EditorField label="Model ID" htmlFor="model" width={30}>
+          <Select
+            inputId="model"
+            aria-label="Model ID"
+            isLoading={isLoading}
+            options={modelId.options}
+            value={modelId.current}
+            onChange={onAssetModelIdChange}
+            placeholder="Select an asset model id"
+            allowCustomValue={true}
+            isClearable={true}
+            isSearchable={true}
+            formatCreateLabel={(txt) => `Model ID: ${txt}`}
+            menuPlacement="auto"
+          />
+        </EditorField>
+        <EditorField label="Filter" htmlFor="filter" width={20}>
+          <Select
+            inputId="filter"
+            aria-label="Filter"
+            options={FILTERS}
+            value={FILTERS.find((v) => v.value === query.filter) || FILTERS[0]}
+            onChange={onFilterChange}
+            placeholder="Select a filter"
+            menuPlacement="auto"
+          />
+        </EditorField>
+      </EditorFieldGroup>
+    </EditorRow>
+  );
+};

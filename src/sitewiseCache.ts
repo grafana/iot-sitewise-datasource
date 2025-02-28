@@ -5,6 +5,7 @@ import { AssetModelSummary, AssetSummary, DescribeAssetResult } from './queryRes
 import { AssetInfo, AssetPropertyInfo } from './types';
 import { map } from 'rxjs/operators';
 import { getTemplateSrv } from '@grafana/runtime';
+import { useEffect, useState } from 'react';
 
 /**
  * Keep a different cache for each region
@@ -117,20 +118,16 @@ export class SitewiseCache {
   }
 
   async getModelsOptions(): Promise<Array<SelectableValue<string>> | undefined> {
-    const options = getTemplateVariableOptions();
-
     const models = await this.getModels();
     if (!models) {
       return;
     }
 
-    return options.concat(
-      models.toArray().map((model) => ({
-        label: model.name,
-        value: model.id,
-        description: model.description,
-      }))
-    );
+    return models.toArray().map((model) => ({
+      label: model.name,
+      value: model.id,
+      description: model.description,
+    }));
   }
 
   // No cache for now
@@ -308,4 +305,23 @@ const getTemplateVariableOptions = (): Array<SelectableValue<string>> => {
       value: '${' + variable.name + '}',
       icon: 'arrow-right',
     }));
+};
+
+export const useModelsOptions = (cache: SitewiseCache): { isLoading: boolean; options: SelectableValue[] } => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [options, setOptions] = useState<SelectableValue[]>([]);
+
+  useEffect(() => {
+    cache
+      .getModelsOptions()
+      .then((options) => {
+        setIsLoading(false);
+        setOptions(options || []);
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
+  }, [cache]);
+
+  return { isLoading, options };
 };

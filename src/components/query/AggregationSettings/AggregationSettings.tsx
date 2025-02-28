@@ -1,12 +1,11 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { SelectableValue } from '@grafana/data';
 import { AggregateType, SiteWiseResolution, AssetPropertyAggregatesQuery, AssetPropertyInfo } from 'types';
 import { Select } from '@grafana/ui';
 import { EditorField, EditorFieldGroup } from '@grafana/plugin-ui';
 import { getDefaultAggregate } from 'queryInfo';
 import { AggregatePicker } from 'components/query/AggregationSettings/AggregatePicker';
-import { getSelectionInfo } from 'common/getSelectionInfo';
-import { getVariableOptions } from 'common/getVariableOptions';
+import { useOptionsWithVariables } from 'common/useOptionsWithVariables';
 
 const RESOLUTIONS: Array<SelectableValue<string>> = [
   {
@@ -31,6 +30,8 @@ export const AggregationSettings = ({
   onChange: (value: AssetPropertyAggregatesQuery) => void;
   property?: AssetPropertyInfo;
 }) => {
+  const resolution = useOptionsWithVariables({ current: query.resolution, options: RESOLUTIONS });
+
   const onAggregateChange = (aggregates: AggregateType[]) => {
     onChange({ ...query, aggregates });
   };
@@ -38,11 +39,6 @@ export const AggregationSettings = ({
   const onResolutionChange = (sel: SelectableValue<string>) => {
     onChange({ ...query, resolution: sel.value as SiteWiseResolution });
   };
-
-  const resolution = useMemo(
-    () => getSelectionInfo(query.resolution, RESOLUTIONS, getVariableOptions({ keepVarSyntax: true })),
-    [query]
-  );
 
   return (
     <EditorFieldGroup>
