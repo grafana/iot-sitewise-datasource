@@ -4,21 +4,25 @@ import React from 'react';
 import { EditorField, EditorFieldGroup } from '@grafana/plugin-ui';
 import { css } from '@emotion/css';
 import { GrafanaTheme2 } from '@grafana/data';
+import { QualityAndOrderRow } from './QualityAndOrderRow';
+import { DataSource } from 'SitewiseDataSource';
 
 interface Props {
-  qualityAndOrderComponent: JSX.Element;
   query: SitewiseQuery;
   showProp: boolean;
   showQuality: boolean;
   onLastObservationChange: (e?: React.FormEvent<HTMLInputElement>) => void;
   onFlattenL4eChange: (e?: React.FormEvent<HTMLInputElement>) => void;
+  datasource: DataSource;
+  onChange: (value: SitewiseQuery) => void;
 }
 
 export function QueryOptions({
   query,
+  datasource,
+  onChange,
   showProp,
   showQuality,
-  qualityAndOrderComponent,
   onLastObservationChange,
   onFlattenL4eChange,
 }: Props) {
@@ -55,10 +59,9 @@ export function QueryOptions({
               <Switch value={query.flattenL4e} onChange={onFlattenL4eChange} />
             </EditorField>
           )}
-          {shouldShowQualityAndOrderComponent(query.queryType) &&
-            (showProp || query.propertyAlias) &&
-            showQuality &&
-            qualityAndOrderComponent}
+          {shouldShowQualityAndOrderComponent(query.queryType) && (showProp || query.propertyAlias) && showQuality && (
+            <QualityAndOrderRow query={query} onChange={onChange} datasource={datasource} />
+          )}
         </EditorFieldGroup>
       </CollapsableSection>
     </div>

@@ -2,39 +2,19 @@ import React, { PureComponent } from 'react';
 import { SelectableValue } from '@grafana/data';
 import {
   SiteWiseTimeOrder,
-  AssetPropertyValueHistoryQuery,
-  AssetPropertyAggregatesQuery,
-  AssetPropertyInterpolatedQuery,
   SiteWiseQuality,
   SiteWiseResolution,
-  isAssetPropertyInterpolatedQuery,
   SiteWiseResponseFormat,
   QueryType,
+  SitewiseQuery,
+  AssetPropertyValueHistoryQuery,
+  AssetPropertyAggregatesQuery,
 } from 'types';
 import { Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { EditorField } from '@grafana/plugin-ui';
 
-type Props = SitewiseQueryEditorProps<
-  AssetPropertyValueHistoryQuery | AssetPropertyAggregatesQuery | AssetPropertyInterpolatedQuery
->;
-
-const interpolatedResolutions: Array<SelectableValue<SiteWiseResolution>> = [
-  {
-    value: SiteWiseResolution.Auto,
-    label: 'Auto',
-    description:
-      'Picks a resolution based on the time window. ' +
-      'Will switch to raw data if higher than 1m resolution is needed',
-  },
-  { value: SiteWiseResolution.Sec, label: 'Second', description: '1 point every second' },
-  { value: SiteWiseResolution.TenSec, label: '10 Seconds', description: '1 point every 10 seconds' },
-  { value: SiteWiseResolution.Min, label: 'Minute', description: '1 point every minute' },
-  { value: SiteWiseResolution.TenMin, label: '10 Minutes', description: '1 point every 10 minutes' },
-  { value: SiteWiseResolution.Hour, label: 'Hour', description: '1 point every hour' },
-  { value: SiteWiseResolution.TenHour, label: '10 Hours', description: '1 point every 10 hours' },
-  { value: SiteWiseResolution.Day, label: 'Day', description: '1 point every day' },
-];
+type Props = SitewiseQueryEditorProps<SitewiseQuery>;
 
 const qualities: Array<SelectableValue<SiteWiseQuality>> = [
   { value: SiteWiseQuality.GOOD, label: 'GOOD' },
@@ -83,7 +63,7 @@ export class QualityAndOrderRow extends PureComponent<Props> {
     }
 
     const onOrderChange = (sel: SelectableValue<SiteWiseTimeOrder>) => {
-      onChange({ ...query, timeOrdering: sel.value });
+      onChange({ ...query, timeOrdering: sel.value } as AssetPropertyAggregatesQuery | AssetPropertyValueHistoryQuery);
     };
 
     return (
@@ -92,7 +72,11 @@ export class QualityAndOrderRow extends PureComponent<Props> {
           id="time"
           aria-label="Time"
           options={ordering}
-          value={ordering.find((v) => v.value === query.timeOrdering) ?? ordering[0]}
+          value={
+            ordering.find(
+              (v) => v.value === (query as AssetPropertyAggregatesQuery | AssetPropertyValueHistoryQuery).timeOrdering
+            ) ?? ordering[0]
+          }
           onChange={onOrderChange}
           isSearchable={true}
           menuPlacement="auto"
@@ -126,18 +110,6 @@ export class QualityAndOrderRow extends PureComponent<Props> {
             options={FORMAT_OPTIONS}
           />
         </EditorField>
-        {isAssetPropertyInterpolatedQuery(query) && (
-          <EditorField label="Resolution" width={25} htmlFor="resolution">
-            <Select
-              id="resolution"
-              aria-label="Resolution"
-              options={interpolatedResolutions}
-              value={interpolatedResolutions.find((v) => v.value === query.resolution) || interpolatedResolutions[0]}
-              onChange={this.onResolutionChange}
-              menuPlacement="auto"
-            />
-          </EditorField>
-        )}
       </>
     );
   }
