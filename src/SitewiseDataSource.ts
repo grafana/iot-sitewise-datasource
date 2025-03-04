@@ -1,23 +1,23 @@
 import {
-  DataSourceInstanceSettings,
-  ScopedVars,
-  DataQueryResponse,
-  DataQueryRequest,
-  DataFrame,
-  MetricFindValue,
-  LoadingState,
   CoreApp,
+  DataFrame,
+  DataQueryRequest,
+  DataQueryResponse,
+  DataSourceInstanceSettings,
+  LoadingState,
+  MetricFindValue,
+  ScopedVars,
 } from '@grafana/data';
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
-
 import { SitewiseCache } from 'sitewiseCache';
-import { SitewiseQuery, SitewiseOptions, isPropertyQueryType, SiteWiseResolution, isListAssetsQuery } from './types';
+import { isListAssetsQuery, isPropertyQueryType, SitewiseOptions, SitewiseQuery, SiteWiseResolution } from './types';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { frameToMetricFindValues } from 'utils';
 import { SitewiseVariableSupport } from 'variables';
 import { SitewiseQueryPaginator } from 'SiteWiseQueryPaginator';
 import { RelativeRangeCache } from 'RelativeRangeRequestCache/RelativeRangeCache';
+import { DEFAULT_REGION, isSupportedRegion, type Region } from './regions';
 
 export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOptions> {
   // Easy access for QueryEditor
@@ -36,10 +36,9 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   /**
    * Get a region scoped cache
    */
-  getCache(region?: string): SitewiseCache {
-    if (!region || region === 'default') {
-      region = this.options.defaultRegion || '';
-    }
+  getCache(
+    region: Region = isSupportedRegion(this.options.defaultRegion) ? this.options.defaultRegion : DEFAULT_REGION
+  ): SitewiseCache {
     let v = this.cache.get(region);
     if (!v) {
       v = new SitewiseCache(this, region);
@@ -53,7 +52,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
 
   getDefaultQuery(_: CoreApp): Partial<SitewiseQuery> {
     return {
-      region: this.options.defaultRegion || '',
+      region: isSupportedRegion(this.options.defaultRegion) ? this.options.defaultRegion : DEFAULT_REGION,
       rawSQL: this.defaultQuery,
     };
   }
@@ -143,7 +142,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
     const interpolatedQuery = {
       ...query,
       propertyAlias: templateSrv.replace(query.propertyAlias, scopedVars),
-      region: templateSrv.replace(query.region || '', scopedVars),
+      region: templateSrv.replace(query.region ?? DEFAULT_REGION, scopedVars) as Region | undefined,
       propertyId: templateSrv.replace(query.propertyId || '', scopedVars),
       assetId: templateSrv.replace(query.assetId || '', scopedVars),
       assetIds: query.assetIds?.flatMap((assetId) => templateSrv.replace(assetId, scopedVars, 'csv').split(',')) ?? [],

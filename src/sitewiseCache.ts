@@ -6,6 +6,7 @@ import { AssetInfo, AssetPropertyInfo } from './types';
 import { map } from 'rxjs/operators';
 import { getTemplateSrv } from '@grafana/runtime';
 import { useEffect, useState } from 'react';
+import { type Region } from './regions';
 
 /**
  * Keep a different cache for each region
@@ -18,7 +19,7 @@ export class SitewiseCache {
 
   constructor(
     private ds: DataSource,
-    private region: string
+    private region: Region
   ) {}
 
   async getAssetInfo(id: string): Promise<AssetInfo | undefined> {

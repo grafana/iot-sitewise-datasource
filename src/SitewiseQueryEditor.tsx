@@ -8,7 +8,7 @@ import { SitewiseQuery, SitewiseOptions, QueryType } from 'types';
 import { DataSource } from 'SitewiseDataSource';
 import { RawQueryEditor } from 'components/query/query-editor-raw/RawQueryEditor';
 import { VisualQueryBuilder } from 'components/query/visual-query-builder/VisualQueryBuilder';
-import { standardRegionOptions } from 'regions';
+import { regionOptions, type Region } from 'regions';
 
 type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 
@@ -25,9 +25,13 @@ export function SitewiseQueryEditor(props: Props) {
     onChange({ ...newQuery, editorMode: newEditorMode });
   };
 
-  const onRegionChange = (sel: SelectableValue<string>) => {
+  const onRegionChange = (sel: SelectableValue<Region>) => {
     onChange({ ...query, region: sel.value });
   };
+
+  const selectedRegionOption = regionOptions.find((option) => {
+    return option.value === query.region;
+  });
 
   return (
     <>
@@ -39,10 +43,8 @@ export function SitewiseQueryEditor(props: Props) {
           editorMode == QueryEditorMode.Code ? (
             <InlineSelect
               label="AWS Region"
-              options={standardRegionOptions}
-              value={
-                standardRegionOptions.find((v) => v.value === query.region) || props.datasource.options.defaultRegion
-              }
+              options={regionOptions}
+              value={selectedRegionOption}
               onChange={onRegionChange}
               backspaceRemovesValue
               allowCustomValue

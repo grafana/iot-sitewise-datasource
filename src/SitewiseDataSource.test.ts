@@ -58,7 +58,7 @@ describe('Sitewise Datasource', () => {
         assetIds: [],
         propertyAlias: '',
         resolution: '${resolution}' as SiteWiseResolution,
-        region: 'default',
+        region: '',
         propertyId: '',
       };
 
@@ -80,7 +80,7 @@ describe('Sitewise Datasource', () => {
         assetId: '',
         assetIds: ['${assetIdConstant}'],
         propertyAlias: '',
-        region: 'default',
+        region: '',
         propertyId: '',
       };
 
@@ -98,7 +98,7 @@ describe('Sitewise Datasource', () => {
         assetId: '',
         assetIds: ['${assetIdArray}'],
         propertyAlias: '',
-        region: 'default',
+        region: '',
         propertyId: '',
       };
 
@@ -116,7 +116,7 @@ describe('Sitewise Datasource', () => {
         assetIds: ['${assetIdConstant}', '${assetIdArray}'],
         assetId: '',
         propertyAlias: '',
-        region: 'default',
+        region: '',
         propertyId: '',
       };
 
@@ -134,7 +134,7 @@ describe('Sitewise Datasource', () => {
         assetId: '',
         assetIds: ['${assetIdConstant}'],
         propertyAlias: '',
-        region: 'default',
+        region: '',
         propertyId: '',
       };
 
@@ -156,7 +156,7 @@ describe('Sitewise Datasource', () => {
         assetId: '',
         assetIds: ['${assetIdConstant}', 'noVar', '${assetIdArray}'],
         propertyAlias: '',
-        region: 'default',
+        region: '',
         propertyId: '',
       };
 

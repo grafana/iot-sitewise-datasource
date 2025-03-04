@@ -46,7 +46,7 @@ jest.mock('@grafana/runtime', () => ({
 }));
 const defaultProps: QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions> = {
   datasource: new DataSource(instanceSettings),
-  query: { refId: 'A', queryType: QueryType.DescribeAsset, region: 'default' },
+  query: { refId: 'A', queryType: QueryType.DescribeAsset },
   onRunQuery: jest.fn(),
   onChange: jest.fn(),
 };
