@@ -279,13 +279,10 @@ export interface AssetInfo {
 /**
  * Metadata attached to DataFrame results
  */
-export interface SitewiseCustomMeta {
+export interface SitewiseCustomMetadata {
   nextToken?: string;
-
   entryId?: string;
-
   resolution?: string;
-
   aggregates?: string[];
 }
 
