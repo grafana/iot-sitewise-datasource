@@ -1,6 +1,7 @@
-import { SelectableValue } from '@grafana/data';
-import { DataQuery } from '@grafana/schema';
-import { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData } from '@grafana/aws-sdk';
+import type { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData } from '@grafana/aws-sdk';
+import type { SelectableValue } from '@grafana/data';
+import type { DataQuery } from '@grafana/schema';
+import type { Region } from './regions';
 
 // Matches https://github.com/grafana/iot-sitewise-datasource/blob/main/pkg/models/query.go#L3
 export enum QueryType {
@@ -62,7 +63,7 @@ export enum AggregateType {
 
 export interface SitewiseQuery extends DataQuery {
   queryType: QueryType;
-  region?: string; // aws region string
+  region?: Region; // aws region string
   responseFormat?: SiteWiseResponseFormat;
 
   // QueryEditor

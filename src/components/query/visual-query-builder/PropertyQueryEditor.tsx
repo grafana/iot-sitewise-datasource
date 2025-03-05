@@ -21,6 +21,7 @@ import { css } from '@emotion/css';
 import { QueryOptions } from './QueryOptions';
 import { AggregationSettings } from './AggregationSettings/AggregationSettings';
 import { InterpolatedResolutionSettings } from './InterpolatedResolutionSettings';
+import { DEFAULT_REGION } from '../../../regions';
 
 type Props = SitewiseQueryEditorProps<SitewiseQuery>;
 
@@ -340,7 +341,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                     inputId="asset"
                     aria-label="Asset"
                     isMulti={true}
-                    key={query.region ? query.region : 'default'}
+                    key={query.region ?? DEFAULT_REGION}
                     isLoading={loading}
                     options={assets}
                     value={current}

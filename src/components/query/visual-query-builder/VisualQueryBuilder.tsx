@@ -5,7 +5,7 @@ import { DataSource } from 'SitewiseDataSource';
 import { SitewiseQuery, SitewiseOptions, QueryType, ListAssetsQuery, ListTimeSeriesQuery } from 'types';
 import { Icon, LinkButton, Select } from '@grafana/ui';
 import { QueryTypeInfo, siteWiseQueryTypes, changeQueryType } from 'queryInfo';
-import { standardRegionOptions } from 'regions';
+import { regionOptions, type Region } from 'regions';
 import { ListAssetsQueryEditor } from './ListAssetsQueryEditor';
 import { PropertyQueryEditor } from './PropertyQueryEditor';
 import { migrateQuery } from '../../../migrations/migrateQuery';
@@ -35,12 +35,12 @@ export function VisualQueryBuilder(props: Props) {
     }
   }, [query.assetId]);
 
-  const defaultRegion: SelectableValue<string> = {
+  const defaultRegion: SelectableValue<Region> = {
     label: `Default`,
     description: datasource.options?.defaultRegion,
     value: undefined,
   };
-  const regions = query.region ? [defaultRegion, ...standardRegionOptions] : standardRegionOptions;
+  const regions = query.region ? [defaultRegion, ...regionOptions] : regionOptions;
   const currentQueryType = siteWiseQueryTypes.find((v) => v.value === query.queryType);
 
   const onQueryTypeChange = (sel: SelectableValue<QueryType>) => {
@@ -49,7 +49,7 @@ export function VisualQueryBuilder(props: Props) {
     onChange(changeQueryType(query, sel as QueryTypeInfo));
   };
 
-  const onRegionChange = (sel: SelectableValue<string>) => {
+  const onRegionChange = (sel: SelectableValue<Region>) => {
     const { onChange, query } = props;
     onChange({ ...query, assetId: undefined, propertyId: undefined, region: sel.value });
   };
@@ -113,7 +113,7 @@ export function VisualQueryBuilder(props: Props) {
             <EditorField label="Region" width={15}>
               <Select
                 options={regions}
-                value={standardRegionOptions.find((v) => v.value === query.region) || defaultRegion}
+                value={regionOptions.find((v) => v.value === query.region) || defaultRegion}
                 onChange={onRegionChange}
                 backspaceRemovesValue={true}
                 allowCustomValue={true}

@@ -5,11 +5,12 @@ import { DataSource } from 'SitewiseDataSource';
 import { SitewiseCache } from 'sitewiseCache';
 import { BrowseModels } from './BrowseModels';
 import { BrowseHierarchy } from './BrowseHierarchy';
+import { type Region } from '../../regions';
 
 export interface Props {
   datasource: DataSource;
   assetId?: string; // The incoming value
-  region?: string;
+  region?: Region;
   onAssetChanged: (assetId?: string) => void;
 }
 

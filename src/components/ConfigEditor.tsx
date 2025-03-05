@@ -10,8 +10,11 @@ import {
 import { SitewiseOptions, SitewiseSecureJsonData } from '../types';
 import { ConnectionConfig, ConnectionConfigProps, Divider } from '@grafana/aws-sdk';
 import { Alert, Button, Field, Input, Select } from '@grafana/ui';
-import { standardRegions } from '../regions';
+import { supportedRegions } from '../regions';
 import { ConfigSection } from '@grafana/plugin-ui';
+
+// safely remove readonly to please prop types expecting mutable list
+const standardRegions = supportedRegions.map((r) => r);
 
 export type Props = ConnectionConfigProps<SitewiseOptions, SitewiseSecureJsonData>;
 
@@ -25,6 +28,7 @@ export function ConfigEditor(props: Props) {
   if (props.options.jsonData.defaultRegion === 'Edge') {
     return <EdgeConfig {...props} />;
   }
+
   return (
     <div className="width-30">
       <ConnectionConfig {...props} standardRegions={standardRegions} />{' '}
@@ -39,7 +43,7 @@ function EdgeConfig(props: Props) {
 
   const edgeAuthMode = edgeAuthMethods.find((f) => f.value === jsonData.edgeAuthMode) ?? edgeAuthMethods[0];
   const hasEdgeAuth = edgeAuthMode !== edgeAuthMethods[0];
-  const regions = standardRegions.map((value) => ({ value, label: value }));
+  const regions = supportedRegions.map((value) => ({ value, label: value }));
 
   const onUserChange = (event: ChangeEvent<HTMLInputElement>) => {
     updateDatasourcePluginJsonDataOption(props, 'edgeAuthUser', event.target.value);
