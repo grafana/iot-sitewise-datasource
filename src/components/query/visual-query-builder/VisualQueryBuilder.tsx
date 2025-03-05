@@ -21,8 +21,6 @@ const queryDefaults: Partial<SitewiseQuery> = {
   clientCache: true,
 };
 
-export const firstLabelWith = 20;
-
 export function VisualQueryBuilder(props: Props) {
   const { datasource } = props;
   const query = defaults(props.query, queryDefaults);

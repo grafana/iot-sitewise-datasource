@@ -1,5 +1,6 @@
 import type { AwsAuthDataSourceJsonData, AwsAuthDataSourceSecureJsonData } from '@grafana/aws-sdk';
 import type { SelectableValue } from '@grafana/data';
+import { QueryEditorMode } from '@grafana/plugin-ui';
 import type { DataQuery } from '@grafana/schema';
 import type { Region } from './regions';
 
@@ -16,11 +17,6 @@ export enum QueryType {
   PropertyInterpolated = 'PropertyInterpolated',
   ListTimeSeries = 'ListTimeSeries',
   ExecuteQuery = 'ExecuteQuery',
-}
-
-export enum QueryEditorMode {
-  Builder = 'builder',
-  Code = 'code',
 }
 
 export enum SiteWiseQuality {
@@ -102,10 +98,6 @@ export interface ListAssetModelsQuery extends SitewiseQuery {
   queryType: QueryType.ListAssetModels;
 }
 
-export function isListAssetModelsQuery(q?: SitewiseQuery): q is ListAssetModelsQuery {
-  return q?.queryType === QueryType.ListAssetModels;
-}
-
 /**
  * {@link https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListAssetModels.html}
  */
@@ -132,28 +124,6 @@ export function isListAssociatedAssetsQuery(q?: SitewiseQuery): q is ListAssocia
 }
 
 /**
- * {@link http://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListAssetProperties.html}
- */
-export interface ListAssetPropertiesQuery extends SitewiseQuery {
-  queryType: QueryType.ListAssetProperties;
-}
-
-export function isListAssetPropertiesQuery(q?: SitewiseQuery): q is ListAssetPropertiesQuery {
-  return q?.queryType === QueryType.ListAssetProperties;
-}
-
-/**
- * {@link https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_ListAssetModels.html}
- */
-export interface DescribeAssetQuery extends SitewiseQuery {
-  queryType: QueryType.DescribeAsset;
-}
-
-export function isDescribeAssetQuery(q?: SitewiseQuery): q is ListAssetModelsQuery {
-  return q?.queryType === QueryType.DescribeAsset;
-}
-
-/**
  * {@link https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_GetAssetPropertyValue.html}
  * {@link https://github.com/grafana/iot-sitewise-datasource/blob/main/pkg/models/property.go#L15}
  */
@@ -161,10 +131,6 @@ export interface AssetPropertyValueQuery extends SitewiseQuery {
   queryType: QueryType.PropertyValue;
 
   flattenL4e?: boolean;
-}
-
-export function isAssetPropertyValueQuery(q?: SitewiseQuery): q is AssetPropertyValueQuery {
-  return q?.queryType === QueryType.PropertyAggregate;
 }
 
 /**
@@ -217,10 +183,6 @@ export interface ListTimeSeriesQuery extends SitewiseQuery {
   aliasPrefix?: string;
   assetId?: string;
   timeSeriesType?: 'ASSOCIATED' | 'DISASSOCIATED' | 'ALL';
-}
-
-export function isListTimeSeriesQuery(q?: SitewiseQuery): q is ListTimeSeriesQuery {
-  return q?.queryType === QueryType.ListTimeSeries;
 }
 
 export function isPropertyQueryType(queryType?: QueryType): boolean {
