@@ -61,15 +61,15 @@ func macroSelectAll(query *sqlutil.Query, args []string) (string, error) {
 	return strings.Join(columns, ", "), nil
 }
 
-func macroRawTimeFrom(query *sqlutil.Query, args []string) (string, error) {
+func macroTimeFrom(query *sqlutil.Query, args []string) (string, error) {
 	return fmt.Sprintf("%d", query.TimeRange.From.UTC().Unix()), nil
 }
 
-func macroRawTimeTo(query *sqlutil.Query, args []string) (string, error) {
+func macroTimeTo(query *sqlutil.Query, args []string) (string, error) {
 	return fmt.Sprintf("%d", query.TimeRange.To.UTC().Unix()), nil
 }
 
-func macroUnixEpochFilter(query *sqlutil.Query, args []string) (string, error) {
+func macroTimeFilter(query *sqlutil.Query, args []string) (string, error) {
 	if len(args) != 1 {
 		return "", ErrorBadArgumentCount
 	}
@@ -83,7 +83,7 @@ func macroUnixEpochFilter(query *sqlutil.Query, args []string) (string, error) {
 	return fmt.Sprintf("%s >= %d and %s <= %d", column, from, column, to), nil
 }
 
-func macroResolution(query *sqlutil.Query, args []string) (string, error) {
+func macroAutoResolution(query *sqlutil.Query, args []string) (string, error) {
 	secondInterval := query.Interval.Seconds()
 	//'1m', '15m', '1h', and '1d'
 	switch true {
@@ -101,11 +101,11 @@ func macroResolution(query *sqlutil.Query, args []string) (string, error) {
 }
 
 var macros = map[string]sqlutil.MacroFunc{
-	"selectAll":       macroSelectAll,
-	"rawTimeFrom":     macroRawTimeFrom,
-	"rawTimeTo":       macroRawTimeTo,
-	"unixEpochFilter": macroUnixEpochFilter,
-	"resolution":      macroResolution,
+	"selectAll":      macroSelectAll,
+	"timeFrom":       macroTimeFrom,
+	"timeTo":         macroTimeTo,
+	"timeFilter":     macroTimeFilter,
+	"autoResolution": macroAutoResolution,
 }
 
 func (s *Datasource) Macros() sqlutil.Macros {

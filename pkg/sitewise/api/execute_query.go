@@ -19,23 +19,14 @@ func ExecuteQuery(ctx context.Context, client client.ExecuteQueryClient, query m
 	}
 
 	backend.Logger.FromContext(ctx).Debug("Beginning the query loop")
-	result := framer.QueryResults{}
 
-	for {
-		resp, err := client.ExecuteQueryWithContext(ctx, input)
-		if err != nil {
-			return nil, err
-		}
-
-		result.Columns = resp.Columns
-		result.Rows = append(result.Rows, resp.Rows...)
-
-		if resp.NextToken == nil || *resp.NextToken == "" {
-			backend.Logger.FromContext(ctx).Debug("Breaking", "nextToken", resp.NextToken)
-			break
-		}
-		input.NextToken = aws.String(*resp.NextToken)
+	resp, err := client.ExecuteQueryWithContext(ctx, input)
+	if err != nil {
+		return nil, err
 	}
-
-	return &result, nil
+	return &framer.QueryResults{
+		Rows:      resp.Rows,
+		Columns:   resp.Columns,
+		NextToken: resp.NextToken,
+	}, nil
 }

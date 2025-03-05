@@ -63,8 +63,8 @@ func TestMacros(t *testing.T) {
 		},
 		// RawTimeFrom
 		{
-			name:  "RawTimeFrom",
-			macro: "rawTimeFrom",
+			name:  "TimeFrom",
+			macro: "timeFrom",
 			query: &sqlutil.Query{
 				TimeRange: backend.TimeRange{
 					From: time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
@@ -77,8 +77,8 @@ func TestMacros(t *testing.T) {
 		},
 		// RawTimeFrom
 		{
-			name:  "RawTimeTo default format",
-			macro: "rawTimeTo",
+			name:  "TimeTo default format",
+			macro: "timeTo",
 			query: &sqlutil.Query{
 				TimeRange: backend.TimeRange{
 					From: time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
@@ -91,8 +91,8 @@ func TestMacros(t *testing.T) {
 		},
 		// UnixEpochFilter
 		{
-			name:  "UnixEpochFilter valid case",
-			macro: "unixEpochFilter",
+			name:  "TimeFilter valid case",
+			macro: "timeFilter",
 			query: &sqlutil.Query{
 				TimeRange: backend.TimeRange{
 					From: time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
@@ -104,8 +104,8 @@ func TestMacros(t *testing.T) {
 			expectedErr: nil,
 		},
 		{
-			name:  "UnixEpochFilter invalid argument count",
-			macro: "unixEpochFilter",
+			name:  "TimeFilter invalid argument count",
+			macro: "timeFilter",
 			query: &sqlutil.Query{
 				TimeRange: backend.TimeRange{
 					From: time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
@@ -119,7 +119,7 @@ func TestMacros(t *testing.T) {
 		// resolution
 		{
 			name:  "resolution less than 1m",
-			macro: "resolution",
+			macro: "autoResolution",
 			query: &sqlutil.Query{
 				Interval: time.Duration(30 * time.Second),
 			},
@@ -129,7 +129,7 @@ func TestMacros(t *testing.T) {
 		},
 		{
 			name:  "resolution 1m",
-			macro: "resolution",
+			macro: "autoResolution",
 			query: &sqlutil.Query{
 				Interval: time.Duration(60 * time.Second),
 			},
@@ -139,7 +139,7 @@ func TestMacros(t *testing.T) {
 		},
 		{
 			name:  "resolution less than 15m",
-			macro: "resolution",
+			macro: "autoResolution",
 			query: &sqlutil.Query{
 				Interval: time.Duration(90 * time.Second),
 			},
@@ -149,7 +149,7 @@ func TestMacros(t *testing.T) {
 		},
 		{
 			name:  "resolution 15m",
-			macro: "resolution",
+			macro: "autoResolution",
 			query: &sqlutil.Query{
 				Interval: time.Duration(900 * time.Second),
 			},
@@ -159,7 +159,7 @@ func TestMacros(t *testing.T) {
 		},
 		{
 			name:  "resolution less than 1h",
-			macro: "resolution",
+			macro: "autoResolution",
 			query: &sqlutil.Query{
 				Interval: time.Duration(1000 * time.Second),
 			},
@@ -169,7 +169,7 @@ func TestMacros(t *testing.T) {
 		},
 		{
 			name:  "resolution 1h",
-			macro: "resolution",
+			macro: "autoResolution",
 			query: &sqlutil.Query{
 				Interval: time.Duration(3600 * time.Second),
 			},
@@ -179,7 +179,7 @@ func TestMacros(t *testing.T) {
 		},
 		{
 			name:  "resolution less than 1d",
-			macro: "resolution",
+			macro: "autoResolution",
 			query: &sqlutil.Query{
 				Interval: time.Duration(4000 * time.Second),
 			},
@@ -189,7 +189,7 @@ func TestMacros(t *testing.T) {
 		},
 		{
 			name:  "resolution 1d",
-			macro: "resolution",
+			macro: "autoResolution",
 			query: &sqlutil.Query{
 				Interval: time.Duration(86400 * time.Second),
 			},

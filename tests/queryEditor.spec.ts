@@ -195,13 +195,15 @@ test.describe('Query Editor', () => {
       await page.waitForFunction(() => window.monaco);
       await expect(panelEditPage.getByGrafanaSelector(selectors.components.CodeEditor.container)).toBeVisible();
     });
+
     test('Displays the correct initial value', async ({ page, panelEditPage, selectors }) => {
       await page.getByRole('radio', { name: 'Code' }).click();
       await page.waitForFunction(() => window.monaco);
       await expect(panelEditPage.getByGrafanaSelector(selectors.components.CodeEditor.container)).toContainText(
-        'select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestamp)'
+        'select $__selectAll from raw_time_series where $__timeFilter(event_timestamp)'
       );
     });
+
     test('Accepts keyboard input', async ({ page, panelEditPage, selectors }) => {
       await page.getByRole('radio', { name: 'Code' }).click();
       await page.waitForFunction(() => window.monaco);
