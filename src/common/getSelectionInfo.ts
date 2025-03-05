@@ -26,8 +26,7 @@ const handleValueNotFound = <T = any>(value: T, showNotFound = true) => {
 export function getSelectionInfo<T>(
   v?: T,
   options?: Array<SelectableValue<T>>,
-  templateVars?: Array<SelectableValue<T>>,
-  allowCustom?: boolean
+  templateVars?: Array<SelectableValue<T>>
 ): SelectionInfo<T> {
   if (v && !options) {
     const current = { label: `${v}`, value: v };

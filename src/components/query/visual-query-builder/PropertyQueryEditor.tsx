@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { SelectableValue } from '@grafana/data';
 import {
-  SitewiseQuery,
   AssetInfo,
   isAssetPropertyAggregatesQuery,
   isAssetPropertyValueHistoryQuery,
@@ -12,7 +11,7 @@ import {
   shouldShowOptionsRow,
 } from 'types';
 import { LinkButton, Select, Input, Icon } from '@grafana/ui';
-import { SitewiseQueryEditorProps } from './types';
+import type { SitewiseQueryEditorProps } from './types';
 import { AssetBrowser } from '../../browser/AssetBrowser';
 import { aggReg } from './AggregationSettings/AggregatePicker';
 import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
@@ -22,8 +21,6 @@ import { QueryOptions } from './QueryOptions';
 import { AggregationSettings } from './AggregationSettings/AggregationSettings';
 import { InterpolatedResolutionSettings } from './InterpolatedResolutionSettings';
 import { DEFAULT_REGION } from '../../../regions';
-
-type Props = SitewiseQueryEditorProps<SitewiseQuery>;
 
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89abAB][0-9a-f]{3}-[0-9a-f]{12}$/i;
 interface State {
@@ -38,7 +35,7 @@ interface State {
 
 const ALL_HIERARCHIES = '*';
 
-export class PropertyQueryEditor extends PureComponent<Props, State> {
+export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps, State> {
   state: State = {
     assetId: this.props.query.assetIds && this.props.query.assetIds[0],
     assets: [],
@@ -83,7 +80,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     this.updateInfo();
   }
 
-  async componentDidUpdate(oldProps: Props) {
+  async componentDidUpdate(oldProps: SitewiseQueryEditorProps) {
     const { query } = this.props;
 
     const assetChanged = query?.assetIds !== oldProps?.query?.assetIds;

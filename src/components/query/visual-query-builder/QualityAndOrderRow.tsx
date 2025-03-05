@@ -3,18 +3,14 @@ import { SelectableValue } from '@grafana/data';
 import {
   SiteWiseTimeOrder,
   SiteWiseQuality,
-  SiteWiseResolution,
   SiteWiseResponseFormat,
   QueryType,
-  SitewiseQuery,
   AssetPropertyValueHistoryQuery,
   AssetPropertyAggregatesQuery,
 } from 'types';
 import { Select } from '@grafana/ui';
 import { SitewiseQueryEditorProps } from './types';
 import { EditorField } from '@grafana/plugin-ui';
-
-type Props = SitewiseQueryEditorProps<SitewiseQuery>;
 
 const qualities: Array<SelectableValue<SiteWiseQuality>> = [
   { value: SiteWiseQuality.GOOD, label: 'GOOD' },
@@ -32,7 +28,7 @@ export const FORMAT_OPTIONS: Array<SelectableValue<SiteWiseResponseFormat>> = [
   { label: 'Time series', value: SiteWiseResponseFormat.TimeSeries },
 ];
 
-export class QualityAndOrderRow extends PureComponent<Props> {
+export class QualityAndOrderRow extends PureComponent<SitewiseQueryEditorProps> {
   onQualityChange = (sel: SelectableValue<SiteWiseQuality>) => {
     const { onChange, query } = this.props;
     onChange({ ...query, quality: sel.value });
@@ -41,17 +37,6 @@ export class QualityAndOrderRow extends PureComponent<Props> {
   onResponseFormatChange = (sel: SelectableValue<SiteWiseResponseFormat>) => {
     const { onChange, query } = this.props;
     onChange({ ...query, responseFormat: sel.value });
-  };
-
-  onResolutionChange = (sel: SelectableValue<SiteWiseResolution>) => {
-    const { onChange, query } = this.props;
-    onChange({ ...query, resolution: sel.value });
-  };
-
-  onMaxPageAggregations = (event: React.FormEvent<HTMLInputElement>) => {
-    const { onChange, query } = this.props;
-
-    onChange({ ...query, maxPageAggregations: +event.currentTarget.value });
   };
 
   timeOrderField = () => {
