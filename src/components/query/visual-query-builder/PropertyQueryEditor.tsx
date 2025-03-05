@@ -4,7 +4,6 @@ import {
   SitewiseQuery,
   AssetInfo,
   isAssetPropertyAggregatesQuery,
-  isAssetPropertyValueHistoryQuery,
   AssetPropertyInfo,
   ListAssociatedAssetsQuery,
   isListAssociatedAssetsQuery,
@@ -18,7 +17,7 @@ import { aggReg } from './AggregationSettings/AggregatePicker';
 import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
 import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
 import { css } from '@emotion/css';
-import { QueryOptions } from './QueryOptions';
+import { QueryOptions } from './QueryOptions/QueryOptions';
 import { AggregationSettings } from './AggregationSettings/AggregationSettings';
 import { InterpolatedResolutionSettings } from './InterpolatedResolutionSettings';
 import { DEFAULT_REGION } from '../../../regions';
@@ -201,16 +200,6 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     onChange(update);
   };
 
-  onLastObservationChange = () => {
-    const { onChange, query } = this.props;
-    onChange({ ...query, lastObservation: !query.lastObservation });
-  };
-
-  onFlattenL4eChange = () => {
-    const { onChange, query } = this.props;
-    onChange({ ...query, flattenL4e: !query.flattenL4e });
-  };
-
   renderAssociatedAsset(query: ListAssociatedAssetsQuery) {
     const { asset, loading } = this.state;
     const hierarchies: Array<SelectableValue<string>> = [
@@ -266,19 +255,10 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     }
 
     const isAssociatedAssets = isListAssociatedAssetsQuery(query);
-    const showProp = !!(!isAssociatedAssets && (query.propertyId || query.assetIds));
+    const showProp = !isAssociatedAssets && !Boolean(query.propertyAlias);
     const assetPropertyOptions = showProp
       ? assetProperties.map(({ id, name }) => ({ id, name, value: id, label: name }))
       : [];
-
-    const showQuality = !!(
-      query.propertyId ||
-      (query.propertyAlias && isAssetPropertyAggregatesQuery(query)) ||
-      isAssetPropertyValueHistoryQuery(query) ||
-      isAssetPropertyInterpolatedQuery(query)
-    );
-
-    const showOptionsRow = shouldShowOptionsRow(query, showProp);
 
     let currentAssetPropertyOption = assetPropertyOptions.find((p) => p.id === query.propertyId);
     if (!currentAssetPropertyOption && query.propertyId) {
@@ -387,10 +367,8 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                       menuPlacement="auto"
                     />
                   </EditorField>
-                </EditorFieldGroup>
 
-                <EditorFieldGroup>
-                  {showQuality && isAssetPropertyAggregatesQuery(query) && (
+                  {isAssetPropertyAggregatesQuery(query) && (
                     <AggregationSettings query={query} property={this.state.property} onChange={this.props.onChange} />
                   )}
 
@@ -403,13 +381,13 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
           </>
         )}
 
-        {query.propertyAlias && isAssetPropertyAggregatesQuery(query) && (
+        {isAssetPropertyAggregatesQuery(query) && !showProp && (
           <EditorRow>
             <AggregationSettings query={query} property={this.state.property} onChange={this.props.onChange} />
           </EditorRow>
         )}
 
-        {query.propertyAlias && isAssetPropertyInterpolatedQuery(query) && (
+        {isAssetPropertyInterpolatedQuery(query) && !showProp && (
           <EditorRow>
             <InterpolatedResolutionSettings query={query} onChange={onChange} />
           </EditorRow>
@@ -421,21 +399,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
           </EditorRow>
         )}
 
-        {showOptionsRow && (
-          <EditorRow>
-            <EditorFieldGroup>
-              <QueryOptions
-                query={query}
-                datasource={datasource}
-                onChange={onChange}
-                showProp={showProp}
-                showQuality={!!(query.propertyId || query.propertyAlias)}
-                onLastObservationChange={this.onLastObservationChange}
-                onFlattenL4eChange={this.onFlattenL4eChange}
-              />
-            </EditorFieldGroup>
-          </EditorRow>
-        )}
+        {shouldShowOptionsRow(query) && <QueryOptions query={query} onChange={onChange} />}
       </>
     );
   }
