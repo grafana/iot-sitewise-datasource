@@ -16,10 +16,12 @@ const EDGE_AUTH_MODE_LINUX string = "linux"
 
 type AWSSiteWiseDataSourceSetting struct {
 	awsds.AWSDatasourceSettings
-	Cert                   string                `json:"-"`
-	EdgeAuthMode           string                `json:"edgeAuthMode"`
-	EdgeAuthUser           string                `json:"edgeAuthUser"`
-	EdgeAuthPass           string                `json:"-"`
+	Cert         string `json:"-"`
+	EdgeAuthMode string `json:"edgeAuthMode"`
+	EdgeAuthUser string `json:"edgeAuthUser"`
+	EdgeAuthPass string `json:"-"`
+
+	// Tag filtering specific settings
 	IncludedTagPatternsStr string                `json:"includedTagPatterns"`
 	IncludedTagPatterns    []map[string][]string `json:"-"`
 }

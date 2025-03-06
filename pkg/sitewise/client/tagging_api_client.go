@@ -66,14 +66,27 @@ func (rgtClient *taggingApiClient) GetResourcesPage(ctx context.Context, arns []
 }
 
 func (rgtClient *taggingApiClient) getResources(ctx context.Context, arns []*string) (*resourcegroupstaggingapi.GetResourcesOutput, error) {
-	resources, err := rgtClient.GetResourcesWithContext(ctx, &resourcegroupstaggingapi.GetResourcesInput{
-		ResourceARNList: arns,
-	})
-	if err != nil {
-		return nil, err
+	var resourceTagMappingList []*resourcegroupstaggingapi.ResourceTagMapping
+	var paginationToken *string
+
+	for {
+		resources, err := rgtClient.GetResourcesWithContext(ctx, &resourcegroupstaggingapi.GetResourcesInput{
+			ResourceARNList: arns,
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		paginationToken = resources.PaginationToken
+
+		if paginationToken == nil {
+			break
+		}
 	}
 
-	return resources, nil
+	return &resourcegroupstaggingapi.GetResourcesOutput{
+		ResourceTagMappingList: resourceTagMappingList,
+	}, nil
 }
 
 func GetTaggingApiClient(region string, settings models.AWSSiteWiseDataSourceSetting, provider AmazonSessionProvider, authSettings *awsds.AuthSettings) (client TaggingApiClient, err error) {

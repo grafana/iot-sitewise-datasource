@@ -1,44 +1,3 @@
-// const { GetResourcesCommand } = require("@aws-sdk/client-resource-groups-tagging-api");
-
-// exports.getResources = async ({rgtClient, arns}) => {
-//   const response = {
-//     ResourceTagMappingList: [],
-//   };
-
-//   // Get resources by 100 per request
-//   for (let i = 0; i < arns.length; i += 100) {
-//     const resources = await getResourcesMaxNum({rgtClient, arns: arns.slice(i, i + 100)});
-
-//     response.ResourceTagMappingList = response.ResourceTagMappingList.concat(...resources.ResourceTagMappingList);
-//   }
-
-//   return response;
-// };
-
-// const getResourcesMaxNum = async ({rgtClient, arns}) => {
-//   const response = {
-//     ResourceTagMappingList: [],
-//   };
-
-//   // paginate through the next token
-//   let nextToken;
-//   do {
-//     const command = new GetResourcesCommand({
-//       ResourceARNList: arns,
-//       NextToken: nextToken,
-//     });
-
-//     const resources = await rgtClient.send(command);
-
-//     response.ResourceTagMappingList = response.ResourceTagMappingList.concat(...resources.ResourceTagMappingList);
-
-//     nextToken = resources.NextToken;
-//   } while (nextToken);
-
-//   return response;
-// };
-
-// Translate the js above into go lang
 package api
 
 import (
@@ -70,19 +29,33 @@ func GetResourcesTags(ctx context.Context, rgtClient *resourcegroupstaggingapi.R
 }
 
 func getResources(ctx context.Context, rgtClient *resourcegroupstaggingapi.ResourceGroupsTaggingAPI, arns []*string) (*resourcegroupstaggingapi.GetResourcesOutput, error) {
-	resources, err := rgtClient.GetResourcesWithContext(ctx, &resourcegroupstaggingapi.GetResourcesInput{
-		ResourceARNList: arns,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("error getting resources: %v", err)
+	var resourceTagMappingList []*resourcegroupstaggingapi.ResourceTagMapping
+	var paginationToken *string
+
+	for {
+		resources, err := rgtClient.GetResourcesWithContext(ctx, &resourcegroupstaggingapi.GetResourcesInput{
+			ResourceARNList: arns,
+		})
+		if err != nil {
+			return nil, fmt.Errorf("error getting resources: %v", err)
+		}
+
+		paginationToken = resources.PaginationToken
+
+		if paginationToken == nil {
+			break
+		}
 	}
 
-	return resources, nil
+	return &resourcegroupstaggingapi.GetResourcesOutput{
+		ResourceTagMappingList: resourceTagMappingList,
+	}, nil
 }
 
 func min(a, b int) int {
 	if a < b {
 		return a
 	}
+
 	return b
 }
