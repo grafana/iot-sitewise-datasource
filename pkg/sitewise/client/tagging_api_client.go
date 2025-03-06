@@ -4,12 +4,14 @@ package client
 
 import (
 	"context"
+	"math"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/resourcegroupstaggingapi"
 	"github.com/aws/aws-sdk-go/service/resourcegroupstaggingapi/resourcegroupstaggingapiiface"
 	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"golang.org/x/sync/errgroup"
 )
 
 const (
@@ -26,15 +28,34 @@ type taggingApiClient struct {
 }
 
 func (rgtClient *taggingApiClient) GetResourcesPage(ctx context.Context, arns []*string) (*resourcegroupstaggingapi.GetResourcesOutput, error) {
-	var resources []*resourcegroupstaggingapi.ResourceTagMapping
+	requestNumber := int(math.Ceil(float64(len(arns)) / float64(MaxResourcesPerRequest)))
+	resultChan := make(chan *resourcegroupstaggingapi.GetResourcesOutput, requestNumber)
+	eg, ectx := errgroup.WithContext(ctx)
 
 	// Get resources by MaxResourcesPerRequest per request
 	for i := 0; i < len(arns); i += MaxResourcesPerRequest {
-		res, err := rgtClient.getResources(ctx, arns[i:min(i+MaxResourcesPerRequest, len(arns))])
-		if err != nil {
-			return nil, err
-		}
-		resources = append(resources, res.ResourceTagMappingList...)
+		eg.Go(func() error {
+			res, err := rgtClient.getResources(ectx, arns[i:min(i+MaxResourcesPerRequest, len(arns))])
+			if err != nil {
+				return err
+			}
+			resultChan <- res
+
+			return nil
+		})
+	}
+
+	err := eg.Wait()
+	close(resultChan)
+	if err != nil {
+		return nil, err
+	}
+
+	var resources []*resourcegroupstaggingapi.ResourceTagMapping
+
+	// append the ResourceTagMappingList from each response
+	for result := range resultChan {
+		resources = append(resources, result.ResourceTagMappingList...)
 	}
 
 	output := resourcegroupstaggingapi.GetResourcesOutput{
