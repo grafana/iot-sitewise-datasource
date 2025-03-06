@@ -466,7 +466,8 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                       id="property"
                       inputId="property"
                       aria-label="Property"
-                      isMulti={true}
+                      // Disabled multi-selection until a better UX is designed around pairing assets and properties
+                      isMulti={false}
                       isLoading={loading}
                       options={assetProperties}
                       value={currentAssetProperty}
