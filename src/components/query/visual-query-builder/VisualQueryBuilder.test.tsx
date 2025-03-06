@@ -240,7 +240,7 @@ describe('VisualQueryBuilder', () => {
     expect(onChange).toHaveBeenLastCalledWith(
       expect.objectContaining({
         assetIds: [],
-        propertyIds: undefined,
+        propertyIds: [],
       })
     );
   });
@@ -269,7 +269,7 @@ describe('VisualQueryBuilder', () => {
     expect(onChange).toHaveBeenLastCalledWith(
       expect.objectContaining({
         assetIds: [],
-        propertyIds: undefined,
+        propertyIds: [],
       })
     );
   });
