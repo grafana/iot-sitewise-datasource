@@ -16,28 +16,41 @@ func GetAssetId(query models.BaseQuery) *string {
 }
 
 func GetPropertyId(query models.BaseQuery) *string {
-	if query.PropertyId == "" {
+	if len(query.PropertyIds) == 0 {
 		return nil
 	}
-	return aws.String(query.PropertyId)
+	return aws.String(query.PropertyIds[0])
 }
 
-func GetPropertyAlias(query models.BaseQuery) *string {
-	if query.PropertyAlias == "" {
-		return nil
+func GetEntryIdFromAssetPropertyEntry(entry models.AssetPropertyEntry) *string {
+	if entry.AssetId != "" && entry.PropertyId != "" {
+		return GetEntryIdFromAssetProperty(entry.AssetId, entry.PropertyId)
+	} else {
+		return GetEntryIdFromPropertyAlias(entry.PropertyAlias)
 	}
-	return aws.String(query.PropertyAlias)
+}
+
+func GetEntryIdFromPropertyAlias(propertyAlias string) *string {
+	return aws.String(EncodeEntryId(propertyAlias))
+}
+
+func GetEntryIdFromAssetProperty(assetId string, propertyId string) *string {
+	// Encode the assetId and propertyId to create a unique entryId
+	return aws.String(EncodeEntryId(assetId + "-" + propertyId))
 }
 
 func GetEntryId(query models.BaseQuery) *string {
 	// if stream is unassociated, use the hashed property alias as the entry id
-	if query.PropertyAlias != "" && len(query.AssetIds) == 0 && query.PropertyId == "" {
-		// API constraint: EntryId cannot be more than 64 characters long, so we're encoding it 
-		return aws.String(EncodeEntryId(query.PropertyAlias))
+	if len(query.PropertyAliases) > 0 && len(query.AssetIds) == 0 && len(query.PropertyIds) == 0 {
+		// Use the first property alias as the entry id
+		return GetEntryIdFromPropertyAlias(query.PropertyAliases[0])
 	}
-	return GetAssetId(query)
+	assetId := GetAssetId(query)
+	propertyId := GetPropertyId(query)
+	return GetEntryIdFromAssetProperty(*assetId, *propertyId)
 }
 
+// API constraint: EntryId cannot be more than 64 characters long, so we're encoding it
 func EncodeEntryId(input string) string {
 	hash := sha256.Sum256([]byte(input))
 	return hex.EncodeToString(hash[:])

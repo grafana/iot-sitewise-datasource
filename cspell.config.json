@@ -85,6 +85,8 @@
     "sqlds",
     "errorsource",
     "viant",
-    "unmarshalling"
+    "unmarshalling",
+    "assetid",
+    "propid"
   ]
 }

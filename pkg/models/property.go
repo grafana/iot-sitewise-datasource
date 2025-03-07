@@ -27,6 +27,14 @@ type AssetPropertyValueQuery struct {
 	FlattenL4e      bool     `json:"flattenL4e,omitempty"`
 }
 
+// Track the assetId, propertyId, and property alias of a data stream
+// after lookup for consistent batched processing
+type AssetPropertyEntry struct {
+	AssetId       string `json:"assetId,omitempty"`
+	PropertyId    string `json:"propertyId,omitempty"`
+	PropertyAlias string `json:"propertyAlias,omitempty"`
+}
+
 func GetAssetPropertyValueQuery(dq *backend.DataQuery) (*AssetPropertyValueQuery, error) {
 
 	query := &AssetPropertyValueQuery{}
@@ -34,14 +42,8 @@ func GetAssetPropertyValueQuery(dq *backend.DataQuery) (*AssetPropertyValueQuery
 		return nil, err
 	}
 
-	// AssetId <--> AssetIds backward compatibility
-	query.MigrateAssetId()
-
-	//if propertyAlias is set make sure to set the assetId and propertyId to nil
-	if query.PropertyAlias != "" {
-		query.AssetId = ""
-		query.PropertyId = ""
-	}
+	// Backward compatibility for asset, property, and property alias string --> list
+	query.MigrateAssetProperty()
 
 	if query.TimeOrdering == "" {
 		query.TimeOrdering = "ASCENDING"

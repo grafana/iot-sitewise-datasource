@@ -20,6 +20,10 @@ func getTime(ts *iotsitewise.TimeInNanos) time.Time {
 	return time.Unix(sec, 0)
 }
 
+func isPropertyDataTypeDefined(dataType string) bool {
+	return dataType == "BOOLEAN" || dataType == "DOUBLE" || dataType == "INTEGER" || dataType == "STRING"
+}
+
 func getPropertyVariantValue(variant *iotsitewise.Variant) interface{} {
 
 	if val := variant.BooleanValue; val != nil {

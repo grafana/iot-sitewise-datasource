@@ -38,7 +38,7 @@ func (p AssetPropertyValueBatch) Frames(ctx context.Context, resources resource.
 	for _, r := range p.Responses {
 		for _, e := range r.SuccessEntries {
 			property := properties[*e.EntryId]
-			if util.IsAssetProperty(property) && *property.AssetProperty.DataType == *aws.String("?") && e.AssetPropertyValue != nil {
+			if util.IsAssetProperty(property) && !isPropertyDataTypeDefined(*property.AssetProperty.DataType) && e.AssetPropertyValue != nil {
 				property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(e.AssetPropertyValue.Value))
 			}
 

@@ -14,7 +14,7 @@ import { isListAssetsQuery, isPropertyQueryType, SitewiseOptions, SitewiseQuery,
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { frameToMetricFindValues } from 'utils';
-import { SitewiseVariableSupport } from 'variables';
+import { applyVariableForList, SitewiseVariableSupport } from 'variables';
 import { SitewiseQueryPaginator } from 'SiteWiseQueryPaginator';
 import { RelativeRangeCache } from 'RelativeRangeRequestCache/RelativeRangeCache';
 import { DEFAULT_REGION, isSupportedRegion, type Region } from './regions';
@@ -103,8 +103,34 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       delete query.assetId;
     }
 
+    // Migrate propertyId to propertyIds (v2.1)
+    if (query.propertyId) {
+      const ids = new Set<string>();
+      ids.add(query.propertyId);
+      if (query.propertyIds) {
+        for (const id of query.propertyIds) {
+          ids.add(id);
+        }
+      }
+      query.propertyIds = Array.from(ids);
+      delete query.propertyId;
+    }
+
+    // Migrate propertyAlias to propertyAliases (v2.1)
+    if (query.propertyAlias) {
+      const aliases = new Set<string>();
+      aliases.add(query.propertyAlias);
+      if (query.propertyAliases) {
+        for (const alias of query.propertyAliases) {
+          aliases.add(alias);
+        }
+      }
+      query.propertyAliases = Array.from(aliases);
+      delete query.propertyAlias;
+    }
+
     if (isPropertyQueryType(query.queryType)) {
-      return Boolean((query.assetIds?.length && query.propertyId) || query.propertyAlias);
+      return Boolean((query.assetIds?.length && query.propertyIds?.length) || query.propertyAliases?.length);
     }
     return true; // keep the query
   }
@@ -120,16 +146,16 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       }
       txt += ' / ' + info.name;
 
-      if (query.propertyId && info.properties) {
-        const p = info.properties.find((v) => v.Id === query.propertyId);
-        if (p) {
-          txt += ' / ' + p.Name;
+      if (query.propertyIds?.length && info.properties) {
+        const properties = info.properties.filter((v) => query.propertyIds?.includes(v.Id));
+        if (properties.length > 0) {
+          txt += ' / ' + properties.map((p) => p.Name).join('/');
         } else {
-          txt += ' / ' + query.propertyId;
+          txt += ' / ' + query.propertyIds.join('/');
         }
       }
-    } else if (query.propertyAlias) {
-      txt += ' / ' + query.propertyAlias;
+    } else if (query.propertyAliases?.length) {
+      txt += ' / ' + query.propertyAliases.join(' / ');
     }
     return txt;
   }
@@ -143,9 +169,11 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       ...query,
       propertyAlias: templateSrv.replace(query.propertyAlias, scopedVars),
       region: templateSrv.replace(query.region ?? DEFAULT_REGION, scopedVars) as Region | undefined,
+      propertyAliases: applyVariableForList(templateSrv, scopedVars, query.propertyAliases),
       propertyId: templateSrv.replace(query.propertyId || '', scopedVars),
+      propertyIds: applyVariableForList(templateSrv, scopedVars, query.propertyIds),
       assetId: templateSrv.replace(query.assetId || '', scopedVars),
-      assetIds: query.assetIds?.flatMap((assetId) => templateSrv.replace(assetId, scopedVars, 'csv').split(',')) ?? [],
+      assetIds: applyVariableForList(templateSrv, scopedVars, query.assetIds),
       resolution: query.resolution
         ? (templateSrv.replace(query.resolution, scopedVars) as SiteWiseResolution)
         : undefined,
