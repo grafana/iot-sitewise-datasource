@@ -29,7 +29,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   constructor(instanceSettings: DataSourceInstanceSettings<SitewiseOptions>) {
     super(instanceSettings);
     this.options = instanceSettings.jsonData;
-    this.defaultQuery = 'select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestamp)';
+    this.defaultQuery = 'select $__selectAll from raw_time_series where $__timeFilter(event_timestamp)';
     this.variables = new SitewiseVariableSupport(this);
   }
 

@@ -40,10 +40,10 @@ You can run [IoT SiteWise query language](https://docs.aws.amazon.com/iot-sitewi
 The query editor supports the following macros:
 
 * $__selectAll - Shortcut to select available fields in the current table: `select $__selectAll from raw_time_series`
-* $__rawTimeFrom - Lower limit of the time range as a timestamp: `select $__selectAll from latest_value_time_series where event_timestamp > $__rawTimeFrom`
-* $__rawTimeTo - Upper limit of the time range as a timestamp: `select $__selectAll from raw_time_series where event_timestamp <= $__rawTimeTo`
-* $__unixEpochFilter(column) - Filter the specified field according to the time range: `select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestamp)`
-* $__resolution - Shortcut to the applicable aggregate resolution based on the panel interval: `select $__selectAll from precomputed_aggregates where $__unixEpochFilter(event_timestamp) and resolution = '$__resolution'`
+* $__timeFrom - Lower limit of the time range as a timestamp: `select $__selectAll from latest_value_time_series where event_timestamp > $__timeFrom`
+* $__timeTo - Upper limit of the time range as a timestamp: `select $__selectAll from raw_time_series where event_timestamp <= $__timeTo`
+* $__timeFilter(column) - Filter the specified field according to the time range: `select $__selectAll from raw_time_series where $__timeFilter(event_timestamp)`
+* $__autoResolution - Shortcut to the applicable aggregate resolution based on the panel interval: `select $__selectAll from precomputed_aggregates where $__timeFilter(event_timestamp) and resolution = '$__autoResolution'`
 
 #### Example queries
 
@@ -52,7 +52,7 @@ The queries below provide a simple introduction to the [IoT SiteWise query langu
 **Retrieve all raw events**
 
 ```sql
-select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestamp)
+select $__selectAll from raw_time_series where $__timeFilter(event_timestamp)
 ```
 
 **Retrieve asset and property name along with raw events**
@@ -60,50 +60,8 @@ select $__selectAll from raw_time_series where $__unixEpochFilter(event_timestam
 ```sql
 select r.event_timestamp, a.asset_name, p.property_name, r.double_value
 from asset a, asset_property p, raw_time_series r
-where $__unixEpochFilter(event_timestamp)
+where $__timeFilter(event_timestamp)
 ```
-
-#### Querying time series data
-
-The following needs to be noted when querying and graphing time series data from `raw_time_series`:
-
-* The values in the `event_timestamp` will be Integer, and represents the timestamp in nanoseconds.
-* When filtering on the `event_timestamp` field, it must be a timestamp specified in seconds.
-
-So a typical setup will be to use the filters as shown in the example queries, and then applying the transforms as shown below.
-
-For this example, we'll be using the following query:
-
-```sql
-select event_timestamp, double_value
-from raw_time_series
-where $__unixEpochFilter(event_timestamp)
-```
-
-This will result in a Grafana telling you that the `Data is missing a time field`:
-
-![data_missing_time_field](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/data_missing_time_field.png)
-
-However, if you switch to the Table view, you'll see the data, including the `event_timestamp` values in nanoseconds:
-
-![table_view_of_data](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/table_view_of_data.png)
-
-By converting the event_timestamp to seconds by using transforms, you can see a proper time series graph:
-
-* Using `Add field from calculation`, convert the event timestamp nanoseconds into milliseconds:
-  * Mode: `Binary operation`
-  * Operation: `event_timestamp / 1000000`
-  * Alias: `event_timestamp_ms`
-* Using `Convert field type`, convert the event timestamp integer into a timestamp:
-  * Field: `event_timestamp_ms`
-  * as: `Time`
-* Using `Organize fields by name`, hide the `event_timestamp` field
-
-![data_transforms](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/data_transforms.png)
-
-This will result in a time series graph as shown below.
-
-![timeseries_data](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/timeseries_data.png)
 
 ## Alerting
 

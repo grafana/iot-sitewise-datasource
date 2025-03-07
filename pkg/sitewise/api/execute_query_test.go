@@ -23,7 +23,7 @@ func (f *fakeExecuteQueryClient) ExecuteQueryWithContext(ctx aws.Context, input 
 	f.executeCount++
 	f.lastQueryStatement = aws.StringValue(input.QueryStatement)
 	var retVal = iotsitewise.ExecuteQueryOutput{
-		NextToken: aws.String("bar"),
+		NextToken: aws.String("next-token"),
 		Rows: []*iotsitewise.Row{
 			{
 				Data: []*iotsitewise.Datum{
@@ -68,6 +68,6 @@ func TestExecuteQueryReceivesTheGivenSQL(t *testing.T) {
 	}
 	framer, err := api.ExecuteQuery(context.Background(), client, query)
 	require.NoError(t, err)
-	assert.Equal(t, "", aws.StringValue(framer.NextToken))
+	assert.Equal(t, "next-token", aws.StringValue(framer.NextToken))
 	assert.Equal(t, "SELECT * FROM assets", client.lastQueryStatement)
 }

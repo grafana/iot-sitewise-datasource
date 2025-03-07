@@ -21,6 +21,7 @@ export function SitewiseQueryEditor(props: Props) {
     if (newEditorMode === QueryEditorMode.Code) {
       newQuery.queryType = QueryType.ExecuteQuery;
       newQuery.clientCache = false;
+      newQuery.rawSQL = newQuery.rawSQL || props.datasource.defaultQuery;
     }
     onChange({ ...newQuery, editorMode: newEditorMode });
   };

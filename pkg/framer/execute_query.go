@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
@@ -43,7 +44,9 @@ func (a QueryResults) Frames(_ context.Context, _ resource.ResourceProvider) (da
 	frame := data.NewFrame("", f...)
 
 	frame.Meta = &data.FrameMeta{
-		Custom: models.SitewiseCustomMeta{},
+		Custom: models.SitewiseCustomMeta{
+			NextToken: aws.StringValue(a.NextToken),
+		},
 	}
 
 	return data.Frames{frame}, nil
