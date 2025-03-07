@@ -97,7 +97,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
     if (assetChanged || propChanged || regionChanged) {
       if (!query.assetIds?.length && !regionChanged) {
-        this.setState({ assetId: undefined, asset: undefined, loading: false });
+        this.setState({ assetId: undefined, asset: undefined, assetProperties: [], loading: false });
       } else {
         this.setState({ loading: true });
         this.updateInfo();
@@ -119,18 +119,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
     const { onChange, query } = this.props;
 
-    const newQuery =
-      Array.isArray(sel) && sel.length === 0
-        ? {
-            ...query,
-            propertyAliases: [],
-          }
-        : {
-            ...query,
-            propertyAliases: [...propertyAliases],
-          };
-
-    onChange(newQuery);
+    onChange({ ...query, propertyAliases: [...propertyAliases] });
   };
 
   onAssetChange(sel: SelectableValue<string> | Array<SelectableValue<string>>) {
@@ -152,7 +141,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         ? {
             ...query,
             assetIds: [],
-            propertyIds: undefined,
+            propertyIds: [],
           }
         : {
             ...query,
@@ -176,16 +165,10 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
 
     const { onChange, query } = this.props;
 
-    const newQuery =
-      Array.isArray(sel) && sel.length === 0
-        ? {
-            ...query,
-            propertyIds: [],
-          }
-        : {
-            ...query,
-            propertyIds: [...propertyIds],
-          };
+    const newQuery = {
+      ...query,
+      propertyIds: [...propertyIds],
+    };
 
     // Make sure the selected aggregates are actually supported
     if (isAssetPropertyAggregatesQuery(newQuery)) {
@@ -208,7 +191,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
   onSetPropertyAlias = (propertyAlias?: string) => {
     const { onChange, query } = this.props;
     if (!propertyAlias) {
-      onChange({ ...query, propertyAliases: undefined });
+      onChange({ ...query, propertyAliases: [] });
     } else if (query.propertyAliases) {
       onChange({ ...query, propertyAliases: [...query.propertyAliases, propertyAlias] });
     } else {
@@ -323,14 +306,14 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
     const { query, datasource, onChange } = this.props;
     const { loading, assets, assetProperties, propertyAliases } = this.state;
 
-    let currentPropertyAlias = propertyAliases.filter((alias) =>
-      alias.value ? query.propertyAliases?.includes(alias.value) : false
+    let selectedPropertyAliases = propertyAliases.filter(
+      (alias) => alias.value && query.propertyAliases?.includes(alias.value)
     );
-    if (currentPropertyAlias.length === 0 && query.propertyAliases?.length) {
+    if (selectedPropertyAliases.length === 0 && query.propertyAliases?.length) {
       if (loading) {
-        currentPropertyAlias = query.propertyAliases.map((alias) => ({ label: 'loading...', value: alias }));
+        selectedPropertyAliases = query.propertyAliases.map((alias) => ({ label: 'loading...', value: alias }));
       } else {
-        currentPropertyAlias = query.propertyAliases.map((alias) => ({ label: alias, value: alias }));
+        selectedPropertyAliases = query.propertyAliases.map((alias) => ({ label: alias, value: alias }));
       }
     }
 
@@ -408,7 +391,7 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
                 aria-label="Property alias"
                 isMulti={true}
                 options={propertyAliases}
-                value={currentPropertyAlias}
+                value={selectedPropertyAliases}
                 onChange={this.onAliasChange}
                 placeholder="optional alias that identifies the property, such as an OPC-UA server data stream path"
                 allowCustomValue={true}

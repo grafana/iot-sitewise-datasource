@@ -76,7 +76,7 @@ export interface SitewiseQuery extends DataQuery {
   propertyId?: string;
   // One or more properties to fetch data
   propertyIds?: string[];
-  /** @deprecated -- this is migrated to propertyIds */
+  /** @deprecated -- this is migrated to propertyAlias */
   propertyAlias?: string;
   // One or more properties to fetch data
   propertyAliases?: string[];
