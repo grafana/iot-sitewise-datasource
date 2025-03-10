@@ -4,14 +4,14 @@ import {
   AssetInfo,
   isAssetPropertyAggregatesQuery,
   isAssetPropertyValueHistoryQuery,
-  AssetPropertyInfo,
   ListAssociatedAssetsQuery,
   isListAssociatedAssetsQuery,
   isAssetPropertyInterpolatedQuery,
   shouldShowOptionsRow,
+  SitewiseQuery,
 } from 'types';
-import { LinkButton, Select, Input, Icon } from '@grafana/ui';
-import type { SitewiseQueryEditorProps } from './types';
+import { LinkButton, Select, Icon } from '@grafana/ui';
+import { SitewiseQueryEditorProps } from './types';
 import { AssetBrowser } from '../../browser/AssetBrowser';
 import { aggReg } from './AggregationSettings/AggregatePicker';
 import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
@@ -21,25 +21,30 @@ import { QueryOptions } from './QueryOptions';
 import { AggregationSettings } from './AggregationSettings/AggregationSettings';
 import { InterpolatedResolutionSettings } from './InterpolatedResolutionSettings';
 import { DEFAULT_REGION } from '../../../regions';
+import { getSelectableTemplateVariables } from 'variables';
+import { getPropertyIdPickerOptions } from 'sitewiseCache';
+
+type Props = SitewiseQueryEditorProps<SitewiseQuery>;
 
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89abAB][0-9a-f]{3}-[0-9a-f]{12}$/i;
 interface State {
   assetId?: string;
   asset?: AssetInfo;
-  property?: AssetPropertyInfo;
   assets: Array<SelectableValue<string>>;
-  assetProperties: Array<{ id: string; name: string }>;
+  assetProperties: Array<SelectableValue<string>>;
+  propertyAliases: Array<SelectableValue<string>>;
   loading: boolean;
   openModal: boolean;
 }
 
 const ALL_HIERARCHIES = '*';
 
-export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps, State> {
+export class PropertyQueryEditor extends PureComponent<Props, State> {
   state: State = {
     assetId: this.props.query.assetIds && this.props.query.assetIds[0],
     assets: [],
     assetProperties: [],
+    propertyAliases: [],
     loading: true,
     openModal: false,
   };
@@ -51,11 +56,14 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
     } as State;
 
     const cache = datasource.getCache(query.region);
+
+    update.propertyAliases = getSelectableTemplateVariables();
+
+    // TODO: handle user selecting two assets from different asset models
     if (query?.assetIds?.length) {
       try {
         update.asset = await cache.getAssetInfo(query.assetIds[0]);
-        const ps = await cache.listAssetProperties(query.assetIds[0]);
-        update.assetProperties = ps?.map(({ id, name }) => ({ id, name })) || [];
+        update.assetProperties = getPropertyIdPickerOptions(update.asset);
         // Update external ids to asset ids in the query
         if (update.asset?.id && query.assetIds[0].startsWith('externalId')) {
           query.assetIds[0] = update.asset.id;
@@ -63,10 +71,8 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
         }
       } catch (err) {
         console.warn('error reading asset info', err);
-        update.property = undefined;
       }
     }
-    update.property = getAssetProperty(update.asset, query.propertyId);
 
     try {
       update.assets = await cache.getAssetPickerOptions();
@@ -80,16 +86,16 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
     this.updateInfo();
   }
 
-  async componentDidUpdate(oldProps: SitewiseQueryEditorProps) {
+  async componentDidUpdate(oldProps: Props) {
     const { query } = this.props;
 
     const assetChanged = query?.assetIds !== oldProps?.query?.assetIds;
-    const propChanged = query?.propertyId !== oldProps?.query?.propertyId;
+    const propChanged = query?.propertyIds !== oldProps?.query?.propertyIds;
     const regionChanged = query?.region !== oldProps?.query?.region;
 
     if (assetChanged || propChanged || regionChanged) {
       if (!query.assetIds?.length && !regionChanged) {
-        this.setState({ assetId: undefined, asset: undefined, property: undefined, loading: false });
+        this.setState({ assetId: undefined, asset: undefined, assetProperties: [], loading: false });
       } else {
         this.setState({ loading: true });
         this.updateInfo();
@@ -97,9 +103,21 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
     }
   }
 
-  onAliasChange = (evt: React.SyntheticEvent<HTMLInputElement>) => {
+  onAliasChange = (sel: SelectableValue<string> | Array<SelectableValue<string>>) => {
+    const propertyAliases: Set<string> = new Set();
+    if (Array.isArray(sel)) {
+      sel.forEach((s) => {
+        if (s.value) {
+          propertyAliases.add(s.value);
+        }
+      });
+    } else if (sel.value) {
+      propertyAliases.add(sel.value);
+    }
+
     const { onChange, query } = this.props;
-    onChange({ ...query, propertyAlias: evt.currentTarget.value });
+
+    onChange({ ...query, propertyAliases: [...propertyAliases] });
   };
 
   onAssetChange(sel: SelectableValue<string> | Array<SelectableValue<string>>) {
@@ -121,7 +139,7 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
         ? {
             ...query,
             assetIds: [],
-            propertyId: undefined,
+            propertyIds: [],
           }
         : {
             ...query,
@@ -131,30 +149,52 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
     onChange(newQuery);
   }
 
-  onPropertyChange = (sel: SelectableValue<string>) => {
+  onPropertyChange = (sel: SelectableValue<string> | Array<SelectableValue<string>>) => {
+    const propertyIds: Set<string> = new Set();
+    if (Array.isArray(sel)) {
+      sel.forEach((s) => {
+        if (s.value) {
+          propertyIds.add(s.value);
+        }
+      });
+    } else if (sel.value) {
+      propertyIds.add(sel.value);
+    }
+
     const { onChange, query } = this.props;
-    const update = { ...query, propertyId: sel.value! };
+
+    const newQuery = {
+      ...query,
+      propertyIds: [...propertyIds],
+    };
 
     // Make sure the selected aggregates are actually supported
-    if (isAssetPropertyAggregatesQuery(update)) {
-      if (update.propertyId) {
-        const info = getAssetProperty(this.state.asset, update.propertyId);
-
-        if (!update.aggregates) {
-          update.aggregates = [];
-        }
-
+    if (isAssetPropertyAggregatesQuery(newQuery)) {
+      newQuery.aggregates = newQuery.aggregates || [];
+      newQuery.propertyIds.forEach((propertyId) => {
+        const info = getAssetProperty(this.state.asset, propertyId);
         if (info) {
-          update.aggregates = update.aggregates.filter((a) => aggReg.get(a).isValid(info));
+          newQuery.aggregates = newQuery.aggregates.filter((a) => aggReg.get(a).isValid(info));
         }
+      });
 
-        if (!update.aggregates.length) {
-          update.aggregates = [getDefaultAggregate(info)];
-        }
+      if (!newQuery.aggregates.length) {
+        newQuery.aggregates = [getDefaultAggregate()];
       }
     }
 
-    onChange(update);
+    onChange(newQuery);
+  };
+
+  onSetPropertyAlias = (propertyAlias?: string) => {
+    const { onChange, query } = this.props;
+    if (!propertyAlias) {
+      onChange({ ...query, propertyAliases: [] });
+    } else if (query.propertyAliases) {
+      onChange({ ...query, propertyAliases: [...query.propertyAliases, propertyAlias] });
+    } else {
+      onChange({ ...query, propertyAliases: [propertyAlias] });
+    }
   };
 
   onSetAssetId = (assetId?: string) => {
@@ -163,6 +203,7 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
       this.setState({ assetId: undefined });
       onChange({ ...query, assetIds: undefined });
     } else {
+      // TODO: handle entering multiple externalIds with other assetIds
       const validId = uuidRegex.test(assetId) || assetId.startsWith('externalId:') || assetId.startsWith('$');
       const assetIds = validId ? [assetId] : [`externalId:${assetId}`];
       this.setState({ assetId: assetIds[0] });
@@ -172,7 +213,13 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
 
   onSetPropertyId = (propertyId?: string) => {
     const { onChange, query } = this.props;
-    onChange({ ...query, propertyId });
+    if (!propertyId) {
+      onChange({ ...query, propertyIds: undefined });
+    } else if (query.propertyIds) {
+      onChange({ ...query, propertyIds: [...query.propertyIds, propertyId] });
+    } else {
+      onChange({ ...query, propertyIds: [propertyId] });
+    }
   };
 
   onSetHierarchyId = (hierarchyId?: string) => {
@@ -251,40 +298,55 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
 
   render() {
     const { query, datasource, onChange } = this.props;
-    const { loading, assets, assetProperties } = this.state;
+    const { loading, assets, assetProperties, propertyAliases } = this.state;
 
-    let current = assets.filter((a) => (a.value ? query.assetIds?.includes(a.value) : false));
-    if (current.length === 0 && query.assetIds?.length) {
+    let selectedPropertyAliases = propertyAliases.filter(
+      (alias) => alias.value && query.propertyAliases?.includes(alias.value)
+    );
+    if (selectedPropertyAliases.length === 0 && query.propertyAliases?.length) {
       if (loading) {
-        current = query.assetIds.map((assetId) => ({ label: 'loading...', value: assetId }));
+        selectedPropertyAliases = query.propertyAliases.map((alias) => ({ label: 'loading...', value: alias }));
       } else {
-        current = query.assetIds.map((assetId) => ({ label: `ID: ${this.state.assetId}`, value: assetId }));
+        selectedPropertyAliases = query.propertyAliases.map((alias) => ({ label: alias, value: alias }));
+      }
+    }
+
+    let currentAsset = assets.filter((asset) => (asset.value ? query.assetIds?.includes(asset.value) : false));
+    if (currentAsset.length === 0 && query.assetIds?.length) {
+      if (loading) {
+        currentAsset = query.assetIds.map((assetId) => ({ label: 'loading...', value: assetId }));
+      } else {
+        currentAsset = query.assetIds.map((assetId) => ({ label: `ID: ${this.state.assetId}`, value: assetId }));
       }
     }
 
     const isAssociatedAssets = isListAssociatedAssetsQuery(query);
-    const showProp = !!(!isAssociatedAssets && (query.propertyId || query.assetIds));
-    const assetPropertyOptions = showProp
-      ? assetProperties.map(({ id, name }) => ({ id, name, value: id, label: name }))
-      : [];
+    const showProp = !!(!isAssociatedAssets && (query.propertyIds || query.assetIds));
 
     const showQuality = !!(
-      query.propertyId ||
-      (query.propertyAlias && isAssetPropertyAggregatesQuery(query)) ||
+      query.propertyIds ||
+      (query.propertyAliases && isAssetPropertyAggregatesQuery(query)) ||
       isAssetPropertyValueHistoryQuery(query) ||
       isAssetPropertyInterpolatedQuery(query)
     );
 
     const showOptionsRow = shouldShowOptionsRow(query, showProp);
 
-    let currentAssetPropertyOption = assetPropertyOptions.find((p) => p.id === query.propertyId);
-    if (!currentAssetPropertyOption && query.propertyId) {
-      currentAssetPropertyOption = {
-        id: query.propertyId,
-        name: 'ID: ' + query.propertyId,
-        value: query.propertyId,
-        label: 'ID: ' + query.propertyId,
-      };
+    let currentAssetProperty = assetProperties.filter((property) =>
+      property.value ? query.propertyIds?.includes(property.value) : false
+    );
+    if (currentAssetProperty.length === 0 && query.propertyIds?.length) {
+      if (loading) {
+        currentAssetProperty = query.propertyIds.map((propertyId) => ({
+          value: propertyId,
+          label: 'loading...',
+        }));
+      } else {
+        currentAssetProperty = query.propertyIds.map((propertyId) => ({
+          value: propertyId,
+          label: `ID: ${propertyId}`,
+        }));
+      }
     }
 
     const queryTooltip = (
@@ -317,18 +379,27 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
         {!isAssociatedAssets && (
           <EditorRow>
             <EditorField label="Property Alias" tooltip={queryTooltip} tooltipInteractive htmlFor="alias" width={80}>
-              <Input
+              <Select
                 id="alias"
+                inputId="alias"
                 aria-label="Property alias"
-                value={query.propertyAlias}
+                isMulti={true}
+                options={propertyAliases}
+                value={selectedPropertyAliases}
                 onChange={this.onAliasChange}
                 placeholder="optional alias that identifies the property, such as an OPC-UA server data stream path"
+                allowCustomValue={true}
+                isClearable={true}
+                isSearchable={true}
+                onCreateOption={this.onSetPropertyAlias}
+                formatCreateLabel={(txt) => `Property Alias: ${txt}`}
+                menuPlacement="auto"
               />
             </EditorField>
           </EditorRow>
         )}
 
-        {(!Boolean(query.propertyAlias) || isAssociatedAssets) && (
+        {(!query.propertyAliases?.length || isAssociatedAssets) && (
           <>
             <EditorRow>
               <EditorFieldGroup>
@@ -341,7 +412,7 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
                     key={query.region ?? DEFAULT_REGION}
                     isLoading={loading}
                     options={assets}
-                    value={current}
+                    value={currentAsset}
                     onChange={(sel) => this.onAssetChange(sel)}
                     placeholder="Select an asset"
                     allowCustomValue={true}
@@ -372,12 +443,15 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
                       id="property"
                       inputId="property"
                       aria-label="Property"
+                      // Disabled multi-selection until a better UX is designed around pairing assets and properties
+                      isMulti={false}
                       isLoading={loading}
-                      options={assetPropertyOptions}
-                      value={currentAssetPropertyOption ?? null}
+                      options={assetProperties}
+                      value={currentAssetProperty}
                       onChange={this.onPropertyChange}
                       placeholder="Select a property"
                       allowCustomValue={true}
+                      isClearable={true}
                       isSearchable={true}
                       onCreateOption={this.onSetPropertyId}
                       formatCreateLabel={(txt) => `Property ID: ${txt}`}
@@ -388,7 +462,7 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
 
                 <EditorFieldGroup>
                   {showQuality && isAssetPropertyAggregatesQuery(query) && (
-                    <AggregationSettings query={query} property={this.state.property} onChange={this.props.onChange} />
+                    <AggregationSettings query={query} onChange={this.props.onChange} />
                   )}
 
                   {isAssetPropertyInterpolatedQuery(query) && (
@@ -400,13 +474,13 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
           </>
         )}
 
-        {query.propertyAlias && isAssetPropertyAggregatesQuery(query) && (
+        {!!query.propertyAliases?.length && isAssetPropertyAggregatesQuery(query) && (
           <EditorRow>
-            <AggregationSettings query={query} property={this.state.property} onChange={this.props.onChange} />
+            <AggregationSettings query={query} onChange={this.props.onChange} />
           </EditorRow>
         )}
 
-        {query.propertyAlias && isAssetPropertyInterpolatedQuery(query) && (
+        {!!query.propertyAliases?.length && isAssetPropertyInterpolatedQuery(query) && (
           <EditorRow>
             <InterpolatedResolutionSettings query={query} onChange={onChange} />
           </EditorRow>
@@ -426,7 +500,7 @@ export class PropertyQueryEditor extends PureComponent<SitewiseQueryEditorProps,
                 datasource={datasource}
                 onChange={onChange}
                 showProp={showProp}
-                showQuality={!!(query.propertyId || query.propertyAlias)}
+                showQuality={!!(query.propertyIds?.length || query.propertyAliases?.length)}
                 onLastObservationChange={this.onLastObservationChange}
                 onFlattenL4eChange={this.onFlattenL4eChange}
               />

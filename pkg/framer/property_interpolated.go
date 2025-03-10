@@ -45,7 +45,7 @@ func (p InterpolatedAssetPropertyValue) Frames(ctx context.Context, resources re
 func (p InterpolatedAssetPropertyValue) Frame(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, v []*iotsitewise.InterpolatedAssetPropertyValue) (*data.Frame, error) {
 	// TODO: make this work with the API instead of ad-hoc dataType inference
 	// https://github.com/grafana/iot-sitewise-datasource/issues/98#issuecomment-892947756
-	if util.IsAssetProperty(property) && *property.AssetProperty.DataType == *aws.String("?") {
+	if util.IsAssetProperty(property) && !isPropertyDataTypeDefined(*property.AssetProperty.DataType) {
 		property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(v[0].Value))
 	}
 
@@ -58,10 +58,13 @@ func (p InterpolatedAssetPropertyValue) Frame(ctx context.Context, property *iot
 	frame := data.NewFrame(name, timeField, valueField)
 
 	entryId := ""
-	if property.AssetId != nil {
-		entryId = *property.AssetId
+	if property.AssetId != nil && property.AssetProperty.Id != nil {
+		entryId = *util.GetEntryIdFromAssetProperty(*property.AssetId, *property.AssetProperty.Id)
 	} else {
-		entryId = util.GetPropertyName(property)
+		// In resource/sitewise.go the property resource with a disassociated alias
+		// is manually set with the alias in the name field
+		alias := util.GetPropertyName(property)
+		entryId = *util.GetEntryIdFromPropertyAlias(alias)
 	}
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{

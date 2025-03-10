@@ -127,7 +127,13 @@ datasources:
 
 ### Running e2e tests locally
 
-To run e2e tests locally:
+To run e2e tests locally, first run the local server:
+
+```
+yarn server:dev
+```
+
+Then run the e2e test command:
 
 ```
 yarn run e2e

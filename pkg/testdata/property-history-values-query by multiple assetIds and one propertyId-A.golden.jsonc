@@ -1,0 +1,1333 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "7cf29ef74b07b8a764bf15af316652c118d4e38c100d84fc8c33a8ad9e1c0a67",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[1] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "177b30c63dbab2d2e19afb6a2d0ed5adb74e70deba51b1c84b73671096180b54",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[2] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "f5d6a272b4efa2df1e8775d729397c693215d0108c60e62b8db32db633522bac",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[3] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "3472528812d349e15b83597d9f4464e856b47b2cb9f888ff0b2f948f85010cea",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[4] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "94a965c06a9cc349cfca13fce1167fcf976ce6f852cf7c5dfce690b60e5d4718",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[5] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "eec8d49ddc65bd9fa3d8ba67d98b89988411108032a0f277a9cb7df376a6890f",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[6] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "f0a098463be30b182112df30991c3a8ba47e96f78840f623a4d0b358cb41e0eb",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[7] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "f72cc34c6659f60b2fb5226a45249b838a7d1c107f1ed83e546cd5bb03f35300",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[8] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "17439858c8a8bcf37d5e9fbd57090ce3b9c4b2e085721e9b67273829d9c7b4bd",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[9] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "d3a5c18e55f9cc6ca550b2876137f7886f3a9d98328e40fa040e3b29fd491d45",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[10] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "68992f626f4609b04fe683f6994a6f7c77cbcf2475fbf1187f2339a4d0d94e69",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[11] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "829d17af906480892e25449032eb23cd2a45b0ce736a9a5361039a93852c295a",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[12] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "3f9e6e04b912095d3bb3266f27ee7620cf60841e588b844fdcaef2d954148e50",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[13] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "72f0a48a201aad7284790849399eef663991ed9f5d454dbad667f72f2f3d9844",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[14] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "c30b78b9df7f46b9c6e471bca2dde3f4ae34811b5bbb960ed42e70e5cdf9ec9b",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[15] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "abc19906a9f73d45402f90d856fc28f4c439ec9fc111382153e1976a8cf7ffb8",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  
+//  Frame[16] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-2",
+//          "entryId": "6d4361f16577c3aa7276784fb5849023fd4b4c0d395c41977cb70ab7a8e498a0",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------+----------------+
+//  | Name: time                    | Name: Wind Speed | Name: quality  |
+//  | Labels:                       | Labels:          | Labels:        |
+//  | Type: []time.Time             | Type: []float64  | Type: []string |
+//  +-------------------------------+------------------+----------------+
+//  | 2021-02-01 19:20:00 +0000 UTC | 23.8             | GOOD           |
+//  +-------------------------------+------------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "7cf29ef74b07b8a764bf15af316652c118d4e38c100d84fc8c33a8ad9e1c0a67",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "177b30c63dbab2d2e19afb6a2d0ed5adb74e70deba51b1c84b73671096180b54",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "f5d6a272b4efa2df1e8775d729397c693215d0108c60e62b8db32db633522bac",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "3472528812d349e15b83597d9f4464e856b47b2cb9f888ff0b2f948f85010cea",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "94a965c06a9cc349cfca13fce1167fcf976ce6f852cf7c5dfce690b60e5d4718",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "eec8d49ddc65bd9fa3d8ba67d98b89988411108032a0f277a9cb7df376a6890f",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "f0a098463be30b182112df30991c3a8ba47e96f78840f623a4d0b358cb41e0eb",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "f72cc34c6659f60b2fb5226a45249b838a7d1c107f1ed83e546cd5bb03f35300",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "17439858c8a8bcf37d5e9fbd57090ce3b9c4b2e085721e9b67273829d9c7b4bd",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "d3a5c18e55f9cc6ca550b2876137f7886f3a9d98328e40fa040e3b29fd491d45",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "68992f626f4609b04fe683f6994a6f7c77cbcf2475fbf1187f2339a4d0d94e69",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "829d17af906480892e25449032eb23cd2a45b0ce736a9a5361039a93852c295a",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "3f9e6e04b912095d3bb3266f27ee7620cf60841e588b844fdcaef2d954148e50",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "72f0a48a201aad7284790849399eef663991ed9f5d454dbad667f72f2f3d9844",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "c30b78b9df7f46b9c6e471bca2dde3f4ae34811b5bbb960ed42e70e5cdf9ec9b",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "abc19906a9f73d45402f90d856fc28f4c439ec9fc111382153e1976a8cf7ffb8",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-2",
+            "entryId": "6d4361f16577c3aa7276784fb5849023fd4b4c0d395c41977cb70ab7a8e498a0",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    }
+  ]
+}

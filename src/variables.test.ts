@@ -42,10 +42,10 @@ describe('SiteWiseVariableSupport', () => {
       expect(mockedDatasourceQuery).not.toHaveBeenCalled();
     });
     test.each([
-      { refId: 'A', queryType: QueryType.PropertyInterpolated, assetIds: ['assetId'], propertyId: 'propertyId' },
-      { refId: 'A', queryType: QueryType.PropertyAggregate, assetIds: ['assetId'], propertyId: 'propertyId' },
-      { refId: 'A', queryType: QueryType.PropertyValueHistory, assetIds: ['assetId'], propertyId: 'propertyId' },
-      { refId: 'A', queryType: QueryType.PropertyValue, assetIds: ['assetId'], propertyId: 'propertyId' },
+      { refId: 'A', queryType: QueryType.PropertyInterpolated, assetIds: ['assetId'], propertyIds: ['propertyId'] },
+      { refId: 'A', queryType: QueryType.PropertyAggregate, assetIds: ['assetId'], propertyIds: ['propertyId'] },
+      { refId: 'A', queryType: QueryType.PropertyValueHistory, assetIds: ['assetId'], propertyIds: ['propertyId'] },
+      { refId: 'A', queryType: QueryType.PropertyValue, assetIds: ['assetId'], propertyIds: ['propertyId'] },
       { refId: 'A', queryType: QueryType.ListAssetModels },
       { refId: 'A', queryType: QueryType.ListAssociatedAssets, assetIds: ['assetId'] },
       { refId: 'A', queryType: QueryType.ListAssets, modelId: 'modelId', filter: 'ALL' },
