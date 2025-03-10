@@ -33,18 +33,24 @@ const (
 type BaseQuery struct {
 	// General
 	AwsRegion string `json:"region,omitempty"`
+
 	QueryType string `json:"-"`
 
 	// Sitewise specific
-	// Deprecated: use assetIds
-	AssetId             string            `json:"assetId,omitempty"`
-	AssetIds            []string          `json:"assetIds,omitempty"`
-	PropertyId          string            `json:"propertyId,omitempty"`
-	PropertyAlias       string            `json:"propertyAlias,omitempty"`
-	NextToken           string            `json:"nextToken,omitempty"`
-	NextTokens          map[string]string `json:"nextTokens,omitempty"`
-	MaxPageAggregations int               `json:"maxPageAggregations,omitempty"`
-	ResponseFormat      string            `json:"responseFormat,omitempty"`
+	// Deprecated: use AssetIds
+	AssetId  string   `json:"assetId,omitempty"`
+	AssetIds []string `json:"assetIds,omitempty"`
+	// Deprecated: use PropertyIds
+	PropertyId  string   `json:"propertyId,omitempty"`
+	PropertyIds []string `json:"propertyIds,omitempty"`
+	// Deprecated: use PropertyAliases
+	PropertyAlias        string               `json:"propertyAlias,omitempty"`
+	PropertyAliases      []string             `json:"propertyAliases,omitempty"`
+	AssetPropertyEntries []AssetPropertyEntry `json:"assetPropertyEntries,omitempty"`
+	NextToken            string               `json:"nextToken,omitempty"`
+	NextTokens           map[string]string    `json:"nextTokens,omitempty"`
+	MaxPageAggregations  int                  `json:"maxPageAggregations,omitempty"`
+	ResponseFormat       string               `json:"responseFormat,omitempty"`
 
 	// Also provided by sqlutil.Query. Migrate to that
 	Interval      time.Duration     `json:"-"`
@@ -52,12 +58,18 @@ type BaseQuery struct {
 	MaxDataPoints int64             `json:"-"`
 }
 
-// MigrateAssetId handles AssetId <--> AssetIds backward compatibility.
-// This is needed for compatibility for queries saved before the Batch API changes were introduced in 1.6.0
-func (query *BaseQuery) MigrateAssetId() {
+// MigrateAssetProperty handles AssetId, PropertyId, PropertyAlias --> AssetIds, PropertyIds, PropertyAliases backward compatibility.
+// This is needed for compatibility for queries saved before the Batch API changes were introduced in 2.1.0
+func (query *BaseQuery) MigrateAssetProperty() {
 	if query.AssetId != "" {
 		query.AssetIds = []string{query.AssetId}
-	} else if len(query.AssetIds) > 0 {
-		query.AssetId = query.AssetIds[0]
+	}
+
+	if query.PropertyId != "" {
+		query.PropertyIds = []string{query.PropertyId}
+	}
+
+	if query.PropertyAlias != "" {
+		query.PropertyAliases = []string{query.PropertyAlias}
 	}
 }

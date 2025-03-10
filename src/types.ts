@@ -72,8 +72,14 @@ export interface SitewiseQuery extends DataQuery {
   assetId?: string;
   // One or more assets to filter -- when multiple, they should share the same properties, the batch API will be called
   assetIds?: string[];
+  /** @deprecated -- this is migrated to propertyIds */
   propertyId?: string;
+  // One or more properties to fetch data
+  propertyIds?: string[];
+  /** @deprecated -- this is migrated to propertyAlias */
   propertyAlias?: string;
+  // One or more properties to fetch data
+  propertyAliases?: string[];
   quality?: SiteWiseQuality;
   resolution?: SiteWiseResolution;
   lastObservation?: boolean;
@@ -200,11 +206,11 @@ export function shouldShowLastObserved(queryType?: QueryType): boolean {
 
 export function shouldShowOptionsRow(query: SitewiseQuery, showProp: boolean): boolean {
   const shouldShowLastObservedSwitch =
-    shouldShowLastObserved(query.queryType) && !Boolean(query.propertyAlias) && showProp;
+    shouldShowLastObserved(query.queryType) && !query.propertyAliases?.length && showProp;
   const shouldShowWithPropertyAlias =
     // shouldn't show the row when querying associated assets with property alias, otherwise show it every time property alias is set
-    query.propertyAlias && !isListAssociatedAssetsQuery(query);
-  return !!(query.propertyId || shouldShowWithPropertyAlias || shouldShowLastObservedSwitch);
+    query.propertyAliases?.length && !isListAssociatedAssetsQuery(query);
+  return !!(query.propertyIds?.length || shouldShowWithPropertyAlias || shouldShowLastObservedSwitch);
 }
 
 export function shouldShowL4eOptions(queryType?: QueryType): boolean {

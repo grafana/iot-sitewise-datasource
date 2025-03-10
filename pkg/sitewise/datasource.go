@@ -115,9 +115,17 @@ func (ds *Datasource) HealthCheck(ctx context.Context, req *backend.CheckHealthR
 }
 
 func (ds *Datasource) HandleInterpolatedPropertyValueQuery(ctx context.Context, req *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
-	return ds.invoke(ctx, req, &query.BaseQuery, func(ctx context.Context, sw client.SitewiseClient) (framer.Framer, error) {
-		return api.GetInterpolatedAssetPropertyValues(ctx, sw, *query)
-	})
+	sw, err := ds.GetClient(query.BaseQuery.AwsRegion)
+	if err != nil {
+		return nil, err
+	}
+
+	modifiedQuery, fr, err := api.GetInterpolatedAssetPropertyValues(ctx, sw, *query)
+	if err != nil {
+		return nil, err
+	}
+
+	return frameResponse(ctx, modifiedQuery.BaseQuery, fr, sw)
 }
 
 func (ds *Datasource) HandleGetAssetPropertyValueHistoryQuery(ctx context.Context, query *models.AssetPropertyValueQuery) (data.Frames, error) {

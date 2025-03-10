@@ -1,0 +1,1282 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "520d0da5afd6144c9a7a6da71bcf28374ad0ed0f89e2e42fd4a8ae82e6392024",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+-----------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm1 | Name: quality  |
+//  | Labels:                       | Labels:                     | Labels:        |
+//  | Type: []time.Time             | Type: []float64             | Type: []string |
+//  +-------------------------------+-----------------------------+----------------+
+//  | 2021-02-01 14:20:00 -0500 EST | 23.8                        | GOOD           |
+//  +-------------------------------+-----------------------------+----------------+
+//  
+//  
+//  
+//  Frame[1] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "e302fa8e60e3caac5da327fcaf9a20ff4c185c2f12b9518c9a258c74254b827f",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+-----------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm2 | Name: quality  |
+//  | Labels:                       | Labels:                     | Labels:        |
+//  | Type: []time.Time             | Type: []float64             | Type: []string |
+//  +-------------------------------+-----------------------------+----------------+
+//  | 2021-02-01 14:20:01 -0500 EST | 24.8                        | GOOD           |
+//  +-------------------------------+-----------------------------+----------------+
+//  
+//  
+//  
+//  Frame[2] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "c2812d64a81422254807999a0bfdf6435fa03fd494775cb99f2e50da600e9336",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+-----------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm3 | Name: quality  |
+//  | Labels:                       | Labels:                     | Labels:        |
+//  | Type: []time.Time             | Type: []float64             | Type: []string |
+//  +-------------------------------+-----------------------------+----------------+
+//  | 2021-02-01 14:20:02 -0500 EST | 25.8                        | GOOD           |
+//  +-------------------------------+-----------------------------+----------------+
+//  
+//  
+//  
+//  Frame[3] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "27fbdf221609b3a3fcd4b2a3423c674ed889941c4cf513b1474ebee0a48e9060",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+-----------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm4 | Name: quality  |
+//  | Labels:                       | Labels:                     | Labels:        |
+//  | Type: []time.Time             | Type: []float64             | Type: []string |
+//  +-------------------------------+-----------------------------+----------------+
+//  | 2021-02-01 14:20:03 -0500 EST | 26.8                        | GOOD           |
+//  +-------------------------------+-----------------------------+----------------+
+//  
+//  
+//  
+//  Frame[4] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "41022ad01ba29d28d32c7559430c8edfa0bc484368e05e553e1b9b3fe654b8f1",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+-----------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm5 | Name: quality  |
+//  | Labels:                       | Labels:                     | Labels:        |
+//  | Type: []time.Time             | Type: []float64             | Type: []string |
+//  +-------------------------------+-----------------------------+----------------+
+//  | 2021-02-01 14:20:04 -0500 EST | 27.8                        | GOOD           |
+//  +-------------------------------+-----------------------------+----------------+
+//  
+//  
+//  
+//  Frame[5] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "df99e2c691637ada69e81f6d28f27fa5c2fdcd6f47e444e46e5a8f8e48e8d94b",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+-----------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm6 | Name: quality  |
+//  | Labels:                       | Labels:                     | Labels:        |
+//  | Type: []time.Time             | Type: []float64             | Type: []string |
+//  +-------------------------------+-----------------------------+----------------+
+//  | 2021-02-01 14:20:05 -0500 EST | 28.8                        | GOOD           |
+//  +-------------------------------+-----------------------------+----------------+
+//  
+//  
+//  
+//  Frame[6] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "11f5c58e89501b0efdf330c037ad5bb40953db663b721a0495da823bdf651202",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+-----------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm7 | Name: quality  |
+//  | Labels:                       | Labels:                     | Labels:        |
+//  | Type: []time.Time             | Type: []float64             | Type: []string |
+//  +-------------------------------+-----------------------------+----------------+
+//  | 2021-02-01 14:20:06 -0500 EST | 29.8                        | GOOD           |
+//  +-------------------------------+-----------------------------+----------------+
+//  
+//  
+//  
+//  Frame[7] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "42c08daeba331a8e157dc8668f5099c2bbf5724e387ae2e8b0bd50382e5a076f",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+-----------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm8 | Name: quality  |
+//  | Labels:                       | Labels:                     | Labels:        |
+//  | Type: []time.Time             | Type: []float64             | Type: []string |
+//  +-------------------------------+-----------------------------+----------------+
+//  | 2021-02-01 14:20:07 -0500 EST | 30.8                        | GOOD           |
+//  +-------------------------------+-----------------------------+----------------+
+//  
+//  
+//  
+//  Frame[8] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "b0fbbcb29d60b9cce1c4a6a11818e920cdfda850f0754a4c7521735e6fcbc5f3",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+-----------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm9 | Name: quality  |
+//  | Labels:                       | Labels:                     | Labels:        |
+//  | Type: []time.Time             | Type: []float64             | Type: []string |
+//  +-------------------------------+-----------------------------+----------------+
+//  | 2021-02-01 14:20:08 -0500 EST | 31.8                        | GOOD           |
+//  +-------------------------------+-----------------------------+----------------+
+//  
+//  
+//  
+//  Frame[9] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "081aa7bbf6c8eee94929c29e331531cd1b13999774ce8f953a6bf416c320423b",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm10 | Name: quality  |
+//  | Labels:                       | Labels:                      | Labels:        |
+//  | Type: []time.Time             | Type: []float64              | Type: []string |
+//  +-------------------------------+------------------------------+----------------+
+//  | 2021-02-01 14:20:09 -0500 EST | 32.8                         | GOOD           |
+//  +-------------------------------+------------------------------+----------------+
+//  
+//  
+//  
+//  Frame[10] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "5299226803b7d3245c5547f6bd151626417ead2a321bd7033e7280ddbbde7234",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm11 | Name: quality  |
+//  | Labels:                       | Labels:                      | Labels:        |
+//  | Type: []time.Time             | Type: []float64              | Type: []string |
+//  +-------------------------------+------------------------------+----------------+
+//  | 2021-02-01 14:20:10 -0500 EST | 33.8                         | GOOD           |
+//  +-------------------------------+------------------------------+----------------+
+//  
+//  
+//  
+//  Frame[11] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "73b849597dab19860e19281d7d3e42d35627317f698e28504356ce550a4e7c8d",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm12 | Name: quality  |
+//  | Labels:                       | Labels:                      | Labels:        |
+//  | Type: []time.Time             | Type: []float64              | Type: []string |
+//  +-------------------------------+------------------------------+----------------+
+//  | 2021-02-01 14:20:11 -0500 EST | 34.8                         | GOOD           |
+//  +-------------------------------+------------------------------+----------------+
+//  
+//  
+//  
+//  Frame[12] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "bfae6d09b601c1ef3979716a2e19efd043e7f3f5a53dc59291663a584cf04b55",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm13 | Name: quality  |
+//  | Labels:                       | Labels:                      | Labels:        |
+//  | Type: []time.Time             | Type: []float64              | Type: []string |
+//  +-------------------------------+------------------------------+----------------+
+//  | 2021-02-01 14:20:12 -0500 EST | 35.8                         | GOOD           |
+//  +-------------------------------+------------------------------+----------------+
+//  
+//  
+//  
+//  Frame[13] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "59f26c5c62e6c915cf0c23ac03f98ec0dff216ef2b5d1b64026b25639aa921f5",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm14 | Name: quality  |
+//  | Labels:                       | Labels:                      | Labels:        |
+//  | Type: []time.Time             | Type: []float64              | Type: []string |
+//  +-------------------------------+------------------------------+----------------+
+//  | 2021-02-01 14:20:13 -0500 EST | 36.8                         | GOOD           |
+//  +-------------------------------+------------------------------+----------------+
+//  
+//  
+//  
+//  Frame[14] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "1ecb9c09c60d63885bab77cb718791b3976e52b4aaaf71da5121700b0a50220d",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm15 | Name: quality  |
+//  | Labels:                       | Labels:                      | Labels:        |
+//  | Type: []time.Time             | Type: []float64              | Type: []string |
+//  +-------------------------------+------------------------------+----------------+
+//  | 2021-02-01 14:20:14 -0500 EST | 37.8                         | GOOD           |
+//  +-------------------------------+------------------------------+----------------+
+//  
+//  
+//  
+//  Frame[15] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-1",
+//          "entryId": "0a5860554f2ce7d1b330690f9e79b24953c99e06aec5609147c15609bf626877",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm16 | Name: quality  |
+//  | Labels:                       | Labels:                      | Labels:        |
+//  | Type: []time.Time             | Type: []float64              | Type: []string |
+//  +-------------------------------+------------------------------+----------------+
+//  | 2021-02-01 14:20:15 -0500 EST | 38.8                         | GOOD           |
+//  +-------------------------------+------------------------------+----------------+
+//  
+//  
+//  
+//  Frame[16] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {
+//          "nextToken": "some-next-token-2",
+//          "entryId": "263659606115c975b8cdd4c8110d1ee6189c9985f28495dd3971421b42873163",
+//          "resolution": "RAW"
+//      }
+//  }
+//  Name: 
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+------------------------------+----------------+
+//  | Name: time                    | Name: /amazon/renton/1/rpm17 | Name: quality  |
+//  | Labels:                       | Labels:                      | Labels:        |
+//  | Type: []time.Time             | Type: []float64              | Type: []string |
+//  +-------------------------------+------------------------------+----------------+
+//  | 2021-02-01 14:20:16 -0500 EST | 39.8                         | GOOD           |
+//  +-------------------------------+------------------------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "520d0da5afd6144c9a7a6da71bcf28374ad0ed0f89e2e42fd4a8ae82e6392024",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm1",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "e302fa8e60e3caac5da327fcaf9a20ff4c185c2f12b9518c9a258c74254b827f",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm2",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207201000
+          ],
+          [
+            24.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "c2812d64a81422254807999a0bfdf6435fa03fd494775cb99f2e50da600e9336",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm3",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207202000
+          ],
+          [
+            25.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "27fbdf221609b3a3fcd4b2a3423c674ed889941c4cf513b1474ebee0a48e9060",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm4",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207203000
+          ],
+          [
+            26.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "41022ad01ba29d28d32c7559430c8edfa0bc484368e05e553e1b9b3fe654b8f1",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm5",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207204000
+          ],
+          [
+            27.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "df99e2c691637ada69e81f6d28f27fa5c2fdcd6f47e444e46e5a8f8e48e8d94b",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm6",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207205000
+          ],
+          [
+            28.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "11f5c58e89501b0efdf330c037ad5bb40953db663b721a0495da823bdf651202",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm7",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207206000
+          ],
+          [
+            29.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "42c08daeba331a8e157dc8668f5099c2bbf5724e387ae2e8b0bd50382e5a076f",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm8",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207207000
+          ],
+          [
+            30.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "b0fbbcb29d60b9cce1c4a6a11818e920cdfda850f0754a4c7521735e6fcbc5f3",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm9",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207208000
+          ],
+          [
+            31.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "081aa7bbf6c8eee94929c29e331531cd1b13999774ce8f953a6bf416c320423b",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm10",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207209000
+          ],
+          [
+            32.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "5299226803b7d3245c5547f6bd151626417ead2a321bd7033e7280ddbbde7234",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm11",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207210000
+          ],
+          [
+            33.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "73b849597dab19860e19281d7d3e42d35627317f698e28504356ce550a4e7c8d",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm12",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207211000
+          ],
+          [
+            34.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "bfae6d09b601c1ef3979716a2e19efd043e7f3f5a53dc59291663a584cf04b55",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm13",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207212000
+          ],
+          [
+            35.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "59f26c5c62e6c915cf0c23ac03f98ec0dff216ef2b5d1b64026b25639aa921f5",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm14",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207213000
+          ],
+          [
+            36.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "1ecb9c09c60d63885bab77cb718791b3976e52b4aaaf71da5121700b0a50220d",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm15",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207214000
+          ],
+          [
+            37.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-1",
+            "entryId": "0a5860554f2ce7d1b330690f9e79b24953c99e06aec5609147c15609bf626877",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm16",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207215000
+          ],
+          [
+            38.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    },
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {
+            "nextToken": "some-next-token-2",
+            "entryId": "263659606115c975b8cdd4c8110d1ee6189c9985f28495dd3971421b42873163",
+            "resolution": "RAW"
+          }
+        },
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "/amazon/renton/1/rpm17",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {}
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207216000
+          ],
+          [
+            39.8
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    }
+  ]
+}

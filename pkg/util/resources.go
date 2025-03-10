@@ -25,7 +25,7 @@ func GetPropertyUnit(property *iotsitewise.DescribeAssetPropertyOutput) string {
 		return *property.AssetProperty.Unit
 	} else if IsComponentProperty(property) && property.CompositeModel.AssetProperty.Unit != nil {
 		return *property.CompositeModel.AssetProperty.Unit
-	} 
+	}
 
 	return ""
 }

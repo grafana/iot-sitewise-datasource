@@ -55,7 +55,7 @@ describe('VisualQueryBuilder', () => {
   it('should display correct fields for query type PropertyAggregate', async () => {
     await setup({
       queryType: QueryType.PropertyAggregate,
-      propertyId: 'prop',
+      propertyIds: ['prop'],
       assetIds: ['asset'],
     });
     await waitFor(() => {
@@ -76,7 +76,7 @@ describe('VisualQueryBuilder', () => {
   it('should display correct fields for query type PropertyAggregate and using Property alias', async () => {
     await setup({
       queryType: QueryType.PropertyAggregate,
-      propertyAlias: 'propAlias',
+      propertyAliases: ['propAlias'],
     });
     await waitFor(() => {
       expect(screen.getByText('Property Alias')).toBeInTheDocument();
@@ -92,7 +92,7 @@ describe('VisualQueryBuilder', () => {
   it('should display correct fields for query type Interpolated Property', async () => {
     await setup({
       queryType: QueryType.PropertyInterpolated,
-      propertyId: 'prop',
+      propertyIds: ['prop'],
       assetIds: ['asset'],
     });
     await waitFor(() => {
@@ -110,7 +110,7 @@ describe('VisualQueryBuilder', () => {
   it('should display correct fields for query type  Interpolated Property and using Property alias', async () => {
     await setup({
       queryType: QueryType.PropertyInterpolated,
-      propertyAlias: 'propAlias',
+      propertyAliases: ['propAlias'],
     });
     await waitFor(() => {
       expect(screen.getByText('Property Alias')).toBeInTheDocument();
@@ -125,7 +125,7 @@ describe('VisualQueryBuilder', () => {
   it('should display correct fields for query type PropertyValueHistory', async () => {
     await setup({
       queryType: QueryType.PropertyValueHistory,
-      propertyId: 'prop',
+      propertyIds: ['prop'],
       assetIds: ['asset'],
     });
     await waitFor(() => {
@@ -146,7 +146,7 @@ describe('VisualQueryBuilder', () => {
   it('should display correct fields for query type PropertyValueHistory and using Property alias', async () => {
     await setup({
       queryType: QueryType.PropertyAggregate,
-      propertyAlias: 'propAlias',
+      propertyAliases: ['propAlias'],
     });
     await waitFor(() => {
       expect(screen.getByText('Property Alias')).toBeInTheDocument();
@@ -158,7 +158,7 @@ describe('VisualQueryBuilder', () => {
   it('should display correct fields for query type PropertyValue', async () => {
     await setup({
       queryType: QueryType.PropertyValue,
-      propertyId: 'prop',
+      propertyIds: ['prop'],
       assetIds: ['asset'],
     });
     await waitFor(() => {
@@ -173,7 +173,7 @@ describe('VisualQueryBuilder', () => {
   it('should display correct fields for query type PropertyValue and using Property alias', async () => {
     await setup({
       queryType: QueryType.PropertyValue,
-      propertyAlias: 'propAlias',
+      propertyAliases: ['propAlias'],
     });
     await waitFor(() => {
       expect(screen.getByText('Property Alias')).toBeInTheDocument();
@@ -183,7 +183,7 @@ describe('VisualQueryBuilder', () => {
   it('should display correct fields for query type ListAssets', async () => {
     await setup({
       queryType: QueryType.ListAssets,
-      propertyId: 'prop',
+      propertyIds: ['prop'],
       assetIds: ['asset'],
     });
     await waitFor(() => {
@@ -207,7 +207,7 @@ describe('VisualQueryBuilder', () => {
   it('should display correct fields for query type ListAssociatedAssets if property Alias is defined', async () => {
     await setup({
       queryType: QueryType.ListAssociatedAssets,
-      propertyAlias: 'prop',
+      propertyAliases: ['prop'],
     });
     await waitFor(() => {
       expect(screen.getByText('Asset Hierarchy')).toBeInTheDocument();
@@ -222,7 +222,7 @@ describe('VisualQueryBuilder', () => {
     await setup(
       {
         queryType: QueryType.PropertyValue,
-        propertyId: 'prop',
+        propertyIds: ['prop'],
         assetIds: ['asset'],
       },
       {
@@ -240,7 +240,7 @@ describe('VisualQueryBuilder', () => {
     expect(onChange).toHaveBeenLastCalledWith(
       expect.objectContaining({
         assetIds: [],
-        propertyId: undefined,
+        propertyIds: [],
       })
     );
   });
@@ -251,7 +251,7 @@ describe('VisualQueryBuilder', () => {
     await setup(
       {
         queryType: QueryType.PropertyValue,
-        propertyId: 'prop',
+        propertyIds: ['prop'],
         assetIds: ['asset1', 'asset2', 'asset3'],
       },
       {
@@ -269,7 +269,7 @@ describe('VisualQueryBuilder', () => {
     expect(onChange).toHaveBeenLastCalledWith(
       expect.objectContaining({
         assetIds: [],
-        propertyId: undefined,
+        propertyIds: [],
       })
     );
   });
@@ -280,7 +280,7 @@ describe('VisualQueryBuilder', () => {
     await setup(
       {
         queryType: QueryType.PropertyValue,
-        propertyId: 'prop',
+        propertyIds: ['prop'],
         assetIds: ['asset1', 'asset2', 'asset3'],
       },
       {
@@ -298,7 +298,7 @@ describe('VisualQueryBuilder', () => {
     expect(onChange).toHaveBeenLastCalledWith(
       expect.objectContaining({
         assetIds: ['asset1', 'asset3'],
-        propertyId: 'prop',
+        propertyIds: ['prop'],
       })
     );
   });

@@ -29,13 +29,29 @@ func (rp *SitewiseResources) Asset(ctx context.Context, assetId string) (*iotsit
 
 func (rp *SitewiseResources) Property(ctx context.Context, assetId string, propertyId string, propertyAlias string) (*iotsitewise.DescribeAssetPropertyOutput, error) {
 	if propertyAlias != "" && (assetId == "" && propertyId == "") {
-		return &iotsitewise.DescribeAssetPropertyOutput{
+		defaultOutput := &iotsitewise.DescribeAssetPropertyOutput{
 			AssetName: aws.String(""),
 			AssetProperty: &iotsitewise.Property{
 				Name:     aws.String(propertyAlias),
 				DataType: aws.String("?"),
 			},
-		}, nil
+		}
+
+		resp, err := rp.client.DescribeTimeSeriesWithContext(ctx, &iotsitewise.DescribeTimeSeriesInput{
+			Alias: aws.String(propertyAlias),
+		})
+		if err != nil {
+			return defaultOutput, err
+		}
+
+		if resp.AssetId != nil && resp.PropertyId != nil {
+			return rp.client.DescribeAssetPropertyWithContext(ctx, &iotsitewise.DescribeAssetPropertyInput{
+				AssetId:    resp.AssetId,
+				PropertyId: resp.PropertyId,
+			})
+		}
+
+		return defaultOutput, nil
 	}
 
 	return rp.client.DescribeAssetPropertyWithContext(ctx, &iotsitewise.DescribeAssetPropertyInput{

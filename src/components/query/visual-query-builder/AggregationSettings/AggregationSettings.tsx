@@ -1,6 +1,6 @@
 import React from 'react';
 import { SelectableValue } from '@grafana/data';
-import { AggregateType, SiteWiseResolution, AssetPropertyAggregatesQuery, AssetPropertyInfo } from 'types';
+import { AggregateType, SiteWiseResolution, AssetPropertyAggregatesQuery } from 'types';
 import { Select } from '@grafana/ui';
 import { EditorField, EditorFieldGroup } from '@grafana/plugin-ui';
 import { getDefaultAggregate } from 'queryInfo';
@@ -24,11 +24,9 @@ const RESOLUTIONS: Array<SelectableValue<string>> = [
 export const AggregationSettings = ({
   onChange,
   query,
-  property,
 }: {
   query: AssetPropertyAggregatesQuery;
   onChange: (value: AssetPropertyAggregatesQuery) => void;
-  property?: AssetPropertyInfo;
 }) => {
   const resolution = useOptionsWithVariables({ current: query.resolution, options: RESOLUTIONS });
 
@@ -46,7 +44,7 @@ export const AggregationSettings = ({
         <AggregatePicker
           stats={query.aggregates ?? []}
           onChange={onAggregateChange}
-          defaultStat={getDefaultAggregate(property)}
+          defaultStat={getDefaultAggregate()}
           menuPlacement="auto"
         />
       </EditorField>

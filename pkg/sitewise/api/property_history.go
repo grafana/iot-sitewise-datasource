@@ -40,9 +40,9 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetA
 		EndDate:       to,
 		MaxResults:    aws.Int64(query.MaxDataPoints),
 		NextToken:     getNextToken(query.BaseQuery),
-		AssetId:       getAssetId(query.BaseQuery),
-		PropertyId:    getPropertyId(query.BaseQuery),
-		PropertyAlias: getPropertyAlias(query.BaseQuery),
+		AssetId:       getFirstAssetId(query.BaseQuery),
+		PropertyId:    getFirstPropertyId(query.BaseQuery),
+		PropertyAlias: getFirstPropertyAlias(query.BaseQuery),
 		TimeOrdering:  aws.String(query.TimeOrdering),
 		Qualities:     qualities,
 	}

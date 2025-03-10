@@ -26,7 +26,7 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 	}
 	// TODO: make this work with the API instead of ad-hoc dataType inference
 	// https://github.com/grafana/iot-sitewise-datasource/issues/98#issuecomment-892947756
-	if util.IsAssetProperty(property) && *property.AssetProperty.DataType == *aws.String("?") {
+	if util.IsAssetProperty(property) && !isPropertyDataTypeDefined(*property.AssetProperty.DataType) {
 		property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(p.AssetPropertyValueHistory[0].Value))
 	}
 

@@ -40,8 +40,8 @@ func GetDescribeAssetQuery(dq *backend.DataQuery) (*DescribeAssetQuery, error) {
 		return nil, err
 	}
 
-	// AssetId <--> AssetIds backward compatibility
-	query.MigrateAssetId()
+	// Backward compatibility for asset, property, and property alias string --> list
+	query.MigrateAssetProperty()
 
 	// add on the DataQuery params
 	query.QueryType = dq.QueryType
@@ -55,8 +55,8 @@ func GetListAssetPropertiesQuery(dq *backend.DataQuery) (*ListAssetPropertiesQue
 		return nil, err
 	}
 
-	// AssetId <--> AssetIds backward compatibility
-	query.MigrateAssetId()
+	// Backward compatibility for asset, property, and property alias string --> list
+	query.MigrateAssetProperty()
 
 	query.QueryType = dq.QueryType
 	return query, nil
@@ -68,8 +68,8 @@ func GetListAssetsQuery(dq *backend.DataQuery) (*ListAssetsQuery, error) {
 		return nil, err
 	}
 
-	// AssetId <--> AssetIds backward compatibility
-	query.MigrateAssetId()
+	// Backward compatibility for asset, property, and property alias string --> list
+	query.MigrateAssetProperty()
 
 	// add on the DataQuery params
 	query.MaxDataPoints = dq.MaxDataPoints
@@ -81,7 +81,7 @@ func GetListTimeSeriesQuery(dq *backend.DataQuery) (*ListTimeSeriesQuery, error)
 	query := &ListTimeSeriesQuery{}
 	if err := json.Unmarshal(dq.JSON, query); err != nil {
 		return nil, err
-	} 
+	}
 
 	// add on the DataQuery params
 	query.MaxDataPoints = dq.MaxDataPoints
@@ -95,8 +95,8 @@ func GetListAssociatedAssetsQuery(dq *backend.DataQuery) (*ListAssociatedAssetsQ
 		return nil, err
 	}
 
-	// AssetId <--> AssetIds backward compatibility
-	query.MigrateAssetId()
+	// Backward compatibility for asset, property, and property alias string --> list
+	query.MigrateAssetProperty()
 
 	// add on the DataQuery params
 	query.MaxDataPoints = dq.MaxDataPoints

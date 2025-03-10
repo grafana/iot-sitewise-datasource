@@ -9,8 +9,8 @@
                         "TimeInSeconds": 1612197000
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 28.287864119831497,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -22,8 +22,8 @@
                         "TimeInSeconds": 1612197300
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 28.345162289561085,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -35,8 +35,8 @@
                         "TimeInSeconds": 1612197600
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 28.57531512865568,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -48,8 +48,8 @@
                         "TimeInSeconds": 1612197900
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 28.779631112505346,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -61,8 +61,8 @@
                         "TimeInSeconds": 1612198200
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 28.746434495312684,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -74,8 +74,8 @@
                         "TimeInSeconds": 1612198500
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 28.815794249589597,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -87,8 +87,8 @@
                         "TimeInSeconds": 1612198800
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 29.67006840640403,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -100,8 +100,8 @@
                         "TimeInSeconds": 1612199100
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 29.504278603194113,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -113,8 +113,8 @@
                         "TimeInSeconds": 1612199400
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 29.32301703873501,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -126,8 +126,8 @@
                         "TimeInSeconds": 1612199700
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 28.136767088989878,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -139,8 +139,8 @@
                         "TimeInSeconds": 1612200000
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 27.42938098692682,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -152,8 +152,8 @@
                         "TimeInSeconds": 1612200300
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 26.56188158047126,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -165,8 +165,8 @@
                         "TimeInSeconds": 1612200600
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 26.335448470795363,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -178,8 +178,8 @@
                         "TimeInSeconds": 1612200900
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 26.31077344033068,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -191,8 +191,8 @@
                         "TimeInSeconds": 1612201200
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 26.110300710442917,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -204,8 +204,8 @@
                         "TimeInSeconds": 1612201500
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 25.08678024300829,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -217,8 +217,8 @@
                         "TimeInSeconds": 1612201800
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 25.64753688531719,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -230,8 +230,8 @@
                         "TimeInSeconds": 1612202100
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 26.49234252127181,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -243,8 +243,8 @@
                         "TimeInSeconds": 1612202400
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 26.285468425026796,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -256,8 +256,8 @@
                         "TimeInSeconds": 1612202700
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 25.730921679136657,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -269,8 +269,8 @@
                         "TimeInSeconds": 1612203000
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 24.647221152557577,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -282,8 +282,8 @@
                         "TimeInSeconds": 1612203300
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 24.20356079774557,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -295,8 +295,8 @@
                         "TimeInSeconds": 1612203600
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 24.40896724352033,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -308,8 +308,8 @@
                         "TimeInSeconds": 1612203900
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 25.14650372817268,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -321,8 +321,8 @@
                         "TimeInSeconds": 1612204200
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 24.779051373351788,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -334,8 +334,8 @@
                         "TimeInSeconds": 1612204500
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 24.89220905335991,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -347,8 +347,8 @@
                         "TimeInSeconds": 1612204800
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 25.36452426623981,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -360,8 +360,8 @@
                         "TimeInSeconds": 1612205100
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 24.92403230837538,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -373,8 +373,8 @@
                         "TimeInSeconds": 1612205400
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 24.488252036044447,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -386,8 +386,8 @@
                         "TimeInSeconds": 1612205700
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 24.713524629788896,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -399,8 +399,8 @@
                         "TimeInSeconds": 1612206000
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 24.062599503697264,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -412,8 +412,8 @@
                         "TimeInSeconds": 1612206300
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 24.46870597335279,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -425,8 +425,8 @@
                         "TimeInSeconds": 1612206600
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 24.851267281740665,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -438,8 +438,8 @@
                         "TimeInSeconds": 1612206900
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 24.21436429829983,
+                        "BooleanValue": true,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
@@ -451,8 +451,8 @@
                         "TimeInSeconds": 1612207200
                     },
                     "Value": {
-                        "BooleanValue": null,
-                        "DoubleValue": 23.81007059955162,
+                        "BooleanValue": false,
+                        "DoubleValue": null,
                         "IntegerValue": null,
                         "StringValue": null
                     }
