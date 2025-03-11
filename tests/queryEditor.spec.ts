@@ -190,27 +190,28 @@ test.describe('Query Editor', () => {
       await panelEditPage.setVisualization('Table');
     });
 
-    test('Switch to Code Editor', async ({ page, panelEditPage, selectors }) => {
-      await page.getByRole('radio', { name: 'Code' }).click();
-      await page.waitForFunction(() => window.monaco);
-      await expect(panelEditPage.getByGrafanaSelector(selectors.components.CodeEditor.container)).toBeVisible();
-    });
+    // Uncomment the following code when Builder mode is ready
+    // test('Switch to Code Editor', async ({ page, panelEditPage, selectors }) => {
+    //   await page.getByRole('radio', { name: 'Code' }).click();
+    //   await page.waitForFunction(() => window.monaco);
+    //   await expect(panelEditPage.getByGrafanaSelector(selectors.components.CodeEditor.container)).toBeVisible();
+    // });
 
-    test('Displays the correct initial value', async ({ page, panelEditPage, selectors }) => {
-      await page.getByRole('radio', { name: 'Code' }).click();
-      await page.waitForFunction(() => window.monaco);
-      await expect(panelEditPage.getByGrafanaSelector(selectors.components.CodeEditor.container)).toContainText(
-        'select $__selectAll from raw_time_series where $__timeFilter(event_timestamp)'
-      );
-    });
+    // test('Displays the correct initial value', async ({ page, panelEditPage, selectors }) => {
+    //   await page.getByRole('radio', { name: 'Code' }).click();
+    //   await page.waitForFunction(() => window.monaco);
+    //   await expect(panelEditPage.getByGrafanaSelector(selectors.components.CodeEditor.container)).toContainText(
+    //     'select $__selectAll from raw_time_series where $__timeFilter(event_timestamp)'
+    //   );
+    // });
 
-    test('Accepts keyboard input', async ({ page, panelEditPage, selectors }) => {
-      await page.getByRole('radio', { name: 'Code' }).click();
-      await page.waitForFunction(() => window.monaco);
-      const editor = panelEditPage.getByGrafanaSelector(selectors.components.CodeEditor.container);
-      await editor.click();
-      await page.keyboard.insertText('SELECT * FROM new_table');
-      await expect(editor).toContainText('SELECT * FROM new_table');
-    });
+    // test('Accepts keyboard input', async ({ page, panelEditPage, selectors }) => {
+    //   await page.getByRole('radio', { name: 'Code' }).click();
+    //   await page.waitForFunction(() => window.monaco);
+    //   const editor = panelEditPage.getByGrafanaSelector(selectors.components.CodeEditor.container);
+    //   await editor.click();
+    //   await page.keyboard.insertText('SELECT * FROM new_table');
+    //   await expect(editor).toContainText('SELECT * FROM new_table');
+    // });
   });
 });

@@ -3,8 +3,8 @@ import { Space } from '@grafana/ui';
 import { InlineSelect } from '@grafana/plugin-ui';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { QueryEditorHeader } from '@grafana/aws-sdk';
-import { EditorRows, QueryEditorMode, QueryEditorModeToggle } from '@grafana/plugin-ui';
-import { SitewiseQuery, SitewiseOptions, QueryType } from 'types';
+import { EditorRows, QueryEditorMode } from '@grafana/plugin-ui';
+import { SitewiseQuery, SitewiseOptions } from 'types';
 import { DataSource } from 'SitewiseDataSource';
 import { RawQueryEditor } from 'components/query/query-editor-raw/RawQueryEditor';
 import { VisualQueryBuilder } from 'components/query/visual-query-builder/VisualQueryBuilder';
@@ -14,17 +14,20 @@ type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 
 export function SitewiseQueryEditor(props: Props) {
   const { query, onChange, onRunQuery } = props;
+
+  // Hardcoded to Builder mode til code is ready
   const editorMode = query.editorMode || QueryEditorMode.Builder;
 
-  const onEditorModeChange = (newEditorMode: QueryEditorMode) => {
-    const newQuery = { ...query };
-    if (newEditorMode === QueryEditorMode.Code) {
-      newQuery.queryType = QueryType.ExecuteQuery;
-      newQuery.clientCache = false;
-      newQuery.rawSQL = newQuery.rawSQL || props.datasource.defaultQuery;
-    }
-    onChange({ ...newQuery, editorMode: newEditorMode });
-  };
+  // Uncomment the following code when Builder mode is ready
+  // const onEditorModeChange = (newEditorMode: QueryEditorMode) => {
+  //   const newQuery = { ...query };
+  //   if (newEditorMode === QueryEditorMode.Code) {
+  //     newQuery.queryType = QueryType.ExecuteQuery;
+  //     newQuery.clientCache = false;
+  //     newQuery.rawSQL = newQuery.rawSQL || props.datasource.defaultQuery;
+  //   }
+  //   onChange({ ...newQuery, editorMode: newEditorMode });
+  // };
 
   const onRegionChange = (sel: SelectableValue<Region>) => {
     onChange({ ...query, region: sel.value });
@@ -39,7 +42,8 @@ export function SitewiseQueryEditor(props: Props) {
       <QueryEditorHeader<DataSource, SitewiseQuery, SitewiseOptions>
         {...props}
         enableRunButton
-        extraHeaderElementRight={<QueryEditorModeToggle mode={editorMode!} onChange={onEditorModeChange} />}
+        // Uncomment the following code when Builder mode is ready
+        // extraHeaderElementRight={<QueryEditorModeToggle mode={editorMode!} onChange={onEditorModeChange} />}
         extraHeaderElementLeft={
           editorMode == QueryEditorMode.Code ? (
             <InlineSelect
