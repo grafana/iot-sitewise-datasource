@@ -89,7 +89,11 @@ export function VisualQueryBuilder(props: Props) {
   ) : undefined;
 
   const clientCacheRow = (
-    <ClientCacheRow clientCache={query.clientCache} onClientCacheChange={onClientCacheChange}></ClientCacheRow>
+    <ClientCacheRow
+      clientCache={query.clientCache}
+      onClientCacheChange={onClientCacheChange}
+      queryRefId={query.refId}
+    />
   );
 
   return (
