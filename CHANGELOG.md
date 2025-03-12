@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.1.0
+
+- fix: disabled code editor and client cache to prepare for release in [#448](https://github.com/grafana/iot-sitewise-datasource/pull/448)
+- Query Editor: Support selecting multiple property aliases in time series queries in [#435](https://github.com/grafana/iot-sitewise-datasource/pull/435)
+- fix: fix pagination and default query for ExecuteQuery API, alter macros in [#444](https://github.com/grafana/iot-sitewise-datasource/pull/444)
+- chore refactor metadata inspector in [#442](https://github.com/grafana/iot-sitewise-datasource/pull/442)
+- chore remove dead code in [#443](https://github.com/grafana/iot-sitewise-datasource/pull/443)
+- chore(deps-dev): bump the all-node-dependencies group with 16 updates in [#438](https://github.com/grafana/iot-sitewise-datasource/pull/438)
+- chore(deps): bump the all-go-dependencies group with 2 updates in [#437](https://github.com/grafana/iot-sitewise-datasource/pull/437)
+- fix: remove unsupported regions in [#441](https://github.com/grafana/iot-sitewise-datasource/pull/441)
+- feat: support template var for interpolated resolution; make UX consistent for the resolution field on the GetInterpolatedAssetPropertyValues query in [#433](https://github.com/grafana/iot-sitewise-datasource/pull/433)
+- feat: Support nested variable UX for modelId in [#432](https://github.com/grafana/iot-sitewise-datasource/pull/432)
+- Tests and code editor features in [#418](https://github.com/grafana/iot-sitewise-datasource/pull/418)
+- Feat: Add support for 15min resolution; Improve UI in dropdowns for variables and add support for variables in Resolution in [#429](https://github.com/grafana/iot-sitewise-datasource/pull/429)
+- chore(deps): bump the all-node-dependencies group with 16 updates in [#426](https://github.com/grafana/iot-sitewise-datasource/pull/426)
+- chore(deps): bump the all-go-dependencies group with 2 updates in [#427](https://github.com/grafana/iot-sitewise-datasource/pull/427)
+- Add variable interpolation for model id in [#428](https://github.com/grafana/iot-sitewise-datasource/pull/428)
+- fix: isValidQuery broken for listAssets and listAssetModels in [#425](https://github.com/grafana/iot-sitewise-datasource/pull/425)
+- chore(deps): bump the all-node-dependencies group across 1 directory with 19 updates in [#420](https://github.com/grafana/iot-sitewise-datasource/pull/420)
+- chore(deps): bump github.com/grafana/grafana-plugin-sdk-go from 0.265.0 to 0.266.0 in the all-go-dependencies group in [#419](https://github.com/grafana/iot-sitewise-datasource/pull/419)
+
 ## 2.0.0
 
 - (Breaking change:) Migrate to plugin-ui from grafana/experimental in [#384](https://github.com/grafana/iot-sitewise-datasource/pull/384)
