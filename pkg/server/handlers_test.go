@@ -39,7 +39,7 @@ func TestHandlerExecution(t *testing.T) {
 		Queries: []backend.DataQuery{
 			{
 				RefID: "A",
-				JSON:  []byte(`{"rawSQL": "SELECT * FROM table"}`),
+				JSON:  []byte(`{"assetIds": ["asset-1"], "rawSQL": "SELECT * FROM table"}`),
 			},
 		},
 	}

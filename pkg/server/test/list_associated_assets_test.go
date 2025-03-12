@@ -18,6 +18,7 @@ import (
 func TestHandleListAssociatedAssets(t *testing.T) {
 	listAssociatedAssetsChildrenHappyCase(t).run(t)
 	listAssociatedAssetsParentHappyCase(t).run(t)
+	listAssociatedAssetsMultipleAssetIdsCase(t).run(t)
 }
 
 var listAssociatedAssetsChildrenHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
@@ -93,6 +94,59 @@ var listAssociatedAssetsParentHappyCase testServerScenarioFn = func(t *testing.T
 		},
 		mockSw:         mockSw,
 		goldenFileName: "list-associated-assets-parent",
+		handlerFn: func(srvr *server.Server) backend.QueryDataHandlerFunc {
+			return srvr.HandleListAssociatedAssets
+		},
+		validationFn: nil,
+	}
+}
+
+var listAssociatedAssetsMultipleAssetIdsCase testServerScenarioFn = func(t *testing.T) *testScenario {
+	mockSw := &mocks.SitewiseClient{}
+
+	assets := testdata.GetIoTSitewiseAssociatedAssets(t, testDataRelativePath("list-associated-assets.json"))
+	assets2 := testdata.GetIoTSitewiseAssociatedAssets(t, testDataRelativePath("list-associated-assets-multiple.json"))
+
+	argMatcher := mock.MatchedBy(func(req *iotsitewise.ListAssociatedAssetsInput) bool {
+		assetId := req.AssetId
+		hierarchyId := req.HierarchyId
+		traversal := req.TraversalDirection
+		if assetId == nil || hierarchyId == nil || traversal == nil {
+			return false
+		}
+		return testdata.DemoWindFarmAssetId == *assetId &&
+			testdata.TurbineAssetModelHierarchyId == *hierarchyId
+	})
+
+	argMatcher2 := mock.MatchedBy(func(req *iotsitewise.ListAssociatedAssetsInput) bool {
+		assetId := req.AssetId
+		hierarchyId := req.HierarchyId
+		traversal := req.TraversalDirection
+		if assetId == nil || hierarchyId == nil || traversal == nil {
+			return false
+		}
+		return testdata.DemoWindFarmAssetId2 == *assetId &&
+			testdata.TurbineAssetModelHierarchyId == *hierarchyId
+	})
+
+	mockSw.On("ListAssociatedAssetsWithContext", mock.Anything, argMatcher).Return(&assets, nil)
+	mockSw.On("ListAssociatedAssetsWithContext", mock.Anything, argMatcher2).Return(&assets2, nil)
+
+	query := models.ListAssociatedAssetsQuery{}
+	query.AssetIds = []string{testdata.DemoWindFarmAssetId, testdata.DemoWindFarmAssetId2}
+	query.HierarchyId = testdata.TurbineAssetModelHierarchyId
+
+	return &testScenario{
+		name: "ListAssociatedAssetsMultipleAssetIdsHappyCase",
+		queries: []backend.DataQuery{
+			{
+				RefID:     "A",
+				QueryType: models.QueryTypeListAssociatedAssets,
+				JSON:      testdata.SerializeStruct(t, query),
+			},
+		},
+		mockSw:         mockSw,
+		goldenFileName: "list-associated-assets-multiple",
 		handlerFn: func(srvr *server.Server) backend.QueryDataHandlerFunc {
 			return srvr.HandleListAssociatedAssets
 		},
