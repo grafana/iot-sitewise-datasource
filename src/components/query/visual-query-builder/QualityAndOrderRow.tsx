@@ -1,101 +1,96 @@
-import React, { PureComponent } from 'react';
-import { SelectableValue } from '@grafana/data';
+import { type SelectableValue } from '@grafana/data';
+import { EditorField } from '@grafana/plugin-ui';
+import { Select } from '@grafana/ui';
+import React, { useCallback } from 'react';
 import {
   SiteWiseTimeOrder,
   SiteWiseQuality,
   SiteWiseResponseFormat,
   QueryType,
-  AssetPropertyValueHistoryQuery,
-  AssetPropertyAggregatesQuery,
+  type AssetPropertyValueHistoryQuery,
+  type AssetPropertyAggregatesQuery,
 } from 'types';
-import { Select } from '@grafana/ui';
-import { SitewiseQueryEditorProps } from './types';
-import { EditorField } from '@grafana/plugin-ui';
+import type { SitewiseQueryEditorProps } from './types';
 
-const qualities: Array<SelectableValue<SiteWiseQuality>> = [
+const QUALITY_OPTIONS = [
   { value: SiteWiseQuality.GOOD, label: 'GOOD' },
   { value: SiteWiseQuality.BAD, label: 'BAD' },
   { value: SiteWiseQuality.UNCERTAIN, label: 'UNCERTAIN' },
-];
+] satisfies SelectableValue<SiteWiseQuality>[];
 
-const ordering: Array<SelectableValue<SiteWiseTimeOrder>> = [
+const ORDERING_OPTIONS = [
   { value: SiteWiseTimeOrder.ASCENDING, label: 'ASCENDING' },
   { value: SiteWiseTimeOrder.DESCENDING, label: 'DESCENDING' },
-];
+] satisfies SelectableValue<SiteWiseTimeOrder>[];
 
-export const FORMAT_OPTIONS: Array<SelectableValue<SiteWiseResponseFormat>> = [
+export const FORMAT_OPTIONS = [
   { label: 'Table', value: SiteWiseResponseFormat.Table },
   { label: 'Time series', value: SiteWiseResponseFormat.TimeSeries },
-];
+] satisfies SelectableValue<SiteWiseResponseFormat>[];
 
-export class QualityAndOrderRow extends PureComponent<SitewiseQueryEditorProps> {
-  onQualityChange = (sel: SelectableValue<SiteWiseQuality>) => {
-    const { onChange, query } = this.props;
-    onChange({ ...query, quality: sel.value });
-  };
+export const QualityAndOrderRow = ({ onChange, query }: SitewiseQueryEditorProps) => {
+  const onQualityChange = useCallback(
+    (sel: SelectableValue<SiteWiseQuality>) => {
+      onChange({ ...query, quality: sel.value });
+    },
+    [onChange, query]
+  );
 
-  onResponseFormatChange = (sel: SelectableValue<SiteWiseResponseFormat>) => {
-    const { onChange, query } = this.props;
-    onChange({ ...query, responseFormat: sel.value });
-  };
+  const onResponseFormatChange = useCallback(
+    (sel: SelectableValue<SiteWiseResponseFormat>) => {
+      onChange({ ...query, responseFormat: sel.value });
+    },
+    [onChange, query]
+  );
 
-  timeOrderField = () => {
-    const { onChange, query } = this.props;
-
-    // PropertyInterpolated has no time ordering support
-    if (query.queryType === QueryType.PropertyInterpolated) {
-      return null;
-    }
-
-    const onOrderChange = (sel: SelectableValue<SiteWiseTimeOrder>) => {
+  const onOrderChange = useCallback(
+    (sel: SelectableValue<SiteWiseTimeOrder>) => {
       onChange({ ...query, timeOrdering: sel.value } as AssetPropertyAggregatesQuery | AssetPropertyValueHistoryQuery);
-    };
+    },
+    [onChange, query]
+  );
 
-    return (
-      <EditorField label="Time" width={10} htmlFor="time">
+  return (
+    <>
+      <EditorField label="Quality" width={15} htmlFor="quality">
         <Select
-          id="time"
-          aria-label="Time"
-          options={ordering}
-          value={
-            ordering.find(
-              (v) => v.value === (query as AssetPropertyAggregatesQuery | AssetPropertyValueHistoryQuery).timeOrdering
-            ) ?? ordering[0]
-          }
-          onChange={onOrderChange}
-          isSearchable={true}
+          id="quality"
+          aria-label="Quality"
+          options={QUALITY_OPTIONS}
+          value={QUALITY_OPTIONS.find((v) => v.value === query.quality) ?? QUALITY_OPTIONS[0]}
+          onChange={onQualityChange}
+          isSearchable
           menuPlacement="auto"
         />
       </EditorField>
-    );
-  };
 
-  render() {
-    const { query } = this.props;
-    return (
-      <>
-        <EditorField label="Quality" width={15} htmlFor="quality">
+      {query.queryType !== QueryType.PropertyInterpolated && (
+        <EditorField label="Time" width={10} htmlFor="time">
           <Select
-            id="quality"
-            aria-label="Quality"
-            options={qualities}
-            value={qualities.find((v) => v.value === query.quality) ?? qualities[0]}
-            onChange={this.onQualityChange}
+            id="time"
+            aria-label="Time"
+            options={ORDERING_OPTIONS}
+            value={
+              ORDERING_OPTIONS.find(
+                (v) => v.value === (query as AssetPropertyAggregatesQuery | AssetPropertyValueHistoryQuery).timeOrdering
+              ) ?? ORDERING_OPTIONS[0]
+            }
+            onChange={onOrderChange}
             isSearchable={true}
             menuPlacement="auto"
           />
         </EditorField>
-        {this.timeOrderField()}
-        <EditorField label="Format" width={10} htmlFor="format">
-          <Select
-            id="format"
-            aria-label="Format"
-            value={query.responseFormat || SiteWiseResponseFormat.Table}
-            onChange={this.onResponseFormatChange}
-            options={FORMAT_OPTIONS}
-          />
-        </EditorField>
-      </>
-    );
-  }
-}
+      )}
+
+      <EditorField label="Format" width={10} htmlFor="format">
+        <Select
+          id="format"
+          aria-label="Format"
+          value={query.responseFormat || SiteWiseResponseFormat.Table}
+          onChange={onResponseFormatChange}
+          options={FORMAT_OPTIONS}
+        />
+      </EditorField>
+    </>
+  );
+};
