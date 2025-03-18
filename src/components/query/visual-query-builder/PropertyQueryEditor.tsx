@@ -1,262 +1,198 @@
-import React, { PureComponent } from 'react';
-import { SelectableValue } from '@grafana/data';
+import { css } from '@emotion/css';
+import { type SelectableValue } from '@grafana/data';
+import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
+import { LinkButton, Select, Icon } from '@grafana/ui';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
 import {
-  AssetInfo,
   isAssetPropertyAggregatesQuery,
   isAssetPropertyValueHistoryQuery,
-  ListAssociatedAssetsQuery,
   isListAssociatedAssetsQuery,
   isAssetPropertyInterpolatedQuery,
   shouldShowOptionsRow,
-  SitewiseQuery,
+  type AssetInfo,
+  type ListAssociatedAssetsQuery,
+  type SitewiseQuery,
 } from 'types';
-import { LinkButton, Select, Icon } from '@grafana/ui';
-import { SitewiseQueryEditorProps } from './types';
+import { DEFAULT_REGION } from '../../../regions';
 import { AssetBrowser } from '../../browser/AssetBrowser';
 import { aggReg } from './AggregationSettings/AggregatePicker';
-import { getAssetProperty, getDefaultAggregate } from 'queryInfo';
-import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
-import { css } from '@emotion/css';
-import { QueryOptions } from './QueryOptions';
 import { AggregationSettings } from './AggregationSettings/AggregationSettings';
 import { InterpolatedResolutionSettings } from './InterpolatedResolutionSettings';
-import { DEFAULT_REGION } from '../../../regions';
-import { getSelectableTemplateVariables } from 'variables';
-import { getPropertyIdPickerOptions } from 'sitewiseCache';
-
-type Props = SitewiseQueryEditorProps<SitewiseQuery>;
+import { QueryOptions } from './QueryOptions';
+import type { SitewiseQueryEditorProps } from './types';
+import { getSelectableTemplateVariables } from '../../../variables';
 
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89abAB][0-9a-f]{3}-[0-9a-f]{12}$/i;
-interface State {
-  assetId?: string;
-  asset?: AssetInfo;
-  assets: Array<SelectableValue<string>>;
-  assetProperties: Array<SelectableValue<string>>;
-  propertyAliases: Array<SelectableValue<string>>;
-  loading: boolean;
-  openModal: boolean;
-}
-
 const ALL_HIERARCHIES = '*';
 
-export class PropertyQueryEditor extends PureComponent<Props, State> {
-  state: State = {
-    assetId: this.props.query.assetIds && this.props.query.assetIds[0],
-    assets: [],
-    assetProperties: [],
-    propertyAliases: [],
-    loading: true,
-    openModal: false,
-  };
+export const PropertyQueryEditor = ({ query, datasource, onChange }: SitewiseQueryEditorProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [assetId, setAssetId] = useState<string | undefined>(query.assetIds?.[0]);
+  const [asset, setAsset] = useState<AssetInfo | undefined>(undefined);
+  const [assets, setAssets] = useState<Array<SelectableValue<string>>>([]);
+  const [assetProperties, setAssetProperties] = useState<SelectableValue<string>[]>([]);
+  const [propertyAliases, setPropertyAliases] = useState<SelectableValue<string>[]>([]);
 
-  async updateInfo() {
-    const { onChange, query, datasource } = this.props;
-    const update: State = {
-      loading: false,
-    } as State;
+  const cache = useMemo(() => datasource.getCache(query.region), [datasource, query.region]);
 
-    const cache = datasource.getCache(query.region);
-
-    update.propertyAliases = getSelectableTemplateVariables();
-
-    // TODO: handle user selecting two assets from different asset models
-    if (query?.assetIds?.length) {
-      try {
-        update.asset = await cache.getAssetInfo(query.assetIds[0]);
-        update.assetProperties = getPropertyIdPickerOptions(update.asset);
-        // Update external ids to asset ids in the query
-        if (update.asset?.id && query.assetIds[0].startsWith('externalId')) {
-          query.assetIds[0] = update.asset.id;
-          onChange(query);
-        }
-      } catch (err) {
-        console.warn('error reading asset info', err);
-      }
-    }
-
-    try {
-      update.assets = await cache.getAssetPickerOptions();
-    } catch (err) {
-      console.warn('error getting options', err);
-    }
-    this.setState(update);
-  }
-
-  async componentDidMount() {
-    this.updateInfo();
-  }
-
-  async componentDidUpdate(oldProps: Props) {
-    const { query } = this.props;
-
-    const assetChanged = query?.assetIds !== oldProps?.query?.assetIds;
-    const propChanged = query?.propertyIds !== oldProps?.query?.propertyIds;
-    const regionChanged = query?.region !== oldProps?.query?.region;
-
-    if (assetChanged || propChanged || regionChanged) {
-      if (!query.assetIds?.length && !regionChanged) {
-        this.setState({ assetId: undefined, asset: undefined, assetProperties: [], loading: false });
-      } else {
-        this.setState({ loading: true });
-        this.updateInfo();
-      }
-    }
-  }
-
-  onAliasChange = (sel: SelectableValue<string> | Array<SelectableValue<string>>) => {
-    const propertyAliases: Set<string> = new Set();
-    if (Array.isArray(sel)) {
-      sel.forEach((s) => {
-        if (s.value) {
-          propertyAliases.add(s.value);
-        }
-      });
-    } else if (sel.value) {
-      propertyAliases.add(sel.value);
-    }
-
-    const { onChange, query } = this.props;
-
-    onChange({ ...query, propertyAliases: [...propertyAliases] });
-  };
-
-  onAssetChange(sel: SelectableValue<string> | Array<SelectableValue<string>>) {
-    const assetIds: Set<string> = new Set();
-    if (Array.isArray(sel)) {
-      sel.forEach((s) => {
-        if (s.value) {
-          assetIds.add(s.value);
-        }
-      });
-    } else if (sel.value) {
-      assetIds.add(sel.value);
-    }
-
-    const { onChange, query } = this.props;
-
-    const newQuery =
-      Array.isArray(sel) && sel.length === 0
-        ? {
-            ...query,
-            assetIds: [],
-            propertyIds: [],
+  const onAliasChange = useCallback(
+    (sel: SelectableValue<string> | SelectableValue<string>[]) => {
+      const propertyAliases: Set<string> = new Set();
+      if (Array.isArray(sel)) {
+        sel.forEach((s) => {
+          if (s.value) {
+            propertyAliases.add(s.value);
           }
-        : {
-            ...query,
-            assetIds: [...assetIds],
-          };
-
-    onChange(newQuery);
-  }
-
-  onPropertyChange = (sel: SelectableValue<string> | Array<SelectableValue<string>>) => {
-    const propertyIds: Set<string> = new Set();
-    if (Array.isArray(sel)) {
-      sel.forEach((s) => {
-        if (s.value) {
-          propertyIds.add(s.value);
-        }
-      });
-    } else if (sel.value) {
-      propertyIds.add(sel.value);
-    }
-
-    const { onChange, query } = this.props;
-
-    const newQuery = {
-      ...query,
-      propertyIds: [...propertyIds],
-    };
-
-    // Make sure the selected aggregates are actually supported
-    if (isAssetPropertyAggregatesQuery(newQuery)) {
-      newQuery.aggregates = newQuery.aggregates || [];
-      newQuery.propertyIds.forEach((propertyId) => {
-        const info = getAssetProperty(this.state.asset, propertyId);
-        if (info) {
-          newQuery.aggregates = newQuery.aggregates.filter((a) => aggReg.get(a).isValid(info));
-        }
-      });
-
-      if (!newQuery.aggregates.length) {
-        newQuery.aggregates = [getDefaultAggregate()];
+        });
+      } else if (sel.value) {
+        propertyAliases.add(sel.value);
       }
-    }
 
-    onChange(newQuery);
-  };
+      onChange({ ...query, propertyAliases: [...propertyAliases] });
+    },
+    [onChange, query]
+  );
 
-  onSetPropertyAlias = (propertyAlias?: string) => {
-    const { onChange, query } = this.props;
-    if (!propertyAlias) {
-      onChange({ ...query, propertyAliases: [] });
-    } else if (query.propertyAliases) {
-      onChange({ ...query, propertyAliases: [...query.propertyAliases, propertyAlias] });
-    } else {
-      onChange({ ...query, propertyAliases: [propertyAlias] });
-    }
-  };
+  const onAssetChange = useCallback(
+    (sel: SelectableValue<string> | SelectableValue<string>[]) => {
+      const assetIds: Set<string> = new Set();
+      if (Array.isArray(sel)) {
+        sel.forEach((s) => {
+          if (s.value) {
+            assetIds.add(s.value);
+          }
+        });
+      } else if (sel.value) {
+        assetIds.add(sel.value);
+      }
 
-  onSetAssetId = (assetId?: string) => {
-    const { onChange, query } = this.props;
-    if (!assetId) {
-      this.setState({ assetId: undefined });
-      onChange({ ...query, assetIds: undefined });
-    } else {
-      // TODO: handle entering multiple externalIds with other assetIds
-      const validId = uuidRegex.test(assetId) || assetId.startsWith('externalId:') || assetId.startsWith('$');
-      const assetIds = validId ? [assetId] : [`externalId:${assetId}`];
-      this.setState({ assetId: assetIds[0] });
-      onChange({ ...query, assetIds });
-    }
-  };
+      const newQuery =
+        Array.isArray(sel) && sel.length === 0
+          ? { ...query, assetIds: [], propertyIds: [] }
+          : { ...query, assetIds: [...assetIds] };
 
-  onSetPropertyId = (propertyId?: string) => {
-    const { onChange, query } = this.props;
-    if (!propertyId) {
-      onChange({ ...query, propertyIds: undefined });
-    } else if (query.propertyIds) {
-      onChange({ ...query, propertyIds: [...query.propertyIds, propertyId] });
-    } else {
-      onChange({ ...query, propertyIds: [propertyId] });
-    }
-  };
+      onChange(newQuery);
+    },
+    [onChange, query]
+  );
 
-  onSetHierarchyId = (hierarchyId?: string) => {
-    const { onChange, query } = this.props;
-    onChange({ ...(query as any), hierarchyId });
-  };
+  const onPropertyChange = useCallback(
+    (sel: SelectableValue<string> | SelectableValue<string>[]) => {
+      const propertyIds: Set<string> = new Set();
+      if (Array.isArray(sel)) {
+        sel.forEach((s) => {
+          if (s.value) {
+            propertyIds.add(s.value);
+          }
+        });
+      } else if (sel.value) {
+        propertyIds.add(sel.value);
+      }
 
-  onHierarchyIdChange = (sel: SelectableValue<string>) => {
-    const { onChange, query } = this.props;
-    const update = { ...query };
-    if (isListAssociatedAssetsQuery(update)) {
-      if (sel.value === ALL_HIERARCHIES) {
-        delete update.hierarchyId;
-        update.loadAllChildren = true;
-      } else if (sel.value && sel.value.length) {
-        update.hierarchyId = sel.value;
-        update.loadAllChildren = false;
+      const newQuery = {
+        ...query,
+        propertyIds: [...propertyIds],
+      } satisfies SitewiseQuery;
+
+      // Make sure the selected aggregates are actually supported
+      if (isAssetPropertyAggregatesQuery(newQuery)) {
+        newQuery.aggregates = newQuery.aggregates ?? [];
+        newQuery.propertyIds.forEach((propertyId) => {
+          const info = getAssetProperty(asset, propertyId);
+          if (info) {
+            newQuery.aggregates = newQuery.aggregates.filter((a) => aggReg.get(a).isValid(info));
+          }
+        });
+
+        if (!newQuery.aggregates.length) {
+          newQuery.aggregates = [getDefaultAggregate()];
+        }
+      }
+
+      onChange(newQuery);
+    },
+    [onChange, query, asset]
+  );
+
+  const onSetPropertyAlias = useCallback(
+    (propertyAlias?: string) => {
+      if (!propertyAlias) {
+        onChange({ ...query, propertyAliases: [] });
+      } else if (query.propertyAliases) {
+        onChange({ ...query, propertyAliases: [...query.propertyAliases, propertyAlias] });
       } else {
-        delete update.hierarchyId;
-        update.loadAllChildren = false;
+        onChange({ ...query, propertyAliases: [propertyAlias] });
       }
-    }
-    onChange(update);
-  };
+    },
+    [onChange, query]
+  );
 
-  onLastObservationChange = () => {
-    const { onChange, query } = this.props;
+  const onSetAssetId = useCallback(
+    (assetId?: string) => {
+      if (!assetId) {
+        setAssetId(undefined);
+        onChange({ ...query, assetIds: undefined });
+      } else {
+        const validId = uuidRegex.test(assetId) || assetId.startsWith('externalId:') || assetId.startsWith('$');
+        const assetIds = validId ? [assetId] : [`externalId:${assetId}`];
+        setAssetId(assetIds[0]);
+        onChange({ ...query, assetIds });
+      }
+    },
+    [onChange, query]
+  );
+
+  const onSetPropertyId = useCallback(
+    (propertyId?: string) => {
+      if (!propertyId) {
+        onChange({ ...query, propertyIds: undefined });
+      } else if (query.propertyIds) {
+        onChange({ ...query, propertyIds: [...query.propertyIds, propertyId] });
+      } else {
+        onChange({ ...query, propertyIds: [propertyId] });
+      }
+    },
+    [onChange, query]
+  );
+
+  const onHierarchyIdChange = useCallback(
+    (sel: SelectableValue<string>) => {
+      const update = { ...query };
+      if (isListAssociatedAssetsQuery(update)) {
+        if (sel.value === ALL_HIERARCHIES) {
+          delete update.hierarchyId;
+          update.loadAllChildren = true;
+        } else if (sel.value && sel.value.length) {
+          update.hierarchyId = sel.value;
+          update.loadAllChildren = false;
+        } else {
+          delete update.hierarchyId;
+          update.loadAllChildren = false;
+        }
+      }
+      onChange(update);
+    },
+    [onChange, query]
+  );
+
+  const onSetHierarchyId = useCallback(
+    (hierarchyId?: string) => {
+      // FIXME: query is being casted to `any` as hierarchy does not exist on the base query type
+      onChange({ ...(query as any), hierarchyId });
+    },
+    [onChange, query]
+  );
+
+  const onLastObservationChange = useCallback(() => {
     onChange({ ...query, lastObservation: !query.lastObservation });
-  };
+  }, [onChange, query]);
 
-  onFlattenL4eChange = () => {
-    const { onChange, query } = this.props;
+  const onFlattenL4eChange = useCallback(() => {
     onChange({ ...query, flattenL4e: !query.flattenL4e });
-  };
+  }, [onChange, query]);
 
-  renderAssociatedAsset(query: ListAssociatedAssetsQuery) {
-    const { asset, loading } = this.state;
+  const renderAssociatedAsset = (query: ListAssociatedAssetsQuery) => {
     const hierarchies: Array<SelectableValue<string>> = [
       { value: '', label: '** Parent **' },
       { value: ALL_HIERARCHIES, label: '** All **' },
@@ -274,243 +210,273 @@ export class PropertyQueryEditor extends PureComponent<Props, State> {
         current = query.loadAllChildren ? hierarchies[1] /* all */ : hierarchies[0]; // parent
       }
     }
+
     return (
       <EditorField label="Asset Hierarchy" htmlFor="assetHierarchy">
         <Select
           id="assetHierarchy"
           aria-label="Asset Hierarchy"
-          isLoading={loading}
+          isLoading={isLoading}
           options={hierarchies}
           value={current}
-          onChange={this.onHierarchyIdChange}
+          onChange={onHierarchyIdChange}
           placeholder="Select..."
           allowCustomValue={true}
           backspaceRemovesValue={true}
           isClearable={true}
           isSearchable={true}
-          onCreateOption={this.onSetHierarchyId}
+          onCreateOption={onSetHierarchyId}
           formatCreateLabel={(txt) => `Hierarchy Id: ${txt}`}
           menuPlacement="auto"
         />
       </EditorField>
     );
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    const assetId = query.assetIds?.[0];
+
+    setPropertyAliases(getSelectableTemplateVariables());
+
+    Promise.allSettled([
+      assetId && cache.getAssetInfo(assetId).then(setAsset),
+      assetId &&
+        cache.listAssetProperties(assetId).then((assetProperties) => {
+          setAssetProperties(
+            assetProperties?.map(({ id, name }) => ({
+              value: id,
+              label: name,
+            })) ?? []
+          );
+        }),
+      cache.getAssetPickerOptions().then(setAssets),
+    ])
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
+  }, [query]);
+
+  let selectedPropertyAliases = propertyAliases.filter(
+    (alias) => alias.value && query.propertyAliases?.includes(alias.value)
+  );
+  if (selectedPropertyAliases.length === 0 && query.propertyAliases?.length) {
+    if (isLoading) {
+      selectedPropertyAliases = query.propertyAliases.map((alias) => ({
+        value: alias,
+        label: 'loading...',
+      }));
+    } else {
+      selectedPropertyAliases = query.propertyAliases.map((alias) => ({
+        value: alias,
+        label: alias,
+      }));
+    }
   }
 
-  render() {
-    const { query, datasource, onChange } = this.props;
-    const { loading, assets, assetProperties, propertyAliases } = this.state;
-
-    let selectedPropertyAliases = propertyAliases.filter(
-      (alias) => alias.value && query.propertyAliases?.includes(alias.value)
-    );
-    if (selectedPropertyAliases.length === 0 && query.propertyAliases?.length) {
-      if (loading) {
-        selectedPropertyAliases = query.propertyAliases.map((alias) => ({ label: 'loading...', value: alias }));
-      } else {
-        selectedPropertyAliases = query.propertyAliases.map((alias) => ({ label: alias, value: alias }));
-      }
+  let currentAsset = assets.filter((a) => (a.value ? query.assetIds?.includes(a.value) : false));
+  if (currentAsset.length === 0 && query.assetIds?.length) {
+    if (isLoading) {
+      currentAsset = query.assetIds.map((id) => ({
+        value: id,
+        label: 'loading...',
+      }));
+    } else {
+      currentAsset = query.assetIds.map((id) => ({
+        value: id,
+        label: `ID: ${assetId}`,
+      }));
     }
+  }
 
-    let currentAsset = assets.filter((asset) => (asset.value ? query.assetIds?.includes(asset.value) : false));
-    if (currentAsset.length === 0 && query.assetIds?.length) {
-      if (loading) {
-        currentAsset = query.assetIds.map((assetId) => ({ label: 'loading...', value: assetId }));
-      } else {
-        currentAsset = query.assetIds.map((assetId) => ({ label: `ID: ${this.state.assetId}`, value: assetId }));
-      }
-    }
+  const isAssociatedAssets = isListAssociatedAssetsQuery(query);
+  const showProp = Boolean(!isAssociatedAssets && (query.propertyIds || query.assetIds));
 
-    const isAssociatedAssets = isListAssociatedAssetsQuery(query);
-    const showProp = !!(!isAssociatedAssets && (query.propertyIds || query.assetIds));
-
-    const showQuality = !!(
-      query.propertyIds ||
+  const showQuality = Boolean(
+    query.propertyIds ||
       (query.propertyAliases && isAssetPropertyAggregatesQuery(query)) ||
       isAssetPropertyValueHistoryQuery(query) ||
       isAssetPropertyInterpolatedQuery(query)
-    );
+  );
 
-    const showOptionsRow = shouldShowOptionsRow(query, showProp);
+  const showOptionsRow = shouldShowOptionsRow(query, showProp);
 
-    let currentAssetProperty = assetProperties.filter((property) =>
-      property.value ? query.propertyIds?.includes(property.value) : false
-    );
-    if (currentAssetProperty.length === 0 && query.propertyIds?.length) {
-      if (loading) {
-        currentAssetProperty = query.propertyIds.map((propertyId) => ({
-          value: propertyId,
-          label: 'loading...',
-        }));
-      } else {
-        currentAssetProperty = query.propertyIds.map((propertyId) => ({
-          value: propertyId,
-          label: `ID: ${propertyId}`,
-        }));
-      }
+  let currentAssetProperty = assetProperties.filter((property) =>
+    property.value ? query.propertyIds?.includes(property.value) : false
+  );
+  if (currentAssetProperty.length === 0 && query.propertyIds?.length) {
+    if (isLoading) {
+      currentAssetProperty = query.propertyIds.map((propertyId) => ({
+        value: propertyId,
+        label: 'loading...',
+      }));
+    } else {
+      currentAssetProperty = query.propertyIds.map((propertyId) => ({
+        value: propertyId,
+        label: `ID: ${propertyId}`,
+      }));
     }
+  }
 
-    const queryTooltip = (
-      <div>
-        Setting an alias for an asset property. <br />
-        <LinkButton
-          href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html"
-          target="_blank"
-        >
-          API Docs <Icon name="external-link-alt" />
-        </LinkButton>
-      </div>
-    );
+  return (
+    <>
+      {!isAssociatedAssets && (
+        <EditorRow>
+          <EditorField label="Property Alias" tooltip={<QueryTooltip />} tooltipInteractive htmlFor="alias" width={80}>
+            <Select
+              id="alias"
+              inputId="alias"
+              aria-label="Property alias"
+              isMulti
+              options={propertyAliases}
+              value={selectedPropertyAliases}
+              onChange={onAliasChange}
+              placeholder="optional alias that identifies the property, such as an OPC-UA server data stream path"
+              allowCustomValue
+              isClearable
+              isSearchable
+              onCreateOption={onSetPropertyAlias}
+              formatCreateLabel={(txt) => `Property Alias: ${txt}`}
+            />
+          </EditorField>
+        </EditorRow>
+      )}
 
-    const assetTooltip = (
-      <div>
-        Set the asset ID. It can be either the actual ID in UUID format, or else "externalId:" followed by the external
-        ID, if it has one.
-        <LinkButton
-          href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids"
-          target="_blank"
-        >
-          API Docs <Icon name="external-link-alt" />
-        </LinkButton>
-      </div>
-    );
-
-    return (
-      <>
-        {!isAssociatedAssets && (
+      {(!Boolean(query.propertyAliases?.length) || isAssociatedAssets) && (
+        <>
           <EditorRow>
-            <EditorField label="Property Alias" tooltip={queryTooltip} tooltipInteractive htmlFor="alias" width={80}>
-              <Select
-                id="alias"
-                inputId="alias"
-                aria-label="Property alias"
-                isMulti={true}
-                options={propertyAliases}
-                value={selectedPropertyAliases}
-                onChange={this.onAliasChange}
-                placeholder="optional alias that identifies the property, such as an OPC-UA server data stream path"
-                allowCustomValue={true}
-                isClearable={true}
-                isSearchable={true}
-                onCreateOption={this.onSetPropertyAlias}
-                formatCreateLabel={(txt) => `Property Alias: ${txt}`}
-                menuPlacement="auto"
-              />
-            </EditorField>
-          </EditorRow>
-        )}
+            <EditorFieldGroup>
+              <EditorField label="Asset" tooltip={<AssetTooltip />} tooltipInteractive htmlFor="asset" width={30}>
+                <Select
+                  id="asset"
+                  inputId="asset"
+                  aria-label="Asset"
+                  isMulti
+                  key={query.region ?? DEFAULT_REGION}
+                  isLoading={isLoading}
+                  options={assets}
+                  value={currentAsset}
+                  onChange={onAssetChange}
+                  placeholder="Select an asset"
+                  allowCustomValue
+                  isClearable
+                  isSearchable
+                  onCreateOption={onSetAssetId}
+                  formatCreateLabel={(txt) => `Asset ID: ${txt}`}
+                  menuPlacement="auto"
+                />
+              </EditorField>
 
-        {(!query.propertyAliases?.length || isAssociatedAssets) && (
-          <>
+              <div className={styles.exploreContainer}>
+                <AssetBrowser
+                  datasource={datasource}
+                  region={query.region}
+                  assetId={query.assetIds?.[0]}
+                  onAssetChanged={onSetAssetId}
+                />
+              </div>
+            </EditorFieldGroup>
+          </EditorRow>
+
+          {showProp && (
             <EditorRow>
               <EditorFieldGroup>
-                <EditorField label="Asset" tooltip={assetTooltip} tooltipInteractive htmlFor="asset" width={30}>
+                <EditorField label="Property" htmlFor="property" width={30}>
                   <Select
-                    id="asset"
-                    inputId="asset"
-                    aria-label="Asset"
-                    isMulti={true}
-                    key={query.region ?? DEFAULT_REGION}
-                    isLoading={loading}
-                    options={assets}
-                    value={currentAsset}
-                    onChange={(sel) => this.onAssetChange(sel)}
-                    placeholder="Select an asset"
-                    allowCustomValue={true}
-                    isClearable={true}
-                    isSearchable={true}
-                    onCreateOption={this.onSetAssetId}
-                    formatCreateLabel={(txt) => `Asset ID: ${txt}`}
+                    id="property"
+                    inputId="property"
+                    aria-label="Property"
+                    // Disabled multi-selection until a better UX is designed around pairing assets and properties
+                    isMulti={false}
+                    isLoading={isLoading}
+                    options={assetProperties}
+                    value={currentAssetProperty}
+                    onChange={onPropertyChange}
+                    placeholder="Select a property"
+                    allowCustomValue
+                    isClearable
+                    isSearchable
+                    onCreateOption={onSetPropertyId}
+                    formatCreateLabel={(txt) => `Property ID: ${txt}`}
                     menuPlacement="auto"
                   />
                 </EditorField>
+              </EditorFieldGroup>
 
-                <div className={styles.exploreContainer}>
-                  <AssetBrowser
-                    datasource={datasource}
-                    region={query.region}
-                    assetId={query.assetIds?.[0]}
-                    onAssetChanged={this.onSetAssetId}
-                  />
-                </div>
+              <EditorFieldGroup>
+                {showQuality && isAssetPropertyAggregatesQuery(query) && (
+                  <AggregationSettings query={query} onChange={onChange} />
+                )}
+
+                {isAssetPropertyInterpolatedQuery(query) && (
+                  <InterpolatedResolutionSettings query={query} onChange={onChange} />
+                )}
               </EditorFieldGroup>
             </EditorRow>
+          )}
+        </>
+      )}
 
-            {showProp && (
-              <EditorRow>
-                <EditorFieldGroup>
-                  <EditorField label="Property" htmlFor="property" width={30}>
-                    <Select
-                      id="property"
-                      inputId="property"
-                      aria-label="Property"
-                      // Disabled multi-selection until a better UX is designed around pairing assets and properties
-                      isMulti={false}
-                      isLoading={loading}
-                      options={assetProperties}
-                      value={currentAssetProperty}
-                      onChange={this.onPropertyChange}
-                      placeholder="Select a property"
-                      allowCustomValue={true}
-                      isClearable={true}
-                      isSearchable={true}
-                      onCreateOption={this.onSetPropertyId}
-                      formatCreateLabel={(txt) => `Property ID: ${txt}`}
-                      menuPlacement="auto"
-                    />
-                  </EditorField>
-                </EditorFieldGroup>
+      {Boolean(query.propertyAliases?.length) && isAssetPropertyAggregatesQuery(query) && (
+        <EditorRow>
+          <AggregationSettings query={query} onChange={onChange} />
+        </EditorRow>
+      )}
 
-                <EditorFieldGroup>
-                  {showQuality && isAssetPropertyAggregatesQuery(query) && (
-                    <AggregationSettings query={query} onChange={this.props.onChange} />
-                  )}
+      {Boolean(query.propertyAliases?.length) && isAssetPropertyInterpolatedQuery(query) && (
+        <EditorRow>
+          <InterpolatedResolutionSettings query={query} onChange={onChange} />
+        </EditorRow>
+      )}
 
-                  {isAssetPropertyInterpolatedQuery(query) && (
-                    <InterpolatedResolutionSettings query={query} onChange={onChange} />
-                  )}
-                </EditorFieldGroup>
-              </EditorRow>
-            )}
-          </>
-        )}
+      {isAssociatedAssets && (
+        <EditorRow>
+          <EditorFieldGroup>{renderAssociatedAsset(query as ListAssociatedAssetsQuery)}</EditorFieldGroup>
+        </EditorRow>
+      )}
 
-        {!!query.propertyAliases?.length && isAssetPropertyAggregatesQuery(query) && (
-          <EditorRow>
-            <AggregationSettings query={query} onChange={this.props.onChange} />
-          </EditorRow>
-        )}
+      {showOptionsRow && (
+        <EditorRow>
+          <EditorFieldGroup>
+            <QueryOptions
+              query={query}
+              datasource={datasource}
+              onChange={onChange}
+              showProp={showProp}
+              showQuality={Boolean(query.propertyIds?.length) || Boolean(query.propertyAliases?.length)}
+              onLastObservationChange={onLastObservationChange}
+              onFlattenL4eChange={onFlattenL4eChange}
+            />
+          </EditorFieldGroup>
+        </EditorRow>
+      )}
+    </>
+  );
+};
 
-        {!!query.propertyAliases?.length && isAssetPropertyInterpolatedQuery(query) && (
-          <EditorRow>
-            <InterpolatedResolutionSettings query={query} onChange={onChange} />
-          </EditorRow>
-        )}
+const AssetTooltip = () => (
+  <div>
+    Set the asset ID. It can be either the actual ID in UUID format, or else "externalId:" followed by the external ID,
+    if it has one.
+    <LinkButton
+      href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids"
+      target="_blank"
+    >
+      API Docs <Icon name="external-link-alt" />
+    </LinkButton>
+  </div>
+);
 
-        {isAssociatedAssets && (
-          <EditorRow>
-            <EditorFieldGroup>{this.renderAssociatedAsset(query as ListAssociatedAssetsQuery)}</EditorFieldGroup>
-          </EditorRow>
-        )}
-
-        {showOptionsRow && (
-          <EditorRow>
-            <EditorFieldGroup>
-              <QueryOptions
-                query={query}
-                datasource={datasource}
-                onChange={onChange}
-                showProp={showProp}
-                showQuality={!!(query.propertyIds?.length || query.propertyAliases?.length)}
-                onLastObservationChange={this.onLastObservationChange}
-                onFlattenL4eChange={this.onFlattenL4eChange}
-              />
-            </EditorFieldGroup>
-          </EditorRow>
-        )}
-      </>
-    );
-  }
-}
+const QueryTooltip = () => (
+  <div>
+    Setting an alias for an asset property. <br />
+    <LinkButton
+      href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html"
+      target="_blank"
+    >
+      API Docs <Icon name="external-link-alt" />
+    </LinkButton>
+  </div>
+);
 
 const styles = {
   exploreContainer: css({ display: 'flex', alignItems: 'flex-end' }),
