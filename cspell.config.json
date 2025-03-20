@@ -80,6 +80,8 @@
     "subresource",
     "seccomp",
     "PTRACE",
+    "grafanabot",
+    "tibdex",
     "sqlutil",
     "stdev",
     "sqlds",
