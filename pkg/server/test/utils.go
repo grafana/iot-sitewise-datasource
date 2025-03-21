@@ -3,7 +3,9 @@ package test
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
 	"github.com/stretchr/testify/mock"
 )
@@ -25,11 +27,11 @@ func generateIds(numIds int, idString string) []string {
 	return ids
 }
 
-func mockDescribeAssetPropertyWithContext(mockSw *mocks.SitewiseClient) {
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+func mockDescribeAssetProperty(mockSw *mocks.SitewiseAPIClient) {
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
-			DataType: Pointer("DOUBLE"),
+		AssetProperty: &iotsitewisetypes.Property{
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
 			Name:     Pointer("Wind Speed"),
 			Unit:     Pointer("m/s"),
 		},
