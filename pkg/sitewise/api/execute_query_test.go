@@ -4,9 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/request"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
 	"github.com/grafana/grafana-plugin-sdk-go/data/sqlutil"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api"
@@ -19,24 +20,24 @@ type fakeExecuteQueryClient struct {
 	lastQueryStatement string
 }
 
-func (f *fakeExecuteQueryClient) ExecuteQueryWithContext(ctx aws.Context, input *iotsitewise.ExecuteQueryInput, opts ...request.Option) (*iotsitewise.ExecuteQueryOutput, error) {
+func (f *fakeExecuteQueryClient) ExecuteQuery(_ context.Context, input *iotsitewise.ExecuteQueryInput, _ ...func(*iotsitewise.Options)) (*iotsitewise.ExecuteQueryOutput, error) {
 	f.executeCount++
-	f.lastQueryStatement = aws.StringValue(input.QueryStatement)
+	f.lastQueryStatement = *input.QueryStatement
 	var retVal = iotsitewise.ExecuteQueryOutput{
 		NextToken: aws.String("next-token"),
-		Rows: []*iotsitewise.Row{
+		Rows: []iotsitewisetypes.Row{
 			{
-				Data: []*iotsitewise.Datum{
+				Data: []iotsitewisetypes.Datum{
 					{
 						ScalarValue: aws.String("123.45"),
 					},
 				},
 			},
 		},
-		Columns: []*iotsitewise.ColumnInfo{
+		Columns: []iotsitewisetypes.ColumnInfo{
 			{
 				Name: aws.String("example_column"),
-				Type: &iotsitewise.ColumnType{ScalarType: aws.String("DOUBLE")},
+				Type: &iotsitewisetypes.ColumnType{ScalarType: iotsitewisetypes.ScalarTypeDouble},
 			},
 		},
 	}
@@ -68,6 +69,6 @@ func TestExecuteQueryReceivesTheGivenSQL(t *testing.T) {
 	}
 	framer, err := api.ExecuteQuery(context.Background(), client, query)
 	require.NoError(t, err)
-	assert.Equal(t, "next-token", aws.StringValue(framer.NextToken))
+	assert.Equal(t, "next-token", *framer.NextToken)
 	assert.Equal(t, "SELECT * FROM assets", client.lastQueryStatement)
 }

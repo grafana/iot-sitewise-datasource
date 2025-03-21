@@ -2,21 +2,21 @@ package api
 
 import (
 	"context"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 
-	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
 
-func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, query models.ListAssociatedAssetsQuery) (*framer.AssociatedAssets, error) {
+func ListAssociatedAssets(ctx context.Context, client client.SitewiseAPIClient, query models.ListAssociatedAssetsQuery) (*framer.AssociatedAssets, error) {
 
 	var (
-		hierarchyId        *string
-		traversalDirection *string
-		results            []*iotsitewise.AssociatedAssetsSummary
+		hierarchyId *string
+		results     []iotsitewisetypes.AssociatedAssetsSummary
 	)
 
 	seenAssetIds := make(map[string]bool)
@@ -26,7 +26,7 @@ func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, que
 
 		// Recursively load children
 		if query.LoadAllChildren {
-			asset, err := client.DescribeAsset(&iotsitewise.DescribeAssetInput{
+			asset, err := client.DescribeAsset(ctx, &iotsitewise.DescribeAssetInput{
 				AssetId: assetIdPtr,
 			})
 
@@ -38,7 +38,7 @@ func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, que
 				var nextToken *string = nil
 
 				for {
-					resp, err := client.ListAssociatedAssetsWithContext(ctx, &iotsitewise.ListAssociatedAssetsInput{
+					resp, err := client.ListAssociatedAssets(ctx, &iotsitewise.ListAssociatedAssetsInput{
 						AssetId:     assetIdPtr,
 						HierarchyId: h.Id,
 						MaxResults:  MaxSitewiseResults,
@@ -50,7 +50,7 @@ func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, que
 					}
 
 					for _, assetSummary := range resp.AssetSummaries {
-						assetId := aws.StringValue(assetSummary.Id)
+						assetId := *assetSummary.Id
 						if !seenAssetIds[assetId] {
 							results = append(results, assetSummary)
 							seenAssetIds[assetId] = true
@@ -65,17 +65,16 @@ func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, que
 				}
 			}
 		} else {
+			traversalDirection := iotsitewisetypes.TraversalDirectionParent
 			if query.HierarchyId != "" {
 				hierarchyId = aws.String(query.HierarchyId)
-				traversalDirection = aws.String("CHILD")
-			} else {
-				traversalDirection = aws.String("PARENT")
+				traversalDirection = iotsitewisetypes.TraversalDirectionChild
 			}
 
 			var nextToken *string = nil
 
 			for {
-				resp, err := client.ListAssociatedAssetsWithContext(ctx, &iotsitewise.ListAssociatedAssetsInput{
+				resp, err := client.ListAssociatedAssets(ctx, &iotsitewise.ListAssociatedAssetsInput{
 					AssetId:            assetIdPtr,
 					HierarchyId:        hierarchyId,
 					MaxResults:         MaxSitewiseResults,
@@ -88,7 +87,7 @@ func ListAssociatedAssets(ctx context.Context, client client.SitewiseClient, que
 				}
 
 				for _, assetSummary := range resp.AssetSummaries {
-					assetId := aws.StringValue(assetSummary.Id)
+					assetId := *assetSummary.Id
 					if !seenAssetIds[assetId] {
 						results = append(results, assetSummary)
 						seenAssetIds[assetId] = true

@@ -3,11 +3,13 @@ package framer
 import (
 	"context"
 	"encoding/json"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 	"slices"
 	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
@@ -20,7 +22,7 @@ type AssetPropertyValueHistoryBatch struct {
 	Responses       []*iotsitewise.BatchGetAssetPropertyValueHistoryOutput
 	Query           models.AssetPropertyValueQuery
 	AnomalyAssetIds []string
-	SitewiseClient  client.SitewiseClient
+	SitewiseClient  client.SitewiseAPIClient
 }
 
 func (p AssetPropertyValueHistoryBatch) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
@@ -40,7 +42,7 @@ func (p AssetPropertyValueHistoryBatch) Frames(ctx context.Context, resources re
 			frame, err := p.Frame(ctx, properties[*s.EntryId], s.AssetPropertyValueHistory)
 			frame.Meta = &data.FrameMeta{
 				Custom: models.SitewiseCustomMeta{
-					NextToken:  aws.StringValue(r.NextToken),
+					NextToken:  util.Dereference(r.NextToken),
 					EntryId:    *s.EntryId,
 					Resolution: models.PropertyQueryResolutionRaw,
 				},
@@ -68,15 +70,15 @@ func (p AssetPropertyValueHistoryBatch) Frames(ctx context.Context, resources re
 	return frames, nil
 }
 
-func (p AssetPropertyValueHistoryBatch) Frame(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, h []*iotsitewise.AssetPropertyValue) (*data.Frame, error) {
+func (p AssetPropertyValueHistoryBatch) Frame(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, h []iotsitewisetypes.AssetPropertyValue) (*data.Frame, error) {
 	length := len(h)
 	// TODO: make this work with the API instead of ad-hoc dataType inference
 	// https://github.com/grafana/iot-sitewise-datasource/issues/98#issuecomment-892947756
-	if util.IsAssetProperty(property) && !isPropertyDataTypeDefined(*property.AssetProperty.DataType) {
+	if util.IsAssetProperty(property) && !isPropertyDataTypeDefined(property.AssetProperty.DataType) {
 		if length != 0 {
-			property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(h[0].Value))
+			property.AssetProperty.DataType = getPropertyVariantValueType(h[0].Value)
 		} else {
-			property.AssetProperty.DataType = aws.String("")
+			property.AssetProperty.DataType = ""
 		}
 	}
 
@@ -89,7 +91,7 @@ func (p AssetPropertyValueHistoryBatch) Frame(ctx context.Context, property *iot
 }
 
 // framePropertyValues creates a frame for a property value history.
-func (p AssetPropertyValueHistoryBatch) framePropertyValues(property *iotsitewise.DescribeAssetPropertyOutput, h []*iotsitewise.AssetPropertyValue) (*data.Frame, error) {
+func (p AssetPropertyValueHistoryBatch) framePropertyValues(property *iotsitewise.DescribeAssetPropertyOutput, h []iotsitewisetypes.AssetPropertyValue) (*data.Frame, error) {
 	length := len(h)
 
 	timeField := fields.TimeField(length)
@@ -111,7 +113,7 @@ func (p AssetPropertyValueHistoryBatch) framePropertyValues(property *iotsitewis
 		if v.Value != nil && getPropertyVariantValue(v.Value) != nil {
 			timeField.Set(i, getTime(v.Timestamp))
 			valueField.Set(i, getPropertyVariantValue(v.Value))
-			qualityField.Set(i, *v.Quality)
+			qualityField.Set(i, string(v.Quality))
 		}
 	}
 
@@ -119,7 +121,7 @@ func (p AssetPropertyValueHistoryBatch) framePropertyValues(property *iotsitewis
 }
 
 // frameL4ePropertyValues creates a frame for a property value history with L4E fields flatten.
-func (p AssetPropertyValueHistoryBatch) frameL4ePropertyValues(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, h []*iotsitewise.AssetPropertyValue) (*data.Frame, error) {
+func (p AssetPropertyValueHistoryBatch) frameL4ePropertyValues(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, h []iotsitewisetypes.AssetPropertyValue) (*data.Frame, error) {
 	frameName := ""
 	if models.QueryTypePropertyAggregate == p.Query.QueryType {
 		frameName = getFrameName(property)
@@ -139,7 +141,7 @@ func (p AssetPropertyValueHistoryBatch) frameL4ePropertyValues(ctx context.Conte
 	return frame, nil
 }
 
-func (p AssetPropertyValueHistoryBatch) parseL4eFields(ctx context.Context, assetId *string, h []*iotsitewise.AssetPropertyValue) ([]*data.Field, error) {
+func (p AssetPropertyValueHistoryBatch) parseL4eFields(ctx context.Context, assetId *string, h []iotsitewisetypes.AssetPropertyValue) ([]*data.Field, error) {
 	length := len(h)
 
 	dataFields := []*data.Field{}
@@ -167,7 +169,7 @@ func (p AssetPropertyValueHistoryBatch) parseL4eFields(ctx context.Context, asse
 		}
 
 		timeField.Set(i, getTime(v.Timestamp))
-		qualityField.Set(i, *v.Quality)
+		qualityField.Set(i, string(v.Quality))
 		anomalyScoreField.Set(i, l4eAnomalyResult.AnomalyScore)
 		predictionReasonField.Set(i, l4eAnomalyResult.PredictionReason)
 
@@ -190,7 +192,7 @@ func (p AssetPropertyValueHistoryBatch) parseL4eFields(ctx context.Context, asse
 			AssetId:    assetId,
 			PropertyId: aws.String(propertyId),
 		}
-		resp, err := p.SitewiseClient.DescribeAssetPropertyWithContext(ctx, req)
+		resp, err := p.SitewiseClient.DescribeAssetProperty(ctx, req)
 		if err != nil {
 			return nil, err
 		}

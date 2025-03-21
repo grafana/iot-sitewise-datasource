@@ -6,21 +6,22 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
+	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
-	"github.com/grafana/iot-sitewise-datasource/pkg/util"
-
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
-	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
 type AssetPropertyValueBatch struct {
 	Responses       []*iotsitewise.BatchGetAssetPropertyValueOutput
 	AnomalyAssetIds []string
-	SitewiseClient  client.SitewiseClient
+	SitewiseClient  client.SitewiseAPIClient
 }
 
 func (p AssetPropertyValueBatch) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
@@ -38,8 +39,8 @@ func (p AssetPropertyValueBatch) Frames(ctx context.Context, resources resource.
 	for _, r := range p.Responses {
 		for _, e := range r.SuccessEntries {
 			property := properties[*e.EntryId]
-			if util.IsAssetProperty(property) && !isPropertyDataTypeDefined(*property.AssetProperty.DataType) && e.AssetPropertyValue != nil {
-				property.AssetProperty.DataType = aws.String(getPropertyVariantValueType(e.AssetPropertyValue.Value))
+			if util.IsAssetProperty(property) && !isPropertyDataTypeDefined(property.AssetProperty.DataType) && e.AssetPropertyValue != nil {
+				property.AssetProperty.DataType = getPropertyVariantValueType(e.AssetPropertyValue.Value)
 			}
 
 			var frame *data.Frame
@@ -53,7 +54,7 @@ func (p AssetPropertyValueBatch) Frames(ctx context.Context, resources resource.
 			}
 			frame.Meta = &data.FrameMeta{
 				Custom: models.SitewiseCustomMeta{
-					NextToken: aws.StringValue(r.NextToken),
+					NextToken: util.Dereference(r.NextToken),
 					EntryId:   *e.EntryId,
 				},
 			}
@@ -75,7 +76,7 @@ func (p AssetPropertyValueBatch) Frames(ctx context.Context, resources resource.
 	return frames, nil
 }
 
-func (AssetPropertyValueBatch) framePropertyValue(property *iotsitewise.DescribeAssetPropertyOutput, assetPropertyValue *iotsitewise.AssetPropertyValue) *data.Frame {
+func (AssetPropertyValueBatch) framePropertyValue(property *iotsitewise.DescribeAssetPropertyOutput, assetPropertyValue *iotsitewisetypes.AssetPropertyValue) *data.Frame {
 	timeField := fields.TimeField(0)
 	valueField := fields.PropertyValueField(property, 0)
 	qualityField := fields.QualityField(0)
@@ -85,12 +86,12 @@ func (AssetPropertyValueBatch) framePropertyValue(property *iotsitewise.Describe
 	if assetPropertyValue != nil && getPropertyVariantValue(assetPropertyValue.Value) != nil {
 		timeField.Append(getTime(assetPropertyValue.Timestamp))
 		valueField.Append(getPropertyVariantValue(assetPropertyValue.Value))
-		qualityField.Append(*assetPropertyValue.Quality)
+		qualityField.Append(string(assetPropertyValue.Quality))
 	}
 	return frame
 }
 
-func (p AssetPropertyValueBatch) frameL4ePropertyValue(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, assetPropertyValue *iotsitewise.AssetPropertyValue) (*data.Frame, error) {
+func (p AssetPropertyValueBatch) frameL4ePropertyValue(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, assetPropertyValue *iotsitewisetypes.AssetPropertyValue) (*data.Frame, error) {
 	dataFields := []*data.Field{}
 
 	timeField := fields.TimeField(0)
@@ -117,7 +118,7 @@ func (p AssetPropertyValueBatch) frameL4ePropertyValue(ctx context.Context, prop
 	}
 
 	timeField.Append(getTime(assetPropertyValue.Timestamp))
-	qualityField.Append(*assetPropertyValue.Quality)
+	qualityField.Append(string(assetPropertyValue.Quality))
 	anomalyScoreField.Append(l4eAnomalyResult.AnomalyScore)
 	predictionReasonField.Append(l4eAnomalyResult.PredictionReason)
 
@@ -128,7 +129,7 @@ func (p AssetPropertyValueBatch) frameL4ePropertyValue(ctx context.Context, prop
 			AssetId:    property.AssetId,
 			PropertyId: aws.String(propertyId),
 		}
-		resp, err := p.SitewiseClient.DescribeAssetPropertyWithContext(ctx, req)
+		resp, err := p.SitewiseClient.DescribeAssetProperty(ctx, req)
 		if err != nil {
 			return nil, err
 		}
