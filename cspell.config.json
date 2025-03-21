@@ -89,6 +89,10 @@
     "viant",
     "unmarshalling",
     "assetid",
+    "iotsitewisetypes",
+    "awsconfig",
+    "awsauth",
+    "httpclient",
     "propid"
   ]
 }

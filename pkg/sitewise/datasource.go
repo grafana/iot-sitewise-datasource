@@ -3,11 +3,12 @@ package sitewise
 import (
 	"context"
 	"fmt"
+	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 
-	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
+	"github.com/grafana/grafana-aws-sdk/pkg/awsauth"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
@@ -24,7 +25,6 @@ type clientGetterFunc func(ctx context.Context, region string) (client.SitewiseA
 type invokerFunc func(ctx context.Context, sw client.SitewiseAPIClient) (framer.Framer, error)
 
 type Datasource struct {
-	sessions          *awsds.SessionCache
 	cfg               models.AWSSiteWiseDataSourceSetting
 	edgeAuthenticator *EdgeAuthenticator
 	GetClient         clientGetterFunc
@@ -43,8 +43,7 @@ func NewDatasource(_ context.Context, settings backend.DataSourceInstanceSetting
 		return nil, err
 	}
 	ds := &Datasource{
-		sessions: awsds.NewSessionCache(),
-		cfg:      cfg,
+		cfg: cfg,
 	}
 
 	if cfg.Region == models.EDGE_REGION && cfg.EdgeAuthMode != models.EDGE_AUTH_MODE_DEFAULT {
@@ -83,22 +82,27 @@ func (ds *Datasource) getClient(ctx context.Context, region string) (client.Site
 	if err := ds.Authenticate(); err != nil {
 		return nil, err
 	}
-	awsCfg, err := client.GetAWSConfig(ctx, ds.cfg)
+	httpclient, err := client.GetHTTPClient(ds.cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	awsSettings := ds.cfg.ToAWSDatasourceSettings()
-	awsSettings.Region = region
-
-	provider, err := ds.sessions.CredentialsProviderV2(ctx, awsds.GetSessionConfig{
-		Settings:      awsSettings,
-		UserAgentName: aws.String(awsds.GetUserAgentString("grafana-iot-sitewise-datasource")),
+	awsCfg, err := awsauth.NewConfigProvider().GetConfig(ctx, awsauth.Settings{
+		LegacyAuthType:     ds.cfg.AuthType,
+		AccessKey:          ds.cfg.AccessKey,
+		SecretKey:          ds.cfg.SecretKey,
+		Region:             region,
+		CredentialsProfile: ds.cfg.Profile,
+		AssumeRoleARN:      ds.cfg.AssumeRoleARN,
+		Endpoint:           ds.cfg.Endpoint,
+		ExternalID:         ds.cfg.ExternalID,
+		UserAgent:          awsds.GetUserAgentString("grafana-iot-sitewise-datasource"),
+		HTTPClient:         httpclient,
 	})
+
 	if err != nil {
 		return nil, err
 	}
-	awsCfg.Credentials = provider
 
 	return &client.SitewiseClient{Client: iotsitewise.NewFromConfig(awsCfg)}, nil
 }
