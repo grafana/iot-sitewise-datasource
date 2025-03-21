@@ -55,7 +55,7 @@ type BaseQuery struct {
 	// Also provided by sqlutil.Query. Migrate to that
 	Interval      time.Duration     `json:"-"`
 	TimeRange     backend.TimeRange `json:"-"`
-	MaxDataPoints int64             `json:"-"`
+	MaxDataPoints int32             `json:"-"`
 }
 
 // MigrateAssetProperty handles AssetId, PropertyId, PropertyAlias --> AssetIds, PropertyIds, PropertyAliases backward compatibility.

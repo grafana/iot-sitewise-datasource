@@ -3,55 +3,49 @@ package api
 import (
 	"context"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
-	
 )
 
-func ListTimeSeries(ctx context.Context, client client.SitewiseClient, query models.ListTimeSeriesQuery) (*framer.TimeSeries, error) {
+func ListTimeSeries(ctx context.Context, sw client.SitewiseAPIClient, query models.ListTimeSeriesQuery) (*framer.TimeSeries, error) {
 
 	var (
-		timeSeriesType *string
-		assetId *string = util.GetAssetId(query.BaseQuery)
 		aliasPrefix *string
 	)
+	timeSeriesType := query.TimeSeriesType
+	assetId := util.GetAssetId(query.BaseQuery)
 
-	if query.TimeSeriesType != "" {
-		// if user wants to see all timeseries data do not filter on type
-		if query.TimeSeriesType == "ALL" { 
-			timeSeriesType = nil
-		} else {
-			timeSeriesType = aws.String(query.TimeSeriesType)
-		}	
+	if timeSeriesType == "ALL" {
+		timeSeriesType = ""
 	}
 
 	if query.AliasPrefix != "" {
 		aliasPrefix = aws.String(query.AliasPrefix)
 	}
 
-	if query.TimeSeriesType == "DISASSOCIATED" {
+	if query.TimeSeriesType == iotsitewisetypes.ListTimeSeriesTypeDisassociated {
 		// cannot filter on assetId for disassociated data
 		assetId = nil
 	}
 
-	if query.TimeSeriesType == "ASSOCIATED" {
+	if query.TimeSeriesType == iotsitewisetypes.ListTimeSeriesTypeAssociated {
 		// cannot filter by alias prefix on associated data
 		aliasPrefix = nil
 	}
 
-	resp, err := client.ListTimeSeriesWithContext(ctx, &iotsitewise.ListTimeSeriesInput{
-		AssetId: 		assetId,
+	resp, err := sw.ListTimeSeries(ctx, &iotsitewise.ListTimeSeriesInput{
+		AssetId:        assetId,
 		TimeSeriesType: timeSeriesType,
-		AliasPrefix:  	aliasPrefix,
-		MaxResults:   	aws.Int64(250),
-		NextToken:    	getNextToken(query.BaseQuery),
+		AliasPrefix:    aliasPrefix,
+		MaxResults:     aws.Int32(250),
+		NextToken:      getNextToken(query.BaseQuery),
 	})
-
 
 	if err != nil {
 		return nil, err
@@ -59,6 +53,6 @@ func ListTimeSeries(ctx context.Context, client client.SitewiseClient, query mod
 
 	return &framer.TimeSeries{
 		TimeSeriesSummaries: resp.TimeSeriesSummaries,
-		NextToken:      resp.NextToken,
+		NextToken:           resp.NextToken,
 	}, nil
 }

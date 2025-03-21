@@ -54,11 +54,11 @@ cciS5hf80XzIFqwhzaVS9gmiyM8=
 	`
 
 	a := EdgeAuthenticator{Settings: settings}
-	info, err := a.Authenticate()
+	err := a.Authenticate()
 
 	require.NoError(t, err)
-	require.Equal(t, settings.EdgeAuthMode, info.AuthMechanism)
-	require.Equal(t, settings.EdgeAuthUser, info.Username)
+	require.Equal(t, settings.EdgeAuthMode, a.authInfo.AuthMechanism)
+	require.Equal(t, settings.EdgeAuthUser, a.authInfo.Username)
 }
 
 func TestAuthWithServer(t *testing.T) {
@@ -89,11 +89,11 @@ func TestAuthWithServer(t *testing.T) {
 	settings.Cert = string(rootCertPEM)
 
 	a := EdgeAuthenticator{Settings: settings}
-	info, err := a.Authenticate()
+	err = a.Authenticate()
 
 	require.NoError(t, err)
-	require.Equal(t, settings.EdgeAuthMode, info.AuthMechanism)
-	require.Equal(t, settings.EdgeAuthUser, info.Username)
+	require.Equal(t, settings.EdgeAuthMode, a.authInfo.AuthMechanism)
+	require.Equal(t, settings.EdgeAuthUser, a.authInfo.Username)
 }
 
 // helper function for the https request handler
@@ -153,7 +153,7 @@ func certTemplate() (*x509.Certificate, error) {
 	return &tmpl, nil
 }
 
-//helper function to create a certificate from a template and public key plus a parent certificate and private key
+// helper function to create a certificate from a template and public key plus a parent certificate and private key
 func createCert(template, parent *x509.Certificate, pub interface{}, parentPriv interface{}) (
 	*x509.Certificate, []byte, error) {
 

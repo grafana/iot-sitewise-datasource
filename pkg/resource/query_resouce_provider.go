@@ -3,7 +3,8 @@ package resource
 import (
 	"context"
 
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
@@ -14,7 +15,6 @@ type queryResourceProvider struct {
 }
 
 func NewQueryResourceProvider(cachingProvider *cachingResourceProvider, query models.BaseQuery) *queryResourceProvider {
-	//cachingResourceProvider := NewCachingResourceProvider(NewSitewiseResources(client))
 	return &queryResourceProvider{
 		resources: cachingProvider,
 		baseQuery: query,

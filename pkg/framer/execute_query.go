@@ -3,20 +3,23 @@ package framer
 import (
 	"context"
 	"fmt"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 	"strconv"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
+
 	"github.com/pkg/errors"
 )
 
-type Rows []*iotsitewise.Row
+type Rows []iotsitewisetypes.Row
 
 type QueryResults iotsitewise.ExecuteQueryOutput
 
@@ -25,7 +28,7 @@ func (a QueryResults) Frames(_ context.Context, _ resource.ResourceProvider) (da
 	f := make([]*data.Field, 0)
 
 	for _, col := range a.Columns {
-		f = append(f, fields.DatumField(length, *col))
+		f = append(f, fields.DatumField(length, col))
 	}
 
 	for i, row := range a.Rows {
@@ -45,31 +48,28 @@ func (a QueryResults) Frames(_ context.Context, _ resource.ResourceProvider) (da
 
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{
-			NextToken: aws.StringValue(a.NextToken),
+			NextToken: util.Dereference(a.NextToken),
 		},
 	}
 
 	return data.Frames{frame}, nil
 }
 
-func SetValue(col *iotsitewise.ColumnInfo, scalarValue string, field *data.Field, index int) error {
-	typeConverter := map[string]func(string) (interface{}, error){
-		"BOOLEAN": func(s string) (interface{}, error) {
+func SetValue(col iotsitewisetypes.ColumnInfo, scalarValue string, field *data.Field, index int) error {
+	typeConverter := map[iotsitewisetypes.ScalarType]func(string) (interface{}, error){
+		iotsitewisetypes.ScalarTypeBoolean: func(s string) (interface{}, error) {
 			return strconv.ParseBool(s)
 		},
-		"INTEGER": func(s string) (interface{}, error) {
+		iotsitewisetypes.ScalarTypeInt: func(s string) (interface{}, error) {
 			return strconv.ParseInt(s, 10, 64)
 		},
-		"INT": func(s string) (interface{}, error) {
-			return strconv.ParseInt(s, 10, 64)
-		},
-		"STRING": func(s string) (interface{}, error) {
+		iotsitewisetypes.ScalarTypeString: func(s string) (interface{}, error) {
 			return s, nil
 		},
-		"DOUBLE": func(s string) (interface{}, error) {
+		iotsitewisetypes.ScalarTypeDouble: func(s string) (interface{}, error) {
 			return strconv.ParseFloat(s, 64)
 		},
-		"TIMESTAMP": func(s string) (interface{}, error) {
+		iotsitewisetypes.ScalarTypeTimestamp: func(s string) (interface{}, error) {
 			if t, err := strconv.ParseInt(s, 10, 64); err == nil {
 				return time.Unix(0, t*int64(time.Second)), nil
 			} else {
@@ -78,9 +78,9 @@ func SetValue(col *iotsitewise.ColumnInfo, scalarValue string, field *data.Field
 		},
 	}
 
-	converter, exists := typeConverter[*col.Type.ScalarType]
+	converter, exists := typeConverter[col.Type.ScalarType]
 	if !exists {
-		return errors.New(fmt.Sprintf("Unsupported scalar type: %s", *col.Type.ScalarType))
+		return errors.New(fmt.Sprintf("Unsupported scalar type: %s", col.Type.ScalarType))
 	}
 
 	value, err := converter(scalarValue)
