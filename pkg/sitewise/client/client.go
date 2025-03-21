@@ -12,7 +12,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
@@ -240,73 +239,68 @@ func (c *SitewiseClient) BatchGetAssetPropertyAggregatesPageAggregation(ctx cont
 	}, nil
 }
 
-func GetAWSConfig(ctx context.Context, settings models.AWSSiteWiseDataSourceSetting) (cfg aws.Config, err error) {
-	options := make([]func(*awsconfig.LoadOptions) error, 0)
-	if settings.Endpoint != "" {
-		options = append(options, awsconfig.WithBaseEndpoint(settings.Endpoint))
+func GetHTTPClient(settings models.AWSSiteWiseDataSourceSetting) (*http.Client, error) {
+	if settings.Region != models.EDGE_REGION {
+		return nil, nil
 	}
 
-	if settings.Region == models.EDGE_REGION {
-		pool, _ := x509.SystemCertPool()
-		if pool == nil {
-			pool = x509.NewCertPool()
-		}
+	pool, _ := x509.SystemCertPool()
+	if pool == nil {
+		pool = x509.NewCertPool()
+	}
 
-		if settings.Cert == "" {
-			return cfg, errors.New("certificate cannot be null")
-		}
+	if settings.Cert == "" {
+		return nil, errors.New("certificate cannot be null")
+	}
 
-		block, _ := pem.Decode([]byte(settings.Cert))
-		if block == nil || block.Type != "CERTIFICATE" || len(block.Headers) != 0 {
-			return cfg, fmt.Errorf("decode certificate failed: %s", settings.Cert)
-		}
+	block, _ := pem.Decode([]byte(settings.Cert))
+	if block == nil || block.Type != "CERTIFICATE" || len(block.Headers) != 0 {
+		return nil, fmt.Errorf("decode certificate failed: %s", settings.Cert)
+	}
 
-		cert, err := x509.ParseCertificate(block.Bytes)
-		if err != nil {
-			return cfg, err
-		}
-		pool.AddCert(cert)
+	cert, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+	pool.AddCert(cert)
 
-		tr := &http.Transport{
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true, //Not actually skipping, check the cert in VerifyPeerCertificate
-				RootCAs:            pool,
-				VerifyPeerCertificate: func(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error {
-					// If this is the first handshake on a connection, process and
-					// (optionally) verify the server's certificates.
-					certs := make([]*x509.Certificate, len(rawCerts))
-					for i, asn1Data := range rawCerts {
-						cert, err := x509.ParseCertificate(asn1Data)
-						if err != nil {
-							return errors.New("tls: failed to parse certificate from server: " + err.Error())
-						}
-						certs[i] = cert
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: true, //Not actually skipping, check the cert in VerifyPeerCertificate
+			RootCAs:            pool,
+			VerifyPeerCertificate: func(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error {
+				// If this is the first handshake on a connection, process and
+				// (optionally) verify the server's certificates.
+				certs := make([]*x509.Certificate, len(rawCerts))
+				for i, asn1Data := range rawCerts {
+					cert, err := x509.ParseCertificate(asn1Data)
+					if err != nil {
+						return errors.New("tls: failed to parse certificate from server: " + err.Error())
 					}
+					certs[i] = cert
+				}
 
-					opts := x509.VerifyOptions{
-						Roots:         pool,
-						CurrentTime:   time.Now(),
-						DNSName:       "", // <- skip hostname verification
-						Intermediates: x509.NewCertPool(),
-					}
+				opts := x509.VerifyOptions{
+					Roots:         pool,
+					CurrentTime:   time.Now(),
+					DNSName:       "", // <- skip hostname verification
+					Intermediates: x509.NewCertPool(),
+				}
 
-					for i, cert := range certs {
-						if i == 0 {
-							continue
-						}
-						opts.Intermediates.AddCert(cert)
+				for i, cert := range certs {
+					if i == 0 {
+						continue
 					}
-					_, err := certs[0].Verify(opts)
-					return err
-				},
+					opts.Intermediates.AddCert(cert)
+				}
+				_, err := certs[0].Verify(opts)
+				return err
 			},
-		}
-
-		options = append(options, awsconfig.WithHTTPClient(&http.Client{Transport: tr}))
-		// TODO: figure out how to replace this with smithy's version
-		// https://pkg.go.dev/github.com/aws/smithy-go/transport/http#DisableEndpointHostPrefix
-		//swcfg = swcfg.WithDisableEndpointHostPrefix(true)
-
+		},
 	}
-	return awsconfig.LoadDefaultConfig(ctx, options...)
+
+	// TODO: figure out how to replace this with smithy's version
+	// https://pkg.go.dev/github.com/aws/smithy-go/transport/http#DisableEndpointHostPrefix
+	//swcfg = swcfg.WithDisableEndpointHostPrefix(true)
+	return &http.Client{Transport: tr}, nil
 }

@@ -91,6 +91,11 @@
     "assetid",
     "propid",
     "compatibilitycheck",
-    "zizmor"
+    "zizmor",
+    "iotsitewisetypes",
+    "awsconfig",
+    "awsauth",
+    "httpclient",
+    "propid"
   ]
 }
