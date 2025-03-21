@@ -3,18 +3,19 @@ package api
 import (
 	"context"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
 
-func DescribeAssetModel(ctx context.Context, client client.SitewiseClient, query models.DescribeAssetModelQuery) (*framer.AssetModelDescription, error) {
+func DescribeAssetModel(ctx context.Context, sw client.SitewiseAPIClient, query models.DescribeAssetModelQuery) (*framer.AssetModelDescription, error) {
 
 	awsReq := &iotsitewise.DescribeAssetModelInput{AssetModelId: aws.String(query.AssetModelId)}
 
-	resp, err := client.DescribeAssetModelWithContext(ctx, awsReq)
+	resp, err := sw.DescribeAssetModel(ctx, awsReq)
 
 	if err != nil {
 		return nil, err

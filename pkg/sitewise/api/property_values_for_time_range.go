@@ -9,7 +9,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
 
-func GetAssetPropertyValuesForTimeRange(ctx context.Context, client client.SitewiseClient,
+func GetAssetPropertyValuesForTimeRange(ctx context.Context, sw client.SitewiseAPIClient,
 	query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.AssetPropertyValuesForTimeRange, error) {
 
 	if query.Resolution == "AUTO" {
@@ -17,7 +17,7 @@ func GetAssetPropertyValuesForTimeRange(ctx context.Context, client client.Sitew
 
 		// todo: remove propvals.ResolutionSecond condition once 1s aggregation is supported
 		if propvals.ResolutionRaw == resolution || propvals.ResolutionSecond == resolution {
-			modifiedQuery, history, err := GetAssetPropertyValues(ctx, client, query)
+			modifiedQuery, history, err := GetAssetPropertyValues(ctx, sw, query)
 			if err != nil {
 				return modifiedQuery, nil, err
 			}
@@ -26,7 +26,7 @@ func GetAssetPropertyValuesForTimeRange(ctx context.Context, client client.Sitew
 
 	}
 
-	modifiedQuery, aggregates, err := GetAssetPropertyAggregates(ctx, client, query)
+	modifiedQuery, aggregates, err := GetAssetPropertyAggregates(ctx, sw, query)
 	if err != nil {
 		return modifiedQuery, nil, err
 	}

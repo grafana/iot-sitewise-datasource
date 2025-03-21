@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/request"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api"
 	"github.com/stretchr/testify/assert"
@@ -17,7 +17,7 @@ type fakeListAssetPropertiesClient struct {
 	assetId string
 }
 
-func (f *fakeListAssetPropertiesClient) ListAssetPropertiesWithContext(ctx aws.Context, input *iotsitewise.ListAssetPropertiesInput, opts ...request.Option) (*iotsitewise.ListAssetPropertiesOutput, error) {
+func (f *fakeListAssetPropertiesClient) ListAssetProperties(ctx context.Context, input *iotsitewise.ListAssetPropertiesInput, optFns ...func(*iotsitewise.Options)) (*iotsitewise.ListAssetPropertiesOutput, error) {
 	f.assetId = *input.AssetId
 	retVal := iotsitewise.ListAssetPropertiesOutput{NextToken: aws.String("bar")}
 	return &retVal, nil

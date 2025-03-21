@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 )
@@ -19,12 +20,12 @@ type ListAssetPropertiesQuery struct {
 // This is done simply due to lack of solid generics support in golang.
 type AssetPropertyValueQuery struct {
 	BaseQuery
-	AggregateTypes  []string `json:"aggregates,omitempty"` // Not used for the history query
-	Quality         string   `json:"quality,omitempty"`
-	Resolution      string   `json:"resolution,omitempty"`
-	LastObservation bool     `json:"lastObservation,omitempty"`
-	TimeOrdering    string   `json:"timeOrdering,omitempty"`
-	FlattenL4e      bool     `json:"flattenL4e,omitempty"`
+	AggregateTypes  []iotsitewisetypes.AggregateType `json:"aggregates,omitempty"` // Not used for the history query
+	Quality         iotsitewisetypes.Quality         `json:"quality,omitempty"`
+	Resolution      string                           `json:"resolution,omitempty"`
+	LastObservation bool                             `json:"lastObservation,omitempty"`
+	TimeOrdering    iotsitewisetypes.TimeOrdering    `json:"timeOrdering,omitempty"`
+	FlattenL4e      bool                             `json:"flattenL4e,omitempty"`
 }
 
 // Track the assetId, propertyId, and property alias of a data stream
@@ -57,7 +58,7 @@ func GetAssetPropertyValueQuery(dq *backend.DataQuery) (*AssetPropertyValueQuery
 	// add on the DataQuery params
 	query.TimeRange = dq.TimeRange
 	query.Interval = dq.Interval
-	query.MaxDataPoints = dq.MaxDataPoints
+	query.MaxDataPoints = int32(dq.MaxDataPoints)
 	query.QueryType = dq.QueryType
 
 	return query, nil

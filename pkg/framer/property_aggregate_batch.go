@@ -2,13 +2,13 @@ package framer
 
 import (
 	"context"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 
-	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 
-	"github.com/aws/aws-sdk-go/aws"
-
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
 )
@@ -20,7 +20,7 @@ type AssetPropertyAggregatesBatch struct {
 
 // getAggregationFields enforces ordering of aggregate fields
 // Golang maps return a random order during iteration
-func getAggregationFields(length int, aggs *iotsitewise.Aggregates) ([]string, map[string]*data.Field) {
+func getAggregationFields(length int, aggs *iotsitewisetypes.Aggregates) ([]string, map[string]*data.Field) {
 
 	aggregateTypes := []string{}
 	aggregateFields := map[string]*data.Field{}
@@ -58,7 +58,7 @@ func getAggregationFields(length int, aggs *iotsitewise.Aggregates) ([]string, m
 	return aggregateTypes, aggregateFields
 }
 
-func addAggregateFieldValues(idx int, fields map[string]*data.Field, aggs *iotsitewise.Aggregates) {
+func addAggregateFieldValues(idx int, fields map[string]*data.Field, aggs *iotsitewisetypes.Aggregates) {
 
 	if val := aggs.Average; val != nil {
 		fields[models.AggregateAvg].Set(idx, *aggs.Average)
@@ -85,6 +85,13 @@ func addAggregateFieldValues(idx int, fields map[string]*data.Field, aggs *iotsi
 	}
 }
 
+func aggregateTypesToStrings(aggs []iotsitewisetypes.AggregateType) []string {
+	out := make([]string, len(aggs))
+	for i, agg := range aggs {
+		out[i] = string(agg)
+	}
+	return out
+}
 func (a AssetPropertyAggregatesBatch) Frames(ctx context.Context, resources resource.ResourceProvider) (data.Frames, error) {
 	successEntriesLength := 0
 	for _, r := range a.Responses {
@@ -108,10 +115,10 @@ func (a AssetPropertyAggregatesBatch) Frames(ctx context.Context, resources reso
 
 			frame.Meta = &data.FrameMeta{
 				Custom: models.SitewiseCustomMeta{
-					NextToken:  aws.StringValue(r.NextToken),
+					NextToken:  util.Dereference(r.NextToken),
 					EntryId:    *e.EntryId,
-					Resolution: aws.StringValue(request.Entries[j].Resolution),
-					Aggregates: aws.StringValueSlice(request.Entries[j].AggregateTypes),
+					Resolution: util.Dereference(request.Entries[j].Resolution),
+					Aggregates: aggregateTypesToStrings(request.Entries[j].AggregateTypes),
 				},
 			}
 			frames = append(frames, frame)
@@ -132,7 +139,7 @@ func (a AssetPropertyAggregatesBatch) Frames(ctx context.Context, resources reso
 	return frames, nil
 }
 
-func (a AssetPropertyAggregatesBatch) Frame(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, v []*iotsitewise.AggregatedValue) (*data.Frame, error) {
+func (a AssetPropertyAggregatesBatch) Frame(ctx context.Context, property *iotsitewise.DescribeAssetPropertyOutput, v []iotsitewisetypes.AggregatedValue) (*data.Frame, error) {
 
 	length := len(v)
 	if length < 1 {

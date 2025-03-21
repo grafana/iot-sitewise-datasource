@@ -3,8 +3,10 @@ package api
 import (
 	"context"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
@@ -16,17 +18,9 @@ import (
 // If an invalid combo of assetId/propertyId/propertyAlias are sent to the API, an exception will be returned.
 // The Framer consumer should bubble up that error to the user.
 func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetAssetPropertyValueHistoryInput {
-
-	var (
-		qualities []*string
-	)
-
 	quality := query.Quality
-
 	if quality == "" || quality == "ANY" {
-		qualities = aws.StringSlice([]string{"GOOD"})
-	} else {
-		qualities = aws.StringSlice([]string{quality})
+		quality = iotsitewisetypes.QualityGood
 	}
 
 	from, to := util.TimeRangeToUnix(query.TimeRange)
@@ -38,27 +32,27 @@ func historyQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.GetA
 	return &iotsitewise.GetAssetPropertyValueHistoryInput{
 		StartDate:     from,
 		EndDate:       to,
-		MaxResults:    aws.Int64(query.MaxDataPoints),
+		MaxResults:    aws.Int32(int32(query.MaxDataPoints)),
 		NextToken:     getNextToken(query.BaseQuery),
 		AssetId:       getFirstAssetId(query.BaseQuery),
 		PropertyId:    getFirstPropertyId(query.BaseQuery),
 		PropertyAlias: getFirstPropertyAlias(query.BaseQuery),
-		TimeOrdering:  aws.String(query.TimeOrdering),
-		Qualities:     qualities,
+		TimeOrdering:  query.TimeOrdering,
+		Qualities:     []iotsitewisetypes.Quality{quality},
 	}
 }
 
-func GetAssetPropertyValues(ctx context.Context, client client.SitewiseClient,
+func GetAssetPropertyValues(ctx context.Context, sw client.SitewiseAPIClient,
 	query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.AssetPropertyValueHistory, error) {
 	maxDps := int(query.MaxDataPoints)
 
-	modifiedQuery, err := getAssetIdAndPropertyId(query, client, ctx)
+	modifiedQuery, err := getAssetIdAndPropertyId(query, sw, ctx)
 	if err != nil {
 		return models.AssetPropertyValueQuery{}, nil, err
 	}
 
 	awsReq := historyQueryToInput(modifiedQuery)
-	resp, err := client.GetAssetPropertyValueHistoryPageAggregation(ctx, awsReq, query.MaxPageAggregations, maxDps)
+	resp, err := sw.GetAssetPropertyValueHistoryPageAggregation(ctx, awsReq, query.MaxPageAggregations, maxDps)
 
 	if err != nil {
 		return models.AssetPropertyValueQuery{}, nil, err

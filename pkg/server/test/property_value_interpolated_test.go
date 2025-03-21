@@ -3,14 +3,15 @@ package test
 import (
 	"context"
 	"fmt"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 	"math"
 	"sort"
 	"testing"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
-	"github.com/google/go-cmp/cmp"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
@@ -19,12 +20,14 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
 	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
+
+	"github.com/google/go-cmp/cmp"
 	"github.com/patrickmn/go-cache"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
 
-func mockGetInterpolatedAssetPropertyValuesPageAggregation(mockSw *mocks.SitewiseClient, nextToken *string, value *float64, matchFn interface{}) {
+func mockGetInterpolatedAssetPropertyValuesPageAggregation(mockSw *mocks.SitewiseAPIClient, nextToken *string, value *float64, matchFn interface{}) {
 	mockSw.On(
 		"GetInterpolatedAssetPropertyValuesPageAggregation",
 		mock.Anything,
@@ -33,13 +36,13 @@ func mockGetInterpolatedAssetPropertyValuesPageAggregation(mockSw *mocks.Sitewis
 		mock.Anything,
 	).Return(&iotsitewise.GetInterpolatedAssetPropertyValuesOutput{
 		NextToken: nextToken,
-		InterpolatedAssetPropertyValues: []*iotsitewise.InterpolatedAssetPropertyValue{
+		InterpolatedAssetPropertyValues: []iotsitewisetypes.InterpolatedAssetPropertyValue{
 			{
-				Timestamp: &iotsitewise.TimeInNanos{
-					OffsetInNanos: Pointer(int64(0)),
+				Timestamp: &iotsitewisetypes.TimeInNanos{
+					OffsetInNanos: Pointer(int32(0)),
 					TimeInSeconds: Pointer(int64(1612207200)),
 				},
-				Value: &iotsitewise.Variant{
+				Value: &iotsitewisetypes.Variant{
 					DoubleValue: value,
 				},
 			},
@@ -48,26 +51,26 @@ func mockGetInterpolatedAssetPropertyValuesPageAggregation(mockSw *mocks.Sitewis
 }
 
 func TestPropertyValueInterpolatedQueryWithPropertyAlias(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 
 	mockGetInterpolatedAssetPropertyValuesPageAggregation(mockSw, Pointer("asset1-next-token"), Pointer(1.1), func(input *iotsitewise.GetInterpolatedAssetPropertyValuesInput) bool {
 		return *input.AssetId == mockAssetId
 	})
 
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
 		Alias:      Pointer(mockPropertyAlias),
 		AssetId:    Pointer(mockAssetId),
 		PropertyId: Pointer(mockPropertyId),
 	}, nil)
 
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
 		AssetId:    aws.String(mockAssetId),
 		PropertyId: aws.String(mockPropertyId),
 	}, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetId:   Pointer(mockAssetId),
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
-			DataType: Pointer("DOUBLE"),
+		AssetProperty: &iotsitewisetypes.Property{
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
 			Name:     Pointer("Wind Speed"),
 			Unit:     Pointer("m/s"),
 			Id:       aws.String(mockPropertyId),
@@ -122,13 +125,13 @@ func TestPropertyValueInterpolatedQueryWithPropertyAlias(t *testing.T) {
 }
 
 func TestPropertyValueInterpolatedQueryWithDisassociatedPropertyAlias(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 
 	mockGetInterpolatedAssetPropertyValuesPageAggregation(mockSw, Pointer("asset1-next-token"), Pointer(1.1), func(input *iotsitewise.GetInterpolatedAssetPropertyValuesInput) bool {
 		return *input.PropertyAlias == mockPropertyAlias
 	})
 
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
 		Alias: Pointer(mockPropertyAlias),
 	}, nil)
 
@@ -199,7 +202,7 @@ func TestPropertyValueInterpolatedQueryMultipleIds(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			mockSw := &mocks.SitewiseClient{}
+			mockSw := &mocks.SitewiseAPIClient{}
 
 			if tc.numPropertyAliases > 0 {
 				propertyAliases := generateIds(tc.numPropertyAliases, mockPropertyAlias)
@@ -209,7 +212,7 @@ func TestPropertyValueInterpolatedQueryMultipleIds(t *testing.T) {
 					mockGetInterpolatedAssetPropertyValuesPageAggregation(mockSw, nextToken, doubleValue, func(input *iotsitewise.GetInterpolatedAssetPropertyValuesInput) bool {
 						return *input.PropertyAlias == propertyAlias
 					})
-					mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+					mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
 						Alias: Pointer(propertyAlias),
 					}, nil)
 				}
@@ -224,14 +227,14 @@ func TestPropertyValueInterpolatedQueryMultipleIds(t *testing.T) {
 						mockGetInterpolatedAssetPropertyValuesPageAggregation(mockSw, nextToken, doubleValue, func(input *iotsitewise.GetInterpolatedAssetPropertyValuesInput) bool {
 							return *input.AssetId == assetId && *input.PropertyId == propertyId
 						})
-						mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
+						mockSw.On("DescribeAssetProperty", mock.Anything, &iotsitewise.DescribeAssetPropertyInput{
 							AssetId:    aws.String(assetId),
 							PropertyId: aws.String(propertyId),
 						}, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 							AssetId:   Pointer(assetId),
 							AssetName: Pointer(fmt.Sprintf("Demo Turbine Asset %d", a)),
-							AssetProperty: &iotsitewise.Property{
-								DataType: Pointer("DOUBLE"),
+							AssetProperty: &iotsitewisetypes.Property{
+								DataType: iotsitewisetypes.PropertyDataTypeDouble,
 								Name:     Pointer("Wind Speed"),
 								Unit:     Pointer("m/s"),
 								Id:       aws.String(propertyId),
