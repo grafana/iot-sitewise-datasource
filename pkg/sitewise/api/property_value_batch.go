@@ -2,24 +2,24 @@ package api
 
 import (
 	"context"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
-	"github.com/grafana/iot-sitewise-datasource/pkg/util"
-
-	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
-
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
 func valueBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.BatchGetAssetPropertyValueInput {
-	entries := make([]*iotsitewise.BatchGetAssetPropertyValueEntry, 0)
+	entries := make([]iotsitewisetypes.BatchGetAssetPropertyValueEntry, 0)
 
 	// All unique properties are collected in AssetPropertyEntries and assigned to
 	// a BatchGetAssetPropertyValueEntry
 	for _, entry := range query.AssetPropertyEntries {
-		batchEntry := iotsitewise.BatchGetAssetPropertyValueEntry{}
+		batchEntry := iotsitewisetypes.BatchGetAssetPropertyValueEntry{}
 		if entry.AssetId != "" && entry.PropertyId != "" {
 			batchEntry.AssetId = aws.String(entry.AssetId)
 			batchEntry.PropertyId = aws.String(entry.PropertyId)
@@ -29,7 +29,7 @@ func valueBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.B
 			batchEntry.PropertyAlias = aws.String(entry.PropertyAlias)
 			batchEntry.EntryId = util.GetEntryIdFromPropertyAlias(entry.PropertyAlias)
 		}
-		entries = append(entries, &batchEntry)
+		entries = append(entries, batchEntry)
 	}
 
 	return &iotsitewise.BatchGetAssetPropertyValueInput{
@@ -38,7 +38,7 @@ func valueBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.B
 	}
 }
 
-func BatchGetAssetPropertyValue(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.AssetPropertyValueBatch, error) {
+func BatchGetAssetPropertyValue(ctx context.Context, client client.SitewiseAPIClient, query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.AssetPropertyValueBatch, error) {
 	modifiedQuery, err := getAssetIdAndPropertyId(query, client, ctx)
 	if err != nil {
 		return models.AssetPropertyValueQuery{}, nil, err
@@ -48,7 +48,7 @@ func BatchGetAssetPropertyValue(ctx context.Context, client client.SitewiseClien
 	responses := []*iotsitewise.BatchGetAssetPropertyValueOutput{}
 	for _, q := range batchedQueries {
 		req := valueBatchQueryToInput(q)
-		resp, err := client.BatchGetAssetPropertyValueWithContext(ctx, req)
+		resp, err := client.BatchGetAssetPropertyValue(ctx, req)
 		if err != nil {
 			return models.AssetPropertyValueQuery{}, nil, err
 		}

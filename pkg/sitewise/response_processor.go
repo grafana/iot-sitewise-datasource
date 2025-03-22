@@ -25,8 +25,8 @@ var GetCache = func() func() *cache.Cache {
 	}
 }()
 
-func frameResponse(ctx context.Context, query models.BaseQuery, data framer.Framer, client client.SitewiseClient) (data.Frames, error) {
-	cp := resource.NewCachingResourceProvider(resource.NewSitewiseResources(client), GetCache())
+func frameResponse(ctx context.Context, query models.BaseQuery, data framer.Framer, sw client.SitewiseAPIClient) (data.Frames, error) {
+	cp := resource.NewCachingResourceProvider(resource.NewSitewiseResources(sw), GetCache())
 	rp := resource.NewQueryResourceProvider(cp, query)
 	return data.Frames(ctx, rp)
 }
