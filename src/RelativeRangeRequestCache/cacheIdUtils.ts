@@ -4,7 +4,12 @@ import { SitewiseQueriesUnion } from './types';
 export type RequestCacheId = string;
 
 export function generateSiteWiseRequestCacheId(request: DataQueryRequest<SitewiseQueriesUnion>): RequestCacheId {
-  const { targets, range: { raw: { from } } } = request;
+  const {
+    targets,
+    range: {
+      raw: { from },
+    },
+  } = request;
 
   return JSON.stringify([from, generateSiteWiseQueriesCacheId(targets)]);
 }
@@ -28,7 +33,9 @@ function generateSiteWiseQueryCacheId(query: SitewiseQueriesUnion): QueryCacheId
     assetId,
     assetIds,
     propertyId,
+    propertyIds,
     propertyAlias,
+    propertyAliases,
     quality,
     resolution,
     lastObservation,
@@ -56,7 +63,9 @@ function generateSiteWiseQueryCacheId(query: SitewiseQueriesUnion): QueryCacheId
     assetId,
     assetIds,
     propertyId,
+    propertyIds,
     propertyAlias,
+    propertyAliases,
     quality,
     resolution,
     lastObservation,

@@ -17,7 +17,7 @@ export const ClientCacheRow = ({ clientCache, onClientCacheChange, queryRefId }:
         <EditorField
           label="Client cache"
           htmlFor={cacheSwitchId}
-          tooltip="Enable to cache results in the browser that are older than 15 minutes. Note: Dashboard variable query result will not update when client cache is enabled."
+          tooltip="Enable to cache results in the browser that are older than 15 minutes. This will improve performance for repeated queries with relative time range."
         >
           <Switch id={cacheSwitchId} value={clientCache} onChange={onClientCacheChange} />
         </EditorField>

@@ -18,7 +18,7 @@ type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 const queryDefaults: Partial<SitewiseQuery> = {
   maxPageAggregations: 1,
   flattenL4e: true,
-  clientCache: false,
+  clientCache: true,
 };
 
 export function VisualQueryBuilder(props: Props) {
