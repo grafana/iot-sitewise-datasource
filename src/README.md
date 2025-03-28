@@ -1,3 +1,7 @@
+> ***Warning***
+>
+> We recommend customers to use Grafana version 10.4.0 or higher for the AWS IoT SiteWise Datasource. Grafana instances with versions prior to 10.4.0 are unable to use AWS IoT SiteWise data source versions beyond 1.25.2.
+
 # AWS IoT SiteWise Datasource
 
 This datasource supports reading data from [AWS IoT SiteWise](https://aws.amazon.com/iot-sitewise/) and showing it in a Grafana dashboard.
