@@ -190,7 +190,8 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
   }
 
   query(request: DataQueryRequest<SitewiseQuery>): Observable<DataQueryResponse> {
-    const cachedInfo = request.range != null ? this.relativeRangeCache.get(request) : undefined;
+    const interpolatedRequest = this.constructVariableInterpolatedRequest(request);
+    const cachedInfo = request.range != null ? this.relativeRangeCache.get(interpolatedRequest) : undefined;
 
     return new SitewiseQueryPaginator({
       request: cachedInfo?.refreshingRequest || request,
@@ -206,12 +207,21 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
           next: (response) => {
             if (response.state === LoadingState.Done) {
               if (response.data.length > 0) {
-                this.relativeRangeCache.set(request, response);
+                this.relativeRangeCache.set(interpolatedRequest, response);
               }
             }
           },
         })
       );
+  }
+
+  private constructVariableInterpolatedRequest(
+    request: DataQueryRequest<SitewiseQuery>
+  ): DataQueryRequest<SitewiseQuery> {
+    return {
+      ...request,
+      targets: this.interpolateVariablesInQueries(request.targets, request.scopedVars, request.filters),
+    };
   }
 }
 

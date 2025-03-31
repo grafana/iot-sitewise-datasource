@@ -1,4 +1,11 @@
-import { AggregateType, QueryType, SiteWiseQuality, SiteWiseResolution, SiteWiseResponseFormat, SiteWiseTimeOrder } from 'types';
+import {
+  AggregateType,
+  QueryType,
+  SiteWiseQuality,
+  SiteWiseResolution,
+  SiteWiseResponseFormat,
+  SiteWiseTimeOrder,
+} from 'types';
 import { generateSiteWiseQueriesCacheId, generateSiteWiseRequestCacheId } from './cacheIdUtils';
 import { dateTime } from '@grafana/data';
 import { SitewiseQueriesUnion } from './types';
@@ -11,7 +18,9 @@ function createSiteWiseQuery(id: number): SitewiseQueriesUnion {
     assetId: `mock-asset-id-${id}`,
     assetIds: [`mock-asset-id-${id}`],
     propertyId: `mock-property-id-${id}`,
+    propertyIds: [`mock-property-id-${id}`],
     propertyAlias: `mock-property-alias-${id}`,
+    propertyAliases: [`mock-property-alias-${id}`],
     quality: SiteWiseQuality.ANY,
     resolution: SiteWiseResolution.Auto,
     lastObservation: true,
@@ -19,7 +28,7 @@ function createSiteWiseQuery(id: number): SitewiseQueriesUnion {
     maxPageAggregations: 1000,
     datasource: {
       type: 'grafana-iot-sitewise-datasource',
-      uid: 'mock-datasource-uid'
+      uid: 'mock-datasource-uid',
     },
     refId: `A-${id}`,
     timeOrdering: SiteWiseTimeOrder.ASCENDING,
@@ -28,8 +37,8 @@ function createSiteWiseQuery(id: number): SitewiseQueriesUnion {
     modelId: `mock-model-${id}`,
     filter: 'ALL',
     aggregates: [AggregateType.AVERAGE],
-    timeSeriesType: "DISASSOCIATED",
-    aliasPrefix: "aws/mock/disassociated"
+    timeSeriesType: 'DISASSOCIATED',
+    aliasPrefix: 'aws/mock/disassociated',
   };
 }
 
@@ -37,14 +46,14 @@ describe('generateSiteWiseQueriesCacheId()', () => {
   it('parses SiteWise Queries into cache Id', () => {
     const actualId = generateSiteWiseQueriesCacheId([createSiteWiseQuery(1), createSiteWiseQuery(2)]);
     const expectedId = JSON.stringify([
-      '["PropertyValueHistory","us-west-2","table","mock-asset-id-1",["mock-asset-id-1"],"mock-property-id-1","mock-property-alias-1","ANY","AUTO",true,true,1000,"grafana-iot-sitewise-datasource","mock-datasource-uid","ASCENDING",true,"mock-hierarchy-1","mock-model-1","ALL",["AVERAGE"],"DISASSOCIATED","aws/mock/disassociated"]',
-      '["PropertyValueHistory","us-west-2","table","mock-asset-id-2",["mock-asset-id-2"],"mock-property-id-2","mock-property-alias-2","ANY","AUTO",true,true,1000,"grafana-iot-sitewise-datasource","mock-datasource-uid","ASCENDING",true,"mock-hierarchy-2","mock-model-2","ALL",["AVERAGE"],"DISASSOCIATED","aws/mock/disassociated"]'
+      '["PropertyValueHistory","us-west-2","table","mock-asset-id-1",["mock-asset-id-1"],"mock-property-id-1",["mock-property-id-1"],"mock-property-alias-1",["mock-property-alias-1"],"ANY","AUTO",true,true,1000,"grafana-iot-sitewise-datasource","mock-datasource-uid","ASCENDING",true,"mock-hierarchy-1","mock-model-1","ALL",["AVERAGE"],"DISASSOCIATED","aws/mock/disassociated"]',
+      '["PropertyValueHistory","us-west-2","table","mock-asset-id-2",["mock-asset-id-2"],"mock-property-id-2",["mock-property-id-2"],"mock-property-alias-2",["mock-property-alias-2"],"ANY","AUTO",true,true,1000,"grafana-iot-sitewise-datasource","mock-datasource-uid","ASCENDING",true,"mock-hierarchy-2","mock-model-2","ALL",["AVERAGE"],"DISASSOCIATED","aws/mock/disassociated"]',
     ]);
 
     expect(actualId).toEqual(expectedId);
   });
 
-  it('parses SiteWise Query properties in a stable fashion (disregard of the order queries and queries\' properties are added)', () => {
+  it("parses SiteWise Query properties in a stable fashion (disregard of the order queries and queries' properties are added)", () => {
     // Reversed order of properties
     const query1: SitewiseQueriesUnion = {
       timeOrdering: SiteWiseTimeOrder.ASCENDING,
@@ -85,7 +94,7 @@ describe('generateSiteWiseQueriesCacheId()', () => {
     };
     const actualId = generateSiteWiseQueriesCacheId([query]);
     const expectedId = JSON.stringify([
-      '["ListAssets",null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]',
+      '["ListAssets",null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]',
     ]);
 
     expect(actualId).toEqual(expectedId);
@@ -103,8 +112,8 @@ describe('generateSiteWiseRequestCacheId()', () => {
         to: dateTime('2024-05-28T01:00:00Z'),
         raw: {
           from: 'now-15m',
-          to: 'now'
-        ,}
+          to: 'now',
+        },
       },
       scopedVars: {},
       targets: [createSiteWiseQuery(1), createSiteWiseQuery(2)],
@@ -115,9 +124,9 @@ describe('generateSiteWiseRequestCacheId()', () => {
     const expectedId = JSON.stringify([
       'now-15m',
       JSON.stringify([
-        '["PropertyValueHistory","us-west-2","table","mock-asset-id-1",["mock-asset-id-1"],"mock-property-id-1","mock-property-alias-1","ANY","AUTO",true,true,1000,"grafana-iot-sitewise-datasource","mock-datasource-uid","ASCENDING",true,"mock-hierarchy-1","mock-model-1","ALL",["AVERAGE"],"DISASSOCIATED","aws/mock/disassociated"]',
-        '["PropertyValueHistory","us-west-2","table","mock-asset-id-2",["mock-asset-id-2"],"mock-property-id-2","mock-property-alias-2","ANY","AUTO",true,true,1000,"grafana-iot-sitewise-datasource","mock-datasource-uid","ASCENDING",true,"mock-hierarchy-2","mock-model-2","ALL",["AVERAGE"],"DISASSOCIATED","aws/mock/disassociated"]'
-      ])
+        '["PropertyValueHistory","us-west-2","table","mock-asset-id-1",["mock-asset-id-1"],"mock-property-id-1",["mock-property-id-1"],"mock-property-alias-1",["mock-property-alias-1"],"ANY","AUTO",true,true,1000,"grafana-iot-sitewise-datasource","mock-datasource-uid","ASCENDING",true,"mock-hierarchy-1","mock-model-1","ALL",["AVERAGE"],"DISASSOCIATED","aws/mock/disassociated"]',
+        '["PropertyValueHistory","us-west-2","table","mock-asset-id-2",["mock-asset-id-2"],"mock-property-id-2",["mock-property-id-2"],"mock-property-alias-2",["mock-property-alias-2"],"ANY","AUTO",true,true,1000,"grafana-iot-sitewise-datasource","mock-datasource-uid","ASCENDING",true,"mock-hierarchy-2","mock-model-2","ALL",["AVERAGE"],"DISASSOCIATED","aws/mock/disassociated"]',
+      ]),
     ]);
 
     expect(generateSiteWiseRequestCacheId(request)).toEqual(expectedId);
