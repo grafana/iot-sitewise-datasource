@@ -3,13 +3,14 @@ package api
 import (
 	"context"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api/propvals"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
-
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
-	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
@@ -24,24 +25,19 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ge
 		}
 	}
 
-	var (
-		aggregateTypes = aws.StringSlice(query.AggregateTypes)
-		qualities      []*string
-		timeOrdering   = aws.String("ASCENDING")
-	)
+	qualities := make([]iotsitewisetypes.Quality, 1)
 
-	quality := query.Quality
-
-	if quality == "" || quality == "ANY" {
-		qualities = aws.StringSlice([]string{"GOOD"})
+	if query.Quality == "" || query.Quality == "ANY" {
+		qualities[0] = iotsitewisetypes.QualityGood
 	} else {
-		qualities = aws.StringSlice([]string{quality})
+		qualities[0] = query.Quality
 	}
 
 	from, to := util.TimeRangeToUnix(query.TimeRange)
 
+	timeOrdering := iotsitewisetypes.TimeOrderingAscending
 	if query.TimeOrdering != "" {
-		timeOrdering = aws.String(query.TimeOrdering)
+		timeOrdering = query.TimeOrdering
 	}
 
 	if query.MaxDataPoints < 1 || query.MaxDataPoints > 250 {
@@ -49,9 +45,9 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ge
 	}
 
 	return &iotsitewise.GetAssetPropertyAggregatesInput{
-		AggregateTypes: aggregateTypes,
+		AggregateTypes: query.AggregateTypes,
 		EndDate:        to,
-		MaxResults:     aws.Int64(query.MaxDataPoints),
+		MaxResults:     aws.Int32(query.MaxDataPoints),
 		NextToken:      getNextToken(query.BaseQuery),
 		AssetId:        getFirstAssetId(query.BaseQuery),
 		PropertyId:     getFirstPropertyId(query.BaseQuery),
@@ -63,18 +59,17 @@ func aggregateQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.Ge
 	}
 }
 
-func GetAssetPropertyAggregates(ctx context.Context, client client.SitewiseClient,
+func GetAssetPropertyAggregates(ctx context.Context, sw client.SitewiseAPIClient,
 	query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.AssetPropertyAggregates, error) {
-	maxDps := int(query.MaxDataPoints)
 
-	modifiedQuery, err := getAssetIdAndPropertyId(query, client, ctx)
+	modifiedQuery, err := getAssetIdAndPropertyId(query, sw, ctx)
 	if err != nil {
 		return models.AssetPropertyValueQuery{}, nil, err
 	}
 
 	awsReq := aggregateQueryToInput(modifiedQuery)
 
-	resp, err := client.GetAssetPropertyAggregatesPageAggregation(ctx, awsReq, modifiedQuery.MaxPageAggregations, maxDps)
+	resp, err := sw.GetAssetPropertyAggregatesPageAggregation(ctx, awsReq, modifiedQuery.MaxPageAggregations, int(query.MaxDataPoints))
 
 	if err != nil {
 		return models.AssetPropertyValueQuery{}, nil, err
