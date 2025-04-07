@@ -16,6 +16,7 @@ func ExecuteQuery(ctx context.Context, client client.ExecuteQueryClient, query m
 	input := &iotsitewise.ExecuteQueryInput{
 		QueryStatement: aws.String(query.RawSQL),
 		MaxResults:     aws.Int64(2000),
+		NextToken:      getNextToken(query.BaseQuery),
 	}
 
 	backend.Logger.FromContext(ctx).Debug("Beginning the query loop")
