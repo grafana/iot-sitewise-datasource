@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.2.0
+
+- Add support for listing associated assets for multiple assets in [#439](https://github.com/grafana/iot-sitewise-datasource/pull/439)
+- chore: refactor additional class components in [#445](https://github.com/grafana/iot-sitewise-datasource/pull/445)
+- chore(deps): bump the all-go-dependencies group with 2 updates in [#447](https://github.com/grafana/iot-sitewise-datasource/pull/447)
+- Chore: add label to external contributions in [#408](https://github.com/grafana/iot-sitewise-datasource/pull/408)
+- chore(deps): bump the all-node-dependencies group across 1 directory with 14 updates in [#452](https://github.com/grafana/iot-sitewise-datasource/pull/452)
+- fix: client cache switch should control the correct query in [#449](https://github.com/grafana/iot-sitewise-datasource/pull/449)
+- fix: client cache should respect variable changes in [#456](https://github.com/grafana/iot-sitewise-datasource/pull/456)
+- chore: grafana instance version support warning in [#457](https://github.com/grafana/iot-sitewise-datasource/pull/457)
+
 ## 2.1.0
 
 - chore refactor metadata inspector in [#442](https://github.com/grafana/iot-sitewise-datasource/pull/442)
