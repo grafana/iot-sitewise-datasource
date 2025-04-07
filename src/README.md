@@ -36,6 +36,37 @@ Multiple aggregations can be shown for a single property:
 
 ![query-editor](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/editor2.png)
 
+### Query code editor
+
+You can run [IoT SiteWise query language](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/sql.html) queries in the code editor:
+![raw-query-editor](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/editor-switch.png)
+
+The query editor supports the following macros:
+
+* $__selectAll - Shortcut to select available fields in the current table: `select $__selectAll from raw_time_series`
+* $__timeFrom - Lower limit of the time range as a timestamp: `select $__selectAll from latest_value_time_series where event_timestamp > $__timeFrom`
+* $__timeTo - Upper limit of the time range as a timestamp: `select $__selectAll from raw_time_series where event_timestamp <= $__timeTo`
+* $__timeFilter(column) - Filter the specified field according to the time range: `select $__selectAll from raw_time_series where $__timeFilter(event_timestamp)`
+* $__autoResolution - Shortcut to the applicable aggregate resolution based on the panel interval: `select $__selectAll from precomputed_aggregates where $__timeFilter(event_timestamp) and resolution = '$__autoResolution'`
+
+#### Example queries
+
+The queries below provide a simple introduction to the [IoT SiteWise query language](https://docs.aws.amazon.com/iot-sitewise/latest/userguide/sql.html). See the linked documentation for more details.
+
+**Retrieve all raw events**
+
+```sql
+select $__selectAll from raw_time_series where $__timeFilter(event_timestamp)
+```
+
+**Retrieve asset and property name along with raw events**
+
+```sql
+select r.event_timestamp, a.asset_name, p.property_name, r.double_value
+from asset a, asset_property p, raw_time_series r
+where $__timeFilter(event_timestamp)
+```
+
 ## Alerting
 
 Standard grafana alerting is support with this plugin, however note that alert queries may not include template variables.
