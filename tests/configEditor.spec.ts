@@ -17,18 +17,8 @@ test.describe('ConfigEditor', () => {
     await page.getByLabel('Secret Access Key').fill('very-bad-credentials');
     await page.getByRole('combobox', { name: 'Default Region' }).click();
     await configPage.getByGrafanaSelector(selectors.components.Select.option).getByText('us-east-1').click();
-
-    // click save and test
-    const response = await configPage.saveAndTest();
-
-    // expect network response have error
-    const body = await response.json();
-    expect(body).toHaveProperty('status', 'ERROR');
-    expect(body.message).toContain('invalid');
-
-    // expect error to be shown in the UI
-    const errorMessage = page.getByText('The security token included in the request is invalid');
-    expect(errorMessage).toBeVisible();
+    await expect(configPage.saveAndTest()).not.toBeOK();
+    await expect(configPage).toHaveAlert('error', { hasText: 'The security token included in the request is invalid' });
   });
 
   test('valid credentials should return a 200 status code', async ({
@@ -49,17 +39,7 @@ test.describe('ConfigEditor', () => {
     await page.getByLabel('Secret Access Key').fill(secretKey);
     await page.getByRole('combobox', { name: 'Default Region' }).click();
     await configPage.getByGrafanaSelector(selectors.components.Select.option).getByText('us-east-1').click();
-
-    // click save and test
-    const response = await configPage.saveAndTest();
-
-    // expect network response have success message
-    const body = await response.json();
-    expect(body).toHaveProperty('status', 'OK');
-
-    // expect success message to be shown in the UI
-    const successMessage = page.getByText('OK');
-    expect(successMessage).toBeVisible();
+    await expect(configPage.saveAndTest()).toBeOK();
   });
 });
 
