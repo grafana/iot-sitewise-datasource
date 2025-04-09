@@ -4,7 +4,8 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 
-	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go-v2/aws"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
@@ -50,7 +51,7 @@ func GetEntryId(query models.BaseQuery) *string {
 	return GetEntryIdFromAssetProperty(*assetId, *propertyId)
 }
 
-// API constraint: EntryId cannot be more than 64 characters long, so we're encoding it
+// EncodeEntryId handles the API constraint that EntryId cannot be more than 64 characters long
 func EncodeEntryId(input string) string {
 	hash := sha256.Sum256([]byte(input))
 	return hex.EncodeToString(hash[:])

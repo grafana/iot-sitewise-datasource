@@ -1,7 +1,9 @@
 package fields
 
 import (
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
@@ -95,7 +97,7 @@ func PropertyValueFieldNamed(name string, property *iotsitewise.DescribeAssetPro
 	return valueField
 }
 
-func DatumField(length int, col iotsitewise.ColumnInfo) *data.Field {
+func DatumField(length int, col iotsitewisetypes.ColumnInfo) *data.Field {
 	return NewFieldWithName(*col.Name, FieldTypeForQueryResult(col), length)
 }
 

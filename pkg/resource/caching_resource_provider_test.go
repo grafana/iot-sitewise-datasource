@@ -6,6 +6,7 @@ import (
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
 	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
+
 	"github.com/patrickmn/go-cache"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -15,8 +16,8 @@ func tdpath(filename string) string {
 	return "../testdata/" + filename
 }
 
-func setupMocks() (*mocks.SitewiseClient, *cachingResourceProvider) {
-	client := &mocks.SitewiseClient{}
+func setupMocks() (*mocks.SitewiseAPIClient, *cachingResourceProvider) {
+	client := &mocks.SitewiseAPIClient{}
 	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
 	return client, NewCachingResourceProvider(&SitewiseResources{client}, c)
 }
@@ -30,13 +31,13 @@ func testGetProperty(t *testing.T) {
 
 	mockSw, cachingProvider := setupMocks()
 	property := testdata.GetIotSitewiseAssetProp(t, tdpath("describe-asset-property-avg-wind.json"))
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything, mock.Anything).Return(&property, nil)
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything, mock.Anything).Return(&property, nil)
 
 	prop1, err := cachingProvider.Property(context.Background(), mock.Anything, mock.Anything, mock.Anything)
 	assert.NoError(t, err)
 
 	newProp := testdata.GetIotSitewiseAssetProp(t, tdpath("describe-asset-property-raw-wind.json"))
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything, mock.Anything).Return(&newProp, nil)
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything, mock.Anything).Return(&newProp, nil)
 	prop2, err := cachingProvider.Property(context.Background(), mock.Anything, mock.Anything, mock.Anything)
 	assert.NoError(t, err)
 
@@ -47,13 +48,13 @@ func testGetProperty(t *testing.T) {
 func testGetAsset(t *testing.T) {
 	mockSw, cachingProvider := setupMocks()
 	asset := testdata.GetIoTSitewiseAssetDescription(t, tdpath("describe-asset.json"))
-	mockSw.On("DescribeAssetWithContext", mock.Anything, mock.Anything, mock.Anything).Return(&asset, nil)
+	mockSw.On("DescribeAsset", mock.Anything, mock.Anything, mock.Anything).Return(&asset, nil)
 
 	asset1, err := cachingProvider.Asset(context.Background(), mock.Anything)
 	assert.NoError(t, err)
 
 	newAsset := testdata.GetIoTSitewiseAssetDescription(t, tdpath("describe-asset-top-level.json"))
-	mockSw.On("DescribeAssetWithContext", mock.Anything, mock.Anything, mock.Anything).Return(&newAsset, nil)
+	mockSw.On("DescribeAsset", mock.Anything, mock.Anything, mock.Anything).Return(&newAsset, nil)
 	asset2, err := cachingProvider.Asset(context.Background(), mock.Anything)
 	assert.NoError(t, err)
 
