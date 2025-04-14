@@ -9,7 +9,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.29.9
 	github.com/aws/aws-sdk-go-v2/service/iotsitewise v1.47.0
 	github.com/google/go-cmp v0.7.0
-	github.com/grafana/grafana-aws-sdk v0.36.0
+	github.com/grafana/grafana-aws-sdk v0.37.0
 	github.com/grafana/grafana-plugin-sdk-go v0.274.0
 	github.com/magefile/mage v1.15.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
