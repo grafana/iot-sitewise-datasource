@@ -3,7 +3,7 @@ package framer
 import (
 	"context"
 
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
@@ -62,7 +62,7 @@ func (a AssetDescription) Frames(_ context.Context, _ resource.ResourceProvider)
 	assetFields.ModelId.Set(0, *a.AssetModelId)
 	assetFields.CreationDate.Set(0, *a.AssetCreationDate)
 	assetFields.LastUpdate.Set(0, *a.AssetLastUpdateDate)
-	assetFields.StatusState.Set(0, *a.AssetStatus.State)
+	assetFields.StatusState.Set(0, string(a.AssetStatus.State))
 
 	if a.AssetStatus.Error != nil {
 		statusErr, err := getErrorDescription(a.AssetStatus.Error)

@@ -15,7 +15,7 @@
 //  +-------------------+----------------------------+----------------+
 //  | Name: time        | Name: /amazon/renton/1/rpm | Name: quality  |
 //  | Labels:           | Labels:                    | Labels:        |
-//  | Type: []time.Time | Type: []string             | Type: []string |
+//  | Type: []time.Time | Type: []float64            | Type: []string |
 //  +-------------------+----------------------------+----------------+
 //  +-------------------+----------------------------+----------------+
 //  
@@ -46,9 +46,9 @@
           },
           {
             "name": "/amazon/renton/1/rpm",
-            "type": "string",
+            "type": "number",
             "typeInfo": {
-              "frame": "string"
+              "frame": "float64"
             },
             "config": {}
           },
