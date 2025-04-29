@@ -4,7 +4,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   resolve-versions:
@@ -16,12 +15,14 @@ jobs:
     steps:
       - name: Resolve Grafana E2E versions
         id: resolve-versions
-        uses: grafana/plugin-actions/e2e-version@main
+        uses: grafana/plugin-actions/e2e-version@c233e9f6752186a9b256a2a451ec3067fbf712c2 # main
         with:
           version-resolver-type: version-support-policy
 
   playwright-tests:
     needs: resolve-versions
+    permissions:
+      id-token: write
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -31,7 +32,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
+        with: 
+          persist-credentials: false
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
@@ -39,7 +41,7 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Install Mage
-        uses: magefile/mage-action@v3
+        uses: magefile/mage-action@6f50bbb8ea47d56e62dee92392788acbc8192d0b # v3.1.0
         with:
           install-only: true
 
@@ -61,16 +63,11 @@ jobs:
           GRAFANA_VERSION=${{ matrix.GRAFANA_IMAGE.VERSION }} GRAFANA_IMAGE=${{ matrix.GRAFANA_IMAGE.NAME }} docker compose up -d
 
       - name: Wait for Grafana to start
-        uses: nev7n/wait_for_response@v1
-        with:
-          url: 'http://localhost:3000/'
-          responseCode: 200
-          timeout: 60000
-          interval: 500
+        uses: grafana/plugin-actions/wait-for-grafana@c233e9f6752186a9b256a2a451ec3067fbf712c2 # main
 
       - name: Get secrets for e2e tests and set in env
         id: get-secrets
-        uses: grafana/shared-workflows/actions/get-vault-secrets@main
+        uses: grafana/shared-workflows/actions/get-vault-secrets@fa48192dac470ae356b3f7007229f3ac28c48a25 # main
         with:
           repo_secrets: |
             AWS_ACCESS_KEY=e2e:AWS_ACCESS_KEY

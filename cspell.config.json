@@ -89,6 +89,7 @@
     "viant",
     "unmarshalling",
     "assetid",
-    "propid"
+    "propid",
+    "compatibilitycheck"
   ]
 }
