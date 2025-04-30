@@ -63,11 +63,11 @@ jobs:
           GRAFANA_VERSION=${{ matrix.GRAFANA_IMAGE.VERSION }} GRAFANA_IMAGE=${{ matrix.GRAFANA_IMAGE.NAME }} docker compose up -d
 
       - name: Wait for Grafana to start
-        uses: grafana/plugin-actions/wait-for-grafana@c233e9f6752186a9b256a2a451ec3067fbf712c2 # main
+        uses: grafana/plugin-actions/wait-for-grafana@main
 
       - name: Get secrets for e2e tests and set in env
         id: get-secrets
-        uses: grafana/shared-workflows/actions/get-vault-secrets@fa48192dac470ae356b3f7007229f3ac28c48a25 # main
+        uses: grafana/shared-workflows/actions/get-vault-secrets@main
         with:
           repo_secrets: |
             AWS_ACCESS_KEY=e2e:AWS_ACCESS_KEY
