@@ -1,7 +1,8 @@
 package fields
 
 import (
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
@@ -11,51 +12,43 @@ func FieldTypeForPropertyValue(property *iotsitewise.DescribeAssetPropertyOutput
 	dataType := util.GetPropertyDataType(property)
 
 	switch dataType {
-	case "BOOLEAN":
+	case types.PropertyDataTypeBoolean:
 		return data.FieldTypeBool
-	case "INTEGER":
+	case types.PropertyDataTypeInteger:
 		return data.FieldTypeInt64
-	case "INT":
-		return data.FieldTypeInt64
-	case "STRING":
+	case types.PropertyDataTypeString:
 		return data.FieldTypeString
-	case "STRUCT":
+	case types.PropertyDataTypeStruct:
 		return data.FieldTypeString
-	case "DOUBLE":
-		return data.FieldTypeFloat64
-	case "TIMESTAMP":
-		return data.FieldTypeTime
 	default:
-		return data.FieldTypeString
+		return data.FieldTypeFloat64
 	}
 }
 
-func FieldTypeForQueryResult(column iotsitewise.ColumnInfo) data.FieldType {
+func FieldTypeForQueryResult(column types.ColumnInfo) data.FieldType {
 	// Override the type for event_timestamp
 	if *column.Name == "event_timestamp" {
 		return data.FieldTypeTime
 	}
 
-	switch *column.Type.ScalarType {
-	case "BOOLEAN":
+	switch column.Type.ScalarType {
+	case types.ScalarTypeBoolean:
 		return data.FieldTypeBool
-	case "INTEGER":
+	case types.ScalarTypeInt:
 		return data.FieldTypeInt64
-	case "INT":
-		return data.FieldTypeInt64
-	case "STRING":
+	case types.ScalarTypeString:
 		return data.FieldTypeString
-	case "DOUBLE":
+	case types.ScalarTypeDouble:
 		return data.FieldTypeFloat64
-	case "TIMESTAMP":
+	case types.ScalarTypeTimestamp:
 		return data.FieldTypeTime
 	default:
-		backend.Logger.Debug("Unknown scalar type", "type", *column.Type.ScalarType)
+		backend.Logger.Debug("Unknown scalar type", "type", column.Type.ScalarType)
 		return data.FieldTypeString
 	}
 }
 
-// Map values from ???:
+// ToGrafanaUnit maps values from ???:
 //
 //	https://docs.microsoft.com/en-us/rest/api/monitor/metrics/list#unit
 //

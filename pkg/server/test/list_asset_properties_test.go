@@ -16,11 +16,11 @@ func TestHandleListAssetProperties(t *testing.T) {
 }
 
 var listAssetPropertiesHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 
 	assetProperties := testdata.GetIoTSitewiseAssetProperties(t, testDataRelativePath("list-asset-properties.json"))
 
-	mockSw.On("ListAssetPropertiesWithContext", mock.Anything, mock.Anything).Return(&assetProperties, nil)
+	mockSw.On("ListAssetProperties", mock.Anything, mock.Anything).Return(&assetProperties, nil)
 
 	query := models.ListAssetPropertiesQuery{
 		BaseQuery: models.BaseQuery{AssetId: "123"},

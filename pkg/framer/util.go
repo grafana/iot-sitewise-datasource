@@ -5,26 +5,31 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
-func getTime(ts *iotsitewise.TimeInNanos) time.Time {
+func getTime(ts *iotsitewisetypes.TimeInNanos) time.Time {
 	sec := *ts.TimeInSeconds
 
 	if nanos := ts.OffsetInNanos; nanos != nil {
-		return time.Unix(sec, *nanos)
+		return time.Unix(sec, int64(*nanos))
 	}
 
 	return time.Unix(sec, 0)
 }
 
-func isPropertyDataTypeDefined(dataType string) bool {
-	return dataType == "BOOLEAN" || dataType == "DOUBLE" || dataType == "INTEGER" || dataType == "STRING"
+func isPropertyDataTypeDefined(dataType iotsitewisetypes.PropertyDataType) bool {
+	return dataType == iotsitewisetypes.PropertyDataTypeBoolean ||
+		dataType == iotsitewisetypes.PropertyDataTypeDouble ||
+		dataType == iotsitewisetypes.PropertyDataTypeInteger ||
+		dataType == iotsitewisetypes.PropertyDataTypeString
 }
 
-func getPropertyVariantValue(variant *iotsitewise.Variant) interface{} {
+func getPropertyVariantValue(variant *iotsitewisetypes.Variant) interface{} {
 
 	if val := variant.BooleanValue; val != nil {
 		return *val
@@ -35,7 +40,7 @@ func getPropertyVariantValue(variant *iotsitewise.Variant) interface{} {
 	}
 
 	if val := variant.IntegerValue; val != nil {
-		return *val
+		return int64(*val)
 	}
 
 	if val := variant.StringValue; val != nil {
@@ -45,28 +50,28 @@ func getPropertyVariantValue(variant *iotsitewise.Variant) interface{} {
 	return nil
 }
 
-func getPropertyVariantValueType(variant *iotsitewise.Variant) string {
+func getPropertyVariantValueType(variant *iotsitewisetypes.Variant) iotsitewisetypes.PropertyDataType {
 
 	if val := variant.BooleanValue; val != nil {
-		return "BOOLEAN"
+		return iotsitewisetypes.PropertyDataTypeBoolean
 	}
 
 	if val := variant.DoubleValue; val != nil {
-		return "DOUBLE"
+		return iotsitewisetypes.PropertyDataTypeDouble
 	}
 
 	if val := variant.IntegerValue; val != nil {
-		return "INTEGER"
+		return iotsitewisetypes.PropertyDataTypeInteger
 	}
 
 	if val := variant.StringValue; val != nil {
-		return "STRING"
+		return iotsitewisetypes.PropertyDataTypeString
 	}
 
 	return ""
 }
 
-func getErrorDescription(details *iotsitewise.ErrorDetails) (*string, error) {
+func getErrorDescription(details *iotsitewisetypes.ErrorDetails) (*string, error) {
 
 	if details == nil {
 		return nil, nil
@@ -76,7 +81,7 @@ func getErrorDescription(details *iotsitewise.ErrorDetails) (*string, error) {
 	if err != nil {
 		return nil, err
 	}
-	return aws.String(string(jb)), nil
+	return aws.String(jb), nil
 }
 
 func serialize(item interface{}) (string, error) {

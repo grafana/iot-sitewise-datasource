@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
@@ -51,7 +53,7 @@ func (s *Server) lastObservation(h handler) handler {
 				continue
 			}
 
-			lastValueRes, err := s.lastValueQuery(ctx, query, "DESCENDING")
+			lastValueRes, err := s.lastValueQuery(ctx, query, iotsitewisetypes.TimeOrderingDescending)
 			if err != nil {
 				log.DefaultLogger.Debug("failed to fetch last observation", "error", err)
 			}
@@ -59,7 +61,7 @@ func (s *Server) lastObservation(h handler) handler {
 				resp.Responses[refID] = mergeLastValueResponse(r, lastValueRes)
 			}
 
-			nextValueRes, err := s.lastValueQuery(ctx, query, "ASCENDING")
+			nextValueRes, err := s.lastValueQuery(ctx, query, iotsitewisetypes.TimeOrderingAscending)
 			if err != nil {
 				log.DefaultLogger.Debug("failed to fetch next observation", "error", err)
 			}
@@ -72,12 +74,12 @@ func (s *Server) lastObservation(h handler) handler {
 	}
 }
 
-func (s *Server) lastValueQuery(ctx context.Context, query backend.DataQuery, timeOrdering string) (backend.DataResponse, error) {
+func (s *Server) lastValueQuery(ctx context.Context, query backend.DataQuery, timeOrdering iotsitewisetypes.TimeOrdering) (backend.DataResponse, error) {
 	query.MaxDataPoints = 1
-	if timeOrdering == "DESCENDING" {
+	if timeOrdering == iotsitewisetypes.TimeOrderingDescending {
 		query.TimeRange.To = query.TimeRange.From.Add(-1 * time.Second)
 		query.TimeRange.From = query.TimeRange.From.Add(-8760 * time.Hour) // 1 year ago
-	} else if timeOrdering == "ASCENDING" {
+	} else if timeOrdering == iotsitewisetypes.TimeOrderingAscending {
 		query.TimeRange.From = query.TimeRange.To.Add(time.Second)
 		query.TimeRange.To = time.Now()
 	}
