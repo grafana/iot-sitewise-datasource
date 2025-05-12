@@ -3,11 +3,14 @@ package sitewise
 import (
 	"context"
 	"fmt"
+
 	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 
+	"github.com/aws/smithy-go/middleware"
+	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"github.com/grafana/grafana-aws-sdk/pkg/awsauth"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
@@ -28,6 +31,21 @@ type Datasource struct {
 	cfg               models.AWSSiteWiseDataSourceSetting
 	edgeAuthenticator *EdgeAuthenticator
 	GetClient         clientGetterFunc
+}
+
+type disableHostPrefixMiddleware struct{}
+
+func (m *disableHostPrefixMiddleware) ID() string {
+	return "DisableHostPrefixMiddleware"
+}
+
+func (m *disableHostPrefixMiddleware) HandleInitialize(
+	ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler,
+) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	ctx = smithyhttp.SetHostnameImmutable(ctx, true)
+	return next.HandleInitialize(ctx, in)
 }
 
 func NewDatasource(_ context.Context, settings backend.DataSourceInstanceSettings) (*Datasource, error) {
@@ -91,6 +109,7 @@ func (ds *Datasource) getClient(ctx context.Context, region string) (client.Site
 		LegacyAuthType:     ds.cfg.AuthType,
 		AccessKey:          ds.cfg.AccessKey,
 		SecretKey:          ds.cfg.SecretKey,
+		SessionToken:       ds.cfg.SessionToken,
 		Region:             region,
 		CredentialsProfile: ds.cfg.Profile,
 		AssumeRoleARN:      ds.cfg.AssumeRoleARN,
@@ -104,7 +123,13 @@ func (ds *Datasource) getClient(ctx context.Context, region string) (client.Site
 		return nil, err
 	}
 
-	return &client.SitewiseClient{Client: iotsitewise.NewFromConfig(awsCfg)}, nil
+	return &client.SitewiseClient{Client: iotsitewise.NewFromConfig(awsCfg, func(o *iotsitewise.Options) {
+		if ds.cfg.Region == models.EDGE_REGION {
+			o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
+				return stack.Initialize.Add(&disableHostPrefixMiddleware{}, middleware.Before)
+			})
+		}
+	})}, nil
 }
 
 func (ds *Datasource) invoke(ctx context.Context, _ *backend.QueryDataRequest, baseQuery *models.BaseQuery, invoker invokerFunc) (data.Frames, error) {
@@ -123,7 +148,7 @@ func (ds *Datasource) invoke(ctx context.Context, _ *backend.QueryDataRequest, b
 
 func (ds *Datasource) HealthCheck(ctx context.Context, req *backend.CheckHealthRequest) error {
 
-	sw, err := ds.getClient(ctx, "") // Default region
+	sw, err := ds.getClient(ctx, ds.cfg.Region)
 	if err != nil {
 		return errors.Wrap(err, "unable to load settings")
 	}
@@ -134,7 +159,7 @@ func (ds *Datasource) HealthCheck(ctx context.Context, req *backend.CheckHealthR
 }
 
 func (ds *Datasource) HandleInterpolatedPropertyValueQuery(ctx context.Context, _ *backend.QueryDataRequest, query *models.AssetPropertyValueQuery) (data.Frames, error) {
-	sw, err := ds.GetClient(ctx, query.BaseQuery.AwsRegion)
+	sw, err := ds.getClient(ctx, query.BaseQuery.AwsRegion)
 	if err != nil {
 		return nil, err
 	}
