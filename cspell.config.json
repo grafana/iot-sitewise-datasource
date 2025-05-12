@@ -93,6 +93,7 @@
     "awsconfig",
     "awsauth",
     "httpclient",
-    "propid"
+    "propid",
+    "smithyhttp"
   ]
 }
