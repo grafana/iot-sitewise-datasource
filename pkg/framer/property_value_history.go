@@ -44,7 +44,7 @@ func (p AssetPropertyValueHistory) Frames(ctx context.Context, resources resourc
 		if v.Value != nil && getPropertyVariantValue(v.Value) != nil {
 			timeField.Set(i, getTime(v.Timestamp))
 			valueField.Set(i, getPropertyVariantValue(v.Value))
-			qualityField.Set(i, v.Quality)
+			qualityField.Set(i, string(v.Quality))
 		}
 	}
 

@@ -6,6 +6,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.36.3
 	github.com/aws/aws-sdk-go-v2/config v1.29.14
 	github.com/aws/aws-sdk-go-v2/service/iotsitewise v1.47.0
+	github.com/aws/smithy-go v1.22.3
 	github.com/google/go-cmp v0.7.0
 	github.com/grafana/grafana-aws-sdk v0.38.3
 	github.com/grafana/grafana-plugin-sdk-go v0.277.1
@@ -29,7 +30,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sso v1.25.3 // indirect
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.30.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.33.19 // indirect
-	github.com/aws/smithy-go v1.22.3 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/grafana/dataplane/sdata v0.0.9 // indirect
 	github.com/grafana/otel-profiling-go v0.5.1 // indirect

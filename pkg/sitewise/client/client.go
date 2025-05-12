@@ -299,8 +299,5 @@ func GetHTTPClient(settings models.AWSSiteWiseDataSourceSetting) (*http.Client, 
 		},
 	}
 
-	// TODO: figure out how to replace this with smithy's version
-	// https://pkg.go.dev/github.com/aws/smithy-go/transport/http#DisableEndpointHostPrefix
-	//swcfg = swcfg.WithDisableEndpointHostPrefix(true)
 	return &http.Client{Transport: tr}, nil
 }
