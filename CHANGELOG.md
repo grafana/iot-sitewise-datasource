@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.2.1
+
+- chore(deps): bump the all-go-dependencies group with 2 updates in [#478](https://github.com/grafana/iot-sitewise-datasource/pull/478)
+- chore(deps): bump the all-node-dependencies group across 1 directory with 30 updates in [#477](https://github.com/grafana/iot-sitewise-datasource/pull/477)
+- chore(deps): bump the all-go-dependencies group across 1 directory with 4 updates in [#470](https://github.com/grafana/iot-sitewise-datasource/pull/470)
+- Chore: Update github workflows and add zizmor in [#472](https://github.com/grafana/iot-sitewise-datasource/pull/472)
+- add vault tokens and zizmor config in [#475](https://github.com/grafana/iot-sitewise-datasource/pull/475)
+- e2e: use @grafana/plugin-e2e api to check config success in [#466](https://github.com/grafana/iot-sitewise-datasource/pull/466)
+
 ## 2.2.0
 
 - Add support for listing associated assets for multiple assets in [#439](https://github.com/grafana/iot-sitewise-datasource/pull/439)
