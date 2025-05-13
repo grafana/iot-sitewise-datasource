@@ -231,11 +231,9 @@ describe('VisualQueryBuilder', () => {
       }
     );
 
-    await waitFor(() => {
-      expect(screen.getAllByRole('button', { name: 'select-clear-value' })[1]).toBeInTheDocument();
-    });
-
-    await userEvent.click(screen.getAllByRole('button', { name: 'select-clear-value' })[1]);
+    const clearButton = (await screen.findAllByRole('button', { name: 'Clear value' }))[1];
+    expect(clearButton).toBeInTheDocument();
+    await userEvent.click(clearButton);
 
     expect(onChange).toHaveBeenLastCalledWith(
       expect.objectContaining({
@@ -260,11 +258,9 @@ describe('VisualQueryBuilder', () => {
       }
     );
 
-    await waitFor(() => {
-      expect(screen.getAllByRole('button', { name: 'select-clear-value' })[1]).toBeInTheDocument();
-    });
-
-    await userEvent.click(screen.getAllByRole('button', { name: 'select-clear-value' })[1]);
+    const clearButton = (await screen.findAllByRole('button', { name: 'Clear value' }))[1];
+    expect(clearButton).toBeInTheDocument();
+    await userEvent.click(clearButton);
 
     expect(onChange).toHaveBeenLastCalledWith(
       expect.objectContaining({
