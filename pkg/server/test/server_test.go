@@ -30,7 +30,7 @@ type testServerScenarioFn func(t *testing.T) *testScenario
 type testScenario struct {
 	name           string
 	queries        []backend.DataQuery
-	mockSw         *mocks.SitewiseClient
+	mockSw         *mocks.SitewiseAPIClient
 	goldenFileName string
 	handlerFn      func(srvr *server.Server) backend.QueryDataHandlerFunc
 	validationFn   func(t *testing.T, dr *backend.QueryDataResponse)
@@ -46,11 +46,12 @@ func testDataRelativePath(filename string) string {
 	return "../../testdata/" + filename
 }
 
-func mockedDatasource(swmock *mocks.SitewiseClient) server.Datasource {
+func mockedDatasource(swmock *mocks.SitewiseAPIClient) server.Datasource {
+	// FIXME: GetClient isn't called
+	// FIXME: need a way to add EdgeAuthenticator
 	return &sitewise.Datasource{
-		GetClient: func(region string) (client client.SitewiseClient, err error) {
-			client = swmock
-			return
+		GetClient: func(_ context.Context, _ string) (client.SitewiseAPIClient, error) {
+			return swmock, nil
 		},
 	}
 }

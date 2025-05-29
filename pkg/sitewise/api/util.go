@@ -4,8 +4,9 @@ import (
 	"context"
 	"math"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
@@ -16,7 +17,7 @@ const (
 )
 
 var (
-	MaxSitewiseResults = aws.Int64(250)
+	MaxSitewiseResults = aws.Int32(250)
 )
 
 func getNextToken(query models.BaseQuery) *string {
@@ -43,14 +44,14 @@ func getNextToken(query models.BaseQuery) *string {
 	}
 }
 
-func getAssetIdAndPropertyId(query models.AssetPropertyValueQuery, client client.SitewiseClient, ctx context.Context) (models.AssetPropertyValueQuery, error) {
+func getAssetIdAndPropertyId(query models.AssetPropertyValueQuery, client client.SitewiseAPIClient, ctx context.Context) (models.AssetPropertyValueQuery, error) {
 	result := query
 	result.AssetPropertyEntries = []models.AssetPropertyEntry{}
 	// There should only be a list of property aliases OR lists for assetIds and propertyIds
 	// Look up the assetId and propertyId for a property alias
 	if len(query.PropertyAliases) > 0 {
 		for _, propertyAlias := range query.PropertyAliases {
-			resp, err := client.DescribeTimeSeriesWithContext(ctx, &iotsitewise.DescribeTimeSeriesInput{
+			resp, err := client.DescribeTimeSeries(ctx, &iotsitewise.DescribeTimeSeriesInput{
 				Alias: aws.String(propertyAlias),
 			})
 			if err != nil {
@@ -103,7 +104,7 @@ func getFirstPropertyAlias(query models.BaseQuery) *string {
 	return aws.String(query.PropertyAliases[0])
 }
 
-func filterAnomalyAssetIds(ctx context.Context, client client.SitewiseClient, query models.AssetPropertyValueQuery) ([]string, error) {
+func filterAnomalyAssetIds(ctx context.Context, client client.SitewiseAPIClient, query models.AssetPropertyValueQuery) ([]string, error) {
 	anomalyAssetIds := []string{}
 
 	switch {
@@ -123,7 +124,7 @@ func filterAnomalyAssetIds(ctx context.Context, client client.SitewiseClient, qu
 					PropertyId: aws.String(propertyId),
 				}
 
-				resp, err := client.DescribeAssetPropertyWithContext(ctx, req)
+				resp, err := client.DescribeAssetProperty(ctx, req)
 				if err != nil {
 					return nil, err
 				}

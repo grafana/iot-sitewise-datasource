@@ -3,7 +3,7 @@ package resource
 import (
 	"context"
 
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 )
 
 // ResourceProvider is SiteWise domain specific an interface which returns asset/property/model descriptions

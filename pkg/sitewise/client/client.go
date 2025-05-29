@@ -1,4 +1,4 @@
-//go:generate mockery --name SitewiseClient
+//go:generate mockery --name SitewiseAPIClient
 
 package client
 
@@ -12,61 +12,77 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/request"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
-	"github.com/aws/aws-sdk-go/service/iotsitewise/iotsitewiseiface"
-	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
-type SitewiseClient interface {
-	iotsitewiseiface.IoTSiteWiseAPI
+type DescribeAssetPropertyAPIClient interface {
+	DescribeAssetProperty(ctx context.Context, params *iotsitewise.DescribeAssetPropertyInput, optFns ...func(*iotsitewise.Options)) (*iotsitewise.DescribeAssetPropertyOutput, error)
+}
+type DescribeTimeseriesAPIClient interface {
+	DescribeTimeSeries(ctx context.Context, params *iotsitewise.DescribeTimeSeriesInput, optFns ...func(*iotsitewise.Options)) (*iotsitewise.DescribeTimeSeriesOutput, error)
+}
+type GetAssetPropertyValueAPIClient interface {
+	GetAssetPropertyValue(ctx context.Context, params *iotsitewise.GetAssetPropertyValueInput, optFns ...func(*iotsitewise.Options)) (*iotsitewise.GetAssetPropertyValueOutput, error)
+}
+
+type SitewiseAPIClient interface {
+	iotsitewise.BatchGetAssetPropertyAggregatesAPIClient
+	iotsitewise.BatchGetAssetPropertyValueAPIClient
+	iotsitewise.BatchGetAssetPropertyValueHistoryAPIClient
+	iotsitewise.DescribeAssetAPIClient
+	iotsitewise.DescribeAssetModelAPIClient
+	iotsitewise.ExecuteQueryAPIClient
+	iotsitewise.GetAssetPropertyAggregatesAPIClient
+	iotsitewise.GetAssetPropertyValueHistoryAPIClient
+	iotsitewise.GetInterpolatedAssetPropertyValuesAPIClient
+	iotsitewise.ListAssetsAPIClient
+	iotsitewise.ListAssetModelsAPIClient
+	iotsitewise.ListAssetPropertiesAPIClient
+	iotsitewise.ListAssociatedAssetsAPIClient
+	iotsitewise.ListTimeSeriesAPIClient
+
+	DescribeAssetPropertyAPIClient
+	DescribeTimeseriesAPIClient
+	GetAssetPropertyValueAPIClient
+
+	BatchGetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyValueHistoryOutput, error)
 	GetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyValueHistoryOutput, error)
 	GetAssetPropertyAggregatesPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyAggregatesInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyAggregatesOutput, error)
-	BatchGetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyValueHistoryOutput, error)
 	BatchGetAssetPropertyAggregatesPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyAggregatesInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyAggregatesOutput, error)
 	GetInterpolatedAssetPropertyValuesPageAggregation(ctx context.Context, req *iotsitewise.GetInterpolatedAssetPropertyValuesInput, maxPages int, maxResults int) (*iotsitewise.GetInterpolatedAssetPropertyValuesOutput, error)
 }
 
-type ListAssetPropertiesClient interface {
-	ListAssetPropertiesWithContext(aws.Context, *iotsitewise.ListAssetPropertiesInput, ...request.Option) (*iotsitewise.ListAssetPropertiesOutput, error)
+type SitewiseClient struct {
+	*iotsitewise.Client
 }
 
-type ExecuteQueryClient interface {
-	ExecuteQueryWithContext(aws.Context, *iotsitewise.ExecuteQueryInput, ...request.Option) (*iotsitewise.ExecuteQueryOutput, error)
+// NewSitewiseClientForRegion is mainly for testing in this case
+// TODO: move this into one of the test files
+func NewSitewiseClientForRegion(region string) SitewiseAPIClient {
+	cfg, _ := awsconfig.LoadDefaultConfig(context.TODO(), awsconfig.WithRegion(region))
+	return &SitewiseClient{Client: iotsitewise.NewFromConfig(cfg)}
 }
 
-type sitewiseClient struct {
-	iotsitewiseiface.IoTSiteWiseAPI
-}
-
-// NewSitewiseClient is mainly for testing in this case
-func NewSitewiseClientForRegion(region string) SitewiseClient {
-	sesh := session.Must(session.NewSession())
-	sw := iotsitewise.New(sesh, aws.NewConfig().WithRegion(region))
-	return &sitewiseClient{
-		sw,
-	}
-}
-
-func (c *sitewiseClient) GetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyValueHistoryOutput, error) {
+func (c *SitewiseClient) GetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyValueHistoryOutput, error) {
 	var (
 		numPages  = 0
-		values    []*iotsitewise.AssetPropertyValue
+		values    []iotsitewisetypes.AssetPropertyValue
 		nextToken *string
 	)
 
-	err := c.GetAssetPropertyValueHistoryPagesWithContext(ctx, req, func(output *iotsitewise.GetAssetPropertyValueHistoryOutput, b bool) bool {
-		numPages++
-		values = append(values, output.AssetPropertyValueHistory...)
-		nextToken = output.NextToken
-		return numPages < maxPages && len(values) <= maxResults
-	})
-
-	if err != nil {
-		return nil, err
+	pager := iotsitewise.NewGetAssetPropertyValueHistoryPaginator(c.Client, req)
+	for pager.HasMorePages() && numPages < maxPages && len(values) <= maxResults {
+		numPages += 1
+		page, err := pager.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
+		nextToken = page.NextToken
+		values = append(values, page.AssetPropertyValueHistory...)
 	}
 
 	return &iotsitewise.GetAssetPropertyValueHistoryOutput{
@@ -75,23 +91,28 @@ func (c *sitewiseClient) GetAssetPropertyValueHistoryPageAggregation(ctx context
 	}, nil
 }
 
-func (c *sitewiseClient) BatchGetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyValueHistoryOutput, error) {
+func (c *SitewiseClient) BatchGetAssetPropertyValueHistoryPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyValueHistoryInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyValueHistoryOutput, error) {
 	var (
 		count     = 0
 		numPages  = 0
-		success   []*iotsitewise.BatchGetAssetPropertyValueHistorySuccessEntry
-		skipped   []*iotsitewise.BatchGetAssetPropertyValueHistorySkippedEntry
-		errors    []*iotsitewise.BatchGetAssetPropertyValueHistoryErrorEntry
+		success   []iotsitewisetypes.BatchGetAssetPropertyValueHistorySuccessEntry
+		skipped   []iotsitewisetypes.BatchGetAssetPropertyValueHistorySkippedEntry
+		errs      []iotsitewisetypes.BatchGetAssetPropertyValueHistoryErrorEntry
 		nextToken *string
 	)
 
-	err := c.BatchGetAssetPropertyValueHistoryPagesWithContext(ctx, req, func(output *iotsitewise.BatchGetAssetPropertyValueHistoryOutput, b bool) bool {
-		numPages++
-		if len(output.SuccessEntries) > 0 {
-			count += len(output.SuccessEntries[0].AssetPropertyValueHistory)
+	pager := iotsitewise.NewBatchGetAssetPropertyValueHistoryPaginator(c.Client, req)
+	for pager.HasMorePages() && numPages < maxPages && count <= maxResults {
+		numPages += 1
+		page, err := pager.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if len(page.SuccessEntries) > 0 {
+			count += len(page.SuccessEntries[0].AssetPropertyValueHistory)
 		}
 		if len(success) > 0 {
-			for _, successEntry := range output.SuccessEntries {
+			for _, successEntry := range page.SuccessEntries {
 				found := false
 				for i, entry := range success {
 					if *entry.EntryId == *successEntry.EntryId {
@@ -105,42 +126,37 @@ func (c *sitewiseClient) BatchGetAssetPropertyValueHistoryPageAggregation(ctx co
 				}
 			}
 		} else {
-			success = append(success, output.SuccessEntries...)
+			success = append(success, page.SuccessEntries...)
 		}
-		skipped = append(skipped, output.SkippedEntries...)
-		errors = append(errors, output.ErrorEntries...)
-		nextToken = output.NextToken
-		return numPages < maxPages && count <= maxResults
-	})
-
-	if err != nil {
-		return nil, err
+		skipped = append(skipped, page.SkippedEntries...)
+		errs = append(errs, page.ErrorEntries...)
+		nextToken = page.NextToken
 	}
 
 	return &iotsitewise.BatchGetAssetPropertyValueHistoryOutput{
 		SuccessEntries: success,
 		SkippedEntries: skipped,
-		ErrorEntries:   errors,
+		ErrorEntries:   errs,
 		NextToken:      nextToken,
 	}, nil
 }
 
-func (c *sitewiseClient) GetInterpolatedAssetPropertyValuesPageAggregation(ctx context.Context, req *iotsitewise.GetInterpolatedAssetPropertyValuesInput, maxPages int, maxResults int) (*iotsitewise.GetInterpolatedAssetPropertyValuesOutput, error) {
+func (c *SitewiseClient) GetInterpolatedAssetPropertyValuesPageAggregation(ctx context.Context, req *iotsitewise.GetInterpolatedAssetPropertyValuesInput, maxPages int, maxResults int) (*iotsitewise.GetInterpolatedAssetPropertyValuesOutput, error) {
 	var (
 		numPages  = 0
-		values    []*iotsitewise.InterpolatedAssetPropertyValue
+		values    []iotsitewisetypes.InterpolatedAssetPropertyValue
 		nextToken *string
 	)
 
-	err := c.GetInterpolatedAssetPropertyValuesPagesWithContext(ctx, req, func(output *iotsitewise.GetInterpolatedAssetPropertyValuesOutput, b bool) bool {
-		numPages++
-		values = append(values, output.InterpolatedAssetPropertyValues...)
-		nextToken = output.NextToken
-		return numPages < maxPages
-	})
-
-	if err != nil {
-		return nil, err
+	pager := iotsitewise.NewGetInterpolatedAssetPropertyValuesPaginator(c.Client, req)
+	for pager.HasMorePages() && numPages < maxPages {
+		numPages += 1
+		page, err := pager.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
+		values = append(values, page.InterpolatedAssetPropertyValues...)
+		nextToken = page.NextToken
 	}
 
 	return &iotsitewise.GetInterpolatedAssetPropertyValuesOutput{
@@ -149,22 +165,22 @@ func (c *sitewiseClient) GetInterpolatedAssetPropertyValuesPageAggregation(ctx c
 	}, nil
 }
 
-func (c *sitewiseClient) GetAssetPropertyAggregatesPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyAggregatesInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyAggregatesOutput, error) {
+func (c *SitewiseClient) GetAssetPropertyAggregatesPageAggregation(ctx context.Context, req *iotsitewise.GetAssetPropertyAggregatesInput, maxPages int, maxResults int) (*iotsitewise.GetAssetPropertyAggregatesOutput, error) {
 	var (
 		numPages  = 0
-		values    []*iotsitewise.AggregatedValue
+		values    []iotsitewisetypes.AggregatedValue
 		nextToken *string
 	)
 
-	err := c.GetAssetPropertyAggregatesPagesWithContext(ctx, req, func(output *iotsitewise.GetAssetPropertyAggregatesOutput, b bool) bool {
-		numPages++
-		values = append(values, output.AggregatedValues...)
-		nextToken = output.NextToken
-		return numPages < maxPages && len(values) <= maxResults
-	})
-
-	if err != nil {
-		return nil, err
+	pager := iotsitewise.NewGetAssetPropertyAggregatesPaginator(c.Client, req)
+	for pager.HasMorePages() && numPages < maxPages && len(values) <= maxResults {
+		numPages += 1
+		page, err := pager.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
+		values = append(values, page.AggregatedValues...)
+		nextToken = page.NextToken
 	}
 
 	return &iotsitewise.GetAssetPropertyAggregatesOutput{
@@ -173,23 +189,28 @@ func (c *sitewiseClient) GetAssetPropertyAggregatesPageAggregation(ctx context.C
 	}, nil
 }
 
-func (c *sitewiseClient) BatchGetAssetPropertyAggregatesPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyAggregatesInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyAggregatesOutput, error) {
+func (c *SitewiseClient) BatchGetAssetPropertyAggregatesPageAggregation(ctx context.Context, req *iotsitewise.BatchGetAssetPropertyAggregatesInput, maxPages int, maxResults int) (*iotsitewise.BatchGetAssetPropertyAggregatesOutput, error) {
 
 	var (
 		count     = 0
 		numPages  = 0
-		success   []*iotsitewise.BatchGetAssetPropertyAggregatesSuccessEntry
-		skipped   []*iotsitewise.BatchGetAssetPropertyAggregatesSkippedEntry
-		errors    []*iotsitewise.BatchGetAssetPropertyAggregatesErrorEntry
+		success   []iotsitewisetypes.BatchGetAssetPropertyAggregatesSuccessEntry
+		skipped   []iotsitewisetypes.BatchGetAssetPropertyAggregatesSkippedEntry
+		errs      []iotsitewisetypes.BatchGetAssetPropertyAggregatesErrorEntry
 		nextToken *string
 	)
 
-	err := c.BatchGetAssetPropertyAggregatesPagesWithContext(ctx, req, func(output *iotsitewise.BatchGetAssetPropertyAggregatesOutput, b bool) bool {
-		if len(output.SuccessEntries) > 0 {
-			count += len(output.SuccessEntries[0].AggregatedValues)
+	pager := iotsitewise.NewBatchGetAssetPropertyAggregatesPaginator(c.Client, req)
+	for pager.HasMorePages() && numPages < maxPages && count <= maxResults {
+		page, err := pager.NextPage(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if len(page.SuccessEntries) > 0 {
+			count += len(page.SuccessEntries[0].AggregatedValues)
 		}
 		if len(success) > 0 {
-			for _, successEntry := range output.SuccessEntries {
+			for _, successEntry := range page.SuccessEntries {
 				found := false
 				for i, entry := range success {
 					if *entry.EntryId == *successEntry.EntryId {
@@ -203,107 +224,80 @@ func (c *sitewiseClient) BatchGetAssetPropertyAggregatesPageAggregation(ctx cont
 				}
 			}
 		} else {
-			success = append(success, output.SuccessEntries...)
+			success = append(success, page.SuccessEntries...)
 		}
-		skipped = append(skipped, output.SkippedEntries...)
-		errors = append(errors, output.ErrorEntries...)
-		nextToken = output.NextToken
-		return numPages < maxPages && count <= maxResults
-	})
-
-	if err != nil {
-		return nil, err
+		skipped = append(skipped, page.SkippedEntries...)
+		errs = append(errs, page.ErrorEntries...)
+		nextToken = page.NextToken
 	}
 
 	return &iotsitewise.BatchGetAssetPropertyAggregatesOutput{
 		SuccessEntries: success,
 		SkippedEntries: skipped,
-		ErrorEntries:   errors,
+		ErrorEntries:   errs,
 		NextToken:      nextToken,
 	}, nil
 }
 
-type AmazonSessionProvider func(c awsds.GetSessionConfig, as awsds.AuthSettings) (*session.Session, error)
+func GetHTTPClient(settings models.AWSSiteWiseDataSourceSetting) (*http.Client, error) {
+	if settings.Region != models.EDGE_REGION {
+		return nil, nil
+	}
 
-func GetClient(region string, settings models.AWSSiteWiseDataSourceSetting, provider AmazonSessionProvider, authSettings *awsds.AuthSettings) (client SitewiseClient, err error) {
-	awsSettings := settings.ToAWSDatasourceSettings()
-	awsSettings.Region = region
-	sess, err := provider(awsds.GetSessionConfig{Settings: awsSettings}, *authSettings)
+	pool, _ := x509.SystemCertPool()
+	if pool == nil {
+		pool = x509.NewCertPool()
+	}
+
+	if settings.Cert == "" {
+		return nil, errors.New("certificate cannot be null")
+	}
+
+	block, _ := pem.Decode([]byte(settings.Cert))
+	if block == nil || block.Type != "CERTIFICATE" || len(block.Headers) != 0 {
+		return nil, fmt.Errorf("decode certificate failed: %s", settings.Cert)
+	}
+
+	cert, err := x509.ParseCertificate(block.Bytes)
 	if err != nil {
 		return nil, err
 	}
+	pool.AddCert(cert)
 
-	swcfg := &aws.Config{}
-	if settings.Endpoint != "" {
-		swcfg.Endpoint = aws.String(settings.Endpoint)
-	}
-
-	if settings.Region == models.EDGE_REGION {
-		pool, _ := x509.SystemCertPool()
-		if pool == nil {
-			pool = x509.NewCertPool()
-		}
-
-		if settings.Cert == "" {
-			return nil, errors.New("certificate cannot be null")
-		}
-
-		block, _ := pem.Decode([]byte(settings.Cert))
-		if block == nil || block.Type != "CERTIFICATE" || len(block.Headers) != 0 {
-			return nil, fmt.Errorf("decode certificate failed: %s", settings.Cert)
-		}
-
-		cert, err := x509.ParseCertificate(block.Bytes)
-		if err != nil {
-			return nil, err
-		}
-		pool.AddCert(cert)
-
-		tr := &http.Transport{
-			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true, //Not actually skipping, check the cert in VerifyPeerCertificate
-				RootCAs:            pool,
-				VerifyPeerCertificate: func(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error {
-					// If this is the first handshake on a connection, process and
-					// (optionally) verify the server's certificates.
-					certs := make([]*x509.Certificate, len(rawCerts))
-					for i, asn1Data := range rawCerts {
-						cert, err := x509.ParseCertificate(asn1Data)
-						if err != nil {
-							return errors.New("tls: failed to parse certificate from server: " + err.Error())
-						}
-						certs[i] = cert
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: true, //Not actually skipping, check the cert in VerifyPeerCertificate
+			RootCAs:            pool,
+			VerifyPeerCertificate: func(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error {
+				// If this is the first handshake on a connection, process and
+				// (optionally) verify the server's certificates.
+				certs := make([]*x509.Certificate, len(rawCerts))
+				for i, asn1Data := range rawCerts {
+					cert, err := x509.ParseCertificate(asn1Data)
+					if err != nil {
+						return errors.New("tls: failed to parse certificate from server: " + err.Error())
 					}
+					certs[i] = cert
+				}
 
-					opts := x509.VerifyOptions{
-						Roots:         pool,
-						CurrentTime:   time.Now(),
-						DNSName:       "", // <- skip hostname verification
-						Intermediates: x509.NewCertPool(),
-					}
+				opts := x509.VerifyOptions{
+					Roots:         pool,
+					CurrentTime:   time.Now(),
+					DNSName:       "", // <- skip hostname verification
+					Intermediates: x509.NewCertPool(),
+				}
 
-					for i, cert := range certs {
-						if i == 0 {
-							continue
-						}
-						opts.Intermediates.AddCert(cert)
+				for i, cert := range certs {
+					if i == 0 {
+						continue
 					}
-					_, err := certs[0].Verify(opts)
-					return err
-				},
+					opts.Intermediates.AddCert(cert)
+				}
+				_, err := certs[0].Verify(opts)
+				return err
 			},
-		}
-		httpClient := &http.Client{Transport: tr}
-
-		swcfg = swcfg.WithHTTPClient(httpClient)
-		swcfg = swcfg.WithDisableEndpointHostPrefix(true)
-
+		},
 	}
 
-	c := iotsitewise.New(sess, swcfg)
-
-	c.Handlers.Send.PushFront(func(r *request.Request) {
-		r.HTTPRequest.Header.Set("User-Agent", awsds.GetUserAgentString("grafana-iot-sitewise-datasource"))
-	})
-	return &sitewiseClient{c}, nil
+	return &http.Client{Transport: tr}, nil
 }

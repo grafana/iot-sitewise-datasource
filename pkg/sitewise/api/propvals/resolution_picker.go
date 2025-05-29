@@ -57,20 +57,16 @@ func pagesForResolution(resolution string, timeRange backend.TimeRange, maxRespo
 }
 
 // Takes the floor of the duration - ex: duration of 10.5 minutes would load 10 data points
-func dataPointsForResolution(resolution string, timeRange backend.TimeRange) int64 {
-	return int64(durationForTimeRange(resolution, timeRange))
+func dataPointsForResolution(resolution string, timeRange backend.TimeRange) int32 {
+	return int32(durationForTimeRange(resolution, timeRange))
 }
 
 func Resolution(query models.BaseQuery) string {
-
-	timeRange := query.TimeRange
-	maxDp := query.MaxDataPoints
-
 	for _, resolution := range []string{ResolutionSecond, ResolutionMinute, ResolutionFifteenMinutes, ResolutionHour} {
-		pages := pagesForResolution(resolution, timeRange, maxHistoryResponseSize)
-		dps := dataPointsForResolution(resolution, timeRange)
+		pages := pagesForResolution(resolution, query.TimeRange, maxHistoryResponseSize)
+		dps := dataPointsForResolution(resolution, query.TimeRange)
 		// TODO: once '1s' resolution is supported, will need to add threshold for determining
-		if dps <= maxDp && pages <= maxHistoryPagesToLoad {
+		if dps <= query.MaxDataPoints && pages <= maxHistoryPagesToLoad {
 			return resolution
 		}
 	}
@@ -79,13 +75,10 @@ func Resolution(query models.BaseQuery) string {
 }
 
 func InterpolatedResolution(query models.AssetPropertyValueQuery) string {
-	timeRange := query.TimeRange
-	maxDp := query.MaxDataPoints
-
 	for _, resolution := range []string{ResolutionSecond, ResolutionTenSeconds, ResolutionMinute, ResolutionTenMinutes, ResolutionHour, ResolutionTenHours} {
-		pages := pagesForResolution(resolution, timeRange, maxInterpolatedResponseSize)
-		dps := dataPointsForResolution(resolution, timeRange)
-		if dps <= maxDp && pages <= maxInterpolatedPagesToLoad {
+		pages := pagesForResolution(resolution, query.TimeRange, maxInterpolatedResponseSize)
+		dps := dataPointsForResolution(resolution, query.TimeRange)
+		if dps <= query.MaxDataPoints && pages <= maxInterpolatedPagesToLoad {
 			return resolution
 		}
 	}

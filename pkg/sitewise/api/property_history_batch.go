@@ -3,8 +3,10 @@ package api
 import (
 	"context"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
@@ -17,30 +19,22 @@ import (
 // The Framer consumer should bubble up that error to the user.
 // `query.MaxDataPoints` is ignored and it always requests with the maximum number of data points the SiteWise API can support
 func historyBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise.BatchGetAssetPropertyValueHistoryInput {
-
-	var (
-		qualities []*string
-	)
-
-	quality := query.Quality
-
-	if quality == "" || quality == "ANY" {
-		qualities = aws.StringSlice([]string{"GOOD"})
-	} else {
-		qualities = aws.StringSlice([]string{quality})
+	qualities := []iotsitewisetypes.Quality{iotsitewisetypes.QualityGood}
+	if query.Quality != "" && query.Quality != "ANY" {
+		qualities[0] = query.Quality
 	}
 
 	from, to := util.TimeRangeToUnix(query.TimeRange)
 
-	entries := make([]*iotsitewise.BatchGetAssetPropertyValueHistoryEntry, 0)
+	entries := make([]iotsitewisetypes.BatchGetAssetPropertyValueHistoryEntry, 0)
 
 	// All unique properties are collected in AssetPropertyEntries and assigned to
 	// a BatchGetAssetPropertyValueHistoryEntry
 	for _, entry := range query.AssetPropertyEntries {
-		historyEntry := iotsitewise.BatchGetAssetPropertyValueHistoryEntry{
+		historyEntry := iotsitewisetypes.BatchGetAssetPropertyValueHistoryEntry{
 			StartDate:    from,
 			EndDate:      to,
-			TimeOrdering: aws.String(query.TimeOrdering),
+			TimeOrdering: query.TimeOrdering,
 			Qualities:    qualities,
 		}
 		if entry.AssetId != "" && entry.PropertyId != "" {
@@ -52,18 +46,18 @@ func historyBatchQueryToInput(query models.AssetPropertyValueQuery) *iotsitewise
 			historyEntry.PropertyAlias = aws.String(entry.PropertyAlias)
 			historyEntry.EntryId = util.GetEntryIdFromPropertyAlias(entry.PropertyAlias)
 		}
-		entries = append(entries, &historyEntry)
+		entries = append(entries, historyEntry)
 	}
 
 	return &iotsitewise.BatchGetAssetPropertyValueHistoryInput{
 		Entries: entries,
 		// performance: hardcoded to fetch the maximum number of data points
-		MaxResults: aws.Int64(BatchGetAssetPropertyValueHistoryMaxResults),
+		MaxResults: aws.Int32(BatchGetAssetPropertyValueHistoryMaxResults),
 		NextToken:  getNextToken(query.BaseQuery),
 	}
 }
 
-func BatchGetAssetPropertyValues(ctx context.Context, client client.SitewiseClient,
+func BatchGetAssetPropertyValues(ctx context.Context, client client.SitewiseAPIClient,
 	query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.AssetPropertyValueHistoryBatch, error) {
 	maxDps := int(query.MaxDataPoints)
 

@@ -1,16 +1,18 @@
 package test
 
 import (
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 	"testing"
 
-	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/stretchr/testify/mock"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/server"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
-	"github.com/stretchr/testify/mock"
+	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
 )
 
 func TestHandleListAssets(t *testing.T) {
@@ -19,20 +21,20 @@ func TestHandleListAssets(t *testing.T) {
 
 var listAssetsHappyCase testServerScenarioFn = func(t *testing.T) *testScenario {
 
-	mockSw := &mocks.SitewiseClient{}
+	mockSw := &mocks.SitewiseAPIClient{}
 
 	topLevelAssets := testdata.GetIoTSitewiseAssets(t, testDataRelativePath("list-assets-top-level.json"))
 	childAssets := testdata.GetIoTSitewiseAssets(t, testDataRelativePath("list-assets.json"))
 
-	mockSw.On("ListAssetsWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.ListAssetsInput) bool {
-		return req.AssetModelId == nil && *req.Filter == "TOP_LEVEL"
+	mockSw.On("ListAssets", mock.Anything, mock.MatchedBy(func(req *iotsitewise.ListAssetsInput) bool {
+		return req.AssetModelId == nil && req.Filter == types.ListAssetsFilterTopLevel
 	})).Return(&topLevelAssets, nil)
 
-	mockSw.On("ListAssetsWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.ListAssetsInput) bool {
+	mockSw.On("ListAssets", mock.Anything, mock.MatchedBy(func(req *iotsitewise.ListAssetsInput) bool {
 		if req.AssetModelId == nil {
 			return false
 		}
-		return *req.AssetModelId == testdata.DemoTurbineAssetModelId && *req.Filter == "ALL"
+		return *req.AssetModelId == testdata.DemoTurbineAssetModelId && req.Filter == types.ListAssetsFilterAll
 	})).Return(&childAssets, nil)
 
 	queryTopLevel := models.ListAssetsQuery{

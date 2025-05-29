@@ -2,9 +2,9 @@ package framer
 
 import (
 	"context"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
@@ -64,7 +64,7 @@ func (a Assets) Frames(_ context.Context, _ resource.ResourceProvider) (data.Fra
 		assetFields.Id.Set(i, *asset.Id)
 		assetFields.Arn.Set(i, *asset.Arn)
 		assetFields.ModelId.Set(i, *asset.AssetModelId)
-		assetFields.StatusState.Set(i, *asset.Status.State)
+		assetFields.StatusState.Set(i, string(asset.Status.State))
 		assetFields.CreationDate.Set(i, *asset.CreationDate)
 		assetFields.LastUpdate.Set(i, *asset.LastUpdateDate)
 
@@ -85,7 +85,7 @@ func (a Assets) Frames(_ context.Context, _ resource.ResourceProvider) (data.Fra
 
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{
-			NextToken: aws.StringValue(a.NextToken),
+			NextToken: util.Dereference(a.NextToken),
 		},
 	}
 

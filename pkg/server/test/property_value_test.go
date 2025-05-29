@@ -3,32 +3,32 @@ package test
 import (
 	"context"
 	"fmt"
+	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 	"math"
 	"testing"
 	"time"
 
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
-	"github.com/google/go-cmp/cmp"
-	"github.com/patrickmn/go-cache"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/server"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
 	"github.com/grafana/iot-sitewise-datasource/pkg/testdata"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 
-	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/google/go-cmp/cmp"
+	"github.com/patrickmn/go-cache"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
-
-	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api"
-	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
 )
 
-func mockBatchGetAssetPropertyValueWithContext(mockSw *mocks.SitewiseClient, nextToken *string, successEntries []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry, errorEntries []*iotsitewise.BatchGetAssetPropertyValueErrorEntry) {
+func mockBatchGetAssetPropertyValue(mockSw *mocks.SitewiseAPIClient, nextToken *string, successEntries []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry, errorEntries []iotsitewisetypes.BatchGetAssetPropertyValueErrorEntry) {
 	mockSw.On(
-		"BatchGetAssetPropertyValueWithContext",
+		"BatchGetAssetPropertyValue",
 		mock.Anything,
 		mock.Anything,
 	).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
@@ -38,12 +38,12 @@ func mockBatchGetAssetPropertyValueWithContext(mockSw *mocks.SitewiseClient, nex
 	}, nil).Once()
 }
 
-func mockBatchGetAssetPropertyValueSuccessEntry(entryId *string, valueVariant iotsitewise.Variant, idx int) iotsitewise.BatchGetAssetPropertyValueSuccessEntry {
-	return iotsitewise.BatchGetAssetPropertyValueSuccessEntry{
-		AssetPropertyValue: &iotsitewise.AssetPropertyValue{
-			Quality: Pointer("GOOD"),
-			Timestamp: &iotsitewise.TimeInNanos{
-				OffsetInNanos: Pointer(int64(0)),
+func mockBatchGetAssetPropertyValueSuccessEntry(entryId *string, valueVariant iotsitewisetypes.Variant, idx int) iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry {
+	return iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{
+		AssetPropertyValue: &iotsitewisetypes.AssetPropertyValue{
+			Quality: iotsitewisetypes.QualityGood,
+			Timestamp: &iotsitewisetypes.TimeInNanos{
+				OffsetInNanos: Pointer(int32(0)),
 				TimeInSeconds: Pointer(int64(1612207200 + idx)),
 			},
 			Value: &valueVariant,
@@ -53,12 +53,12 @@ func mockBatchGetAssetPropertyValueSuccessEntry(entryId *string, valueVariant io
 }
 
 func Test_property_value_query_by_asset_id_and_property_id(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
-	successEntry := mockBatchGetAssetPropertyValueSuccessEntry(mockAssetPropertyEntryId, iotsitewise.Variant{
+	mockSw := &mocks.SitewiseAPIClient{}
+	successEntry := mockBatchGetAssetPropertyValueSuccessEntry(mockAssetPropertyEntryId, iotsitewisetypes.Variant{
 		DoubleValue: Pointer(23.8),
 	}, 0)
-	mockBatchGetAssetPropertyValueWithContext(mockSw, nil, []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{&successEntry}, nil)
-	mockDescribeAssetPropertyWithContext(mockSw)
+	mockBatchGetAssetPropertyValue(mockSw, nil, []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{successEntry}, nil)
+	mockDescribeAssetProperty(mockSw)
 
 	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
@@ -100,10 +100,10 @@ func Test_property_value_query_by_asset_id_and_property_id(t *testing.T) {
 
 	mockSw.AssertExpectations(t)
 	mockSw.AssertCalled(t,
-		"BatchGetAssetPropertyValueWithContext",
+		"BatchGetAssetPropertyValue",
 		mock.Anything,
 		&iotsitewise.BatchGetAssetPropertyValueInput{
-			Entries: []*iotsitewise.BatchGetAssetPropertyValueEntry{{
+			Entries: []iotsitewisetypes.BatchGetAssetPropertyValueEntry{{
 				EntryId:    mockAssetPropertyEntryId,
 				AssetId:    Pointer(mockAssetId),
 				PropertyId: Pointer(mockPropertyId),
@@ -111,7 +111,7 @@ func Test_property_value_query_by_asset_id_and_property_id(t *testing.T) {
 		},
 	)
 	mockSw.AssertCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		&iotsitewise.DescribeAssetPropertyInput{
 			AssetId:    Pointer(mockAssetId),
@@ -124,41 +124,41 @@ func Test_property_value_query_by_asset_id_and_property_id_of_flatten_L4E_anomal
 	assetPropertyIdDiagnosticOne := "44fa33e2-b2db-4724-ba03-48ce28902809"
 	assetPropertyIdDiagnosticTwo := "3a985085-ea71-4ae6-9395-b65990f58a05"
 
-	mockSw := &mocks.SitewiseClient{}
-	successEntry := mockBatchGetAssetPropertyValueSuccessEntry(mockAssetPropertyEntryId, iotsitewise.Variant{
+	mockSw := &mocks.SitewiseAPIClient{}
+	successEntry := mockBatchGetAssetPropertyValueSuccessEntry(mockAssetPropertyEntryId, iotsitewisetypes.Variant{
 		StringValue: Pointer("{\"timestamp\":\"2021-02-01T19:20:00.000000\",\"prediction\":0,\"prediction_reason\":\"NO_ANOMALY_DETECTED\",\"anomaly_score\":0.2674,\"diagnostics\":[{\"name\":\"3a985085-ea71-4ae6-9395-b65990f58a05\\\\3a985085-ea71-4ae6-9395-b65990f58a05\",\"value\":0.44856},{\"name\":\"44fa33e2-b2db-4724-ba03-48ce28902809\\\\44fa33e2-b2db-4724-ba03-48ce28902809\",\"value\":0.55144}]}"),
 	}, 0)
-	mockBatchGetAssetPropertyValueWithContext(mockSw, nil, []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{&successEntry}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+	mockBatchGetAssetPropertyValue(mockSw, nil, []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{successEntry}, nil)
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
 		return req.PropertyId != nil && *req.PropertyId == mockPropertyId
 	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetId:   Pointer(mockAssetId),
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		CompositeModel: &iotsitewise.CompositeModelProperty{
+		CompositeModel: &iotsitewisetypes.CompositeModelProperty{
 			Name: Pointer("prediction1"),
-			AssetProperty: &iotsitewise.Property{
+			AssetProperty: &iotsitewisetypes.Property{
 				Name:     Pointer("AWS/L4E_ANOMALY_RESULT"),
-				DataType: Pointer("STRUCT"),
+				DataType: iotsitewisetypes.PropertyDataTypeStruct,
 			},
 		},
 	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
 		return req.PropertyId != nil && *req.PropertyId == assetPropertyIdDiagnosticOne
 	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
+		AssetProperty: &iotsitewisetypes.Property{
 			Id:       Pointer(assetPropertyIdDiagnosticOne),
-			DataType: Pointer("DOUBLE"),
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
 			Name:     Pointer("Torque"),
 		},
 	}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
 		return req.PropertyId != nil && *req.PropertyId == assetPropertyIdDiagnosticTwo
 	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		AssetProperty: &iotsitewise.Property{
+		AssetProperty: &iotsitewisetypes.Property{
 			Id:       Pointer(assetPropertyIdDiagnosticTwo),
-			DataType: Pointer("DOUBLE"),
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
 			Name:     Pointer("RPM"),
 		},
 	}, nil)
@@ -211,19 +211,19 @@ func Test_property_value_query_by_asset_id_and_property_id_of_flatten_L4E_anomal
 func Test_property_value_query_by_asset_id_and_property_id_of_struct_type(t *testing.T) {
 	structValue := "{\"timestamp\":\"2021-02-01T19:20:00.000000\",\"prediction\":0,\"prediction_reason\":\"NO_ANOMALY_DETECTED\",\"anomaly_score\":0.2674,\"diagnostics\":[{\"name\":\"3a985085-ea71-4ae6-9395-b65990f58a05\\\\3a985085-ea71-4ae6-9395-b65990f58a05\",\"value\":0.44856},{\"name\":\"44fa33e2-b2db-4724-ba03-48ce28902809\\\\44fa33e2-b2db-4724-ba03-48ce28902809\",\"value\":0.55144}]}"
 
-	mockSw := &mocks.SitewiseClient{}
-	successEntry := mockBatchGetAssetPropertyValueSuccessEntry(mockAssetPropertyEntryId, iotsitewise.Variant{
+	mockSw := &mocks.SitewiseAPIClient{}
+	successEntry := mockBatchGetAssetPropertyValueSuccessEntry(mockAssetPropertyEntryId, iotsitewisetypes.Variant{
 		StringValue: Pointer(structValue),
 	}, 0)
-	mockBatchGetAssetPropertyValueWithContext(mockSw, nil, []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{&successEntry}, nil)
-	mockSw.On("DescribeAssetPropertyWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockBatchGetAssetPropertyValue(mockSw, nil, []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{successEntry}, nil)
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetId:   Pointer(mockAssetId),
 		AssetName: Pointer("Demo Turbine Asset 1"),
-		CompositeModel: &iotsitewise.CompositeModelProperty{
+		CompositeModel: &iotsitewisetypes.CompositeModelProperty{
 			Name: Pointer("prediction1"),
-			AssetProperty: &iotsitewise.Property{
+			AssetProperty: &iotsitewisetypes.Property{
 				Name:     Pointer("AWS/L4E_ANOMALY_RESULT"),
-				DataType: Pointer("STRUCT"),
+				DataType: iotsitewisetypes.PropertyDataTypeStruct,
 			},
 		},
 	}, nil)
@@ -268,10 +268,10 @@ func Test_property_value_query_by_asset_id_and_property_id_of_struct_type(t *tes
 
 	mockSw.AssertExpectations(t)
 	mockSw.AssertCalled(t,
-		"BatchGetAssetPropertyValueWithContext",
+		"BatchGetAssetPropertyValue",
 		mock.Anything,
 		&iotsitewise.BatchGetAssetPropertyValueInput{
-			Entries: []*iotsitewise.BatchGetAssetPropertyValueEntry{{
+			Entries: []iotsitewisetypes.BatchGetAssetPropertyValueEntry{{
 				EntryId:    mockAssetPropertyEntryId,
 				AssetId:    Pointer(mockAssetId),
 				PropertyId: Pointer(mockPropertyId),
@@ -279,7 +279,7 @@ func Test_property_value_query_by_asset_id_and_property_id_of_struct_type(t *tes
 		},
 	)
 	mockSw.AssertCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		&iotsitewise.DescribeAssetPropertyInput{
 			AssetId:    Pointer(mockAssetId),
@@ -289,17 +289,17 @@ func Test_property_value_query_by_asset_id_and_property_id_of_struct_type(t *tes
 }
 
 func Test_property_value_query_by_alias_associated_stream(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+	mockSw := &mocks.SitewiseAPIClient{}
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
 		Alias:      Pointer(mockPropertyAlias),
 		AssetId:    Pointer(mockAssetId),
 		PropertyId: Pointer(mockPropertyId),
 	}, nil)
-	successEntry := mockBatchGetAssetPropertyValueSuccessEntry(mockAssetPropertyEntryId, iotsitewise.Variant{
+	successEntry := mockBatchGetAssetPropertyValueSuccessEntry(mockAssetPropertyEntryId, iotsitewisetypes.Variant{
 		DoubleValue: Pointer(23.8),
 	}, 0)
-	mockBatchGetAssetPropertyValueWithContext(mockSw, nil, []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{&successEntry}, nil)
-	mockDescribeAssetPropertyWithContext(mockSw)
+	mockBatchGetAssetPropertyValue(mockSw, nil, []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{successEntry}, nil)
+	mockDescribeAssetProperty(mockSw)
 
 	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
@@ -340,15 +340,15 @@ func Test_property_value_query_by_alias_associated_stream(t *testing.T) {
 
 	mockSw.AssertExpectations(t)
 	mockSw.AssertCalled(t,
-		"DescribeTimeSeriesWithContext",
+		"DescribeTimeSeries",
 		mock.Anything,
 		&iotsitewise.DescribeTimeSeriesInput{Alias: Pointer(mockPropertyAlias)},
 	)
 	mockSw.AssertCalled(t,
-		"BatchGetAssetPropertyValueWithContext",
+		"BatchGetAssetPropertyValue",
 		mock.Anything,
 		&iotsitewise.BatchGetAssetPropertyValueInput{
-			Entries: []*iotsitewise.BatchGetAssetPropertyValueEntry{{
+			Entries: []iotsitewisetypes.BatchGetAssetPropertyValueEntry{{
 				EntryId:    mockAssetPropertyEntryId,
 				AssetId:    Pointer(mockAssetId),
 				PropertyId: Pointer(mockPropertyId),
@@ -356,7 +356,7 @@ func Test_property_value_query_by_alias_associated_stream(t *testing.T) {
 		},
 	)
 	mockSw.AssertCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		&iotsitewise.DescribeAssetPropertyInput{
 			AssetId:    Pointer(mockAssetId),
@@ -365,14 +365,14 @@ func Test_property_value_query_by_alias_associated_stream(t *testing.T) {
 	)
 }
 func Test_property_value_query_by_alias_disassociated_stream(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+	mockSw := &mocks.SitewiseAPIClient{}
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
 		Alias: Pointer(mockPropertyAlias),
 	}, nil)
-	successEntry := mockBatchGetAssetPropertyValueSuccessEntry(mockPropertyAliasEntryId, iotsitewise.Variant{
+	successEntry := mockBatchGetAssetPropertyValueSuccessEntry(mockPropertyAliasEntryId, iotsitewisetypes.Variant{
 		DoubleValue: Pointer(23.8),
 	}, 0)
-	mockBatchGetAssetPropertyValueWithContext(mockSw, nil, []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{&successEntry}, nil)
+	mockBatchGetAssetPropertyValue(mockSw, nil, []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{successEntry}, nil)
 
 	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
@@ -413,35 +413,35 @@ func Test_property_value_query_by_alias_disassociated_stream(t *testing.T) {
 
 	mockSw.AssertExpectations(t)
 	mockSw.AssertCalled(t,
-		"DescribeTimeSeriesWithContext",
+		"DescribeTimeSeries",
 		mock.Anything,
 		&iotsitewise.DescribeTimeSeriesInput{Alias: Pointer(mockPropertyAlias)},
 	)
 	mockSw.AssertCalled(t,
-		"BatchGetAssetPropertyValueWithContext",
+		"BatchGetAssetPropertyValue",
 		mock.Anything,
 		&iotsitewise.BatchGetAssetPropertyValueInput{
-			Entries: []*iotsitewise.BatchGetAssetPropertyValueEntry{{
+			Entries: []iotsitewisetypes.BatchGetAssetPropertyValueEntry{{
 				EntryId:       mockPropertyAliasEntryId,
 				PropertyAlias: Pointer(mockPropertyAlias),
 			}},
 		},
 	)
 	mockSw.AssertNotCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		mock.Anything,
 	)
 }
 func Test_property_value_query_by_alias_disassociated_stream_with_integer_value(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
-	mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+	mockSw := &mocks.SitewiseAPIClient{}
+	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
 		Alias: Pointer(mockPropertyAlias),
 	}, nil)
-	successEntry := mockBatchGetAssetPropertyValueSuccessEntry(mockPropertyAliasEntryId, iotsitewise.Variant{
-		IntegerValue: Pointer(int64(23)),
+	successEntry := mockBatchGetAssetPropertyValueSuccessEntry(mockPropertyAliasEntryId, iotsitewisetypes.Variant{
+		IntegerValue: Pointer(int32(23)),
 	}, 0)
-	mockBatchGetAssetPropertyValueWithContext(mockSw, nil, []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{&successEntry}, nil)
+	mockBatchGetAssetPropertyValue(mockSw, nil, []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{successEntry}, nil)
 
 	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
@@ -482,34 +482,34 @@ func Test_property_value_query_by_alias_disassociated_stream_with_integer_value(
 
 	mockSw.AssertExpectations(t)
 	mockSw.AssertCalled(t,
-		"DescribeTimeSeriesWithContext",
+		"DescribeTimeSeries",
 		mock.Anything,
 		&iotsitewise.DescribeTimeSeriesInput{Alias: Pointer(mockPropertyAlias)},
 	)
 	mockSw.AssertCalled(t,
-		"BatchGetAssetPropertyValueWithContext",
+		"BatchGetAssetPropertyValue",
 		mock.Anything,
 		&iotsitewise.BatchGetAssetPropertyValueInput{
-			Entries: []*iotsitewise.BatchGetAssetPropertyValueEntry{{
+			Entries: []iotsitewisetypes.BatchGetAssetPropertyValueEntry{{
 				EntryId:       mockPropertyAliasEntryId,
 				PropertyAlias: Pointer(mockPropertyAlias),
 			}},
 		},
 	)
 	mockSw.AssertNotCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		mock.Anything,
 	)
 }
 func Test_property_value_query_with_empty_property_value_results(t *testing.T) {
-	mockSw := &mocks.SitewiseClient{}
-	mockSw.On("BatchGetAssetPropertyValueWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
-		SuccessEntries: []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{{
+	mockSw := &mocks.SitewiseAPIClient{}
+	mockSw.On("BatchGetAssetPropertyValue", mock.Anything, mock.Anything).Return(&iotsitewise.BatchGetAssetPropertyValueOutput{
+		SuccessEntries: []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{{
 			AssetPropertyValue: nil,
 			EntryId:            mockAssetPropertyEntryId,
 		}}}, nil)
-	mockDescribeAssetPropertyWithContext(mockSw)
+	mockDescribeAssetProperty(mockSw)
 
 	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
@@ -551,10 +551,10 @@ func Test_property_value_query_with_empty_property_value_results(t *testing.T) {
 
 	mockSw.AssertExpectations(t)
 	mockSw.AssertCalled(t,
-		"BatchGetAssetPropertyValueWithContext",
+		"BatchGetAssetPropertyValue",
 		mock.Anything,
 		&iotsitewise.BatchGetAssetPropertyValueInput{
-			Entries: []*iotsitewise.BatchGetAssetPropertyValueEntry{{
+			Entries: []iotsitewisetypes.BatchGetAssetPropertyValueEntry{{
 				EntryId:    mockAssetPropertyEntryId,
 				AssetId:    Pointer(mockAssetId),
 				PropertyId: Pointer(mockPropertyId),
@@ -562,7 +562,7 @@ func Test_property_value_query_with_empty_property_value_results(t *testing.T) {
 		},
 	)
 	mockSw.AssertCalled(t,
-		"DescribeAssetPropertyWithContext",
+		"DescribeAssetProperty",
 		mock.Anything,
 		&iotsitewise.DescribeAssetPropertyInput{
 			AssetId:    Pointer(mockAssetId),
@@ -596,8 +596,8 @@ func Test_property_value_query_with_batched_queries(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			mockSw := &mocks.SitewiseClient{}
-			mockedSuccessEntries := []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{}
+			mockSw := &mocks.SitewiseAPIClient{}
+			mockedSuccessEntries := []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{}
 			numBatch := 0
 
 			if tc.numPropertyAliases > 0 {
@@ -605,20 +605,20 @@ func Test_property_value_query_with_batched_queries(t *testing.T) {
 				for p, propertyAlias := range propertyAliases {
 					// Build the success entry based on the propertyAlias
 					entryId := util.GetEntryIdFromPropertyAlias(propertyAlias)
-					successEntry := mockBatchGetAssetPropertyValueSuccessEntry(entryId, iotsitewise.Variant{
+					successEntry := mockBatchGetAssetPropertyValueSuccessEntry(entryId, iotsitewisetypes.Variant{
 						DoubleValue: Pointer(float64(23.8) + float64(p)),
 					}, p)
-					mockedSuccessEntries = append(mockedSuccessEntries, &successEntry)
+					mockedSuccessEntries = append(mockedSuccessEntries, successEntry)
 
 					isLastBatch := p == tc.numPropertyAliases-1
 					// When batch is complete mock the call with the success entries
 					if len(mockedSuccessEntries) == api.BatchGetAssetPropertyValueMaxEntries || isLastBatch {
 						numBatch++
-						mockBatchGetAssetPropertyValueWithContext(mockSw, Pointer(fmt.Sprintf("some-next-token-%d", numBatch)), mockedSuccessEntries, nil)
-						mockedSuccessEntries = []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{}
+						mockBatchGetAssetPropertyValue(mockSw, Pointer(fmt.Sprintf("some-next-token-%d", numBatch)), mockedSuccessEntries, nil)
+						mockedSuccessEntries = []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{}
 					}
 
-					mockSw.On("DescribeTimeSeriesWithContext", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
+					mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeTimeSeriesOutput{
 						Alias: Pointer(propertyAlias),
 					}, nil)
 				}
@@ -629,21 +629,21 @@ func Test_property_value_query_with_batched_queries(t *testing.T) {
 					for p, propertyId := range propertyIds {
 						// Build the success entry based on the assetId and propertyId
 						entryId := util.GetEntryIdFromAssetProperty(assetId, propertyId)
-						successEntry := mockBatchGetAssetPropertyValueSuccessEntry(entryId, iotsitewise.Variant{
+						successEntry := mockBatchGetAssetPropertyValueSuccessEntry(entryId, iotsitewisetypes.Variant{
 							DoubleValue: Pointer(float64(23.8) + float64(p)),
 						}, p)
-						mockedSuccessEntries = append(mockedSuccessEntries, &successEntry)
+						mockedSuccessEntries = append(mockedSuccessEntries, successEntry)
 
 						isLastBatch := a == tc.numAssetIds-1 && p == tc.numPropertyIds-1
 						// When batch is complete mock the call with the success entries
 						if len(mockedSuccessEntries) == api.BatchGetAssetPropertyValueMaxEntries || isLastBatch {
 							numBatch++
-							mockBatchGetAssetPropertyValueWithContext(mockSw, Pointer(fmt.Sprintf("some-next-token-%d", numBatch)), mockedSuccessEntries, nil)
-							mockedSuccessEntries = []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{}
+							mockBatchGetAssetPropertyValue(mockSw, Pointer(fmt.Sprintf("some-next-token-%d", numBatch)), mockedSuccessEntries, nil)
+							mockedSuccessEntries = []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{}
 						}
 					}
 				}
-				mockDescribeAssetPropertyWithContext(mockSw)
+				mockDescribeAssetProperty(mockSw)
 			}
 
 			srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
@@ -725,10 +725,10 @@ func Test_property_value_query_with_batched_queries_with_error(t *testing.T) {
 	}
 
 	t.Run(tc.name, func(t *testing.T) {
-		mockSw := &mocks.SitewiseClient{}
+		mockSw := &mocks.SitewiseAPIClient{}
 
-		mockedSuccessEntries := []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{}
-		mockedErrorEntries := []*iotsitewise.BatchGetAssetPropertyValueErrorEntry{}
+		mockedSuccessEntries := []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{}
+		mockedErrorEntries := []iotsitewisetypes.BatchGetAssetPropertyValueErrorEntry{}
 		numBatch := 0
 		errorIndex := 20
 
@@ -741,31 +741,31 @@ func Test_property_value_query_with_batched_queries_with_error(t *testing.T) {
 
 				// Build one error entry
 				if a*tc.numPropertyIds+p == errorIndex {
-					mockedErrorEntries = append(mockedErrorEntries, &iotsitewise.BatchGetAssetPropertyValueErrorEntry{
-						ErrorCode:    Pointer("404"),
+					mockedErrorEntries = append(mockedErrorEntries, iotsitewisetypes.BatchGetAssetPropertyValueErrorEntry{
+						ErrorCode:    iotsitewisetypes.BatchGetAssetPropertyValueErrorCodeResourceNotFoundException,
 						ErrorMessage: Pointer("Asset property not found."),
 						EntryId:      entryId,
 					})
 				} else {
-					successEntry := mockBatchGetAssetPropertyValueSuccessEntry(entryId, iotsitewise.Variant{
+					successEntry := mockBatchGetAssetPropertyValueSuccessEntry(entryId, iotsitewisetypes.Variant{
 						DoubleValue: Pointer(float64(23.8) + float64(p)),
 					}, p)
-					mockedSuccessEntries = append(mockedSuccessEntries, &successEntry)
+					mockedSuccessEntries = append(mockedSuccessEntries, successEntry)
 				}
 
 				isLastBatch := a == tc.numAssetIds-1 && p == tc.numPropertyIds-1
 				// When batch is complete mock the call with the success entries
 				if len(mockedSuccessEntries)+len(mockedErrorEntries) == api.BatchGetAssetPropertyValueMaxEntries || isLastBatch {
 					numBatch++
-					mockBatchGetAssetPropertyValueWithContext(mockSw, Pointer(fmt.Sprintf("some-next-token-%d", numBatch)), mockedSuccessEntries, mockedErrorEntries)
+					mockBatchGetAssetPropertyValue(mockSw, Pointer(fmt.Sprintf("some-next-token-%d", numBatch)), mockedSuccessEntries, mockedErrorEntries)
 					// Reset for next batch
-					mockedSuccessEntries = []*iotsitewise.BatchGetAssetPropertyValueSuccessEntry{}
-					mockedErrorEntries = []*iotsitewise.BatchGetAssetPropertyValueErrorEntry{}
+					mockedSuccessEntries = []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{}
+					mockedErrorEntries = []iotsitewisetypes.BatchGetAssetPropertyValueErrorEntry{}
 				}
 			}
 		}
 
-		mockDescribeAssetPropertyWithContext(mockSw)
+		mockDescribeAssetProperty(mockSw)
 
 		srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 

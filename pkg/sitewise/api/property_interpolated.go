@@ -2,14 +2,17 @@ package api
 
 import (
 	"context"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/iotsitewise"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api/propvals"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
+
 	"golang.org/x/sync/errgroup"
 )
 
@@ -31,7 +34,7 @@ func interpolatedQueryToInputs(query models.AssetPropertyValueQuery) []*iotsitew
 
 	quality := query.Quality
 	if quality == "" || quality == "ANY" {
-		quality = "GOOD"
+		quality = types.QualityGood
 	}
 
 	interpolationType := LINEAR_INTERPOLATION
@@ -58,8 +61,8 @@ func interpolatedQueryToInputs(query models.AssetPropertyValueQuery) []*iotsitew
 			StartTimeInSeconds: &startTimeInSeconds,
 			EndTimeInSeconds:   &endTimeInSeconds,
 			IntervalInSeconds:  aws.Int64(intervalInSeconds),
-			MaxResults:         aws.Int64(10),
-			Quality:            &quality,
+			MaxResults:         aws.Int32(10),
+			Quality:            quality,
 			Type:               &interpolationType,
 		}
 		var entryId *string
@@ -84,7 +87,7 @@ func interpolatedQueryToInputs(query models.AssetPropertyValueQuery) []*iotsitew
 	return awsReqs
 }
 
-func GetInterpolatedAssetPropertyValues(ctx context.Context, client client.SitewiseClient,
+func GetInterpolatedAssetPropertyValues(ctx context.Context, client client.SitewiseAPIClient,
 	query models.AssetPropertyValueQuery) (models.AssetPropertyValueQuery, *framer.InterpolatedAssetPropertyValue, error) {
 	maxDps := int(query.MaxDataPoints)
 
