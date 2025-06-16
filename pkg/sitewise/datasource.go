@@ -13,6 +13,7 @@ import (
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"github.com/grafana/grafana-aws-sdk/pkg/awsauth"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/proxy"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/api"
@@ -30,6 +31,7 @@ type invokerFunc func(ctx context.Context, sw client.SitewiseAPIClient) (framer.
 type Datasource struct {
 	cfg               models.AWSSiteWiseDataSourceSetting
 	edgeAuthenticator *EdgeAuthenticator
+	proxyOptions      *proxy.Options
 	GetClient         clientGetterFunc
 }
 
@@ -48,7 +50,7 @@ func (m *disableHostPrefixMiddleware) HandleInitialize(
 	return next.HandleInitialize(ctx, in)
 }
 
-func NewDatasource(_ context.Context, settings backend.DataSourceInstanceSettings) (*Datasource, error) {
+func NewDatasource(ctx context.Context, settings backend.DataSourceInstanceSettings) (*Datasource, error) {
 	cfg := models.AWSSiteWiseDataSourceSetting{}
 
 	err := cfg.Load(settings)
@@ -60,8 +62,14 @@ func NewDatasource(_ context.Context, settings backend.DataSourceInstanceSetting
 	if err != nil {
 		return nil, err
 	}
+	proxyOptions, err := settings.ProxyOptionsFromContext(ctx)
+	if err != nil {
+		backend.Logger.Error("failed to read proxy options", "error", err.Error())
+		return nil, err
+	}
 	ds := &Datasource{
-		cfg: cfg,
+		cfg:          cfg,
+		proxyOptions: proxyOptions,
 	}
 
 	if cfg.Region == models.EDGE_REGION && cfg.EdgeAuthMode != models.EDGE_AUTH_MODE_DEFAULT {
@@ -117,6 +125,7 @@ func (ds *Datasource) getClient(ctx context.Context, region string) (client.Site
 		ExternalID:         ds.cfg.ExternalID,
 		UserAgent:          awsds.GetUserAgentString("grafana-iot-sitewise-datasource"),
 		HTTPClient:         httpclient,
+		ProxyOptions:       ds.proxyOptions,
 	})
 
 	if err != nil {
