@@ -26,6 +26,7 @@ export function generateSiteWiseQueriesCacheId(queries: SitewiseQueriesUnion[]):
  * Parse query to cache id.
  */
 function generateSiteWiseQueryCacheId(query: SitewiseQueriesUnion): QueryCacheId {
+  /* eslint-disable @typescript-eslint/no-deprecated */
   const {
     queryType,
     region,

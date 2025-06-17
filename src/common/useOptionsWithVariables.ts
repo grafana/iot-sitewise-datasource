@@ -9,9 +9,10 @@ export const useOptionsWithVariables = ({
   options,
 }: {
   current?: string;
-  options: SelectableValue<string>[];
+  options: Array<SelectableValue<string>>;
 }) => {
   const variableOptions = getVariableOptions({ keepVarSyntax: true });
   const variables = getTemplateSrv().getVariables();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   return useMemo(() => getSelectionInfo(current, options, variableOptions), [current, variables, options]);
 };

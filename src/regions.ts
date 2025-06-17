@@ -30,7 +30,7 @@ export type Region = (typeof supportedRegions)[number] | DefaultRegion;
 export const regionOptions = supportedRegions.map((v) => ({
   value: v,
   label: v,
-})) satisfies SelectableValue<Region>[];
+})) satisfies Array<SelectableValue<Region>>;
 
 export const isSupportedRegion = (region: Region | string | unknown): region is Region =>
   Boolean(supportedRegions.find((supportedRegion) => supportedRegion === region));

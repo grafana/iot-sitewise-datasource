@@ -11,7 +11,7 @@ import {
 import { DataSourceWithBackend, getTemplateSrv } from '@grafana/runtime';
 import { SitewiseCache } from 'sitewiseCache';
 import { isListAssetsQuery, isPropertyQueryType, SitewiseOptions, SitewiseQuery, SiteWiseResolution } from './types';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { frameToMetricFindValues } from 'utils';
 import { applyVariableForList, SitewiseVariableSupport } from 'variables';
@@ -72,7 +72,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
     let res: DataQueryResponse | undefined;
 
     try {
-      res = await this.query(request).toPromise();
+      res = await lastValueFrom(this.query(request));
     } catch (err) {
       return Promise.reject(err);
     }
@@ -87,6 +87,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
    * Do not execute queries that do not exist yet
    */
   filterQuery(query: SitewiseQuery): boolean {
+    /* eslint-disable @typescript-eslint/no-deprecated */
     if (!query.queryType) {
       return false; // skip the query
     }

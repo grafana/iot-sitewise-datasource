@@ -31,13 +31,13 @@ export const PropertyQueryEditor = ({ query, datasource, onChange }: SitewiseQue
   const [assetId, setAssetId] = useState<string | undefined>(query.assetIds?.[0]);
   const [asset, setAsset] = useState<AssetInfo | undefined>(undefined);
   const [assets, setAssets] = useState<Array<SelectableValue<string>>>([]);
-  const [assetProperties, setAssetProperties] = useState<SelectableValue<string>[]>([]);
-  const [propertyAliases, setPropertyAliases] = useState<SelectableValue<string>[]>([]);
+  const [assetProperties, setAssetProperties] = useState<Array<SelectableValue<string>>>([]);
+  const [propertyAliases, setPropertyAliases] = useState<Array<SelectableValue<string>>>([]);
 
   const cache = useMemo(() => datasource.getCache(query.region), [datasource, query.region]);
 
   const onAliasChange = useCallback(
-    (sel: SelectableValue<string> | SelectableValue<string>[]) => {
+    (sel: SelectableValue<string> | Array<SelectableValue<string>>) => {
       const propertyAliases: Set<string> = new Set();
       if (Array.isArray(sel)) {
         sel.forEach((s) => {
@@ -55,7 +55,7 @@ export const PropertyQueryEditor = ({ query, datasource, onChange }: SitewiseQue
   );
 
   const onAssetChange = useCallback(
-    (sel: SelectableValue<string> | SelectableValue<string>[]) => {
+    (sel: SelectableValue<string> | Array<SelectableValue<string>>) => {
       const assetIds: Set<string> = new Set();
       if (Array.isArray(sel)) {
         sel.forEach((s) => {
@@ -78,7 +78,7 @@ export const PropertyQueryEditor = ({ query, datasource, onChange }: SitewiseQue
   );
 
   const onPropertyChange = useCallback(
-    (sel: SelectableValue<string> | SelectableValue<string>[]) => {
+    (sel: SelectableValue<string> | Array<SelectableValue<string>>) => {
       const propertyIds: Set<string> = new Set();
       if (Array.isArray(sel)) {
         sel.forEach((s) => {
@@ -254,6 +254,7 @@ export const PropertyQueryEditor = ({ query, datasource, onChange }: SitewiseQue
     ])
       .catch(console.error)
       .finally(() => setIsLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
   let selectedPropertyAliases = propertyAliases.filter(
@@ -455,8 +456,8 @@ export const PropertyQueryEditor = ({ query, datasource, onChange }: SitewiseQue
 
 const AssetTooltip = () => (
   <div>
-    Set the asset ID. It can be either the actual ID in UUID format, or else "externalId:" followed by the external ID,
-    if it has one.
+    Set the asset ID. It can be either the actual ID in UUID format, or else &quot;externalId:&quot; followed by the
+    external ID, if it has one.
     <LinkButton
       href="https://docs.aws.amazon.com/iot-sitewise/latest/userguide/object-ids.html#external-ids"
       target="_blank"

@@ -8,6 +8,7 @@ import { getTemplateSrv } from '@grafana/runtime';
 import { useEffect, useState } from 'react';
 import { type Region } from './regions';
 import { getSelectableTemplateVariables } from 'variables';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 
 /**
  * Keep a different cache for each region
@@ -29,30 +30,31 @@ export class SitewiseCache {
       return Promise.resolve(v);
     }
 
-    return this.ds
-      .runQuery(
-        {
-          refId: 'getAssetInfo',
-          queryType: QueryType.DescribeAsset,
-          assetId: id,
-          region: this.region,
-        },
-        1000
-      )
-      .pipe(
-        map((res) => {
-          if (res.data.length) {
-            const view = new DataFrameView<DescribeAssetResult>(res.data[0]);
-            if (view && view.length) {
-              const info = frameToAssetInfo(view.get(0));
-              this.assetsById.set(id, info);
-              return info;
+    return firstValueFrom(
+      this.ds
+        .runQuery(
+          {
+            refId: 'getAssetInfo',
+            queryType: QueryType.DescribeAsset,
+            assetId: id,
+            region: this.region,
+          },
+          1000
+        )
+        .pipe(
+          map((res) => {
+            if (res.data.length) {
+              const view = new DataFrameView<DescribeAssetResult>(res.data[0]);
+              if (view && view.length) {
+                const info = frameToAssetInfo(view.get(0));
+                this.assetsById.set(id, info);
+                return info;
+              }
             }
-          }
-          throw 'asset not found';
-        })
-      )
-      .toPromise();
+            throw 'asset not found';
+          })
+        )
+    );
   }
 
   getAssetInfoSync(id: string): AssetInfo | undefined {
@@ -73,27 +75,28 @@ export class SitewiseCache {
       return ap;
     }
 
-    return this.ds
-      .runQuery({
-        refId: 'listAssetProperties',
-        queryType: QueryType.ListAssetProperties,
-        assetId,
-        region: this.region,
-      })
-      .pipe(
-        map((res) => {
-          if (res.data.length) {
-            const assetProperties = new DataFrameView<{ id: string; name: string }>(res.data[0]);
-
-            this.assetPropertiesByAssetId.set(assetId, assetProperties);
-
-            return assetProperties;
-          }
-
-          throw 'asset properties not found';
+    return firstValueFrom(
+      this.ds
+        .runQuery({
+          refId: 'listAssetProperties',
+          queryType: QueryType.ListAssetProperties,
+          assetId,
+          region: this.region,
         })
-      )
-      .toPromise();
+        .pipe(
+          map((res) => {
+            if (res.data.length) {
+              const assetProperties = new DataFrameView<{ id: string; name: string }>(res.data[0]);
+
+              this.assetPropertiesByAssetId.set(assetId, assetProperties);
+
+              return assetProperties;
+            }
+
+            throw 'asset properties not found';
+          })
+        )
+    );
   }
 
   async getModels(): Promise<DataFrameView<AssetModelSummary> | undefined> {
@@ -101,22 +104,23 @@ export class SitewiseCache {
       return Promise.resolve(this.models);
     }
 
-    return this.ds
-      .runQuery({
-        refId: 'getModels',
-        queryType: QueryType.ListAssetModels,
-        region: this.region,
-      })
-      .pipe(
-        map((res) => {
-          if (res.data.length) {
-            this.models = new DataFrameView<AssetModelSummary>(res.data[0]);
-            return this.models;
-          }
-          throw 'no models found';
+    return firstValueFrom(
+      this.ds
+        .runQuery({
+          refId: 'getModels',
+          queryType: QueryType.ListAssetModels,
+          region: this.region,
         })
-      )
-      .toPromise();
+        .pipe(
+          map((res) => {
+            if (res.data.length) {
+              this.models = new DataFrameView<AssetModelSummary>(res.data[0]);
+              return this.models;
+            }
+            throw 'no models found';
+          })
+        )
+    );
   }
 
   async getModelsOptions(): Promise<Array<SelectableValue<string>> | undefined> {
@@ -141,9 +145,8 @@ export class SitewiseCache {
       modelId,
       region: this.region,
     };
-    return this.ds
-      .runQuery(query, 1000)
-      .pipe(
+    return firstValueFrom(
+      this.ds.runQuery(query, 1000).pipe(
         map((res) => {
           if (res.data.length) {
             this.topLevelAssets = new DataFrameView<AssetSummary>(res.data[0]);
@@ -152,7 +155,7 @@ export class SitewiseCache {
           throw 'no assets found';
         })
       )
-      .toPromise();
+    );
   }
 
   async getAssociatedAssets(assetId: string, hierarchyId?: string): Promise<DataFrameView<AssetSummary> | undefined> {
@@ -164,9 +167,8 @@ export class SitewiseCache {
       region: this.region,
     };
 
-    return this.ds
-      .runQuery(query, 1000)
-      .pipe(
+    return firstValueFrom(
+      this.ds.runQuery(query, 1000).pipe(
         map((res) => {
           if (res.data.length) {
             return new DataFrameView<AssetSummary>(res.data[0]);
@@ -175,7 +177,7 @@ export class SitewiseCache {
           }
         })
       )
-      .toPromise();
+    );
   }
 
   async getTopLevelAssets(): Promise<DataFrameView<AssetSummary> | undefined> {
@@ -188,9 +190,8 @@ export class SitewiseCache {
       filter: 'TOP_LEVEL',
       region: this.region,
     };
-    return this.ds
-      .runQuery(query, 1000)
-      .pipe(
+    return firstValueFrom(
+      this.ds.runQuery(query, 1000).pipe(
         map((res) => {
           if (res.data.length) {
             this.topLevelAssets = new DataFrameView<AssetSummary>(res.data[0]);
@@ -199,7 +200,7 @@ export class SitewiseCache {
           throw 'no assets found';
         })
       )
-      .toPromise();
+    );
   }
 
   async getAssetPickerOptions(): Promise<Array<SelectableValue<string>>> {
