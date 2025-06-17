@@ -76,14 +76,16 @@ func (s *Server) lastObservation(h handler) handler {
 
 func (s *Server) lastValueQuery(ctx context.Context, query backend.DataQuery, timeOrdering iotsitewisetypes.TimeOrdering) (backend.DataResponse, error) {
 	query.MaxDataPoints = 1
-	if timeOrdering == iotsitewisetypes.TimeOrderingDescending {
+	switch timeOrdering {
+	case iotsitewisetypes.TimeOrderingDescending:
 		query.TimeRange.To = query.TimeRange.From.Add(-1 * time.Second)
 		query.TimeRange.From = query.TimeRange.From.Add(-8760 * time.Hour) // 1 year ago
-	} else if timeOrdering == iotsitewisetypes.TimeOrderingAscending {
+
+	case iotsitewisetypes.TimeOrderingAscending:
 		query.TimeRange.From = query.TimeRange.To.Add(time.Second)
 		query.TimeRange.To = time.Now()
-	}
 
+	}
 	assetQuery, err := models.GetAssetPropertyValueQuery(&query)
 	if err != nil {
 		return backend.DataResponse{}, err

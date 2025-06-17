@@ -115,10 +115,10 @@ func (a *EdgeAuthenticator) Authenticate() error {
 
 	client := &http.Client{Transport: tr, Timeout: time.Second * 5}
 
-	u, err := url.Parse(a.Settings.AWSDatasourceSettings.Endpoint)
+	u, err := url.Parse(a.Settings.Endpoint)
 	if err != nil {
-		log.DefaultLogger.Error("error parsing edge endpoint url.", "endpoint url:", a.Settings.AWSDatasourceSettings.Endpoint)
-		return fmt.Errorf("cannot parse edge endpoint url. url: %v", a.Settings.AWSDatasourceSettings.Endpoint)
+		log.DefaultLogger.Error("error parsing edge endpoint url.", "endpoint url:", a.Settings.Endpoint)
+		return fmt.Errorf("cannot parse edge endpoint url. url: %v", a.Settings.Endpoint)
 	}
 	u.Path = path.Join(u.Path, "authenticate")
 	authEndpoint := u.String()
