@@ -51,7 +51,8 @@ export class SitewiseCache {
                 return info;
               }
             }
-            throw 'asset not found';
+            console.log('Asset not found');
+            return undefined;
           })
         )
     );
@@ -92,8 +93,8 @@ export class SitewiseCache {
 
               return assetProperties;
             }
-
-            throw 'asset properties not found';
+            console.log('No asset properties found for asset', assetId);
+            return undefined;
           })
         )
     );
@@ -117,7 +118,8 @@ export class SitewiseCache {
               this.models = new DataFrameView<AssetModelSummary>(res.data[0]);
               return this.models;
             }
-            throw 'no models found';
+            console.log('No models found');
+            return undefined;
           })
         )
     );
@@ -152,7 +154,8 @@ export class SitewiseCache {
             this.topLevelAssets = new DataFrameView<AssetSummary>(res.data[0]);
             return this.topLevelAssets;
           }
-          throw 'no assets found';
+          console.log('No assets found for model', modelId);
+          return undefined;
         })
       )
     );
@@ -173,7 +176,8 @@ export class SitewiseCache {
           if (res.data.length) {
             return new DataFrameView<AssetSummary>(res.data[0]);
           } else {
-            throw 'no asset hierarchy found';
+            console.log('No associated assets found for asset', assetId);
+            return undefined;
           }
         })
       )
@@ -197,7 +201,8 @@ export class SitewiseCache {
             this.topLevelAssets = new DataFrameView<AssetSummary>(res.data[0]);
             return this.topLevelAssets;
           }
-          throw 'no assets found';
+          console.log('No top level assets found');
+          return undefined;
         })
       )
     );
