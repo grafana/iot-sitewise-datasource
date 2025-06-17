@@ -2,7 +2,6 @@ import { DataQueryRequest, DataQueryResponse, LoadingState, dateTime } from '@gr
 
 import { SitewiseQueryPaginator } from 'SiteWiseQueryPaginator';
 import { QueryType, SitewiseNextQuery, SitewiseQuery } from 'types';
-import { first, last } from 'rxjs/operators';
 import { firstValueFrom, lastValueFrom } from 'rxjs';
 
 // Request for SiteWise data
@@ -263,7 +262,7 @@ describe('SitewiseQueryPaginator', () => {
       const firstResponse = firstValueFrom(queryObservable);
       expect(firstResponse).resolves.toMatchObject(dataQueryResponse);
 
-      const lastResponse = lastValueFrom(queryObservable.pipe(last()));
+      const lastResponse = lastValueFrom(queryObservable);
       expect(lastResponse).resolves.toMatchObject(dataQueryResponse);
 
       await lastResponse;

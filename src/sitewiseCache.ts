@@ -8,7 +8,7 @@ import { getTemplateSrv } from '@grafana/runtime';
 import { useEffect, useState } from 'react';
 import { type Region } from './regions';
 import { getSelectableTemplateVariables } from 'variables';
-import { firstValueFrom, lastValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Keep a different cache for each region
