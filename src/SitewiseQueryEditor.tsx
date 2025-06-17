@@ -1,9 +1,8 @@
 import React from 'react';
 import { Space } from '@grafana/ui';
-import { InlineSelect } from '@grafana/plugin-ui';
+import { InlineSelect, EditorRows, QueryEditorMode } from '@grafana/plugin-ui';
 import { QueryEditorProps, SelectableValue } from '@grafana/data';
 import { QueryEditorHeader } from '@grafana/aws-sdk';
-import { EditorRows, QueryEditorMode } from '@grafana/plugin-ui';
 import { SitewiseQuery, SitewiseOptions } from 'types';
 import { DataSource } from 'SitewiseDataSource';
 import { RawQueryEditor } from 'components/query/query-editor-raw/RawQueryEditor';
@@ -45,7 +44,7 @@ export function SitewiseQueryEditor(props: Props) {
         // Uncomment the following code when Builder mode is ready
         // extraHeaderElementRight={<QueryEditorModeToggle mode={editorMode!} onChange={onEditorModeChange} />}
         extraHeaderElementLeft={
-          editorMode == QueryEditorMode.Code ? (
+          editorMode === QueryEditorMode.Code ? (
             <InlineSelect
               label="AWS Region"
               options={regionOptions}

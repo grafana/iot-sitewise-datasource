@@ -2,7 +2,7 @@ import { DataQueryRequest, DataQueryResponse, LoadingState, dateTime } from '@gr
 
 import { SitewiseQueryPaginator } from 'SiteWiseQueryPaginator';
 import { QueryType, SitewiseNextQuery, SitewiseQuery } from 'types';
-import { first, last } from 'rxjs/operators';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 
 // Request for SiteWise data
 const dataQueryRequest: DataQueryRequest<SitewiseQuery> = {
@@ -16,8 +16,8 @@ const dataQueryRequest: DataQueryRequest<SitewiseQuery> = {
     to: dateTime('2024-05-28T21:29:49.659Z'),
     raw: {
       from: 'now-30m',
-      to: 'now'
-    }
+      to: 'now',
+    },
   },
   interval: '2s',
   intervalMs: 2000,
@@ -25,34 +25,32 @@ const dataQueryRequest: DataQueryRequest<SitewiseQuery> = {
     {
       datasource: {
         type: 'grafana-iot-sitewise-datasource',
-        uid: 's0PWceLIz'
+        uid: 's0PWceLIz',
       },
-      assetIds: [
-        '0af4b18d-8c44-4944-8f59-9001b8824362'
-      ],
+      assetIds: ['0af4b18d-8c44-4944-8f59-9001b8824362'],
       flattenL4e: true,
       maxPageAggregations: 1,
       propertyId: '3e44a93c-eb71-4dfd-8aec-bb825cfdf7dd',
       queryType: QueryType.PropertyValue,
-      refId: 'A'
-    }
+      refId: 'A',
+    },
   ],
   maxDataPoints: 711,
   scopedVars: {
     __interval: {
       text: '2s',
-      value: '2s'
+      value: '2s',
     },
     __interval_ms: {
       text: '2000',
-      value: 2000
-    }
+      value: 2000,
+    },
   },
   startTime: 1716931789659,
   rangeRaw: {
     from: 'now-30m',
-    to: 'now'
-  }
+    to: 'now',
+  },
 };
 
 // Response with SiteWise data
@@ -66,43 +64,37 @@ const dataQueryResponse: DataQueryResponse = {
           name: 'time',
           type: 'time',
           typeInfo: {
-            frame: 'time.Time'
+            frame: 'time.Time',
           },
           config: {},
-          values: [
-            1716931550000
-          ],
-          entities: {}
+          values: [1716931550000],
+          entities: {},
         },
         {
           name: 'RotationsPerSecond',
           type: 'number',
           typeInfo: {
-            frame: 'float64'
+            frame: 'float64',
           },
           config: {
-            unit: 'RPS'
+            unit: 'RPS',
           },
-          values: [
-            0.45253960150485795
-          ],
-          entities: {}
+          values: [0.45253960150485795],
+          entities: {},
         },
         {
           name: 'quality',
           type: 'string',
           typeInfo: {
-            frame: 'string'
+            frame: 'string',
           },
           config: {},
-          values: [
-            'GOOD'
-          ],
-          entities: {}
-        }
+          values: ['GOOD'],
+          entities: {},
+        },
       ],
-      length: 1
-    }
+      length: 1,
+    },
   ],
   state: LoadingState.Done,
 };
@@ -119,8 +111,8 @@ const dataQueryRequestPaginating: DataQueryRequest<SitewiseNextQuery> = {
     to: dateTime('2024-05-28T21:29:49.659Z'),
     raw: {
       from: 'now-30m',
-      to: 'now'
-    }
+      to: 'now',
+    },
   },
   interval: '2s',
   intervalMs: 2000,
@@ -128,11 +120,9 @@ const dataQueryRequestPaginating: DataQueryRequest<SitewiseNextQuery> = {
     {
       datasource: {
         type: 'grafana-iot-sitewise-datasource',
-        uid: 's0PWceLIz'
+        uid: 's0PWceLIz',
       },
-      assetIds: [
-        '0af4b18d-8c44-4944-8f59-9001b8824362'
-      ],
+      assetIds: ['0af4b18d-8c44-4944-8f59-9001b8824362'],
       flattenL4e: true,
       maxPageAggregations: 1,
       propertyId: '3e44a93c-eb71-4dfd-8aec-bb825cfdf7dd',
@@ -140,24 +130,24 @@ const dataQueryRequestPaginating: DataQueryRequest<SitewiseNextQuery> = {
       refId: 'A',
       nextToken: 'mock-next-token-value',
       nextTokens: {},
-    }
+    },
   ],
   maxDataPoints: 711,
   scopedVars: {
     __interval: {
       text: '2s',
-      value: '2s'
+      value: '2s',
     },
     __interval_ms: {
       text: '2000',
-      value: 2000
-    }
+      value: 2000,
+    },
   },
   startTime: 1716931789659,
   rangeRaw: {
     from: 'now-30m',
-    to: 'now'
-  }
+    to: 'now',
+  },
 };
 
 // Response with SiteWise next token
@@ -171,49 +161,43 @@ const dataQueryResponsePaginating: DataQueryResponse = {
           name: 'time',
           type: 'time',
           typeInfo: {
-            frame: 'time.Time'
+            frame: 'time.Time',
           },
           config: {},
-          values: [
-            1716931549000
-          ],
-          entities: {}
+          values: [1716931549000],
+          entities: {},
         },
         {
           name: 'RotationsPerSecond',
           type: 'number',
           typeInfo: {
-            frame: 'float64'
+            frame: 'float64',
           },
           config: {
-            unit: 'RPS'
+            unit: 'RPS',
           },
-          values: [
-            1
-          ],
-          entities: {}
+          values: [1],
+          entities: {},
         },
         {
           name: 'quality',
           type: 'string',
           typeInfo: {
-            frame: 'string'
+            frame: 'string',
           },
           config: {},
-          values: [
-            'GOOD'
-          ],
-          entities: {}
-        }
+          values: ['GOOD'],
+          entities: {},
+        },
       ],
       length: 1,
       meta: {
         custom: {
           nextToken: 'mock-next-token-value',
-          resolution: 'RAW'
-        }
+          resolution: 'RAW',
+        },
       },
-    }
+    },
   ],
   state: LoadingState.Done,
 };
@@ -229,46 +213,37 @@ const dataQueryResponseCombined: DataQueryResponse = {
           name: 'time',
           type: 'time',
           typeInfo: {
-            frame: 'time.Time'
+            frame: 'time.Time',
           },
           config: {},
-          values: [
-            1716931549000,
-            1716931550000
-          ],
-          entities: {}
+          values: [1716931549000, 1716931550000],
+          entities: {},
         },
         {
           name: 'RotationsPerSecond',
           type: 'number',
           typeInfo: {
-            frame: 'float64'
+            frame: 'float64',
           },
           config: {
-            unit: 'RPS'
+            unit: 'RPS',
           },
-          values: [
-            1,
-            0.45253960150485795
-          ],
-          entities: {}
+          values: [1, 0.45253960150485795],
+          entities: {},
         },
         {
           name: 'quality',
           type: 'string',
           typeInfo: {
-            frame: 'string'
+            frame: 'string',
           },
           config: {},
-          values: [
-            'GOOD',
-            'GOOD'
-          ],
-          entities: {}
-        }
+          values: ['GOOD', 'GOOD'],
+          entities: {},
+        },
       ],
-      length: 2
-    }
+      length: 2,
+    },
   ],
   state: LoadingState.Done,
 };
@@ -284,10 +259,10 @@ describe('SitewiseQueryPaginator', () => {
         queryFn,
       }).toObservable();
 
-      const firstResponse = queryObservable.pipe(first()).toPromise();
+      const firstResponse = firstValueFrom(queryObservable);
       expect(firstResponse).resolves.toMatchObject(dataQueryResponse);
 
-      const lastResponse = queryObservable.pipe(last()).toPromise();
+      const lastResponse = lastValueFrom(queryObservable);
       expect(lastResponse).resolves.toMatchObject(dataQueryResponse);
 
       await lastResponse;
@@ -306,43 +281,37 @@ describe('SitewiseQueryPaginator', () => {
                 name: 'time',
                 type: 'time',
                 typeInfo: {
-                  frame: 'time.Time'
+                  frame: 'time.Time',
                 },
                 config: {},
-                values: [
-                  1716931540000
-                ],
-                entities: {}
+                values: [1716931540000],
+                entities: {},
               },
               {
                 name: 'RotationsPerSecond',
                 type: 'number',
                 typeInfo: {
-                  frame: 'float64'
+                  frame: 'float64',
                 },
                 config: {
-                  unit: 'RPS'
+                  unit: 'RPS',
                 },
-                values: [
-                  1
-                ],
-                entities: {}
+                values: [1],
+                entities: {},
               },
               {
                 name: 'quality',
                 type: 'string',
                 typeInfo: {
-                  frame: 'string'
+                  frame: 'string',
                 },
                 config: {},
-                values: [
-                  'GOOD'
-                ],
-                entities: {}
-              }
+                values: ['GOOD'],
+                entities: {},
+              },
             ],
-            length: 1
-          }
+            length: 1,
+          },
         ],
         state: LoadingState.Done,
       };
@@ -357,43 +326,37 @@ describe('SitewiseQueryPaginator', () => {
                 name: 'time',
                 type: 'time',
                 typeInfo: {
-                  frame: 'time.Time'
+                  frame: 'time.Time',
                 },
                 config: {},
-                values: [
-                  1716931560000
-                ],
-                entities: {}
+                values: [1716931560000],
+                entities: {},
               },
               {
                 name: 'RotationsPerSecond',
                 type: 'number',
                 typeInfo: {
-                  frame: 'float64'
+                  frame: 'float64',
                 },
                 config: {
-                  unit: 'RPS'
+                  unit: 'RPS',
                 },
-                values: [
-                  3
-                ],
-                entities: {}
+                values: [3],
+                entities: {},
               },
               {
                 name: 'quality',
                 type: 'string',
                 typeInfo: {
-                  frame: 'string'
+                  frame: 'string',
                 },
                 config: {},
-                values: [
-                  'GOOD'
-                ],
-                entities: {}
-              }
+                values: ['GOOD'],
+                entities: {},
+              },
             ],
-            length: 1
-          }
+            length: 1,
+          },
         ],
         state: LoadingState.Done,
       };
@@ -408,49 +371,37 @@ describe('SitewiseQueryPaginator', () => {
                 name: 'time',
                 type: 'time',
                 typeInfo: {
-                  frame: 'time.Time'
+                  frame: 'time.Time',
                 },
                 config: {},
-                values: [
-                  1716931540000,
-                  1716931550000,
-                  1716931560000
-                ],
-                entities: {}
+                values: [1716931540000, 1716931550000, 1716931560000],
+                entities: {},
               },
               {
                 name: 'RotationsPerSecond',
                 type: 'number',
                 typeInfo: {
-                  frame: 'float64'
+                  frame: 'float64',
                 },
                 config: {
-                  unit: 'RPS'
+                  unit: 'RPS',
                 },
-                values: [
-                  1,
-                  0.45253960150485795,
-                  3,
-                ],
-                entities: {}
+                values: [1, 0.45253960150485795, 3],
+                entities: {},
               },
               {
                 name: 'quality',
                 type: 'string',
                 typeInfo: {
-                  frame: 'string'
+                  frame: 'string',
                 },
                 config: {},
-                values: [
-                  'GOOD',
-                  'GOOD',
-                  'GOOD',
-                ],
-                entities: {}
-              }
+                values: ['GOOD', 'GOOD', 'GOOD'],
+                entities: {},
+              },
             ],
-            length: 3
-          }
+            length: 3,
+          },
         ],
         state: LoadingState.Done,
       };
@@ -467,7 +418,7 @@ describe('SitewiseQueryPaginator', () => {
         queryFn,
       }).toObservable();
 
-      const lastResponse = queryObservable.pipe(last()).toPromise();
+      const lastResponse = lastValueFrom(queryObservable);
       expect(lastResponse).resolves.toMatchObject(expectedResponse);
 
       await lastResponse;
@@ -477,7 +428,8 @@ describe('SitewiseQueryPaginator', () => {
 
     it('handles more than 1 page request', async () => {
       const request = dataQueryRequest;
-      const queryFn = jest.fn()
+      const queryFn = jest
+        .fn()
         .mockResolvedValueOnce(dataQueryResponsePaginating)
         .mockResolvedValueOnce(dataQueryResponse);
 
@@ -486,13 +438,13 @@ describe('SitewiseQueryPaginator', () => {
         queryFn,
       }).toObservable();
 
-      const firstResponse = queryObservable.pipe(first()).toPromise();
+      const firstResponse = firstValueFrom(queryObservable);
       expect(firstResponse).resolves.toMatchObject({
         ...dataQueryResponsePaginating,
         state: LoadingState.Streaming,
       });
 
-      const lastResponse = queryObservable.pipe(last()).toPromise();
+      const lastResponse = lastValueFrom(queryObservable);
       expect(lastResponse).resolves.toMatchObject(dataQueryResponseCombined);
 
       await lastResponse;
@@ -503,7 +455,8 @@ describe('SitewiseQueryPaginator', () => {
 
     it('handles error state response and terminate pagination', async () => {
       const request = dataQueryRequest;
-      const queryFn = jest.fn()
+      const queryFn = jest
+        .fn()
         .mockResolvedValueOnce({
           ...dataQueryResponsePaginating,
           state: LoadingState.Error,
@@ -515,13 +468,13 @@ describe('SitewiseQueryPaginator', () => {
         queryFn,
       }).toObservable();
 
-      const firstResponse = queryObservable.pipe(first()).toPromise();
+      const firstResponse = firstValueFrom(queryObservable);
       expect(firstResponse).resolves.toMatchObject({
         ...dataQueryResponsePaginating,
         state: LoadingState.Error,
       });
 
-      const lastResponse = queryObservable.pipe(last()).toPromise();
+      const lastResponse = lastValueFrom(queryObservable);
       expect(lastResponse).resolves.toMatchObject({
         ...dataQueryResponsePaginating,
         state: LoadingState.Error,

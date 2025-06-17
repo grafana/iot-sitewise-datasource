@@ -31,6 +31,7 @@ export function VisualQueryBuilder(props: Props) {
     if (query !== migratedQuery) {
       props.onChange(migratedQuery);
     }
+    // eslint-disable-next-line @typescript-eslint/no-deprecated, react-hooks/exhaustive-deps
   }, [query.assetId, query.propertyId, query.propertyAlias]);
 
   const defaultRegion: SelectableValue<Region> = {

@@ -122,10 +122,10 @@ export function getDefaultAggregate(): AggregateType {
   return AggregateType.COUNT;
 }
 
-export function areAssetsFromSameModel(assets?: (AssetInfo | undefined)[]): boolean {
-  if (!assets || assets.length == 0) {
+export function areAssetsFromSameModel(assets?: Array<AssetInfo | undefined>): boolean {
+  if (!assets || assets.length === 0) {
     return true;
   }
   const assetModelId = assets[0]?.model_id;
-  return assets.every((assetInfo) => assetInfo?.model_id == assetModelId);
+  return assets.every((assetInfo) => assetInfo?.model_id === assetModelId);
 }

@@ -44,8 +44,11 @@ jest.mock('@grafana/runtime', () => ({
     replace: (v: string) => v,
   }),
 }));
+const mockDatasource = new DataSource(instanceSettings);
+mockDatasource.runQuery = jest.fn().mockReturnValue(of({ data: [] }));
+
 const defaultProps: QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions> = {
-  datasource: new DataSource(instanceSettings),
+  datasource: mockDatasource,
   query: { refId: 'A', queryType: QueryType.DescribeAsset },
   onRunQuery: jest.fn(),
   onChange: jest.fn(),

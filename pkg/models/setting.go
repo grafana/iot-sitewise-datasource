@@ -54,18 +54,18 @@ func (s *AWSSiteWiseDataSourceSetting) Validate() error {
 	}
 
 	if s.Endpoint == "" {
-		return fmt.Errorf("Edge region requires an explicit endpoint")
+		return fmt.Errorf("edge region requires an explicit endpoint")
 	}
 	if s.Cert == "" {
-		return fmt.Errorf("Edge region requires an SSL certificate")
+		return fmt.Errorf("edge region requires an SSL certificate")
 	}
 
 	if s.EdgeAuthMode != EDGE_AUTH_MODE_DEFAULT {
 		if s.EdgeAuthUser == "" {
-			return fmt.Errorf("Missing edge auth user")
+			return fmt.Errorf("missing edge auth user")
 		}
 		if s.EdgeAuthPass == "" {
-			return fmt.Errorf("Missing edge auth password")
+			return fmt.Errorf("missing edge auth password")
 		}
 	}
 

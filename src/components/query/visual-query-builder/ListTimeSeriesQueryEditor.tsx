@@ -98,6 +98,7 @@ export const ListTimeSeriesQueryEditorFunction = (props: Props) => {
               'The ID of the asset in which the asset property was created. This can be either the actual ID in UUID format, or else externalId: followed by the external ID, if it has one'
             }
           >
+            {/* eslint-disable-next-line @typescript-eslint/no-deprecated */}
             <Input id="assetId" value={query.assetId} onChange={onAssetIdChange} placeholder="Optional: asset id" />
           </EditorField>
         )}

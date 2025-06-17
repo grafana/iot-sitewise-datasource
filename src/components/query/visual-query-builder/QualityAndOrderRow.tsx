@@ -16,17 +16,17 @@ const QUALITY_OPTIONS = [
   { value: SiteWiseQuality.GOOD, label: 'GOOD' },
   { value: SiteWiseQuality.BAD, label: 'BAD' },
   { value: SiteWiseQuality.UNCERTAIN, label: 'UNCERTAIN' },
-] satisfies SelectableValue<SiteWiseQuality>[];
+] satisfies Array<SelectableValue<SiteWiseQuality>>;
 
 const ORDERING_OPTIONS = [
   { value: SiteWiseTimeOrder.ASCENDING, label: 'ASCENDING' },
   { value: SiteWiseTimeOrder.DESCENDING, label: 'DESCENDING' },
-] satisfies SelectableValue<SiteWiseTimeOrder>[];
+] satisfies Array<SelectableValue<SiteWiseTimeOrder>>;
 
 export const FORMAT_OPTIONS = [
   { label: 'Table', value: SiteWiseResponseFormat.Table },
   { label: 'Time series', value: SiteWiseResponseFormat.TimeSeries },
-] satisfies SelectableValue<SiteWiseResponseFormat>[];
+] satisfies Array<SelectableValue<SiteWiseResponseFormat>>;
 
 export const QualityAndOrderRow = ({ onChange, query }: SitewiseQueryEditorProps) => {
   const onQualityChange = useCallback(

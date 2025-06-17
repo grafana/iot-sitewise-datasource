@@ -64,6 +64,5 @@ func GetExecuteQuery(dq *backend.DataQuery) (*ExecuteQuery, error) {
 	query.Query.Interval = dq.Interval
 	query.Query.TimeRange = dq.TimeRange
 	query.Query.MaxDataPoints = dq.MaxDataPoints
-	query.Query.RawSQL = query.RawSQL
 	return query, nil
 }

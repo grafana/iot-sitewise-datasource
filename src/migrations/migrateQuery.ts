@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-deprecated */
+
 import { SitewiseQuery } from '../types';
 
 const migrateAssetProperty = (query: SitewiseQuery): SitewiseQuery => {
