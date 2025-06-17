@@ -219,13 +219,13 @@ func (ds *Datasource) HandleGetAssetPropertyAggregateQuery(ctx context.Context, 
 }
 
 func (ds *Datasource) HandleGetAssetPropertyValueQuery(ctx context.Context, query *models.AssetPropertyValueQuery) (data.Frames, error) {
-	sw, err := ds.getClient(ctx, query.BaseQuery.AwsRegion)
+	sw, err := ds.getClient(ctx, query.AwsRegion)
 	if err != nil {
 		return nil, err
 	}
 
 	// Batch API is not available at the edge
-	if query.BaseQuery.AwsRegion == EDGE_REGION {
+	if query.AwsRegion == EDGE_REGION {
 		modifiedQuery, fr, err := api.GetAssetPropertyValue(ctx, sw, *query)
 		if err != nil {
 			return nil, err

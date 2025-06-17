@@ -21,7 +21,7 @@ func ListAssociatedAssets(ctx context.Context, client client.SitewiseAPIClient, 
 
 	seenAssetIds := make(map[string]bool)
 
-	for _, assetId := range query.BaseQuery.AssetIds {
+	for _, assetId := range query.AssetIds {
 		assetIdPtr := aws.String(assetId)
 
 		// Recursively load children
