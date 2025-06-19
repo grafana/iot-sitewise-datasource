@@ -1,4 +1,5 @@
-//+build mage
+//go:build mage
+// +build mage
 
 package main
 
@@ -9,9 +10,7 @@ import (
 )
 
 // Default configures the default target.
-func Default() {
-	build.BuildAll()
-}
+var Default = build.BuildAll
 
 // MockGen generates mocks from directives
 func MockGen() error {
