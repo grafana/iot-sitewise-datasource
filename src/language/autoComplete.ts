@@ -1,6 +1,7 @@
 import { languages, IRange } from 'monaco-editor/esm/vs/editor/editor.api';
 import { MACROS } from './macros';
 import { Monaco } from '@grafana/ui';
+import { getTemplateSrv } from '@grafana/runtime';
 
 interface KeyValue {
   [key: string]: string[];
@@ -15,6 +16,7 @@ enum SuggestionType {
   'macros',
   'tables',
   'fields',
+  'variables'
 }
 
 const tableColumns: KeyValue = {
@@ -53,13 +55,14 @@ const tableColumns: KeyValue = {
     'average_value',
     'maximum_value',
     'minimum_value',
-    'stdev_value',
+    'stdev_value'
   ],
 };
 
 interface SitewiseCompletionProviderType extends languages.CompletionItemProvider {
   fetchSuggestions(range: IRange, types: SuggestionType, table: null | string): languages.CompletionItem[];
   tableDefinitions(): SuggestionDefinition[];
+  variableDefinitions(): SuggestionDefinition[];
   fieldDefinitions(table: string): SuggestionDefinition[];
   macroDefinitions(range: IRange): SuggestionDefinition[];
   allDefinitions(range: IRange, table: null | string): SuggestionDefinition[];
@@ -99,9 +102,21 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
 
     const regResult = /from\s(\w+)/g.exec(last_chars);
     const currentTable = regResult === null ? null : regResult[1];
+    const lineText = model.getValueInRange({
+      startLineNumber: position.lineNumber,
+      startColumn: 0,
+      endLineNumber: position.lineNumber,
+      endColumn: position.column,
+    });
+    console.log(' Current line text:', lineText);
+     
+    const isVariableTrigger = lineText.endsWith('${') || lineText.endsWith('$');
+
 
     // Check the last word first (before the current space)
-    if (lastWord === 'from') {
+    if (isVariableTrigger) {
+      suggestionType = [SuggestionType.variables]; 
+    } else if (lastWord === 'from') {
       this.currentToken = 'from';
       suggestionType = [SuggestionType.tables];
     } else if (['where', 'and', 'or'].includes(lastWord)) {
@@ -163,6 +178,9 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
           definitions = this.fieldDefinitions(table);
         }
         break;
+      case SuggestionType.variables: 
+          definitions = definitions.concat(this.variableDefinitions());
+          break;
       default:
         definitions = this.allDefinitions(range, table);
         break;
@@ -205,8 +223,27 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
     });
   },
 
+  variableDefinitions(): SuggestionDefinition[] {
+    try {
+      const templateSrv = getTemplateSrv();
+      const variables = templateSrv.getVariables();
+       console.log('📌 Loaded template variables:', variables);
+    return variables.map((v) => {
+      return {
+        label: v.name,
+        detail: 'Grafana Variable',
+        kind: this.monaco?.languages.CompletionItemKind.Variable ?? 0,
+        insertText: v.name + '}',
+      };
+    });
+    } catch (e) {
+      console.warn('Failed to fetch template variables', e);
+      return [];
+    }
+  },
+
   allDefinitions(range: IRange, table: string): SuggestionDefinition[] {
-    let definitions = this.tableDefinitions().concat(this.macroDefinitions(range));
+    let definitions = this.tableDefinitions().concat(this.macroDefinitions(range)).concat(this.variableDefinitions());;
     if (table != null) {
       definitions = definitions.concat(this.fieldDefinitions(table));
     }
