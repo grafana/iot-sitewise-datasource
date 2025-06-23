@@ -165,7 +165,6 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
    */
   applyTemplateVariables(query: SitewiseQuery, scopedVars: ScopedVars): SitewiseQuery {
     const templateSrv = getTemplateSrv();
-    console.log("=====query====", query)
     const interpolatedQuery = {
       ...query,
       propertyAlias: templateSrv.replace(query.propertyAlias, scopedVars),
@@ -178,30 +177,13 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       resolution: query.resolution
         ? (templateSrv.replace(query.resolution, scopedVars) as SiteWiseResolution)
         : undefined,
-        rawSQL: templateSrv.replace(query.rawSQL, scopedVars, this.customFormatter)
+      rawSQL: templateSrv.replace(query.rawSQL, scopedVars),
     };
-
-    console.log("=====after interpolatedQuery rawSQL====", interpolatedQuery)
     if (isListAssetsQuery(interpolatedQuery)) {
       interpolatedQuery.modelId = templateSrv.replace(interpolatedQuery.modelId, scopedVars);
     }
     return interpolatedQuery;
   }
-  customFormatter = (value: any): string => {
-    if (Array.isArray(value)) {
-      const conditions = value.map((v) => `list_asset = '${v}'`);
-      return conditions.join(' OR ');
-    }
-    return `'${value}'`;
-  };
-
-  // customFormatter = (value: any): string => {
-  // if (Array.isArray(value)) {
-  //   const quoted = value.map((v) => `'${v}'`);
-  //   return `(${quoted.join(', ')})`;
-  //  }
-  //   return `'${value}'`;
-  // };
 
   runQuery(query: SitewiseQuery, maxDataPoints?: number): Observable<DataQueryResponse> {
     // @ts-ignore
