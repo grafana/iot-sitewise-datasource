@@ -222,22 +222,16 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
   },
 
   variableDefinitions(): SuggestionDefinition[] {
-    try {
-      const templateSrv = getTemplateSrv();
-      const variables = templateSrv.getVariables();
-      console.log('📌 Loaded template variables:', variables);
-      return variables.map((v) => {
-        return {
-          label: v.name,
-          detail: 'Grafana Variable',
-          kind: this.monaco?.languages.CompletionItemKind.Variable ?? 0,
-          insertText: v.name + '}',
-        };
-      });
-    } catch (e) {
-      console.warn('Failed to fetch template variables', e);
-      return [];
-    }
+    const templateSrv = getTemplateSrv();
+    const variables = templateSrv.getVariables();
+    return variables.map((v) => {
+      return {
+        label: v.name,
+        detail: 'Grafana Variable',
+        kind: this.monaco?.languages.CompletionItemKind.Variable ?? 0,
+        insertText: v.name + '}',
+      };
+    });
   },
 
   allDefinitions(range: IRange, table: string): SuggestionDefinition[] {
