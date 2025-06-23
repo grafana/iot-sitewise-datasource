@@ -16,7 +16,7 @@ enum SuggestionType {
   'macros',
   'tables',
   'fields',
-  'variables'
+  'variables',
 }
 
 const tableColumns: KeyValue = {
@@ -55,7 +55,7 @@ const tableColumns: KeyValue = {
     'average_value',
     'maximum_value',
     'minimum_value',
-    'stdev_value'
+    'stdev_value',
   ],
 };
 
@@ -108,14 +108,12 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
       endLineNumber: position.lineNumber,
       endColumn: position.column,
     });
-    console.log(' Current line text:', lineText);
-     
-    const isVariableTrigger = lineText.endsWith('${') || lineText.endsWith('$');
 
+    const isVariableTrigger = lineText.endsWith('${') || lineText.endsWith('$');
 
     // Check the last word first (before the current space)
     if (isVariableTrigger) {
-      suggestionType = [SuggestionType.variables]; 
+      suggestionType = [SuggestionType.variables];
     } else if (lastWord === 'from') {
       this.currentToken = 'from';
       suggestionType = [SuggestionType.tables];
@@ -178,9 +176,9 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
           definitions = this.fieldDefinitions(table);
         }
         break;
-      case SuggestionType.variables: 
-          definitions = definitions.concat(this.variableDefinitions());
-          break;
+      case SuggestionType.variables:
+        definitions = definitions.concat(this.variableDefinitions());
+        break;
       default:
         definitions = this.allDefinitions(range, table);
         break;
@@ -227,15 +225,15 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
     try {
       const templateSrv = getTemplateSrv();
       const variables = templateSrv.getVariables();
-       console.log('📌 Loaded template variables:', variables);
-    return variables.map((v) => {
-      return {
-        label: v.name,
-        detail: 'Grafana Variable',
-        kind: this.monaco?.languages.CompletionItemKind.Variable ?? 0,
-        insertText: v.name + '}',
-      };
-    });
+      console.log('📌 Loaded template variables:', variables);
+      return variables.map((v) => {
+        return {
+          label: v.name,
+          detail: 'Grafana Variable',
+          kind: this.monaco?.languages.CompletionItemKind.Variable ?? 0,
+          insertText: v.name + '}',
+        };
+      });
     } catch (e) {
       console.warn('Failed to fetch template variables', e);
       return [];
@@ -243,7 +241,7 @@ export const SitewiseCompletionProvider: SitewiseCompletionProviderType = {
   },
 
   allDefinitions(range: IRange, table: string): SuggestionDefinition[] {
-    let definitions = this.tableDefinitions().concat(this.macroDefinitions(range)).concat(this.variableDefinitions());;
+    let definitions = this.tableDefinitions().concat(this.macroDefinitions(range)).concat(this.variableDefinitions());
     if (table != null) {
       definitions = definitions.concat(this.fieldDefinitions(table));
     }
