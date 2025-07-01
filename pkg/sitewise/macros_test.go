@@ -72,7 +72,7 @@ func TestMacros(t *testing.T) {
 				},
 			},
 			args:        []string{},
-			expected:    "1672531200",
+			expected:    "TIMESTAMP '2023-01-01 00:00:00'",
 			expectedErr: nil,
 		},
 		// RawTimeFrom
@@ -86,7 +86,7 @@ func TestMacros(t *testing.T) {
 				},
 			},
 			args:        []string{},
-			expected:    "1672617600",
+			expected:    "TIMESTAMP '2023-01-02 00:00:00'",
 			expectedErr: nil,
 		},
 		// UnixEpochFilter
@@ -100,7 +100,7 @@ func TestMacros(t *testing.T) {
 				},
 			},
 			args:        []string{"timestamp"},
-			expected:    "timestamp >= 1672531200 and timestamp <= 1672617600",
+			expected:    "timestamp >= TIMESTAMP '2023-01-01 00:00:00' and timestamp <= TIMESTAMP '2023-01-02 00:00:00'",
 			expectedErr: nil,
 		},
 		{
