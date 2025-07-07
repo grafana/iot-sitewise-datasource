@@ -9,9 +9,11 @@ import {
 } from '@grafana/data';
 import { SitewiseOptions, SitewiseSecureJsonData } from '../types';
 import { ConnectionConfig, ConnectionConfigProps, Divider } from '@grafana/aws-sdk';
-import { Alert, Button, Field, Input, Select } from '@grafana/ui';
+import { config } from '@grafana/runtime';
+import { Alert, Button, Field, Input, SecureSocksProxySettings, Select } from '@grafana/ui';
 import { supportedRegions } from '../regions';
 import { ConfigSection } from '@grafana/plugin-ui';
+import { gte } from 'semver';
 
 // safely remove readonly to please prop types expecting mutable list
 const standardRegions = supportedRegions.map((r) => r);
@@ -31,7 +33,10 @@ export function ConfigEditor(props: Props) {
 
   return (
     <div className="width-30">
-      <ConnectionConfig {...props} standardRegions={standardRegions} />{' '}
+      <ConnectionConfig {...props} standardRegions={standardRegions} />
+      {config.secureSocksDSProxyEnabled && gte(config.buildInfo.version, '10.0.0') && (
+        <SecureSocksProxySettings options={props.options} onOptionsChange={props.onOptionsChange} />
+      )}
     </div>
   );
 }
@@ -178,6 +183,9 @@ function EdgeConfig(props: Props) {
           )}
         </Field>
       </ConfigSection>
+      {config.secureSocksDSProxyEnabled && gte(config.buildInfo.version, '10.0.0') && (
+        <SecureSocksProxySettings options={props.options} onOptionsChange={props.onOptionsChange} />
+      )}
     </div>
   );
 }
