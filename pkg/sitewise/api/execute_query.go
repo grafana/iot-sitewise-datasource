@@ -5,14 +5,14 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
-
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
 func ExecuteQuery(ctx context.Context, client iotsitewise.ExecuteQueryAPIClient, query models.ExecuteQuery) (*framer.QueryResults, error) {
-	backend.Logger.FromContext(ctx).Debug("Running ExecuteQuery", "query", query.RawSQL)
+	backend.Logger.FromContext(ctx).Debug("Running ExecuteQuery", "query", util.TimestampToDate(query.RawSQL, &query.Query.TimeRange))
 	input := &iotsitewise.ExecuteQueryInput{
 		QueryStatement: aws.String(query.RawSQL),
 		MaxResults:     aws.Int32(2000),
