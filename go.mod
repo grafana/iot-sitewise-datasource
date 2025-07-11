@@ -5,7 +5,7 @@ go 1.24.4
 require (
 	github.com/aws/aws-sdk-go-v2 v1.36.5
 	github.com/aws/aws-sdk-go-v2/config v1.29.17
-	github.com/aws/aws-sdk-go-v2/service/iotsitewise v1.47.0
+	github.com/aws/aws-sdk-go-v2/service/iotsitewise v1.47.3
 	github.com/aws/smithy-go v1.22.4
 	github.com/google/go-cmp v0.7.0
 	github.com/grafana/grafana-aws-sdk v1.0.5
@@ -18,7 +18,7 @@ require (
 
 require (
 	github.com/apache/arrow-go/v18 v18.3.0 // indirect
-	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.10 // indirect
+	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.11 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.70 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.32 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.3.36 // indirect
@@ -122,7 +122,7 @@ require (
 	go.opentelemetry.io/proto/otlp v1.6.0 // indirect
 	golang.org/x/mod v0.25.0 // indirect
 	golang.org/x/net v0.41.0 // indirect
-	golang.org/x/sync v0.15.0
+	golang.org/x/sync v0.16.0
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/text v0.26.0 // indirect
 	golang.org/x/tools v0.33.0 // indirect
