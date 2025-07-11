@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.3.0
+
+- fix interpolated property value next token in [#506](https://github.com/grafana/iot-sitewise-datasource/pull/506)
+- Remove pr_commands in [#505](https://github.com/grafana/iot-sitewise-datasource/pull/505)
+- Add PDC Support in [#491](https://github.com/grafana/iot-sitewise-datasource/pull/491)
+- Chore: Update CONTRIBUTING.md with release instructions in [#496](https://github.com/grafana/iot-sitewise-datasource/pull/496)
+- Chore: Migrate to Github actions + migrate to eslintv9 in [#493](https://github.com/grafana/iot-sitewise-datasource/pull/493)
+- Migrate to aws-sdk-go-v2 in [#402](https://github.com/grafana/iot-sitewise-datasource/pull/402)
+
 ## 2.2.1
 
 - chore(deps): bump the all-go-dependencies group with 2 updates in [#478](https://github.com/grafana/iot-sitewise-datasource/pull/478)
