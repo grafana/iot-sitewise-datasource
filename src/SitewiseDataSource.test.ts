@@ -62,6 +62,7 @@ describe('Sitewise Datasource', () => {
         resolution: '${resolution}' as SiteWiseResolution,
         region: '',
         propertyId: '',
+        rawSQL: '',
       };
 
       expect(
@@ -86,6 +87,7 @@ describe('Sitewise Datasource', () => {
         propertyAliases: [],
         region: '',
         propertyId: '',
+        rawSQL: '',
       };
 
       expect(datasource.applyTemplateVariables(query, {} as ScopedVars)).toEqual({
@@ -106,6 +108,7 @@ describe('Sitewise Datasource', () => {
         propertyAliases: [],
         region: '',
         propertyId: '',
+        rawSQL: '',
       };
 
       expect(datasource.applyTemplateVariables(query, {} as ScopedVars)).toEqual({
@@ -126,6 +129,7 @@ describe('Sitewise Datasource', () => {
         propertyAliases: [],
         region: '',
         propertyId: '',
+        rawSQL: '',
       };
 
       expect(datasource.applyTemplateVariables(query, {} as ScopedVars)).toEqual({
@@ -146,6 +150,7 @@ describe('Sitewise Datasource', () => {
         propertyAliases: [],
         region: '',
         propertyId: '',
+        rawSQL: '',
       };
 
       expect(
@@ -170,6 +175,7 @@ describe('Sitewise Datasource', () => {
         propertyAliases: [],
         region: '',
         propertyId: '',
+        rawSQL: '',
       };
 
       expect(
@@ -179,6 +185,78 @@ describe('Sitewise Datasource', () => {
       ).toEqual({
         ...query,
         assetIds: ['scopedValueConstant', 'noVar', 'array1', 'array2', 'array3'],
+      });
+    });
+
+    it('should replace single-select variable in rawSQL using assetIdConstant', async () => {
+      const datasource = new DataSource(testInstanceSettings());
+      const query: SitewiseQuery = {
+        refId: 'RefA',
+        queryType: QueryType.ExecuteQuery,
+        assetId: '',
+        assetIds: [],
+        propertyIds: [],
+        propertyAlias: '',
+        propertyAliases: [],
+        region: '',
+        propertyId: '',
+        rawSQL: "SELECT * FROM table WHERE assetId = '${assetIdConstant}'",
+      };
+
+      expect(
+        datasource.applyTemplateVariables(query, {
+          assetIdConstant: { text: 'singleAsset', value: 'singleAsset' },
+        })
+      ).toEqual({
+        ...query,
+        rawSQL: "SELECT * FROM table WHERE assetId = 'singleAsset'",
+      });
+    });
+
+    it('should replace multi-select variable in rawSQL', async () => {
+      const datasource = new DataSource(testInstanceSettings());
+      const query: SitewiseQuery = {
+        refId: 'RefA',
+        queryType: QueryType.ExecuteQuery,
+        assetId: '',
+        assetIds: [],
+        propertyIds: [],
+        propertyAlias: '',
+        propertyAliases: [],
+        region: '',
+        propertyId: '',
+        rawSQL: 'SELECT * FROM table WHERE assetId IN (${assetIdArray})',
+      };
+
+      expect(datasource.applyTemplateVariables(query, {} as ScopedVars)).toEqual({
+        ...query,
+        rawSQL: 'SELECT * FROM table WHERE assetId IN (array1,array2,array3)',
+      });
+    });
+
+    it('should correctly replace multiple variables in rawSQL', async () => {
+      const datasource = new DataSource(testInstanceSettings());
+      const query: SitewiseQuery = {
+        refId: 'RefA',
+        queryType: QueryType.ExecuteQuery,
+        assetId: '',
+        assetIds: [],
+        propertyIds: [],
+        propertyAlias: '',
+        propertyAliases: [],
+        region: '',
+        propertyId: '',
+        rawSQL: 'SELECT * FROM table WHERE id = ${assetIdConstant} AND region = ${region}',
+      };
+
+      expect(
+        datasource.applyTemplateVariables(query, {
+          assetIdConstant: { text: 'sqlValue', value: 'sqlValue' },
+          region: { text: 'us-east-1', value: 'us-east-1' },
+        })
+      ).toEqual({
+        ...query,
+        rawSQL: 'SELECT * FROM table WHERE id = sqlValue AND region = us-east-1',
       });
     });
   });
