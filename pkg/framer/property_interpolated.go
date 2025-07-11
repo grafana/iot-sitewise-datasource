@@ -69,7 +69,7 @@ func (p InterpolatedAssetPropertyValue) Frame(ctx context.Context, property *iot
 	}
 	frame.Meta = &data.FrameMeta{
 		Custom: models.SitewiseCustomMeta{
-			NextToken:  *p.Responses[entryId].NextToken,
+			NextToken:  util.Dereference(p.Responses[entryId].NextToken),
 			EntryId:    entryId,
 			Resolution: p.Query.Resolution,
 		},

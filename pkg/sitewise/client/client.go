@@ -241,7 +241,7 @@ func (c *SitewiseClient) BatchGetAssetPropertyAggregatesPageAggregation(ctx cont
 
 func GetHTTPClient(settings models.AWSSiteWiseDataSourceSetting) (*http.Client, error) {
 	if settings.Region != models.EDGE_REGION {
-		return nil, nil
+		return &http.Client{}, nil
 	}
 
 	pool, _ := x509.SystemCertPool()
