@@ -97,6 +97,7 @@
     "awsauth",
     "httpclient",
     "propid",
-    "smithyhttp"
+    "smithyhttp",
+    "eslintv"
   ]
 }
