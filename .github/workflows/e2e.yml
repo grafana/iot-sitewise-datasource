@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: 
+        with:
           persist-credentials: false
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
@@ -76,3 +76,19 @@ jobs:
       - name: Run E2E tests
         id: run-tests
         run: yarn run e2e
+
+  check-playwright-status:
+    needs: playwright-tests
+    name: Check Playwright E2E matrix status
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Check matrix job status
+        # This step will fail if any of the matrix jobs failed
+        run: |
+          if [ "${{ contains(needs.playwright-tests.result, 'failure') }}" = "true" ]; then
+            echo "One or more jobs in the E2E testing matrix failed"
+            exit 1
+          else
+            echo "All E2E test jobs succeeded"
+          fi
