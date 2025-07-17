@@ -1,6 +1,11 @@
 import { dirname } from 'path';
 import { defineConfig, devices } from '@playwright/test';
 import { PluginOptions } from '@grafana/plugin-e2e';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Read from ".env" file.
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 const pluginE2eAuth = `${dirname(require.resolve('@grafana/plugin-e2e'))}/auth`;
 
@@ -21,7 +26,7 @@ export default defineConfig<PluginOptions>({
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:3000',
-    trace: 'on-first-retry'
+    trace: 'on-first-retry',
   },
 
   projects: [
