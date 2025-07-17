@@ -35,7 +35,7 @@ jobs:
       environment: ${{ github.event.inputs.environment }}
       docs-only: ${{ fromJSON(github.event.inputs.docs-only) }}
       golangci-lint-version: '2.1.6'
-      playwright-secrets: 
+      playwright-secrets: |
         AWS_ACCESS_KEY=e2e:AWS_ACCESS_KEY
         AWS_SECRET_KEY=e2e:AWS_SECRET_KEY
 

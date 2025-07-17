@@ -1,5 +1,10 @@
 import { test, expect, ReadProvisionedDataSourceArgs, DataSourceSettings } from '@grafana/plugin-e2e';
 import { SitewiseOptions, SitewiseSecureJsonData } from '../src/types';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Read from ".env" file.
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 test.describe('ConfigEditor', () => {
   test('invalid credentials should return a 400 status code', async ({
