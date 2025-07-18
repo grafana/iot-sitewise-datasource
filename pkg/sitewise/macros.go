@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/grafana/grafana-plugin-sdk-go/data/sqlutil"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 	"github.com/pkg/errors"
 )
 
@@ -62,11 +63,11 @@ func macroSelectAll(query *sqlutil.Query, args []string) (string, error) {
 }
 
 func macroTimeFrom(query *sqlutil.Query, args []string) (string, error) {
-	return fmt.Sprintf("%d", query.TimeRange.From.UTC().Unix()), nil
+	return fmt.Sprintf("TIMESTAMP '%s'", util.GetFormattedTimeRange(query.TimeRange.From)), nil
 }
 
 func macroTimeTo(query *sqlutil.Query, args []string) (string, error) {
-	return fmt.Sprintf("%d", query.TimeRange.To.UTC().Unix()), nil
+	return fmt.Sprintf("TIMESTAMP '%s'", util.GetFormattedTimeRange(query.TimeRange.To)), nil
 }
 
 func macroTimeFilter(query *sqlutil.Query, args []string) (string, error) {
@@ -76,11 +77,11 @@ func macroTimeFilter(query *sqlutil.Query, args []string) (string, error) {
 
 	var (
 		column = args[0]
-		from   = query.TimeRange.From.UTC().Unix()
-		to     = query.TimeRange.To.UTC().Unix()
+		from   = util.GetFormattedTimeRange(query.TimeRange.From)
+		to     = util.GetFormattedTimeRange(query.TimeRange.To)
 	)
 
-	return fmt.Sprintf("%s >= %d and %s <= %d", column, from, column, to), nil
+	return fmt.Sprintf("%s >= TIMESTAMP '%s' and %s <= TIMESTAMP '%s'", column, from, column, to), nil
 }
 
 func macroAutoResolution(query *sqlutil.Query, args []string) (string, error) {
