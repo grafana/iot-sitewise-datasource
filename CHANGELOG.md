@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.3.1
+
+- Chore: Add donwstream error for failed requests and unmarshalling
+
 ## 2.3.0
 
 - fix interpolated property value next token in [#506](https://github.com/grafana/iot-sitewise-datasource/pull/506)
