@@ -44,7 +44,8 @@ func DataResponseErrorUnmarshal(err error) backend.DataResponse {
 
 func DataResponseErrorRequestFailed(err error) backend.DataResponse {
 	return backend.DataResponse{
-		Error: errors.Wrap(err, "failed to fetch query data"),
+		Error:       errors.Wrap(err, "failed to fetch query data"),
+		ErrorSource: backend.ErrorSourceDownstream,
 	}
 }
 

@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.3.1
+
+- Add support for auto-merging dependabot updates in [#497](https://github.com/grafana/iot-sitewise-datasource/pull/497)
+- chore(deps): bump github.com/aws/aws-sdk-go-v2/service/iotsitewise from 1.47.0 to 1.47.3 in [#510](https://github.com/grafana/iot-sitewise-datasource/pull/510)
+- chore(deps): bump the grafana-dependencies group with 4 updates in [#514](https://github.com/grafana/iot-sitewise-datasource/pull/514)
+- chore(deps-dev): bump prettier from 3.5.3 to 3.6.2 in [#516](https://github.com/grafana/iot-sitewise-datasource/pull/516)
+- chore(deps-dev): bump sass from 1.88.0 to 1.89.2 in [#513](https://github.com/grafana/iot-sitewise-datasource/pull/513)
+- chore(deps-dev): bump webpack from 5.99.8 to 5.100.2 in [#515](https://github.com/grafana/iot-sitewise-datasource/pull/515)
+- chore(deps): bump golang.org/x/sync from 0.15.0 to 0.16.0 in [#511](https://github.com/grafana/iot-sitewise-datasource/pull/511)
+- Run e2e tests with plugin workflows in [#519](https://github.com/grafana/iot-sitewise-datasource/pull/519)
+- Added support for grafana variables in executeQuery requests and auto suggestion grafana variables in [#501](http://github.com/grafana/iot-sitewise-datasource/pull/501)
+- Changed the time value from timestamp to date in macros in [#495](https://github.com/grafana/iot-sitewise-datasource/pull/495)
+- chore(deps-dev): bump eslint-plugin-jsdoc from 50.6.14 to 51.4.1 in [#522](https://github.com/grafana/iot-sitewise-datasource/pull/522)
+- Chore: Add downstream error for failed requests and unmarshalling in [#539](https://github.com/grafana/iot-sitewise-datasource/pull/539)
+
 ## 2.3.0
 
 - fix interpolated property value next token in [#506](https://github.com/grafana/iot-sitewise-datasource/pull/506)
