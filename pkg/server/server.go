@@ -39,7 +39,6 @@ type QueryHandlerFunc func(context.Context, *backend.QueryDataRequest, backend.D
 func DataResponseErrorUnmarshal(err error) backend.DataResponse {
 	return backend.DataResponse{
 		Error: errors.Wrap(err, "failed to unmarshal JSON request into query"),
-		ErrorSource: backend.ErrorSourceDownstream,
 	}
 }
 
