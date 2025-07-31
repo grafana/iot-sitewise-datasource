@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2.3.1
 
-- Chore: Add donwstream error for failed requests and unmarshalling
+- Chore: Add downstream error for failed requests and unmarshalling
 
 ## 2.3.0
 
