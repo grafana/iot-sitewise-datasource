@@ -14,7 +14,7 @@ import { isListAssetsQuery, isPropertyQueryType, SitewiseOptions, SitewiseQuery,
 import { lastValueFrom, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { frameToMetricFindValues } from 'utils';
-import { applyVariableForList, SitewiseVariableSupport } from 'variables';
+import { applyVariableForList, SitewiseVariableSupport, variableFormatter } from 'variables';
 import { SitewiseQueryPaginator } from 'SiteWiseQueryPaginator';
 import { RelativeRangeCache } from 'RelativeRangeRequestCache/RelativeRangeCache';
 import { DEFAULT_REGION, isSupportedRegion, type Region } from './regions';
@@ -178,7 +178,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       resolution: query.resolution
         ? (templateSrv.replace(query.resolution, scopedVars) as SiteWiseResolution)
         : undefined,
-      rawSQL: templateSrv.replace(query.rawSQL, scopedVars),
+      rawSQL: templateSrv.replace(query.rawSQL, scopedVars, variableFormatter),
     };
     if (isListAssetsQuery(interpolatedQuery)) {
       interpolatedQuery.modelId = templateSrv.replace(interpolatedQuery.modelId, scopedVars);

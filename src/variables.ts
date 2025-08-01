@@ -92,3 +92,19 @@ export const getSelectableTemplateVariables = () => {
 export const applyVariableForList = (templateSrv: TemplateSrv, scopedVars: ScopedVars, list?: string[]) => {
   return list?.flatMap((item) => templateSrv.replace(item, scopedVars, 'csv').split(',')) ?? [];
 };
+
+/**
+ * Formats a single value or array of values into a SQL-compatible string.
+ * - Strings and other types are wrapped in single quotes.
+ * - Arrays are formatted as a comma-separated list inside parentheses.
+ *
+ * @param value - A single value or an array of values (string | number).
+ * @returns A SQL-formatted string.
+ */
+export const variableFormatter = (value: any): string => {
+  if (Array.isArray(value)) {
+    const quoted = value.map((v) => `'${v}'`);
+    return `(${quoted.join(', ')})`;
+  }
+  return `'${value}'`;
+};

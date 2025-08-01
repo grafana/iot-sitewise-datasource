@@ -99,6 +99,10 @@
     "propid",
     "smithyhttp",
     "eslintv",
-    "cooldown"
+    "cooldown",
+    "LTRIM",
+    "RTRIM",
+    "TRIM",
+    "smhd"
   ]
 }
