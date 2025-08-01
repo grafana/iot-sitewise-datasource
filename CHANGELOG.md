@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.3.2 
+
+- chore(deps-dev): bump @playwright/test from 1.52.0 to 1.54.0 in [#533](https://github.com/grafana/iot-sitewise-datasource/pull/533)
+
 ## 2.3.1
 
 - Add support for auto-merging dependabot updates in [#497](https://github.com/grafana/iot-sitewise-datasource/pull/497)
