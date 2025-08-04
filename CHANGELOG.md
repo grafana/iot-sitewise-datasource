@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.3.3
+
+- Temporarily disable playwright workflow in CD
+
 ## 2.3.2 
 
 - chore(deps-dev): bump @playwright/test from 1.52.0 to 1.54.0 in [#533](https://github.com/grafana/iot-sitewise-datasource/pull/533)
