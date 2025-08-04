@@ -2,14 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
-## 2.3.3
-
-- Rerelease 2.3.2 as 2.3.3
-
-## 2.3.2 
-
-- chore(deps-dev): bump @playwright/test from 1.52.0 to 1.54.0 in [#533](https://github.com/grafana/iot-sitewise-datasource/pull/533)
-
 ## 2.3.1
 
 - Add support for auto-merging dependabot updates in [#497](https://github.com/grafana/iot-sitewise-datasource/pull/497)
@@ -18,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - chore(deps-dev): bump prettier from 3.5.3 to 3.6.2 in [#516](https://github.com/grafana/iot-sitewise-datasource/pull/516)
 - chore(deps-dev): bump sass from 1.88.0 to 1.89.2 in [#513](https://github.com/grafana/iot-sitewise-datasource/pull/513)
 - chore(deps-dev): bump webpack from 5.99.8 to 5.100.2 in [#515](https://github.com/grafana/iot-sitewise-datasource/pull/515)
+- chore(deps-dev): bump @playwright/test from 1.52.0 to 1.54.0 in [#533](https://github.com/grafana/iot-sitewise-datasource/pull/533)
 - chore(deps): bump golang.org/x/sync from 0.15.0 to 0.16.0 in [#511](https://github.com/grafana/iot-sitewise-datasource/pull/511)
 - Run e2e tests with plugin workflows in [#519](https://github.com/grafana/iot-sitewise-datasource/pull/519)
 - Added support for grafana variables in executeQuery requests and auto suggestion grafana variables in [#501](http://github.com/grafana/iot-sitewise-datasource/pull/501)
