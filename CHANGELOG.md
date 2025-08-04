@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2.3.3
 
-- Temporarily disable playwright workflow in CD
+- Rerelease 2.3.2 as 2.3.3
 
 ## 2.3.2 
 
