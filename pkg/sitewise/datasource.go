@@ -102,6 +102,13 @@ func (ds *Datasource) Authenticate() error {
 }
 
 func (ds *Datasource) getClient(ctx context.Context, region string) (client.SitewiseAPIClient, error) {
+	if region == "" || region == "default" {
+		if ds.cfg.Region == "" {
+			return nil, errors.New("region is not set in datasource settings")
+		}
+		region = ds.cfg.Region
+
+	}
 	if ds.GetClient != nil {
 		return ds.GetClient(ctx, region)
 	}

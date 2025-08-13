@@ -2,8 +2,6 @@ package server
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"math"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
@@ -13,53 +11,10 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 )
 
-func getErrorResponse(err error) *backend.QueryDataResponse {
-	resp := backend.Responses{
-		"A": backend.DataResponse{
-			Error: err,
-		},
-	}
-	return &backend.QueryDataResponse{Responses: resp}
-}
-
 func processQueries(ctx context.Context, req *backend.QueryDataRequest, handler QueryHandlerFunc) *backend.QueryDataResponse {
 	res := backend.Responses{}
-
-	var datasourceJsonData struct {
-		DefaultRegion string `json:"defaultRegion"`
-	}
-
-	defaultRegion := ""
-	if req.PluginContext.DataSourceInstanceSettings != nil &&
-		req.PluginContext.DataSourceInstanceSettings.JSONData != nil {
-
-		if err := json.Unmarshal(req.PluginContext.DataSourceInstanceSettings.JSONData, &datasourceJsonData); err != nil {
-			return getErrorResponse(errors.New("failed to unmarshal datasource JSON data: " + err.Error()))
-		}
-		if datasourceJsonData.DefaultRegion != "" {
-			defaultRegion = datasourceJsonData.DefaultRegion
-		} else {
-			return getErrorResponse(errors.New("Invalid query: default region is not set in datasource settings"))
-		}
-	}
-
-	for _, q := range req.Queries {
-		var queryJSON map[string]interface{}
-
-		if err := json.Unmarshal(q.JSON, &queryJSON); err != nil {
-			return getErrorResponse(errors.New("failed to unmarshal query JSON: " + err.Error()))
-		}
-		region, ok := queryJSON["region"].(string)
-		if !ok || region == "" || region == "default" {
-			queryJSON["region"] = defaultRegion
-		}
-
-		mqJSON, err := json.Marshal(queryJSON)
-		if err != nil {
-			return getErrorResponse(errors.New("failed to marshal query JSON: " + err.Error()))
-		}
-		q.JSON = mqJSON
-		res[q.RefID] = handler(ctx, req, q)
+	for _, v := range req.Queries {
+		res[v.RefID] = handler(ctx, req, v)
 	}
 
 	return &backend.QueryDataResponse{
