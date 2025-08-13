@@ -115,12 +115,12 @@ export function VisualQueryBuilder(props: Props) {
             </EditorField>
             <EditorField label="Region" width={15}>
               <Select
+                isClearable={false}
                 options={regions}
                 value={regionOptions.find((v) => v.value === query.region) || defaultRegion}
                 onChange={onRegionChange}
                 backspaceRemovesValue={true}
                 allowCustomValue={true}
-                isClearable={true}
                 menuPlacement="auto"
               />
             </EditorField>

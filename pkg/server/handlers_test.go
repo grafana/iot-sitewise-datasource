@@ -2,6 +2,8 @@ package server
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"reflect"
 	"testing"
 
@@ -109,6 +111,70 @@ func TestHandlerExecution(t *testing.T) {
 			}
 			mockClient := client.(*mocks.SitewiseAPIClient)
 			mockClient.AssertCalled(t, tt.handler_method, tt.called_args...)
+		})
+	}
+}
+
+func TestProcessQueries_SetsDefaultRegion(t *testing.T) {
+	ctx := context.Background()
+	defaultRegion := "us-east-2"
+
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			name:     "no region set",
+			input:    `{"assetIds": ["asset-1"]}`,
+			expected: defaultRegion,
+		},
+		{
+			name:     "empty region",
+			input:    `{"region": "", "assetIds": ["asset-1"]}`,
+			expected: defaultRegion,
+		},
+		{
+			name:     "default region",
+			input:    `{"region": "default", "assetIds": ["asset-1"]}`,
+			expected: defaultRegion,
+		},
+		{
+			name:     "non-empty region is preserved",
+			input:    `{"region": "eu-west-2", "assetIds": ["asset-1"]}`,
+			expected: "eu-west-2",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var capturedQuery backend.DataQuery
+			handler := func(_ context.Context, _ *backend.QueryDataRequest, q backend.DataQuery) backend.DataResponse {
+				capturedQuery = q
+				return backend.DataResponse{}
+			}
+
+			req := &backend.QueryDataRequest{
+				PluginContext: backend.PluginContext{
+					DataSourceInstanceSettings: &backend.DataSourceInstanceSettings{
+						JSONData: []byte(fmt.Sprintf(`{"defaultRegion": "%s"}`, defaultRegion)),
+					},
+				},
+				Queries: []backend.DataQuery{
+					{
+						RefID: "A",
+						JSON:  []byte(tt.input),
+					},
+				},
+			}
+
+			processQueries(ctx, req, handler)
+
+			var queryMap map[string]interface{}
+			err := json.Unmarshal(capturedQuery.JSON, &queryMap)
+			require.NoError(t, err)
+
+			require.Equal(t, tt.expected, queryMap["region"])
 		})
 	}
 }
