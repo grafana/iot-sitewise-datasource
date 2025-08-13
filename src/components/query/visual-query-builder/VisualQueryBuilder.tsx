@@ -37,7 +37,7 @@ export function VisualQueryBuilder(props: Props) {
   const defaultRegion: SelectableValue<Region> = {
     label: `Default`,
     description: datasource.options?.defaultRegion,
-    value: undefined,
+    value: 'default',
   };
   const regions = query.region ? [defaultRegion, ...regionOptions] : regionOptions;
   const currentQueryType = siteWiseQueryTypes.find((v) => v.value === query.queryType);
