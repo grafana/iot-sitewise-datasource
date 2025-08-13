@@ -20,12 +20,12 @@ export const supportedRegions = [
 ] as const;
 
 // backend is configured to use the user's configured default region when /query
-// is called with an empty string for the region
-export const DEFAULT_REGION = '';
+// is called with "default" region or empty string
+export const DEFAULT_REGION = 'default';
 
 export type DefaultRegion = typeof DEFAULT_REGION;
 
-export type Region = (typeof supportedRegions)[number] | DefaultRegion;
+export type Region = (typeof supportedRegions)[number] | DefaultRegion | '';
 
 export const regionOptions = supportedRegions.map((v) => ({
   value: v,

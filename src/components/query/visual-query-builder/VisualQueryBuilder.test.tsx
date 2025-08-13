@@ -234,7 +234,7 @@ describe('VisualQueryBuilder', () => {
       }
     );
 
-    const clearButton = (await screen.findAllByRole('button', { name: 'Clear value' }))[1];
+    const clearButton = (await screen.findAllByRole('button', { name: 'Clear value' }))[0];
     expect(clearButton).toBeInTheDocument();
     await userEvent.click(clearButton);
 
@@ -261,7 +261,7 @@ describe('VisualQueryBuilder', () => {
       }
     );
 
-    const clearButton = (await screen.findAllByRole('button', { name: 'Clear value' }))[1];
+    const clearButton = (await screen.findAllByRole('button', { name: 'Clear value' }))[0];
     expect(clearButton).toBeInTheDocument();
     await userEvent.click(clearButton);
 
