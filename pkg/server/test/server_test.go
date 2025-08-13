@@ -8,6 +8,8 @@ import (
 
 	"github.com/patrickmn/go-cache"
 
+	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/server"
 
 	"github.com/grafana/grafana-plugin-sdk-go/experimental"
@@ -50,6 +52,11 @@ func mockedDatasource(swmock *mocks.SitewiseAPIClient) server.Datasource {
 	// FIXME: GetClient isn't called
 	// FIXME: need a way to add EdgeAuthenticator
 	return &sitewise.Datasource{
+		Cfg: models.AWSSiteWiseDataSourceSetting{
+			AWSDatasourceSettings: awsds.AWSDatasourceSettings{
+				Region: "us-west-2",
+			},
+		},
 		GetClient: func(_ context.Context, _ string) (client.SitewiseAPIClient, error) {
 			return swmock, nil
 		},
