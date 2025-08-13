@@ -1,7 +1,7 @@
 import { CoreApp, DataQueryRequest, DataSourceInstanceSettings, dateTime } from '@grafana/data';
 import { DataSource } from 'SitewiseDataSource';
 import { QueryType, SitewiseOptions, SitewiseQuery } from 'types';
-import { SitewiseVariableSupport } from 'variables';
+import { variableFormatter, SitewiseVariableSupport } from 'variables';
 import { of } from 'rxjs';
 
 const request: DataQueryRequest<SitewiseQuery> = {
@@ -55,5 +55,23 @@ describe('SiteWiseVariableSupport', () => {
       variableSupport.query({ ...request, targets: [query] });
       expect(mockedDatasourceQuery).toHaveBeenCalled();
     });
+  });
+});
+
+describe('variableFormatter', () => {
+  it('formats a single value correctly', () => {
+    expect(variableFormatter('abc')).toBe("'abc'");
+  });
+
+  it('formats a number value correctly', () => {
+    expect(variableFormatter(123)).toBe("'123'");
+  });
+
+  it('formats an array of strings correctly', () => {
+    expect(variableFormatter(['a', 'b', 'c'])).toBe("('a', 'b', 'c')");
+  });
+
+  it('formats an array of numbers correctly', () => {
+    expect(variableFormatter([1, 2, 3])).toBe("('1', '2', '3')");
   });
 });
