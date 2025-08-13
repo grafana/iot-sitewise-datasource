@@ -30,12 +30,15 @@ func processQueries(ctx context.Context, req *backend.QueryDataRequest, handler 
 	}
 
 	defaultRegion := ""
+	if req.PluginContext.DataSourceInstanceSettings != nil &&
+		req.PluginContext.DataSourceInstanceSettings.JSONData != nil {
 
-	if err := json.Unmarshal(req.PluginContext.DataSourceInstanceSettings.JSONData, &datasourceJsonData); err != nil {
-		return getErrorResponse(err, "failed to unmarshal datasource JSON data")
-	}
-	if datasourceJsonData.DefaultRegion != "" {
-		defaultRegion = datasourceJsonData.DefaultRegion
+		if err := json.Unmarshal(req.PluginContext.DataSourceInstanceSettings.JSONData, &datasourceJsonData); err != nil {
+			return getErrorResponse(err, "failed to unmarshal datasource JSON data")
+		}
+		if datasourceJsonData.DefaultRegion != "" {
+			defaultRegion = datasourceJsonData.DefaultRegion
+		}
 	}
 
 	for _, q := range req.Queries {
