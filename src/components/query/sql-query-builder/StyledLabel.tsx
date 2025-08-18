@@ -1,17 +1,16 @@
 import React from 'react';
 import { EditorField } from '@grafana/plugin-ui';
 import { InlineLabel } from '@grafana/ui';
-import clsx from 'clsx';
 import { tooltipMessages } from './types';
 
 interface StyledLabelProps {
   text: string;
   width?: number;
-  color?: string;
+  color?: string; // HEX, RGB, or CSS color string
   tooltip?: boolean;
   bold?: boolean;
   fontSize?: string;
-  className?: string;
+  className?: string; // allows external CSS if needed
 }
 
 /**
@@ -20,12 +19,9 @@ interface StyledLabelProps {
  * A reusable label component for Grafana plugin editors that supports:
  * - Custom font size and color
  * - Optional bold styling
- * - Tailwind text color classes
- * - Optional tooltip integration
- *
- * Wrapped inside `EditorField` to align with Grafana’s plugin editor layout.
+ * - Tooltip integration (from tooltipMessages)
+ * - External CSS classes via `className`
  */
-
 export const StyledLabel: React.FC<StyledLabelProps> = ({
   text,
   width = 10,
@@ -35,21 +31,17 @@ export const StyledLabel: React.FC<StyledLabelProps> = ({
   fontSize,
   className,
 }) => {
-  const isLabelColor = color.startsWith('text-');
-
   const style: React.CSSProperties = {
-    color: isLabelColor ? undefined : color,
+    color,
     fontWeight: bold ? 'bold' : undefined,
     fontSize,
   };
-
-  const combinedClassName = clsx(isLabelColor && color, bold && 'font-bold', className);
 
   const tooltipText = tooltip ? tooltipMessages[text] : undefined;
 
   return (
     <EditorField label="" width={width}>
-      <InlineLabel width="auto" style={style} tooltip={tooltipText} className={combinedClassName}>
+      <InlineLabel width="auto" style={style} tooltip={tooltipText} className={className}>
         {text}
       </InlineLabel>
     </EditorField>
