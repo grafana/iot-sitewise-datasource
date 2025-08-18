@@ -3,15 +3,19 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FromClauseEditor } from './FromClauseEditor';
 
-const assetModels = [
+const queryReferenceViews = [
   { id: 'model-1', name: 'Asset Model 1' },
   { id: 'model-2', name: 'Asset Model 2' },
 ];
 
-const setup = (selectedModelId = '', customModels = assetModels) => {
+const setup = (selectedModelId = '', customModels = queryReferenceViews) => {
   const mockUpdateQuery = jest.fn();
   render(
-    <FromClauseEditor assetModels={customModels} selectedModelId={selectedModelId} updateQuery={mockUpdateQuery} />
+    <FromClauseEditor
+      queryReferenceViews={customModels}
+      selectedModelId={selectedModelId}
+      updateQuery={mockUpdateQuery}
+    />
   );
   return { mockUpdateQuery };
 };
@@ -66,7 +70,7 @@ describe('FromClauseEditor', () => {
     const dropdown = screen.getByText('Select view...');
     await userEvent.click(dropdown);
 
-    for (const model of assetModels) {
+    for (const model of queryReferenceViews) {
       expect(await screen.findByText(model.name)).toBeInTheDocument();
     }
   });
@@ -88,7 +92,7 @@ describe('FromClauseEditor', () => {
     });
   });
 
-  it('shows no options when assetModels is empty', async () => {
+  it('shows no options when queryReferenceViews is empty', async () => {
     setup('', []);
     const dropdown = screen.getByText('Select view...');
     await userEvent.click(dropdown);

@@ -1,6 +1,6 @@
 import {
   SitewiseQueryState,
-  mockAssetModels,
+  queryReferenceViews,
   HavingCondition,
   SelectField,
   WhereCondition,
@@ -157,7 +157,7 @@ export const generateQueryPreview = async (queryState: SitewiseQueryState): Prom
     return 'Select an asset model to build your query';
   }
 
-  const model = mockAssetModels.find((m) => m.id === queryState.selectedAssetModel);
+  const model = queryReferenceViews.find((m) => m.id === queryState.selectedAssetModel);
   const properties = model?.properties || [];
 
   const selectClause = buildSelectClause(queryState.selectFields ?? [], properties);

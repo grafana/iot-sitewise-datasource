@@ -101,7 +101,7 @@ export const applyVariableForList = (templateSrv: TemplateSrv, scopedVars: Scope
  * @param value - A single value or an array of values (string | number).
  * @returns A SQL-formatted string.
  */
-export const variableFormatter = (value: any): string => {
+export const variableFormatter = (value: string | number | string[] | number[]): string => {
   if (Array.isArray(value)) {
     const quoted = value.map((v) => `'${v}'`);
     return `(${quoted.join(', ')})`;

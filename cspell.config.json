@@ -102,7 +102,6 @@
     "cooldown",
     "LTRIM",
     "RTRIM",
-    "TRIM",
-    "smhd"
+    "TRIM"
   ]
 }

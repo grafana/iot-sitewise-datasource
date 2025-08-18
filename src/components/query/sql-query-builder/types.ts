@@ -73,7 +73,7 @@ export interface AssetModel {
   properties: AssetProperty[];
 }
 
-export const mockAssetModels: AssetModel[] = [
+export const queryReferenceViews: AssetModel[] = [
   {
     id: 'asset',
     name: 'asset',

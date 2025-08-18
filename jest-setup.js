@@ -1,5 +1,8 @@
 // Jest setup provided by Grafana scaffolding
 import './.config/jest-setup';
+// Polyfill IntersectionObserver for jsdom environment
+import 'intersection-observer';
+
 // Used by LinkButton -> Text component from grafana/ui
 global.ResizeObserver = class ResizeObserver {
   //callback: ResizeObserverCallback;
@@ -30,16 +33,3 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {}
   unobserve() {}
 };
-
-class IntersectionObserver {
-  constructor(callback, options) {}
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-}
-
-Object.defineProperty(window, 'IntersectionObserver', {
-  writable: true,
-  configurable: true,
-  value: IntersectionObserver,
-});

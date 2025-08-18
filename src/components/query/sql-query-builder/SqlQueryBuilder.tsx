@@ -1,6 +1,6 @@
 import React from 'react';
 import { EditorRows, EditorRow } from '@grafana/plugin-ui';
-import { SqlQueryBuilderProps, mockAssetModels } from './types';
+import { SqlQueryBuilderProps, queryReferenceViews } from './types';
 import { FromClauseEditor } from './clauses/FromClauseEditor';
 import { SelectClauseEditor } from './clauses/SelectClauseEditor';
 import { WhereClauseEditor } from './clauses/WhereClauseEditor';
@@ -38,7 +38,7 @@ export function SqlQueryBuilder({ builderState, onChange }: SqlQueryBuilderProps
               - Allows user to select an asset model (table equivalent)
               - Also handles LIMIT clause configuration */}
           <FromClauseEditor
-            assetModels={mockAssetModels}
+            queryReferenceViews={queryReferenceViews}
             selectedModelId={queryState.selectedAssetModel || ''}
             updateQuery={updateQuery}
           />

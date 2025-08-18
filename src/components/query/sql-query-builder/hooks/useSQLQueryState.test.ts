@@ -2,7 +2,9 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { useSQLQueryState } from './useSQLQueryState';
 import * as validateModule from '../utils/validateQuery';
 import * as generatorModule from '../utils/queryGenerator';
-import { SitewiseQueryState, mockAssetModels, defaultSitewiseQueryState } from '../types';
+import { SitewiseQueryState, queryReferenceViews, defaultSitewiseQueryState } from '../types';
+
+jest.useFakeTimers();
 
 // Mocks
 jest.mock('../utils/validateQuery', () => ({
@@ -72,7 +74,7 @@ describe('useSQLQueryState', () => {
     const onChange = jest.fn();
     const { result } = renderHook(() => useSQLQueryState({ initialQuery: mockQuery, onChange }));
 
-    const selectedModel = mockAssetModels.find((m) => m.id === 'asset');
+    const selectedModel = queryReferenceViews.find((m) => m.id === 'asset');
     const availableProperties = selectedModel?.properties ?? [];
 
     const availablePropertiesForGrouping = availableProperties.filter((prop) =>
@@ -92,6 +94,9 @@ describe('useSQLQueryState', () => {
       await result.current.updateQuery({
         selectFields: [{ column: 'asset_description', alias: 'desc' }],
       });
+
+      // fast-forward debounce timer
+      jest.runAllTimers();
     });
 
     expect(result.current.queryState.selectFields).toEqual([{ column: 'asset_description', alias: 'desc' }]);

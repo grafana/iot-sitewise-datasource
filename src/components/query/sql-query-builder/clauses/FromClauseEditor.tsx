@@ -4,7 +4,7 @@ import { EditorField, EditorFieldGroup } from '@grafana/plugin-ui';
 import { StyledLabel } from '../StyledLabel';
 
 interface FromClauseEditorProps {
-  assetModels: Array<{ id: string; name: string }>;
+  queryReferenceViews: Array<{ id: string; name: string }>;
   selectedModelId: string;
   updateQuery: (
     updatedFields: Partial<{
@@ -23,7 +23,11 @@ interface FromClauseEditorProps {
  * Once model changed from the dropdown it resets the previous query fields (SELECT, WHERE, GROUP BY, ORDER BY)
  * to their default/initial state.
  */
-export const FromClauseEditor: React.FC<FromClauseEditorProps> = ({ assetModels, selectedModelId, updateQuery }) => {
+export const FromClauseEditor: React.FC<FromClauseEditorProps> = ({
+  queryReferenceViews,
+  selectedModelId,
+  updateQuery,
+}) => {
   return (
     <EditorFieldGroup>
       {/* Section label with tooltip */}
@@ -32,14 +36,14 @@ export const FromClauseEditor: React.FC<FromClauseEditorProps> = ({ assetModels,
       {/* Dropdown to select a model */}
       <EditorField label="" width={30}>
         <Select
-          options={assetModels.map((model) => ({
+          options={queryReferenceViews.map((model) => ({
             label: model.name,
             value: model.id,
           }))}
           value={
             selectedModelId
               ? {
-                  label: assetModels.find((m) => m.id === selectedModelId)?.name || '',
+                  label: queryReferenceViews.find((m) => m.id === selectedModelId)?.name || '',
                   value: selectedModelId,
                 }
               : null

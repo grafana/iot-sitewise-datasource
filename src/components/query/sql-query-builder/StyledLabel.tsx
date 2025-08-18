@@ -35,15 +35,15 @@ export const StyledLabel: React.FC<StyledLabelProps> = ({
   fontSize,
   className,
 }) => {
-  const isTailwindColor = color.startsWith('text-');
+  const isLabelColor = color.startsWith('text-');
 
   const style: React.CSSProperties = {
-    color: isTailwindColor ? undefined : color,
+    color: isLabelColor ? undefined : color,
     fontWeight: bold ? 'bold' : undefined,
     fontSize,
   };
 
-  const combinedClassName = clsx(isTailwindColor && color, bold && 'font-bold', className);
+  const combinedClassName = clsx(isLabelColor && color, bold && 'font-bold', className);
 
   const tooltipText = tooltip ? tooltipMessages[text] : undefined;
 

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { isEqual } from 'lodash';
-import { SitewiseQueryState, AssetProperty, mockAssetModels } from '../types';
+import { SitewiseQueryState, AssetProperty, queryReferenceViews } from '../types';
 import { validateQuery } from '../utils/validateQuery';
 import { generateQueryPreview } from '../utils/queryGenerator';
 
@@ -25,18 +25,16 @@ interface UseSQLQueryStateResult {
  *
  * Responsibilities:
  * - Manage current query state (`SitewiseQueryState`)
- * - Generate SQL preview from query state with  validation and collect errors
+ * - Generate SQL preview from query state with validation and collect errors
+ * - Debounce preview generation to avoid excessive work on rapid changes
  * - Notify parent component when query changes
- *
- * @param initialQuery Initial state of the query
- * @param onChange Callback when query state is updated
- * @returns An object containing query state, helpers, and derived values
  */
 export const useSQLQueryState = ({ initialQuery, onChange }: UseSQLQueryStateOptions): UseSQLQueryStateResult => {
   const [queryState, setQueryState] = useState<SitewiseQueryState>(initialQuery);
   const [preview, setPreview] = useState('');
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const queryStateRef = useRef(queryState);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /**
    * Sync query state changes with parent via onChange callback.
@@ -50,12 +48,17 @@ export const useSQLQueryState = ({ initialQuery, onChange }: UseSQLQueryStateOpt
   }, [queryState, onChange]);
 
   /**
-   * Auto-validate and generate SQL preview whenever query state changes.
-   * This effect runs asynchronously and guards against updates after unmount.
+   * Auto-validate and generate SQL preview whenever query state changes,
+   * with debouncing to avoid excessive calls on rapid updates.
    */
   useEffect(() => {
     let isMounted = true;
-    const validateAndGenerate = async () => {
+
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(async () => {
       const errors = validateQuery(queryState);
       const preview = await generateQueryPreview(queryState);
 
@@ -63,26 +66,35 @@ export const useSQLQueryState = ({ initialQuery, onChange }: UseSQLQueryStateOpt
         setValidationErrors(errors);
         setPreview(preview);
       }
-    };
-    validateAndGenerate();
+    }, 300);
+
     return () => {
       isMounted = false;
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
     };
   }, [queryState]);
 
   /**
    * Allows updates to the query state. Regenerates SQL preview string
-   * and updates the query state including `rawSQL`.
+   * and updates the query state including `rawSQL`, with debouncing.
    *
    * @param newState updates to merge into existing query state
    */
   const updateQuery = async (newState: Partial<SitewiseQueryState>) => {
     const updatedStateBeforeSQL = { ...queryStateRef.current, ...newState };
-    const rawSQL = await generateQueryPreview(updatedStateBeforeSQL);
-    setQueryState({ ...updatedStateBeforeSQL, rawSQL });
+
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+    debounceTimer.current = setTimeout(async () => {
+      const rawSQL = await generateQueryPreview(updatedStateBeforeSQL);
+      setQueryState({ ...updatedStateBeforeSQL, rawSQL });
+    }, 200);
   };
 
-  const selectedModel = mockAssetModels.find((model) => model.id === queryState.selectedAssetModel);
+  const selectedModel = queryReferenceViews.find((model) => model.id === queryState.selectedAssetModel);
   const availableProperties = selectedModel?.properties || [];
   const availablePropertiesForGrouping = availableProperties.filter((prop) =>
     queryState.selectFields.some((field) => field.column === prop.name)
