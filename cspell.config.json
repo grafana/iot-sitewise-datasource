@@ -99,6 +99,7 @@
     "propid",
     "smithyhttp",
     "eslintv",
-    "cooldown"
+    "cooldown",
+    "Rspack"
   ]
 }

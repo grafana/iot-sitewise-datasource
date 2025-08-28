@@ -292,7 +292,6 @@ describe('VisualQueryBuilder', () => {
 
   it('should clear property when all assets are deselected', async () => {
     const onChange = jest.fn();
-
     await setup(
       {
         queryType: QueryType.PropertyValue,
