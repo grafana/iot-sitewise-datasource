@@ -153,7 +153,9 @@ export const PropertyQueryEditor = ({ query, datasource, onChange }: SitewiseQue
         if (propertyId.includes('*') && assetProperties.length) {
           const regex = new RegExp(`^${propertyId.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*')}$`, 'i');
           assetProperties.forEach(({ label, value }) => {
-            if (label && regex.test(label) && value) existingIds.add(value);
+            if (label && regex.test(label) && value) {
+              existingIds.add(value);
+            }
           });
           return onChange({ ...query, propertyIds: [...existingIds] });
         }
