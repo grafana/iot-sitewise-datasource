@@ -148,12 +148,25 @@ export const PropertyQueryEditor = ({ query, datasource, onChange }: SitewiseQue
       if (!propertyId) {
         onChange({ ...query, propertyIds: undefined });
       } else if (query.propertyIds) {
-        onChange({ ...query, propertyIds: [...query.propertyIds, propertyId] });
+        const existingIds = new Set(query.propertyIds ?? []);
+
+        if (propertyId.includes('*') && assetProperties.length) {
+          const regex = new RegExp(`^${propertyId.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*')}$`, 'i');
+          assetProperties.forEach(({ label, value }) => {
+            if (label && regex.test(label) && value) {
+              existingIds.add(value);
+            }
+          });
+          return onChange({ ...query, propertyIds: [...existingIds] });
+        }
+
+        existingIds.add(propertyId);
+        onChange({ ...query, propertyIds: [...existingIds, propertyId] });
       } else {
         onChange({ ...query, propertyIds: [propertyId] });
       }
     },
-    [onChange, query]
+    [onChange, query, assetProperties]
   );
 
   const onHierarchyIdChange = useCallback(
@@ -387,7 +400,7 @@ export const PropertyQueryEditor = ({ query, datasource, onChange }: SitewiseQue
                     inputId="property"
                     aria-label="Property"
                     // Disabled multi-selection until a better UX is designed around pairing assets and properties
-                    isMulti={false}
+                    isMulti={true}
                     isLoading={isLoading}
                     options={assetProperties}
                     value={currentAssetProperty}
