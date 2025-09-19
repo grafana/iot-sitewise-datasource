@@ -38,7 +38,7 @@ describe('WhereClauseEditor', () => {
     expect(screen.getByText('WHERE')).toBeInTheDocument();
     expect(screen.getByText('Select column...')).toBeInTheDocument();
     expect(screen.getByText('=')).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Enter value or $variable')).toBeInTheDocument();
+    expect(screen.getByText('Enter value or $variable')).toBeInTheDocument();
     expect(screen.getByLabelText('Add condition')).toBeInTheDocument();
     expect(screen.getByLabelText('Remove condition')).toBeInTheDocument();
   });
@@ -102,8 +102,8 @@ describe('WhereClauseEditor', () => {
     };
 
     setup([condition], updateQuery);
-    expect(screen.getByDisplayValue('10')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('20')).toBeInTheDocument();
+    expect(screen.getByText('10')).toBeInTheDocument();
+    expect(screen.getByText('20')).toBeInTheDocument();
     expect(screen.getByText('AND')).toBeInTheDocument(); // static AND dropdown
   });
 
@@ -177,17 +177,19 @@ describe('WhereClauseEditor', () => {
     });
   });
 
-  it('does not show VariableSuggestInput for IS NULL operator', () => {
+  it('does not show input box for IS NULL operator', () => {
     setup([{ column: 'asset_id', operator: 'IS NULL', value: '123' }]);
 
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
 
-  it('shows VariableSuggestInput for value-based operators (like =)', () => {
+  it('shows input box for value-based operators (like =)', () => {
     setup([{ column: 'asset_id', operator: '=', value: '123' }]);
 
-    const input = screen.getByRole('textbox');
-    expect(input).toBeInTheDocument();
+    const selects = screen.getAllByRole('combobox');
+    const valueSelect = selects[2];
+    expect(valueSelect).toBeInTheDocument();
+    expect(screen.getByText('123')).toBeInTheDocument();
   });
 
   it('does not show logicalOperator Select if only one condition', () => {

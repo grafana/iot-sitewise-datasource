@@ -48,7 +48,9 @@ describe('generateQueryPreview', () => {
     };
 
     const preview = await generateQueryPreview(query);
-    expect(preview).toContain("WHERE prop-1 = '100' AND prop-2 != '200'");
+    expect(preview.replace(/\s+/g, ' ').trim()).toContain(
+      "SELECT prop-1 FROM model-1 WHERE prop-1 = '100' AND prop-2 != '200' LIMIT 100"
+    );
   });
 
   it('includes aggregation and alias in SELECT', async () => {

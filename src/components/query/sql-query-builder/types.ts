@@ -185,41 +185,67 @@ export const timeIntervals: Array<SelectableValue<string>> = [
   { label: '1h', value: '1h' },
 ];
 
-export const allFunctions: Array<{
-  group: string;
+export interface FunctionOption {
   label: string;
   value: string;
-}> = [
-  { group: 'Aggregate', label: 'Raw Values', value: '' },
-  { group: 'Aggregate', label: 'AVG', value: 'AVG' },
-  { group: 'Aggregate', label: 'SUM', value: 'SUM' },
-  { group: 'Aggregate', label: 'COUNT', value: 'COUNT' },
-  { group: 'Aggregate', label: 'MAX', value: 'MAX' },
-  { group: 'Aggregate', label: 'MIN', value: 'MIN' },
-  { group: 'Aggregate', label: 'STDDEV', value: 'STDDEV' },
-  { group: 'String', label: 'LENGTH', value: 'LENGTH' },
-  { group: 'String', label: 'CONCAT', value: 'CONCAT' },
-  { group: 'String', label: 'SUBSTR', value: 'SUBSTR' },
-  { group: 'String', label: 'UPPER', value: 'UPPER' },
-  { group: 'String', label: 'LOWER', value: 'LOWER' },
-  { group: 'String', label: 'TRIM', value: 'TRIM' },
-  { group: 'String', label: 'LTRIM', value: 'LTRIM' },
-  { group: 'String', label: 'RTRIM', value: 'RTRIM' },
-  { group: 'String', label: 'STR_REPLACE', value: 'STR_REPLACE' },
-  { group: 'String', label: 'SUBSTR', value: 'SUBSTR' },
-  { group: 'Math', label: 'POWER', value: 'POWER' },
-  { group: 'Math', label: 'ROUND', value: 'ROUND' },
-  { group: 'Math', label: 'FLOOR', value: 'FLOOR' },
-  { group: 'DateTime', label: 'NOW', value: 'NOW' },
-  { group: 'DateTime', label: 'DATE_ADD', value: 'DATE_ADD' },
-  { group: 'DateTime', label: 'DATE_SUB', value: 'DATE_SUB' },
-  { group: 'DateTime', label: 'TIMESTAMP_ADD', value: 'TIMESTAMP_ADD' },
-  { group: 'DateTime', label: 'TIMESTAMP_SUB', value: 'TIMESTAMP_SUB' },
-  { group: 'DateTime', label: 'CAST', value: 'CAST' },
-  { group: 'DateTime', label: 'TO_DATE', value: 'TO_DATE' },
-  { group: 'DateTime', label: 'TO_TIMESTAMP', value: 'TO_TIMESTAMP' },
-  { group: 'DateTime', label: 'TO_TIME', value: 'TO_TIME' },
-  { group: 'Null', label: 'COALESCE', value: 'COALESCE' },
+  items?: FunctionOption[]; // children
+}
+
+export const allFunctions: FunctionOption[] = [
+  {
+    label: 'Aggregate',
+    value: 'Aggregate',
+    items: [
+      { label: 'Raw Values', value: '' },
+      { label: 'AVG', value: 'AVG' },
+      { label: 'SUM', value: 'SUM' },
+      { label: 'COUNT', value: 'COUNT' },
+      { label: 'MAX', value: 'MAX' },
+      { label: 'MIN', value: 'MIN' },
+      { label: 'STDDEV', value: 'STDDEV' },
+    ],
+  },
+  {
+    label: 'String',
+    value: 'String',
+    items: [
+      { label: 'LENGTH', value: 'LENGTH' },
+      { label: 'CONCAT', value: 'CONCAT' },
+      { label: 'SUBSTR', value: 'SUBSTR' },
+      { label: 'UPPER', value: 'UPPER' },
+      { label: 'LOWER', value: 'LOWER' },
+      { label: 'TRIM', value: 'TRIM' },
+      { label: 'LTRIM', value: 'LTRIM' },
+      { label: 'RTRIM', value: 'RTRIM' },
+      { label: 'STR_REPLACE', value: 'STR_REPLACE' },
+      { label: 'COALESCE', value: 'COALESCE' },
+      { label: 'Raw Values', value: 'Raw Values' },
+    ],
+  },
+  {
+    label: 'Math',
+    value: 'Math',
+    items: [
+      { label: 'POWER', value: 'POWER' },
+      { label: 'ROUND', value: 'ROUND' },
+      { label: 'FLOOR', value: 'FLOOR' },
+    ],
+  },
+  {
+    label: 'DateTime',
+    value: 'DateTime',
+    items: [
+      { label: 'NOW', value: 'NOW' },
+      { label: 'DATE_ADD', value: 'DATE_ADD' },
+      { label: 'DATE_SUB', value: 'DATE_SUB' },
+      { label: 'TIMESTAMP_ADD', value: 'TIMESTAMP_ADD' },
+      { label: 'TIMESTAMP_SUB', value: 'TIMESTAMP_SUB' },
+      { label: 'CAST', value: 'CAST' },
+      { label: 'TO_DATE', value: 'TO_DATE' },
+      { label: 'TO_TIMESTAMP', value: 'TO_TIMESTAMP' },
+      { label: 'TO_TIME', value: 'TO_TIME' },
+    ],
+  },
 ];
 
 export const FUNCTION_ARGS = {

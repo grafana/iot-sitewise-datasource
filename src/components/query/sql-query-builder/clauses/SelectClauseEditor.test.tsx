@@ -24,7 +24,7 @@ describe('SelectClauseEditor', () => {
   it('renders default select field', () => {
     setup();
     expect(screen.getByText('Select column...')).toBeInTheDocument();
-    expect(screen.getByText('Raw Values')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('Raw Values')).toBeInTheDocument();
     expect(screen.getAllByPlaceholderText('Optional alias')[0]).toBeInTheDocument();
   });
 
@@ -75,11 +75,14 @@ describe('SelectClauseEditor', () => {
   it('updates aggregation function', async () => {
     const user = userEvent.setup();
     const updateQuery = jest.fn();
+
     setup(undefined, updateQuery);
-    const funcDropdown = screen.getByText('Raw Values');
+    const funcDropdown = screen.getByDisplayValue('Raw Values');
     await user.click(funcDropdown);
-    const strReplaceOption = screen.getByText('String: STR_REPLACE');
-    await user.click(strReplaceOption);
+    const aggregateDropdown = screen.getByText('Aggregate');
+    await user.click(aggregateDropdown);
+    const aggregateOption = screen.getByText('AVG');
+    await user.click(aggregateOption);
     expect(updateQuery).toHaveBeenCalled();
   });
 
@@ -112,7 +115,7 @@ describe('SelectClauseEditor', () => {
 
     setup(selectFields, updateQuery);
     expect(screen.getByText('asset_id')).toBeInTheDocument();
-    expect(screen.getByText('DateTime: CAST')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('CAST')).toBeInTheDocument();
     expect(screen.getByText('BOOLEAN')).toBeInTheDocument();
   });
 
@@ -128,7 +131,7 @@ describe('SelectClauseEditor', () => {
     setup(selectFields);
     const allComboboxes = screen.getAllByRole('combobox');
     const argTypeSelect = allComboboxes[3]; // Adjust index based on actual DOM
-    expect(screen.getByText('String: CONCAT')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('CONCAT')).toBeInTheDocument();
     await userEvent.click(argTypeSelect);
     const option = screen.getByText('asset_name');
     await userEvent.click(option);

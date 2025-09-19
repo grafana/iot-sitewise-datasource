@@ -2,9 +2,8 @@ import React, { useMemo } from 'react';
 import { Select, IconButton, Tooltip } from '@grafana/ui';
 import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
 import { isFunctionOfType, WhereCondition, whereOperators } from '../types';
-import { VariableSuggestInput } from '../VariableSuggestInput';
+import { getSelectableTemplateVariables } from 'variables';
 import { StyledLabel } from '../StyledLabel';
-
 interface WhereClauseEditorProps {
   whereConditions: WhereCondition[];
   updateQuery: (updatedFields: Partial<{ whereConditions: WhereCondition[] }>) => void;
@@ -29,6 +28,19 @@ export const WhereClauseEditor: React.FC<WhereClauseEditorProps> = ({
     () => availableProperties.map((prop) => ({ label: prop.name, value: prop.id })),
     [availableProperties]
   );
+
+  /**
+   * Retrieves all available Grafana template variables using getSelectableTemplateVariables(),
+     then maps them into { label, value } objects suitable for Select components.
+   */
+  const variableOptions = useMemo(() => {
+    return getSelectableTemplateVariables().map(({ value }) => {
+      return {
+        label: value,
+        value: value,
+      };
+    });
+  }, []);
 
   /**
    * Supports partial updates to keys like column, operator, value, etc.
@@ -100,11 +112,16 @@ export const WhereClauseEditor: React.FC<WhereClauseEditorProps> = ({
 
             {/* Value input for function operators except IS NULL/IS NOT NULL */}
             {!isFunctionOfType(condition.operator, 'val') && (
-              <>
-                <EditorField label="" width={30}>
-                  <VariableSuggestInput value={condition.value} onChange={(val) => handleUpdate(index)('value', val)} />
-                </EditorField>
-              </>
+              <EditorField label="" width={30}>
+                <Select
+                  placeholder="Enter value or $variable"
+                  options={variableOptions}
+                  value={condition.value ? { label: condition.value, value: condition.value } : null}
+                  allowCustomValue
+                  onChange={(o) => handleUpdate(index)('value', o?.value || '')}
+                  isClearable
+                />
+              </EditorField>
             )}
 
             {/* BETWEEN operator: adds extra field and static "AND" operator */}
@@ -115,9 +132,13 @@ export const WhereClauseEditor: React.FC<WhereClauseEditorProps> = ({
                 </EditorField>
 
                 <EditorField label="" width={30}>
-                  <VariableSuggestInput
-                    value={condition.value2 || ''}
-                    onChange={(val) => handleUpdate(index)('value2', val)}
+                  <Select
+                    placeholder="Enter value or $variable"
+                    options={variableOptions}
+                    value={condition.value2 ? { label: condition.value2, value: condition.value2 } : null}
+                    allowCustomValue
+                    onChange={(o) => handleUpdate(index)('value2', o?.value || '')}
+                    isClearable
                   />
                 </EditorField>
               </>

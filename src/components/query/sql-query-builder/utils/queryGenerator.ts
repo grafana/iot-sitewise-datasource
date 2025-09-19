@@ -13,8 +13,14 @@ import {
  * @param val - Any value to be quoted.
  * @returns Quoted string or original value.
  */
-const quote = (val: any): string | undefined =>
-  typeof val === 'string' && val.trim() !== '' && !val.startsWith('$') ? `'${val}'` : val;
+const quote = (val: any, operator: string): string | undefined => {
+  if (typeof val === 'string' && val.startsWith('$')) {
+    // If value starts with $, wrap in parentheses for IN clause
+    return operator === 'IN' ? `(${val})` : val;
+  }
+
+  return typeof val === 'string' && val.trim() !== '' ? `'${val}'` : val;
+};
 
 /**
  * Constructs the `SELECT` clause of the SQL query using field metadata and asset model properties.
@@ -79,8 +85,8 @@ const buildWhereClause = (conditions: WhereCondition[] = []): string => {
   const parts = conditions
     .filter((c) => c.column && c.operator && c.value !== undefined && c.value !== null)
     .map((c, i, arr) => {
-      const val1 = quote(c.value);
-      const val2 = quote(c.value2);
+      const val1 = quote(c.value, c.operator);
+      const val2 = quote(c.value2, c.operator);
       const condition =
         c.operator === 'BETWEEN' && c.value2
           ? `${c.column} ${c.operator} ${val1} ${c.operator2} ${val2}`

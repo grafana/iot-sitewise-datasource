@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Select, Input, IconButton, Tooltip } from '@grafana/ui';
+import { Select, Input, IconButton, Tooltip, Cascader } from '@grafana/ui';
 import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
 import { allFunctions, FUNCTION_ARGS, isFunctionOfType, SelectField } from '../types';
 import { StyledLabel } from '../StyledLabel';
@@ -75,20 +75,17 @@ export const SelectClauseEditor: React.FC<SelectClauseEditorProps> = ({
                 />
               </EditorField>
               <EditorField label="" width={30}>
-                <Select
-                  options={allFunctions.map((func) => ({
-                    label: func.label === 'Raw Values' ? func.label : `${func.group}: ${func.label}`,
-                    value: func.value,
-                  }))}
-                  value={field.aggregation}
-                  onChange={(option) =>
+                <Cascader
+                  options={allFunctions}
+                  initialValue={field.aggregation || 'Raw Values'}
+                  onSelect={(val: string) => {
                     updateSelectField(index, {
-                      aggregation: option?.value || '',
+                      aggregation: val,
                       functionArg: '',
                       functionArgValue: '',
                       functionArgValue2: '',
-                    })
-                  }
+                    });
+                  }}
                   placeholder="No function"
                 />
               </EditorField>

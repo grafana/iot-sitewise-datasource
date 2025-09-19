@@ -66,7 +66,7 @@ export const useSQLQueryState = ({ initialQuery, onChange }: UseSQLQueryStateOpt
         setValidationErrors(errors);
         setPreview(preview);
       }
-    }, 300);
+    }, 100);
 
     return () => {
       isMounted = false;
@@ -91,7 +91,7 @@ export const useSQLQueryState = ({ initialQuery, onChange }: UseSQLQueryStateOpt
     debounceTimer.current = setTimeout(async () => {
       const rawSQL = await generateQueryPreview(updatedStateBeforeSQL);
       setQueryState({ ...updatedStateBeforeSQL, rawSQL });
-    }, 200);
+    }, 100);
   };
 
   const selectedModel = queryReferenceViews.find((model) => model.id === queryState.selectedAssetModel);
