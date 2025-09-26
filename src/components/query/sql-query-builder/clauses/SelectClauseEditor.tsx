@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
-import { Select, Input, IconButton, Tooltip, Cascader } from '@grafana/ui';
-import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
+import { Select, Input, Cascader, FieldSet, Stack } from '@grafana/ui';
+import { AccessoryButton, EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
 import { allFunctions, FUNCTION_ARGS, isFunctionOfType, SelectField } from '../types';
-import { StyledLabel } from '../StyledLabel';
 
 interface SelectClauseEditorProps {
   selectFields: SelectField[];
@@ -56,96 +55,106 @@ export const SelectClauseEditor: React.FC<SelectClauseEditorProps> = ({
   };
 
   return (
-    <>
-      {selectFields.map((field, index) => {
-        const functionArgs = getFunctionArgs(field.aggregation || '');
-        const showInput1 = shouldShowInput1(field.aggregation || '');
-        const showInput2 = shouldShowInput2(field.aggregation || '');
+    <EditorRow>
+      <FieldSet label="Select">
+        <Stack gap={3} direction="column">
+          {selectFields.map((field, index) => {
+            const functionArgs = getFunctionArgs(field.aggregation || '');
+            const showInput1 = shouldShowInput1(field.aggregation || '');
+            const showInput2 = shouldShowInput2(field.aggregation || '');
 
-        return (
-          <EditorRow key={index}>
-            <EditorFieldGroup>
-              <StyledLabel text={index === 0 ? 'SELECT' : ''} width={15} tooltip={index === 0} />
-              <EditorField label="" width={30}>
-                <Select
-                  options={columnOptions}
-                  value={field.column ? { label: field.column, value: field.column } : null}
-                  onChange={(option) => updateSelectField(index, { column: option?.value || '' })}
-                  placeholder="Select column..."
-                />
-              </EditorField>
-              <EditorField label="" width={30}>
-                <Cascader
-                  options={allFunctions}
-                  initialValue={field.aggregation || 'Raw Values'}
-                  onSelect={(val: string) => {
-                    updateSelectField(index, {
-                      aggregation: val,
-                      functionArg: '',
-                      functionArgValue: '',
-                      functionArgValue2: '',
-                    });
-                  }}
-                  placeholder="No function"
-                />
-              </EditorField>
-              {functionArgs.length > 0 && (
-                <EditorField label="" width={20}>
+            return (
+              <EditorFieldGroup key={index}>
+                <EditorField label="Column" htmlFor={`column-${index}`} width={30}>
                   <Select
-                    options={functionArgs}
-                    value={field.functionArg ? { label: field.functionArg, value: field.functionArg } : null}
-                    onChange={(v) =>
+                    options={columnOptions}
+                    inputId={`column-${index}`}
+                    value={field.column ? { label: field.column, value: field.column } : null}
+                    onChange={(option) => updateSelectField(index, { column: option?.value || '' })}
+                    placeholder="Select column..."
+                  />
+                </EditorField>
+                <EditorField label="Aggregation" width={30}>
+                  <Cascader
+                    options={allFunctions}
+                    id={`aggregation-${index}`}
+                    initialValue={field.aggregation || 'Raw Values'}
+                    onSelect={(val: string) => {
                       updateSelectField(index, {
-                        functionArg: (v as any)?.value || '',
-                      })
-                    }
-                    placeholder={isFunctionOfType(field.aggregation, 'concat') ? 'Select column' : 'Arg type'}
+                        aggregation: val,
+                        functionArg: '',
+                        functionArgValue: '',
+                        functionArgValue2: '',
+                      });
+                    }}
+                    placeholder="No function"
                   />
                 </EditorField>
-              )}
-              {showInput1 && (
-                <EditorField label="" width={20}>
+                {functionArgs.length > 0 && (
+                  <EditorField
+                    label={isFunctionOfType(field.aggregation, 'concat') ? 'Select column' : 'Arg type'}
+                    htmlFor={`function-arg-${index}`}
+                    width={20}
+                  >
+                    <Select
+                      inputId={`function-arg-${index}`}
+                      options={functionArgs}
+                      value={field.functionArg ? { label: field.functionArg, value: field.functionArg } : null}
+                      onChange={(v) =>
+                        updateSelectField(index, {
+                          functionArg: (v as any)?.value || '',
+                        })
+                      }
+                      placeholder={isFunctionOfType(field.aggregation, 'concat') ? 'Select column' : 'Arg type'}
+                    />
+                  </EditorField>
+                )}
+                {showInput1 && (
+                  <EditorField label="Arg value 1" htmlFor={`function-arg-value-1-${index}`} width={20}>
+                    <Input
+                      id={`function-arg-value-1-${index}`}
+                      value={field.functionArgValue || ''}
+                      onChange={(e) => updateSelectField(index, { functionArgValue: e.currentTarget.value })}
+                      placeholder="Enter value"
+                    />
+                  </EditorField>
+                )}
+                {showInput2 && (
+                  <EditorField label="Arg value 2" htmlFor={`function-arg-value-2-${index}`} width={20}>
+                    <Input
+                      id={`function-arg-value-2-${index}`}
+                      value={field.functionArgValue2 || ''}
+                      onChange={(e) => updateSelectField(index, { functionArgValue2: e.currentTarget.value })}
+                      placeholder="Enter value"
+                    />
+                  </EditorField>
+                )}
+                <EditorField label="Alias" htmlFor={`alias-${index}`} width={30}>
                   <Input
-                    value={field.functionArgValue || ''}
-                    onChange={(e) => updateSelectField(index, { functionArgValue: e.currentTarget.value })}
-                    placeholder="Enter value"
+                    id={`alias-${index}`}
+                    value={field.alias}
+                    onChange={(e) => updateSelectField(index, { alias: e.currentTarget.value })}
+                    placeholder="Alias"
                   />
                 </EditorField>
-              )}
-              {showInput2 && (
-                <EditorField label="" width={20}>
-                  <Input
-                    value={field.functionArgValue2 || ''}
-                    onChange={(e) => updateSelectField(index, { functionArgValue2: e.currentTarget.value })}
-                    placeholder="Enter value"
-                  />
-                </EditorField>
-              )}
-              <EditorField label="" width={30}>
-                <Input
-                  value={field.alias}
-                  onChange={(e) => updateSelectField(index, { alias: e.currentTarget.value })}
-                  placeholder="Optional alias"
-                />
-              </EditorField>
-              <EditorField label="" width={15}>
-                <div>
+                <Stack gap={1} alignItems="flex-end">
                   {index === selectFields.length - 1 && (
-                    <Tooltip content="Add field">
-                      <IconButton name="plus" onClick={addSelectField} aria-label="Add field" />
-                    </Tooltip>
+                    <AccessoryButton aria-label="Add field" icon="plus" variant="secondary" onClick={addSelectField} />
                   )}
                   {selectFields.length > 1 && (
-                    <Tooltip content="Remove field">
-                      <IconButton name="minus" onClick={() => removeSelectField(index)} aria-label="Remove field" />
-                    </Tooltip>
+                    <AccessoryButton
+                      aria-label="Remove field"
+                      icon="times"
+                      variant="secondary"
+                      onClick={() => removeSelectField(index)}
+                    />
                   )}
-                </div>
-              </EditorField>
-            </EditorFieldGroup>
-          </EditorRow>
-        );
-      })}
-    </>
+                </Stack>
+              </EditorFieldGroup>
+            );
+          })}
+        </Stack>
+      </FieldSet>
+    </EditorRow>
   );
 };
