@@ -1,19 +1,19 @@
 name: Compatibility check
 on: [push, pull_request]
-permissions: 
+permissions:
   contents: read
 jobs:
   compatibilitycheck:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: 
+        with:
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --immutable
       - name: Build plugin
         run: yarn build
       - name: Compatibility check
