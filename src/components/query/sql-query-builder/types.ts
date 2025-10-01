@@ -286,3 +286,8 @@ export const isFunctionOfType = (fn?: string, ...types: FunctionType[]): fn is F
     return functions.includes(fn);
   });
 };
+
+export interface ValidationError {
+  type: string;
+  error: string;
+}

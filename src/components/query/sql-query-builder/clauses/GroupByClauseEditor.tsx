@@ -1,8 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
-import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
-import { Select, ActionMeta } from '@grafana/ui';
+import { EditorField, EditorRow } from '@grafana/plugin-ui';
+import { Select, ActionMeta, FieldSet, Stack } from '@grafana/ui';
 import { SelectableValue } from '@grafana/data';
-import { StyledLabel } from '../StyledLabel';
 
 interface PropertyOption {
   id: string;
@@ -68,21 +67,20 @@ export const GroupByClauseEditor: React.FC<GroupByClauseEditorProps> = ({
 
   return (
     <EditorRow>
-      <EditorFieldGroup>
-        {/* Custom styled label for GROUP BY */}
-        <StyledLabel text={'GROUP BY'} width={15} tooltip />
-
-        {/* Choose GROUP BY columns */}
-        <EditorField label="" width={30}>
-          <Select
-            options={groupByOptions}
-            value={selectedGroupByOptions}
-            onChange={handleGroupByTagsChange}
-            isMulti
-            placeholder="Select column(s)..."
-          />
-        </EditorField>
-      </EditorFieldGroup>
+      <FieldSet label="Group By">
+        <Stack direction="row" gap={4} alignItems="center">
+          {/* Choose GROUP BY columns */}
+          <EditorField label="" width={30}>
+            <Select
+              options={groupByOptions}
+              value={selectedGroupByOptions}
+              onChange={handleGroupByTagsChange}
+              isMulti
+              placeholder="Select column(s)..."
+            />
+          </EditorField>
+        </Stack>
+      </FieldSet>
     </EditorRow>
   );
 };

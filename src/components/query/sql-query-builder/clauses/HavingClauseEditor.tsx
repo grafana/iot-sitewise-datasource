@@ -1,8 +1,7 @@
 import React from 'react';
-import { Select, IconButton, Tooltip, Input } from '@grafana/ui';
-import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
+import { Select, Input, FieldSet, Stack } from '@grafana/ui';
+import { AccessoryButton, EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
 import { HavingCondition } from '../types';
-import { StyledLabel } from '../StyledLabel';
 
 interface HavingClauseEditorProps {
   havingConditions: HavingCondition[];
@@ -67,80 +66,85 @@ export const HavingClauseEditor: React.FC<HavingClauseEditorProps> = ({
   };
 
   return (
-    <>
-      {havingConditions.map((cond, index) => (
-        <EditorRow key={index}>
-          <EditorFieldGroup>
-            {/* Show the 'HAVING' label */}
-            <StyledLabel text={index === 0 ? 'HAVING' : ''} width={15} tooltip={index === 0} />
-
-            {/* Aggregation function dropdown */}
-            <EditorField label="" width={10}>
-              <Select
-                options={aggregationOptions}
-                value={{ label: cond.aggregation, value: cond.aggregation }}
-                onChange={(o) => updateCondition(index, 'aggregation', o?.value)}
-              />
-            </EditorField>
-
-            {/* Column selection dropdown */}
-            <EditorField label="" width={25}>
-              <Select
-                options={columnOptions}
-                value={cond.column ? { label: cond.column, value: cond.column } : null}
-                onChange={(o) => updateCondition(index, 'column', o?.value || '')}
-                placeholder="Select column..."
-              />
-            </EditorField>
-
-            {/* Operator dropdown (e.g., =, !=, >, <) */}
-            <EditorField label="" width={5}>
-              <Select
-                options={operatorOptions}
-                value={{ label: cond.operator, value: cond.operator }}
-                onChange={(o) => updateCondition(index, 'operator', o?.value)}
-              />
-            </EditorField>
-
-            {/* Value input */}
-            <EditorField label="" width={25}>
-              <Input
-                value={cond.value}
-                onChange={(e) => updateCondition(index, 'value', e.currentTarget.value)}
-                placeholder="Enter value"
-              />
-            </EditorField>
-
-            {/* Logical operator (AND/OR) dropdown shown for all but last condition */}
-            {index < havingConditions.length - 1 && (
-              <EditorField label="" width={10}>
+    <EditorRow>
+      <FieldSet label="Having">
+        <Stack gap={3} direction="column">
+          {havingConditions.map((cond, index) => (
+            <EditorFieldGroup key={index}>
+              {/* Aggregation function dropdown */}
+              <EditorField label="Aggregation" htmlFor={`having-aggregation-${index}`} width={10}>
                 <Select
-                  options={[
-                    { label: 'AND', value: 'AND' },
-                    { label: 'OR', value: 'OR' },
-                  ]}
-                  value={{ label: cond.logicalOperator || 'AND', value: cond.logicalOperator || 'AND' }}
-                  onChange={(o) => updateCondition(index, 'logicalOperator', o?.value)}
+                  inputId={`having-aggregation-${index}`}
+                  options={aggregationOptions}
+                  value={{ label: cond.aggregation, value: cond.aggregation }}
+                  onChange={(o) => updateCondition(index, 'aggregation', o?.value)}
                 />
               </EditorField>
-            )}
 
-            {/* Action buttons to add or remove condition */}
-            <EditorField label="" width={10}>
-              <div>
+              {/* Column selection dropdown */}
+              <EditorField label="Column" htmlFor={`having-column-${index}`} width={25}>
+                <Select
+                  inputId={`having-column-${index}`}
+                  options={columnOptions}
+                  value={cond.column ? { label: cond.column, value: cond.column } : null}
+                  onChange={(o) => updateCondition(index, 'column', o?.value || '')}
+                  placeholder="Select column..."
+                />
+              </EditorField>
+
+              {/* Operator dropdown (e.g., =, !=, >, <) */}
+              <EditorField label="Operator" htmlFor={`having-operator-${index}`} width={5}>
+                <Select
+                  inputId={`having-operator-${index}`}
+                  options={operatorOptions}
+                  value={{ label: cond.operator, value: cond.operator }}
+                  onChange={(o) => updateCondition(index, 'operator', o?.value)}
+                />
+              </EditorField>
+
+              {/* Value input */}
+              <EditorField label="Value" htmlFor={`having-value-${index}`} width={25}>
+                <Input
+                  id={`having-value-${index}`}
+                  value={cond.value}
+                  onChange={(e) => updateCondition(index, 'value', e.currentTarget.value)}
+                  placeholder="Enter value"
+                />
+              </EditorField>
+
+              {/* Logical operator (AND/OR) dropdown shown for all but last condition */}
+              {index < havingConditions.length - 1 && (
+                <EditorField label="Logical" htmlFor={`having-logical-${index}`} width={10}>
+                  <Select
+                    inputId={`having-logical-${index}`}
+                    options={[
+                      { label: 'AND', value: 'AND' },
+                      { label: 'OR', value: 'OR' },
+                    ]}
+                    value={{ label: cond.logicalOperator || 'AND', value: cond.logicalOperator || 'AND' }}
+                    onChange={(o) => updateCondition(index, 'logicalOperator', o?.value)}
+                  />
+                </EditorField>
+              )}
+
+              {/* Action buttons to add or remove condition */}
+              <Stack gap={1} alignItems="flex-end">
                 {index === havingConditions.length - 1 && (
-                  <Tooltip content="Add condition">
-                    <IconButton name="plus" onClick={addCondition} aria-label="Add condition" />
-                  </Tooltip>
+                  <AccessoryButton aria-label="Add condition" icon="plus" variant="secondary" onClick={addCondition} />
                 )}
-                <Tooltip content="Remove condition">
-                  <IconButton name="minus" onClick={() => removeCondition(index)} aria-label="Remove condition" />
-                </Tooltip>
-              </div>
-            </EditorField>
-          </EditorFieldGroup>
-        </EditorRow>
-      ))}
-    </>
+                {havingConditions.length > 1 && (
+                  <AccessoryButton
+                    aria-label="Remove condition"
+                    icon="times"
+                    variant="secondary"
+                    onClick={() => removeCondition(index)}
+                  />
+                )}
+              </Stack>
+            </EditorFieldGroup>
+          ))}
+        </Stack>
+      </FieldSet>
+    </EditorRow>
   );
 };

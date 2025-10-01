@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { isEqual } from 'lodash';
-import { SitewiseQueryState, AssetProperty, queryReferenceViews } from '../types';
+import { SitewiseQueryState, AssetProperty, queryReferenceViews, ValidationError } from '../types';
 import { validateQuery } from '../utils/validateQuery';
 import { generateQueryPreview } from '../utils/queryGenerator';
 
@@ -13,7 +13,7 @@ interface UseSQLQueryStateResult {
   queryState: SitewiseQueryState;
   setQueryState: React.Dispatch<React.SetStateAction<SitewiseQueryState>>;
   preview: string;
-  validationErrors: string[];
+  validationErrors: ValidationError[];
   updateQuery: (newState: Partial<SitewiseQueryState>) => Promise<void>;
   selectedModel: any | undefined;
   availableProperties: AssetProperty[];
@@ -32,7 +32,7 @@ interface UseSQLQueryStateResult {
 export const useSQLQueryState = ({ initialQuery, onChange }: UseSQLQueryStateOptions): UseSQLQueryStateResult => {
   const [queryState, setQueryState] = useState<SitewiseQueryState>(initialQuery);
   const [preview, setPreview] = useState('');
-  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
   const queryStateRef = useRef(queryState);
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -78,20 +78,14 @@ export const useSQLQueryState = ({ initialQuery, onChange }: UseSQLQueryStateOpt
 
   /**
    * Allows updates to the query state. Regenerates SQL preview string
-   * and updates the query state including `rawSQL`, with debouncing.
+   * and updates the query state including `rawSQL`.
    *
    * @param newState updates to merge into existing query state
    */
   const updateQuery = async (newState: Partial<SitewiseQueryState>) => {
-    const updatedStateBeforeSQL = { ...queryStateRef.current, ...newState };
-
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
-    }
-    debounceTimer.current = setTimeout(async () => {
-      const rawSQL = await generateQueryPreview(updatedStateBeforeSQL);
-      setQueryState({ ...updatedStateBeforeSQL, rawSQL });
-    }, 100);
+    const updatedState = { ...queryStateRef.current, ...newState };
+    queryStateRef.current = updatedState;
+    setQueryState(updatedState);
   };
 
   const selectedModel = queryReferenceViews.find((model) => model.id === queryState.selectedAssetModel);

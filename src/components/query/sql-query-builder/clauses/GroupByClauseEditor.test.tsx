@@ -22,14 +22,11 @@ const setup = (groupByTags: string[] = [], availableProperties = mockProperties)
 };
 
 describe('GroupByClauseEditor', () => {
-  it('renders tooltip icon next to GROUP BY label', () => {
+  it('renders the Group By label', () => {
     setup();
-    const label = screen.getByText('GROUP BY');
-    const tooltipIcon = label.querySelector('svg');
-    expect(tooltipIcon).toBeInTheDocument();
+    expect(screen.getByText('Group By')).toBeInTheDocument();
   });
-
-  it('renders the GROUP BY placeholder', () => {
+  it('renders the Group By placeholder', () => {
     setup();
     expect(screen.getByText('Select column(s)...')).toBeInTheDocument();
   });

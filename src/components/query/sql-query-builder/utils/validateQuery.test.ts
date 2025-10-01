@@ -25,7 +25,10 @@ describe('validateQuery', () => {
     };
 
     const errors = validateQuery(invalidQuery);
-    expect(errors).toContain('At least one column must be selected in the SELECT clause.');
+    expect(errors).toContainEqual({
+      error: 'At least one column must be selected in the SELECT clause.',
+      type: 'select',
+    });
   });
 
   it('should return error if selectFields has no valid column', () => {
@@ -36,7 +39,10 @@ describe('validateQuery', () => {
     };
 
     const errors = validateQuery(invalidQuery);
-    expect(errors).toContain('At least one column must be selected in the SELECT clause.');
+    expect(errors).toContainEqual({
+      error: 'At least one column must be selected in the SELECT clause.',
+      type: 'select',
+    });
   });
 
   it('should return error if selectedAssetModel is missing', () => {
@@ -47,7 +53,10 @@ describe('validateQuery', () => {
     };
 
     const errors = validateQuery(invalidQuery);
-    expect(errors).toContain('A source (e.g., asset model or table) must be specified in the FROM clause.');
+    expect(errors).toContainEqual({
+      error: 'A source (e.g., asset model or table) must be specified in the FROM clause.',
+      type: 'from',
+    });
   });
 
   it('should return error if a WHERE condition is missing operator or value', () => {
@@ -59,9 +68,10 @@ describe('validateQuery', () => {
     };
 
     const errors = validateQuery(query);
-    expect(errors).toContain(
-      'Each WHERE condition must include both an operator and a value when a column is selected.'
-    );
+    expect(errors).toContainEqual({
+      error: 'Each WHERE condition must include both an operator and a value when a column is selected.',
+      type: 'where',
+    });
   });
 
   it('should ignore WHERE condition if column is not provided', () => {
@@ -87,7 +97,7 @@ describe('validateQuery', () => {
     };
 
     const errors = validateQuery(query);
-    expect(errors).toContain('Limit must be a valid number.');
+    expect(errors).toContainEqual({ error: 'Limit must be a valid number.', type: 'limit' });
   });
 
   it('should return error if limit is zero or negative', () => {
@@ -99,7 +109,7 @@ describe('validateQuery', () => {
     };
 
     const errors = validateQuery(query);
-    expect(errors).toContain('Limit must be greater than 0.');
+    expect(errors).toContainEqual({ error: 'Limit must be greater than 0.', type: 'limit' });
   });
 
   it('should return error if limit exceeds 100000', () => {
@@ -111,7 +121,7 @@ describe('validateQuery', () => {
     };
 
     const errors = validateQuery(query);
-    expect(errors).toContain('Limit must not exceed 100,000 rows.');
+    expect(errors).toContainEqual({ error: 'Limit must not exceed 100,000 rows.', type: 'limit' });
   });
 
   // GROUP BY TAGS validation
@@ -124,6 +134,6 @@ describe('validateQuery', () => {
     };
 
     const errors = validateQuery(query);
-    expect(errors).toContain('Group by tags must not contain empty values.');
+    expect(errors).toContainEqual({ error: 'Group by tags must not contain empty values.', type: 'group' });
   });
 });

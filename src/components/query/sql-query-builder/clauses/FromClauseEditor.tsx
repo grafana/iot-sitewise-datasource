@@ -1,11 +1,11 @@
 import React from 'react';
-import { Select } from '@grafana/ui';
-import { EditorField, EditorFieldGroup } from '@grafana/plugin-ui';
-import { StyledLabel } from '../StyledLabel';
-
+import { Select, FieldSet, Stack } from '@grafana/ui';
+import { ValidationError } from '../types';
+import { EditorField } from '@grafana/plugin-ui';
 interface FromClauseEditorProps {
   queryReferenceViews: Array<{ id: string; name: string }>;
   selectedModelId: string;
+  validationErrors: ValidationError[];
   updateQuery: (
     updatedFields: Partial<{
       selectedAssetModel: string;
@@ -26,40 +26,49 @@ interface FromClauseEditorProps {
 export const FromClauseEditor: React.FC<FromClauseEditorProps> = ({
   queryReferenceViews,
   selectedModelId,
+  validationErrors,
   updateQuery,
 }) => {
   return (
-    <EditorFieldGroup>
-      {/* Section label with tooltip */}
-      <StyledLabel text="FROM" width={15} tooltip />
-
-      {/* Dropdown to select a model */}
-      <EditorField label="" width={30}>
-        <Select
-          options={queryReferenceViews.map((model) => ({
-            label: model.name,
-            value: model.id,
-          }))}
-          value={
-            selectedModelId
-              ? {
-                  label: queryReferenceViews.find((m) => m.id === selectedModelId)?.name || '',
-                  value: selectedModelId,
-                }
-              : null
-          }
-          onChange={(option) =>
-            updateQuery({
-              selectedAssetModel: option?.value || '',
-              selectFields: [{ column: '', aggregation: '', alias: '' }],
-              whereConditions: [{ column: '', operator: '', value: '', logicalOperator: 'AND' }],
-              groupByFields: [{ column: '' }],
-              orderByFields: [{ column: '', direction: 'ASC' }],
-            })
-          }
-          placeholder="Select view..."
-        />
-      </EditorField>
-    </EditorFieldGroup>
+    <FieldSet label="From" style={{ marginBottom: 0 }}>
+      <Stack direction="row" gap={4} alignItems="center">
+        <EditorField label="View" width={40}>
+          {/* Dropdown to select a model */}
+          <Select
+            options={queryReferenceViews.map((model) => ({
+              label: model.name,
+              value: model.id,
+            }))}
+            value={
+              selectedModelId
+                ? {
+                    label: queryReferenceViews.find((m) => m.id === selectedModelId)?.name || '',
+                    value: selectedModelId,
+                  }
+                : null
+            }
+            onChange={(option) =>
+              updateQuery({
+                selectedAssetModel: option?.value || '',
+                selectFields: [{ column: '', aggregation: '', alias: '' }],
+                whereConditions: [{ column: '', operator: '', value: '', logicalOperator: 'AND' }],
+                groupByFields: [{ column: '' }],
+                orderByFields: [{ column: '', direction: 'ASC' }],
+              })
+            }
+            placeholder="Select view..."
+          />
+        </EditorField>
+      </Stack>
+      {validationErrors?.length > 0 &&
+        validationErrors.map(
+          (err, idx) =>
+            err.type === 'from' && (
+              <div key={idx} className="text-error text-sm">
+                <div>{err.error}</div>
+              </div>
+            )
+        )}
+    </FieldSet>
   );
 };

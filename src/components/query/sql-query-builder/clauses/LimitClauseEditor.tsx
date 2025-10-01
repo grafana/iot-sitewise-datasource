@@ -1,10 +1,11 @@
 import React from 'react';
-import { Input } from '@grafana/ui';
-import { EditorField, EditorFieldGroup } from '@grafana/plugin-ui';
-import { StyledLabel } from '../StyledLabel';
+import { FieldSet, Input, Stack } from '@grafana/ui';
+import { EditorField } from '@grafana/plugin-ui';
+import { ValidationError } from '../types';
 
 interface LimitClauseEditorProps {
   limit?: number;
+  validationErrors: ValidationError[];
   updateQuery: (newState: { limit?: number }) => void;
 }
 
@@ -12,7 +13,7 @@ interface LimitClauseEditorProps {
  * A numeric input field for setting a LIMIT clause in a query editor.
  * Automatically updates the parent query state when changed.
  */
-export const LimitClauseEditor: React.FC<LimitClauseEditorProps> = ({ limit, updateQuery }) => {
+export const LimitClauseEditor: React.FC<LimitClauseEditorProps> = ({ limit, validationErrors, updateQuery }) => {
   /**
    * Handles input value changes in the limit field and updates to the query state.
    *
@@ -30,14 +31,29 @@ export const LimitClauseEditor: React.FC<LimitClauseEditorProps> = ({ limit, upd
   };
 
   return (
-    <EditorFieldGroup>
-      {/* Show the 'HAVING' label */}
-      <StyledLabel text="LIMIT" width={15} tooltip />
-
-      {/* Input field for numeric limit value */}
-      <EditorField label="" width={30}>
-        <Input type="number" min={1} placeholder="Defaults to 100" value={limit ?? ''} onChange={handleChange} />
-      </EditorField>
-    </EditorFieldGroup>
+    <FieldSet label="Limit" style={{ marginBottom: 0 }}>
+      <Stack direction="row" gap={4} alignItems="center">
+        <EditorField label="Max rows" htmlFor="limit-input" width={30}>
+          {/* Input field for numeric limit value */}
+          <Input
+            id="limit-input"
+            type="number"
+            min={1}
+            placeholder="Defaults to 100"
+            value={limit ?? ''}
+            onChange={handleChange}
+          />
+        </EditorField>
+      </Stack>
+      {validationErrors?.length > 0 &&
+        validationErrors.map(
+          (err, idx) =>
+            err.type === 'limit' && (
+              <div key={idx} className="text-error text-sm">
+                <div>{err.error}</div>
+              </div>
+            )
+        )}
+    </FieldSet>
   );
 };

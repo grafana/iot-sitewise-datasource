@@ -28,14 +28,14 @@ describe('OrderByClauseEditor', () => {
   it('renders with initial ORDER BY field', () => {
     setup();
 
-    expect(screen.getByText('ORDER BY')).toBeInTheDocument();
+    expect(screen.getByText('Order By')).toBeInTheDocument();
     expect(screen.getByText('asset_id')).toBeInTheDocument();
     expect(screen.getByText('Ascending')).toBeInTheDocument();
   });
 
   it('adds a new ORDER BY field when plus button is clicked', () => {
     setup();
-    const addButton = screen.getByLabelText('Add order by field');
+    const addButton = screen.getByRole('button', { name: /Add Order By field/i });
     fireEvent.click(addButton);
 
     expect(mockUpdateQuery).toHaveBeenCalledWith({
@@ -52,7 +52,7 @@ describe('OrderByClauseEditor', () => {
       { column: 'asset_name', direction: 'DESC' },
     ];
     setup(twoFields);
-    const removeButtons = screen.getAllByLabelText('Remove order by field');
+    const removeButtons = screen.getAllByRole('button', { name: /remove order by field/i });
     fireEvent.click(removeButtons[0]);
 
     expect(mockUpdateQuery).toHaveBeenCalledWith({

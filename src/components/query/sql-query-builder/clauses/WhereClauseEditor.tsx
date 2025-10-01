@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
-import { Select, IconButton, Tooltip } from '@grafana/ui';
-import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
-import { isFunctionOfType, WhereCondition, whereOperators } from '../types';
+import { Select, FieldSet, Stack } from '@grafana/ui';
+import { EditorRow, EditorField, EditorFieldGroup, AccessoryButton } from '@grafana/plugin-ui';
+import { isFunctionOfType, ValidationError, WhereCondition, whereOperators } from '../types';
 import { getSelectableTemplateVariables } from 'variables';
-import { StyledLabel } from '../StyledLabel';
+
 interface WhereClauseEditorProps {
   whereConditions: WhereCondition[];
+  validationErrors: ValidationError[];
   updateQuery: (updatedFields: Partial<{ whereConditions: WhereCondition[] }>) => void;
   availableProperties: Array<{ id: string; name: string }>;
 }
@@ -17,6 +18,7 @@ interface WhereClauseEditorProps {
  */
 export const WhereClauseEditor: React.FC<WhereClauseEditorProps> = ({
   whereConditions,
+  validationErrors,
   updateQuery,
   availableProperties,
 }) => {
@@ -84,97 +86,119 @@ export const WhereClauseEditor: React.FC<WhereClauseEditorProps> = ({
   };
 
   return (
-    <>
-      {whereConditions.map((condition, index) => (
-        <EditorRow key={index}>
-          <EditorFieldGroup>
-            {/* Show the 'WHERE' label */}
-            <StyledLabel text={index === 0 ? 'WHERE' : ''} width={15} tooltip={index === 0} />
-
-            {/* Column selector */}
-            <EditorField label="" width={30}>
-              <Select
-                options={columnOptions}
-                value={condition.column ? { label: condition.column, value: condition.column } : null}
-                onChange={(o) => handleUpdate(index)('column', o?.value || '')}
-                placeholder="Select column..."
-              />
-            </EditorField>
-
-            {/* Operator selector (e.g., =, !=, BETWEEN) */}
-            <EditorField label="" width={15}>
-              <Select
-                options={whereOperators}
-                value={condition.operator ? { label: condition.operator, value: condition.operator } : null}
-                onChange={(o) => handleUpdate(index)('operator', o?.value || '')}
-              />
-            </EditorField>
-
-            {/* Value input for function operators except IS NULL/IS NOT NULL */}
-            {!isFunctionOfType(condition.operator, 'val') && (
-              <EditorField label="" width={30}>
+    <EditorRow>
+      <FieldSet label="Where">
+        <Stack gap={3} direction="column">
+          {whereConditions.map((condition, index) => (
+            <EditorFieldGroup key={index}>
+              {/* Column selector */}
+              <EditorField label="Column" htmlFor={`where-column-${index}`} width={30}>
                 <Select
-                  placeholder="Enter value or $variable"
-                  options={variableOptions}
-                  value={condition.value ? { label: condition.value, value: condition.value } : null}
-                  allowCustomValue
-                  onChange={(o) => handleUpdate(index)('value', o?.value || '')}
-                  isClearable
+                  inputId={`where-column-${index}`}
+                  options={columnOptions}
+                  placeholder="Select column..."
+                  value={condition.column ? { label: condition.column, value: condition.column } : null}
+                  onChange={(o) => handleUpdate(index)('column', o?.value || '')}
                 />
               </EditorField>
-            )}
-
-            {/* BETWEEN operator: adds extra field and static "AND" operator */}
-            {condition.operator === 'BETWEEN' && (
-              <>
-                <EditorField label="" width={10}>
-                  <Select options={[{ label: 'AND', value: 'AND' }]} value="AND" onChange={() => {}} disabled />
-                </EditorField>
-
-                <EditorField label="" width={30}>
+              {/* Operator selector (e.g., =, !=, BETWEEN) */}
+              <EditorField label="Operator" htmlFor={`where-operator-${index}`} width={15}>
+                <Select
+                  inputId={`where-operator-${index}`}
+                  options={whereOperators}
+                  value={condition.operator ? { label: condition.operator, value: condition.operator } : null}
+                  onChange={(o) => handleUpdate(index)('operator', o?.value || '')}
+                />
+              </EditorField>
+              {/* Value input for function operators except IS NULL/IS NOT NULL */}
+              {!isFunctionOfType(condition.operator, 'val') && (
+                <EditorField label="Value" htmlFor={`where-value-${index}`} width={30}>
                   <Select
+                    inputId={`where-value-${index}`}
                     placeholder="Enter value or $variable"
                     options={variableOptions}
-                    value={condition.value2 ? { label: condition.value2, value: condition.value2 } : null}
+                    value={condition.value ? { label: condition.value, value: condition.value } : null}
                     allowCustomValue
-                    onChange={(o) => handleUpdate(index)('value2', o?.value || '')}
+                    onChange={(o) => handleUpdate(index)('value', o?.value || '')}
                     isClearable
                   />
                 </EditorField>
-              </>
-            )}
+              )}
+              {/* BETWEEN operator: adds extra field and static "AND" operator */}
+              {condition.operator === 'BETWEEN' && (
+                <>
+                  <EditorField label="AND" htmlFor={`where-between-and-${index}`} width={10}>
+                    <Select
+                      inputId={`where-between-and-${index}`}
+                      options={[{ label: 'AND', value: 'AND' }]}
+                      value={{ label: 'AND', value: 'AND' }}
+                      onChange={() => {}}
+                      disabled
+                    />
+                  </EditorField>
 
-            {/* Logical operator (AND/OR) shown if not the last condition */}
-            {index < whereConditions.length - 1 && (
-              <EditorField label={''} width={15}>
-                <Select
-                  options={[
-                    { label: 'AND', value: 'AND' },
-                    { label: 'OR', value: 'OR' },
-                  ]}
-                  value={condition.logicalOperator}
-                  onChange={(o) => handleUpdate(index)('logicalOperator', o?.value || 'AND')}
-                />
-              </EditorField>
-            )}
-
-            {/* Action buttons: Add/Remove condition */}
-            <EditorField label="" width={10}>
-              <div>
+                  <EditorField label="Value 2" htmlFor={`where-value2-${index}`} width={30}>
+                    <Select
+                      inputId={`where-value2-${index}`}
+                      placeholder="Enter value or $variable"
+                      options={variableOptions}
+                      value={condition.value2 ? { label: condition.value2, value: condition.value2 } : null}
+                      allowCustomValue
+                      onChange={(o) => handleUpdate(index)('value2', o?.value || '')}
+                      isClearable
+                    />
+                  </EditorField>
+                </>
+              )}
+              {/* Logical operator (AND/OR) shown if not the last condition */}
+              {index < whereConditions.length - 1 && (
+                <EditorField label="Logical" htmlFor={`where-logical-${index}`} width={15}>
+                  <Select
+                    inputId={`where-logical-${index}`}
+                    options={[
+                      { label: 'AND', value: 'AND' },
+                      { label: 'OR', value: 'OR' },
+                    ]}
+                    value={
+                      condition.logicalOperator
+                        ? { label: condition.logicalOperator, value: condition.logicalOperator }
+                        : { label: 'AND', value: 'AND' }
+                    }
+                    onChange={(o) => handleUpdate(index)('logicalOperator', o?.value || 'AND')}
+                  />
+                </EditorField>
+              )}
+              {/* Action buttons: Add/Remove condition */}
+              <Stack gap={1} alignItems="flex-end">
                 {index === whereConditions.length - 1 && (
-                  <Tooltip content="Add condition">
-                    <IconButton name="plus" onClick={addWhereCondition} aria-label="Add condition" />
-                  </Tooltip>
+                  <AccessoryButton
+                    aria-label="Add condition"
+                    icon="plus"
+                    variant="secondary"
+                    onClick={addWhereCondition}
+                  />
                 )}
-
-                <Tooltip content="Remove condition">
-                  <IconButton name="minus" onClick={() => removeWhereCondition(index)} aria-label="Remove condition" />
-                </Tooltip>
-              </div>
-            </EditorField>
-          </EditorFieldGroup>
-        </EditorRow>
-      ))}
-    </>
+                <AccessoryButton
+                  aria-label="Remove condition"
+                  icon="times"
+                  variant="secondary"
+                  onClick={() => removeWhereCondition(index)}
+                />
+              </Stack>
+              \
+            </EditorFieldGroup>
+          ))}
+        </Stack>
+        {validationErrors?.length > 0 &&
+          validationErrors.map(
+            (err, idx) =>
+              err.type === 'where' && (
+                <div key={idx} className="text-error text-sm">
+                  <div>{err.error}</div>
+                </div>
+              )
+          )}
+      </FieldSet>
+    </EditorRow>
   );
 };

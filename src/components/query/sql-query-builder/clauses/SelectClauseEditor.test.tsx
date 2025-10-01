@@ -2,17 +2,22 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SelectClauseEditor } from './SelectClauseEditor';
-import { SelectField } from '../types';
+import { SelectField, ValidationError } from '../types';
 
 const availableProperties = [
   { id: 'asset_id', name: 'assetId' },
   { id: 'asset_name', name: 'assetName' },
 ];
 
-const setup = (selectFields: SelectField[] = [{ column: '', aggregation: '', alias: '' }], updateQuery = jest.fn()) => {
+const setup = (
+  selectFields: SelectField[] = [{ column: '', aggregation: '', alias: '' }],
+  validationErrors: ValidationError[] = [],
+  updateQuery = jest.fn()
+) => {
   render(
     <SelectClauseEditor
       selectFields={selectFields}
+      validationErrors={validationErrors}
       updateQuery={updateQuery}
       availableProperties={availableProperties}
     />
@@ -31,7 +36,7 @@ describe('SelectClauseEditor', () => {
   it('adds a new select field when plus button is clicked', async () => {
     const user = userEvent.setup();
     const updateQuery = jest.fn();
-    setup(undefined, updateQuery);
+    setup(undefined, [], updateQuery);
     const addButton = screen.getByLabelText('Add field');
     await user.click(addButton);
     expect(updateQuery).toHaveBeenCalled();
@@ -44,7 +49,7 @@ describe('SelectClauseEditor', () => {
       { column: 'asset_id', aggregation: '', alias: '' },
       { column: 'asset_name', aggregation: '', alias: '' },
     ];
-    setup(selectFields, updateQuery);
+    setup(selectFields, [], updateQuery);
     const removeButton = screen.getAllByLabelText('Remove field')[0];
     await user.click(removeButton);
     expect(updateQuery).toHaveBeenCalledWith({
@@ -55,7 +60,7 @@ describe('SelectClauseEditor', () => {
   it('updates alias input', async () => {
     const user = userEvent.setup();
     const updateQuery = jest.fn();
-    setup(undefined, updateQuery);
+    setup(undefined, [], updateQuery);
     const aliasInput = screen.getByPlaceholderText('Optional alias');
     await user.type(aliasInput, 'temp_alias');
     expect(updateQuery).toHaveBeenCalled();
@@ -64,7 +69,7 @@ describe('SelectClauseEditor', () => {
   it('updates column select', async () => {
     const user = userEvent.setup();
     const updateQuery = jest.fn();
-    setup(undefined, updateQuery);
+    setup(undefined, [], updateQuery);
     const columnDropdown = screen.getByText('Select column...');
     await user.click(columnDropdown);
     const option = screen.getByText('assetId');
@@ -76,7 +81,7 @@ describe('SelectClauseEditor', () => {
     const user = userEvent.setup();
     const updateQuery = jest.fn();
 
-    setup(undefined, updateQuery);
+    setup(undefined, [], updateQuery);
     const funcDropdown = screen.getByDisplayValue('Raw Values');
     await user.click(funcDropdown);
     const aggregateDropdown = screen.getByText('Aggregate');
@@ -113,7 +118,7 @@ describe('SelectClauseEditor', () => {
       },
     ];
 
-    setup(selectFields, updateQuery);
+    setup(selectFields, [], updateQuery);
     expect(screen.getByText('asset_id')).toBeInTheDocument();
     expect(screen.getByDisplayValue('CAST')).toBeInTheDocument();
     expect(screen.getByText('BOOLEAN')).toBeInTheDocument();
@@ -140,7 +145,7 @@ describe('SelectClauseEditor', () => {
 
   it('does not remove last field', async () => {
     const updateQuery = jest.fn();
-    setup([{ column: '', aggregation: '', alias: '' }], updateQuery);
+    setup([{ column: '', aggregation: '', alias: '' }], [], updateQuery);
     const removeButtons = screen.queryAllByLabelText('Remove field');
     expect(removeButtons.length).toBe(0);
   });
@@ -149,5 +154,14 @@ describe('SelectClauseEditor', () => {
     const selectFields = [{ column: 'asset_id', aggregation: '', alias: '' }];
     setup(selectFields);
     expect(screen.getByText('asset_id')).toBeInTheDocument();
+  });
+  it('renders validation errors below the dropdown (only for "from" type)', () => {
+    const errors: ValidationError[] = [
+      { type: 'select', error: 'At least one column must be selected in the SELECT clause.' },
+      { type: 'from', error: 'This should not render here' },
+    ];
+    setup([], errors);
+    expect(screen.getByText('At least one column must be selected in the SELECT clause.')).toBeInTheDocument();
+    expect(screen.queryByText('This should not render here')).not.toBeInTheDocument();
   });
 });

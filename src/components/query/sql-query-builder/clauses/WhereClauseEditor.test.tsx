@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { WhereCondition } from '../types';
+import { ValidationError, WhereCondition } from '../types';
 import { WhereClauseEditor } from './WhereClauseEditor';
 import userEvent from '@testing-library/user-event';
 
@@ -20,11 +20,13 @@ const availableProperties = [
 ];
 const setup = (
   whereConditions: WhereCondition[] = [{ column: '', operator: '=', value: '', logicalOperator: 'AND' }],
+  validationErrors: ValidationError[] = [],
   updateQuery = jest.fn()
 ) => {
   render(
     <WhereClauseEditor
       whereConditions={whereConditions}
+      validationErrors={validationErrors}
       updateQuery={updateQuery}
       availableProperties={availableProperties}
     />
@@ -35,7 +37,7 @@ const setup = (
 describe('WhereClauseEditor', () => {
   it('renders default condition row', () => {
     setup();
-    expect(screen.getByText('WHERE')).toBeInTheDocument();
+    expect(screen.getByText('Where')).toBeInTheDocument();
     expect(screen.getByText('Select column...')).toBeInTheDocument();
     expect(screen.getByText('=')).toBeInTheDocument();
     expect(screen.getByText('Enter value or $variable')).toBeInTheDocument();
@@ -46,7 +48,7 @@ describe('WhereClauseEditor', () => {
   it('changes column value', async () => {
     const user = userEvent.setup();
     const updateQuery = jest.fn();
-    setup(undefined, updateQuery);
+    setup(undefined, [], updateQuery);
 
     const columnDropdown = screen.getByText('Select column...');
     await user.click(columnDropdown);
@@ -70,7 +72,7 @@ describe('WhereClauseEditor', () => {
       value2: '456',
       logicalOperator: 'AND',
     };
-    setup([condition], updateQuery);
+    setup([condition], [], updateQuery);
 
     const operatorDropdown = screen.getByText('=');
     await user.click(operatorDropdown);
@@ -101,16 +103,16 @@ describe('WhereClauseEditor', () => {
       logicalOperator: 'AND',
     };
 
-    setup([condition], updateQuery);
+    setup([condition], [], updateQuery);
     expect(screen.getByText('10')).toBeInTheDocument();
     expect(screen.getByText('20')).toBeInTheDocument();
-    expect(screen.getByText('AND')).toBeInTheDocument(); // static AND dropdown
+    expect(screen.getByLabelText('AND')).toBeInTheDocument();
   });
 
   it('adds new where condition row', async () => {
     const user = userEvent.setup();
     const updateQuery = jest.fn();
-    setup(undefined, updateQuery);
+    setup(undefined, [], updateQuery);
 
     const addButton = screen.getByLabelText('Add condition');
     await user.click(addButton);
@@ -131,7 +133,7 @@ describe('WhereClauseEditor', () => {
       { column: 'asset_id', operator: '=', value: '123' },
       { column: 'asset_name', operator: '=', value: 'model' },
     ];
-    setup(whereConditions, updateQuery);
+    setup(whereConditions, [], updateQuery);
 
     const removeButtons = screen.getAllByLabelText('Remove condition');
     await user.click(removeButtons[1]);
@@ -145,7 +147,7 @@ describe('WhereClauseEditor', () => {
     const user = userEvent.setup();
     const updateQuery = jest.fn();
     const whereConditions = [{ column: 'asset_id', operator: '=', value: '123' }];
-    setup(whereConditions, updateQuery);
+    setup(whereConditions, [], updateQuery);
 
     const removeButton = screen.getByLabelText('Remove condition');
     await user.click(removeButton);
@@ -162,7 +164,7 @@ describe('WhereClauseEditor', () => {
       { column: 'asset_id', operator: '=', value: '123', logicalOperator: 'AND' },
       { column: 'asset_name', operator: '=', value: 'model', logicalOperator: 'AND' },
     ];
-    setup(whereConditions, updateQuery);
+    setup(whereConditions, [], updateQuery);
 
     const andDropdown = screen.getByText('AND');
     await user.click(andDropdown);
@@ -195,7 +197,7 @@ describe('WhereClauseEditor', () => {
   it('does not show logicalOperator Select if only one condition', () => {
     const updateQuery = jest.fn();
     const whereConditions = [{ column: 'asset_id', operator: '=', value: '123' }];
-    setup(whereConditions, updateQuery);
+    setup(whereConditions, [], updateQuery);
 
     expect(screen.queryByText('AND')).not.toBeInTheDocument();
     expect(screen.queryByText('OR')).not.toBeInTheDocument();
@@ -207,10 +209,24 @@ describe('WhereClauseEditor', () => {
       { column: 'asset_id', operator: '=', value: '123', logicalOperator: 'AND' },
       { column: 'asset_name', operator: '=', value: 'model', logicalOperator: 'OR' },
     ];
-    setup(whereConditions, updateQuery);
+    setup(whereConditions, [], updateQuery);
 
     expect(screen.getByText('AND')).toBeInTheDocument();
     const selectDropdown = screen.getAllByRole('combobox');
     expect(selectDropdown.length).toBeGreaterThan(0);
+  });
+  it('renders validation errors below the dropdown (only for "from" type)', () => {
+    const errors: ValidationError[] = [
+      {
+        type: 'where',
+        error: 'Each WHERE condition must include both an operator and a value when a column is selected.',
+      },
+      { type: 'from', error: 'This should not render here' },
+    ];
+    setup([], errors);
+    expect(
+      screen.getByText('Each WHERE condition must include both an operator and a value when a column is selected.')
+    ).toBeInTheDocument();
+    expect(screen.queryByText('This should not render here')).not.toBeInTheDocument();
   });
 });

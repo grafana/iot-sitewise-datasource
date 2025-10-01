@@ -2,18 +2,20 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FromClauseEditor } from './FromClauseEditor';
+import { ValidationError } from '../types';
 
 const queryReferenceViews = [
   { id: 'model-1', name: 'Asset Model 1' },
   { id: 'model-2', name: 'Asset Model 2' },
 ];
 
-const setup = (selectedModelId = '', customModels = queryReferenceViews) => {
+const setup = (selectedModelId = '', customModels = queryReferenceViews, validationErrors: ValidationError[] = []) => {
   const mockUpdateQuery = jest.fn();
   render(
     <FromClauseEditor
       queryReferenceViews={customModels}
       selectedModelId={selectedModelId}
+      validationErrors={validationErrors}
       updateQuery={mockUpdateQuery}
     />
   );
@@ -98,5 +100,15 @@ describe('FromClauseEditor', () => {
     await userEvent.click(dropdown);
 
     expect(screen.queryByRole('option')).not.toBeInTheDocument();
+  });
+
+  it('renders validation errors below the dropdown (only for "from" type)', () => {
+    const errors: ValidationError[] = [
+      { type: 'from', error: 'You must select a model' },
+      { type: 'select', error: 'This should not render here' },
+    ];
+    setup('', queryReferenceViews, errors);
+    expect(screen.getByText('You must select a model')).toBeInTheDocument();
+    expect(screen.queryByText('This should not render here')).not.toBeInTheDocument();
   });
 });

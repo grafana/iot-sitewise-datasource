@@ -1,7 +1,6 @@
 import React from 'react';
-import { Select, IconButton, Tooltip } from '@grafana/ui';
-import { EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
-import { StyledLabel } from '../StyledLabel';
+import { Select, FieldSet, Stack } from '@grafana/ui';
+import { AccessoryButton, EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
 import { OrderByField } from '../types';
 
 interface OrderByClauseEditorProps {
@@ -57,61 +56,70 @@ export const OrderByClauseEditor: React.FC<OrderByClauseEditorProps> = ({
   };
 
   return (
-    <>
-      {orderByFields.map((field, index) => (
-        <EditorRow key={index}>
-          <EditorFieldGroup>
-            {/* Show 'ORDER BY' label */}
-            <StyledLabel text={index === 0 ? 'ORDER BY' : ''} width={15} tooltip={index === 0} />
-
-            {/* Column selector dropdown */}
-            <EditorField label="" width={30}>
-              <Select
-                options={availableProperties.map((prop) => ({
-                  label: prop.name,
-                  value: prop.id,
-                }))}
-                value={field.column ? { label: field.column, value: field.column } : null}
-                onChange={(option) => updateOrderByField(index, { column: option?.value || '' })}
-                placeholder="Select column..."
-              />
-            </EditorField>
-
-            {/* Direction selector (ASC/DESC) - only shown if column is selected */}
-            {field.column ? (
-              <EditorField label="" width={30}>
+    <EditorRow>
+      <FieldSet label="Order By">
+        <Stack gap={3} direction="column">
+          {orderByFields.map((field, index) => (
+            <EditorFieldGroup key={index}>
+              {/* Column selector dropdown */}
+              <EditorField label="Column" htmlFor={`order-column-${index}`} width={30}>
                 <Select
-                  options={[
-                    { label: 'Ascending', value: 'ASC' },
-                    { label: 'Descending', value: 'DESC' },
-                  ]}
-                  value={field.direction}
-                  onChange={(option) =>
-                    updateOrderByField(index, { direction: (option?.value as 'ASC' | 'DESC') || 'ASC' })
-                  }
-                  placeholder="Direction"
+                  options={availableProperties.map((prop) => ({
+                    label: prop.name,
+                    value: prop.id,
+                  }))}
+                  inputId={`order-column-${index}`}
+                  value={field.column ? { label: field.column, value: field.column } : null}
+                  onChange={(option) => updateOrderByField(index, { column: option?.value || '' })}
+                  placeholder="Select column..."
                 />
               </EditorField>
-            ) : null}
 
-            {/* Add/Remove buttons for each ORDER BY field */}
-            <EditorField label="" width={15}>
-              <div>
-                <Tooltip content="Add ORDER BY field">
-                  <IconButton name="plus" onClick={addOrderByField} aria-label="Add order by field" />
-                </Tooltip>
-                <Tooltip content="Remove ORDER BY field">
-                  <IconButton
-                    name="minus"
-                    onClick={() => removeOrderByField(index)}
-                    aria-label="Remove order by field"
+              {/* Direction selector (ASC/DESC) - only shown if column is selected */}
+              {field.column && (
+                <EditorField label="Direction" htmlFor={`order-direction-${index}`} width={30}>
+                  <Select
+                    options={[
+                      { label: 'Ascending', value: 'ASC' },
+                      { label: 'Descending', value: 'DESC' },
+                    ]}
+                    inputId={`order-direction-${index}`}
+                    value={
+                      field.direction
+                        ? { label: field.direction === 'ASC' ? 'Ascending' : 'Descending', value: field.direction }
+                        : null
+                    }
+                    onChange={(option) =>
+                      updateOrderByField(index, { direction: (option?.value as 'ASC' | 'DESC') || 'ASC' })
+                    }
+                    placeholder="Direction"
                   />
-                </Tooltip>
-              </div>
-            </EditorField>
-          </EditorFieldGroup>
-        </EditorRow>
-      ))}
-    </>
+                </EditorField>
+              )}
+
+              {/* Add/Remove buttons for each ORDER BY field */}
+              <Stack gap={1} alignItems="flex-end">
+                {index === orderByFields.length - 1 && (
+                  <AccessoryButton
+                    aria-label="Add Order By field"
+                    icon="plus"
+                    variant="secondary"
+                    onClick={addOrderByField}
+                  />
+                )}
+                {orderByFields.length > 1 && (
+                  <AccessoryButton
+                    aria-label="Remove ORDER BY field"
+                    icon="times"
+                    variant="secondary"
+                    onClick={() => removeOrderByField(index)}
+                  />
+                )}
+              </Stack>
+            </EditorFieldGroup>
+          ))}
+        </Stack>
+      </FieldSet>
+    </EditorRow>
   );
 };

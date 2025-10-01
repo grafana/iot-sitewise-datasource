@@ -7,9 +7,9 @@ import { WhereClauseEditor } from './clauses/WhereClauseEditor';
 import { GroupByClauseEditor } from './clauses/GroupByClauseEditor';
 import { LimitClauseEditor } from './clauses/LimitClauseEditor';
 import { OrderByClauseEditor } from './clauses/OrderByClauseEditor';
-import { QueryPreviewDisplay } from './QueryPreviewDisplay';
 import { useSQLQueryState } from './hooks/useSQLQueryState';
 import { HavingClauseEditor } from './clauses/HavingClauseEditor';
+import { QueryPreviewDisplay } from './QueryPreviewDisplay';
 
 /**
  * SqlQueryBuilder
@@ -21,17 +21,16 @@ import { HavingClauseEditor } from './clauses/HavingClauseEditor';
  * - @param onChange - Callback to notify parent of query changes.
  */
 export function SqlQueryBuilder({ builderState, onChange }: SqlQueryBuilderProps) {
-  const { queryState, preview, validationErrors, updateQuery, availableProperties, availablePropertiesForGrouping } =
+  const { queryState, validationErrors, preview, updateQuery, availableProperties, availablePropertiesForGrouping } =
     useSQLQueryState({
       initialQuery: builderState,
       onChange: onChange,
     });
-
   // HAVING clause is only shown when the query includes a GROUP BY
   const isHavingVisible = queryState.groupByTags.length > 0;
 
   return (
-    <div className="gf-form-group">
+    <div>
       <EditorRows>
         <EditorRow>
           {/* FROM Clause Editor
@@ -41,17 +40,19 @@ export function SqlQueryBuilder({ builderState, onChange }: SqlQueryBuilderProps
             queryReferenceViews={queryReferenceViews}
             selectedModelId={queryState.selectedAssetModel || ''}
             updateQuery={updateQuery}
+            validationErrors={validationErrors}
           />
 
           {/* LIMIT Clause Editor
               - Sets maximum number of rows to return */}
-          <LimitClauseEditor limit={queryState.limit} updateQuery={updateQuery} />
+          <LimitClauseEditor limit={queryState.limit} validationErrors={validationErrors} updateQuery={updateQuery} />
         </EditorRow>
 
         {/* SELECT Clause Editor
             - Allows selecting fields, aggregations and alias */}
         <SelectClauseEditor
           selectFields={queryState.selectFields}
+          validationErrors={validationErrors}
           updateQuery={updateQuery}
           availableProperties={availableProperties}
         />
@@ -60,6 +61,7 @@ export function SqlQueryBuilder({ builderState, onChange }: SqlQueryBuilderProps
             - Defines filters and conditions on data */}
         <WhereClauseEditor
           whereConditions={queryState.whereConditions}
+          validationErrors={validationErrors}
           updateQuery={updateQuery}
           availableProperties={availableProperties}
         />

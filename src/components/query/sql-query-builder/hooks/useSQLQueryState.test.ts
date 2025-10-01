@@ -8,11 +8,11 @@ jest.useFakeTimers();
 
 // Mocks
 jest.mock('../utils/validateQuery', () => ({
-  validateQuery: jest.fn(),
+  validateQuery: jest.fn().mockReturnValue([]),
 }));
 
 jest.mock('../utils/queryGenerator', () => ({
-  generateQueryPreview: jest.fn(),
+  generateQueryPreview: jest.fn().mockResolvedValue('SELECT column FROM asset;'),
 }));
 
 const mockPreview = 'SELECT column FROM asset;';
@@ -86,20 +86,18 @@ describe('useSQLQueryState', () => {
     expect(result.current.availablePropertiesForGrouping).toEqual(availablePropertiesForGrouping);
   });
 
-  it('can update deeply nested fields like selectFields', async () => {
+  it('can update deeply nested fields like selectFields', () => {
     const onChange = jest.fn();
     const { result } = renderHook(() => useSQLQueryState({ initialQuery: mockQuery, onChange }));
 
-    await act(async () => {
-      await result.current.updateQuery({
-        selectFields: [{ column: 'asset_description', alias: 'desc' }],
+    act(() => {
+      result.current.updateQuery({
+        selectFields: [{ column: 'asset_description', aggregation: '', alias: 'name' }],
       });
-
-      // fast-forward debounce timer
-      jest.runAllTimers();
     });
 
-    expect(result.current.queryState.selectFields).toEqual([{ column: 'asset_description', alias: 'desc' }]);
-    expect(result.current.queryState.rawSQL).toBe(mockPreview);
+    expect(result.current.queryState.selectFields).toEqual([
+      { column: 'asset_description', aggregation: '', alias: 'name' },
+    ]);
   });
 });

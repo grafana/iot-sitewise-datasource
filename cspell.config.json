@@ -102,6 +102,7 @@
     "cooldown",
     "LTRIM",
     "RTRIM",
-    "TRIM"
+    "TRIM",
+    "Cascader"
   ]
 }
