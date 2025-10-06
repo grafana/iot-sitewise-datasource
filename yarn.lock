@@ -1038,20 +1038,20 @@
   dependencies:
     tslib "^2.8.0"
 
-"@grafana/async-query-data@0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@grafana/async-query-data/-/async-query-data-0.4.1.tgz#d0f70f1a964ae0def14cf5f8106a70450cb59e93"
-  integrity sha512-fXUCX9rAaczeHhpzovr/AxkpjC8x6oMrN0p/lmBbYbdSZ7vFVZUZeTuQqRvj0d1L2vh/1Bryiha1DeoxtwB8Ug==
+"@grafana/async-query-data@0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@grafana/async-query-data/-/async-query-data-0.4.2.tgz#0eecf7401597e113b6df5ad63821cfeb08d04b5a"
+  integrity sha512-cNcOnH4+yshXA+Igjig/v/MQhpWoNo1vGb/Xthgu+ihIsZ2P6rVM/tCuM7/LquE3qFnXRSc35HXenjr0JRfBvQ==
   dependencies:
     semver "^7.6.3"
     tslib "^2.8.0"
 
-"@grafana/aws-sdk@0.7.1":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@grafana/aws-sdk/-/aws-sdk-0.7.1.tgz#d6a32e282660283e68c76d319996002a7fb85bcc"
-  integrity sha512-Qke6AdzDjVs11D1L44SDHb8BjDd1nridjSfXvc08lx4FzZQED+xD/WYMVXrloQPr81gBh3YVxw3Ig1xe2+veJw==
+"@grafana/aws-sdk@0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@grafana/aws-sdk/-/aws-sdk-0.7.2.tgz#34814c6cc55c582f6c3505a92601cc37f364399b"
+  integrity sha512-GR9WQm5o6+k64jzwgf2zUJOHUDjLsOhaenFquNYLiQ3Z++TLWXiOSY2UgiwkRet0HG/u7/BKlAjG0UN+Z5ZIyA==
   dependencies:
-    "@grafana/async-query-data" "0.4.1"
+    "@grafana/async-query-data" "0.4.2"
     "@grafana/plugin-ui" "^0.10.1"
 
 "@grafana/data@12.1.0", "@grafana/data@^12.1.0":
@@ -1141,14 +1141,14 @@
     micro-memoize "^4.1.2"
     react-i18next "^15.0.0"
 
-"@grafana/plugin-e2e@^2.1.13":
-  version "2.1.13"
-  resolved "https://registry.yarnpkg.com/@grafana/plugin-e2e/-/plugin-e2e-2.1.13.tgz#8d53fc5f09047de7f7b9b9ef170494cf3ad651b0"
-  integrity sha512-INAf0399pz+PTe3k1uuRm4V0fPa0oz5dJpXPrcktiOnvfdSKsvahUDig/iDeM6+5MfWMikNJF87Rv1gd/VhSbA==
+"@grafana/plugin-e2e@^2.1.14":
+  version "2.1.14"
+  resolved "https://registry.yarnpkg.com/@grafana/plugin-e2e/-/plugin-e2e-2.1.14.tgz#0fbf4200e2c98fe1a437c200a2e879090120a2b3"
+  integrity sha512-e5PDGCkRsVjbua+idSvzlYahu2l4H++5IVhiqDLSKPQnqwuTESUOF1TxsGHZNEEPQ9Z3CvZavpvRDcxm4U/UCw==
   dependencies:
     "@grafana/e2e-selectors" "^12.2.0-255920"
     semver "^7.5.4"
-    uuid "^11.0.2"
+    uuid "^13.0.0"
     yaml "^2.3.4"
 
 "@grafana/plugin-ui@^0.10.1", "@grafana/plugin-ui@^0.10.5":
@@ -9160,10 +9160,15 @@ util-deprecate@^1.0.2:
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
 
-uuid@11.1.0, uuid@^11.0.0, uuid@^11.0.2:
+uuid@11.1.0, uuid@^11.0.0:
   version "11.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-11.1.0.tgz#9549028be1753bb934fc96e2bca09bb4105ae912"
   integrity sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==
+
+uuid@^13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-13.0.0.tgz#263dc341b19b4d755eb8fe36b78d95a6b65707e8"
+  integrity sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==
 
 uwrap@0.1.1:
   version "0.1.1"
