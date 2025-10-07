@@ -1409,23 +1409,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grafana/async-query-data@npm:0.4.1":
-  version: 0.4.1
-  resolution: "@grafana/async-query-data@npm:0.4.1"
+"@grafana/async-query-data@npm:0.4.2":
+  version: 0.4.2
+  resolution: "@grafana/async-query-data@npm:0.4.2"
   dependencies:
     semver: "npm:^7.6.3"
     tslib: "npm:^2.8.0"
-  checksum: 10c0/c1df4032cd81150c6cbc92e2ccda42b46abe7a361c156402ebeb2b3857aaa736398112400ad8e99b32f55fc406380b695b240383d59f01e0654a63dd09a38cda
+  checksum: 10c0/239145fb092c94418c4297a9ae18c191f1d3eeec842b81c836bf120e46fe4a805e1710ba9c5027313d81ba0f0e98c8cdc1ba8e50a53464ff6e0114b62bd50380
   languageName: node
   linkType: hard
 
-"@grafana/aws-sdk@npm:0.7.1":
-  version: 0.7.1
-  resolution: "@grafana/aws-sdk@npm:0.7.1"
+"@grafana/aws-sdk@npm:0.7.2":
+  version: 0.7.2
+  resolution: "@grafana/aws-sdk@npm:0.7.2"
   dependencies:
-    "@grafana/async-query-data": "npm:0.4.1"
+    "@grafana/async-query-data": "npm:0.4.2"
     "@grafana/plugin-ui": "npm:^0.10.1"
-  checksum: 10c0/961d503a78876643de1e3856edce26329bc7a958e3cff9565c84ae469727e5c277e66a1ba24ee624eb9d7802538fca90e6aef59bf8615e44266452eecb2a0d1a
+  checksum: 10c0/47d77b2809c2a9cd2d2c5f0a3c40ef6bb05ec5fa0b666b96d01a90b477529cc1496c0524c0c6c1c3a63508ffede23a42472b99e2286914a3e98f9065780c0183
   languageName: node
   linkType: hard
 
@@ -6116,10 +6116,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^17.2.2":
-  version: 17.2.2
-  resolution: "dotenv@npm:17.2.2"
-  checksum: 10c0/be66513504590aff6eccb14167625aed9bd42ce80547f4fe5d195860211971a7060949b57108dfaeaf90658f79e40edccd3f233f0a978bff507b5b1565ae162b
+"dotenv@npm:^17.2.3":
+  version: 17.2.3
+  resolution: "dotenv@npm:17.2.3"
+  checksum: 10c0/c884403209f713214a1b64d4d1defa4934c2aa5b0002f5a670ae298a51e3c3ad3ba79dfee2f8df49f01ae74290fcd9acdb1ab1d09c7bfb42b539036108bb2ba0
   languageName: node
   linkType: hard
 
@@ -7373,7 +7373,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.28.4"
     "@emotion/css": "npm:11.13.5"
-    "@grafana/aws-sdk": "npm:0.7.1"
+    "@grafana/aws-sdk": "npm:0.7.2"
     "@grafana/data": "npm:^12.1.0"
     "@grafana/eslint-config": "npm:^8.0.0"
     "@grafana/plugin-e2e": "npm:^2.1.13"
@@ -7401,7 +7401,7 @@ __metadata:
     copy-webpack-plugin: "npm:^13.0.1"
     cspell: "npm:^9.2.1"
     css-loader: "npm:^7.1.2"
-    dotenv: "npm:^17.2.2"
+    dotenv: "npm:^17.2.3"
     eslint: "npm:^9.35.0"
     eslint-config-prettier: "npm:^10.1.5"
     eslint-plugin-deprecation: "npm:^3.0.0"
