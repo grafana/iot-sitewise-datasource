@@ -45,20 +45,6 @@ describe('validateQuery', () => {
     });
   });
 
-  it('should return error if selectedAssetModel is missing', () => {
-    const invalidQuery: SitewiseQueryState = {
-      ...defaultSitewiseQueryState,
-      selectedAssetModel: '',
-      selectFields: [{ column: 'asset_id' }],
-    };
-
-    const errors = validateQuery(invalidQuery);
-    expect(errors).toContainEqual({
-      error: 'A source (e.g., asset model or table) must be specified in the FROM clause.',
-      type: 'from',
-    });
-  });
-
   it('should return error if a WHERE condition is missing operator or value', () => {
     const query: SitewiseQueryState = {
       ...defaultSitewiseQueryState,

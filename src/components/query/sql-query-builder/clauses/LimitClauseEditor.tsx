@@ -1,7 +1,8 @@
 import React from 'react';
-import { FieldSet, Input, Stack } from '@grafana/ui';
+import { FieldSet, Input, Stack, Text } from '@grafana/ui';
 import { EditorField } from '@grafana/plugin-ui';
 import { ValidationError } from '../types';
+import { css } from '@emotion/css';
 
 interface LimitClauseEditorProps {
   limit?: number;
@@ -30,8 +31,12 @@ export const LimitClauseEditor: React.FC<LimitClauseEditorProps> = ({ limit, val
     }
   };
 
+  const noMarginBottom = css`
+    margin-bottom: 0;
+  `;
+
   return (
-    <FieldSet label="Limit" style={{ marginBottom: 0 }}>
+    <FieldSet label="Limit" className={noMarginBottom}>
       <Stack direction="row" gap={4} alignItems="center">
         <EditorField label="Max rows" htmlFor="limit-input" width={30}>
           {/* Input field for numeric limit value */}
@@ -49,9 +54,9 @@ export const LimitClauseEditor: React.FC<LimitClauseEditorProps> = ({ limit, val
         validationErrors.map(
           (err, idx) =>
             err.type === 'limit' && (
-              <div key={idx} className="text-error text-sm">
-                <div>{err.error}</div>
-              </div>
+              <Text variant="code" color="error">
+                {err.error}
+              </Text>
             )
         )}
     </FieldSet>

@@ -70,8 +70,9 @@ export const GroupByClauseEditor: React.FC<GroupByClauseEditorProps> = ({
       <FieldSet label="Group By">
         <Stack direction="row" gap={4} alignItems="center">
           {/* Choose GROUP BY columns */}
-          <EditorField label="" width={30}>
+          <EditorField label="Column(s)" htmlFor="groupByColumns" width={30}>
             <Select
+              inputId="groupByColumns"
               options={groupByOptions}
               value={selectedGroupByOptions}
               onChange={handleGroupByTagsChange}

@@ -14,7 +14,7 @@ describe('generateQueryPreview', () => {
     };
 
     const preview = await generateQueryPreview(query);
-    expect(preview).toBe('Select an asset model to build your query');
+    expect(preview).toBe('');
   });
 
   it('generates minimal SELECT query', async () => {

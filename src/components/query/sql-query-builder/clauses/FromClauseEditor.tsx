@@ -1,11 +1,10 @@
 import React from 'react';
 import { Select, FieldSet, Stack } from '@grafana/ui';
-import { ValidationError } from '../types';
 import { EditorField } from '@grafana/plugin-ui';
+import { css } from '@emotion/css';
 interface FromClauseEditorProps {
   queryReferenceViews: Array<{ id: string; name: string }>;
   selectedModelId: string;
-  validationErrors: ValidationError[];
   updateQuery: (
     updatedFields: Partial<{
       selectedAssetModel: string;
@@ -17,6 +16,10 @@ interface FromClauseEditorProps {
   ) => void;
 }
 
+const noMarginBottom = css`
+  margin-bottom: 0;
+`;
+
 /**
  * Renders the "FROM" clause UI for the query builder.
  * It allows users to select an asset model (data source view) from a dropdown list.
@@ -26,15 +29,15 @@ interface FromClauseEditorProps {
 export const FromClauseEditor: React.FC<FromClauseEditorProps> = ({
   queryReferenceViews,
   selectedModelId,
-  validationErrors,
   updateQuery,
 }) => {
   return (
-    <FieldSet label="From" style={{ marginBottom: 0 }}>
+    <FieldSet label="From" className={noMarginBottom}>
       <Stack direction="row" gap={4} alignItems="center">
-        <EditorField label="View" width={40}>
+        <EditorField label="View" htmlFor="view" width={40}>
           {/* Dropdown to select a model */}
           <Select
+            inputId="view"
             options={queryReferenceViews.map((model) => ({
               label: model.name,
               value: model.id,
@@ -60,15 +63,6 @@ export const FromClauseEditor: React.FC<FromClauseEditorProps> = ({
           />
         </EditorField>
       </Stack>
-      {validationErrors?.length > 0 &&
-        validationErrors.map(
-          (err, idx) =>
-            err.type === 'from' && (
-              <div key={idx} className="text-error text-sm">
-                <div>{err.error}</div>
-              </div>
-            )
-        )}
     </FieldSet>
   );
 };

@@ -83,9 +83,9 @@ export const useSQLQueryState = ({ initialQuery, onChange }: UseSQLQueryStateOpt
    * @param newState updates to merge into existing query state
    */
   const updateQuery = async (newState: Partial<SitewiseQueryState>) => {
-    const updatedState = { ...queryStateRef.current, ...newState };
-    queryStateRef.current = updatedState;
-    setQueryState(updatedState);
+    const updatedStateBeforeSQL = { ...queryStateRef.current, ...newState };
+    const rawSQL = await generateQueryPreview(updatedStateBeforeSQL);
+    setQueryState({ ...updatedStateBeforeSQL, rawSQL });
   };
 
   const selectedModel = queryReferenceViews.find((model) => model.id === queryState.selectedAssetModel);

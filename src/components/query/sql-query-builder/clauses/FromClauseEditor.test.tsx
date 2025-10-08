@@ -15,7 +15,6 @@ const setup = (selectedModelId = '', customModels = queryReferenceViews, validat
     <FromClauseEditor
       queryReferenceViews={customModels}
       selectedModelId={selectedModelId}
-      validationErrors={validationErrors}
       updateQuery={mockUpdateQuery}
     />
   );
@@ -100,15 +99,5 @@ describe('FromClauseEditor', () => {
     await userEvent.click(dropdown);
 
     expect(screen.queryByRole('option')).not.toBeInTheDocument();
-  });
-
-  it('renders validation errors below the dropdown (only for "from" type)', () => {
-    const errors: ValidationError[] = [
-      { type: 'from', error: 'You must select a model' },
-      { type: 'select', error: 'This should not render here' },
-    ];
-    setup('', queryReferenceViews, errors);
-    expect(screen.getByText('You must select a model')).toBeInTheDocument();
-    expect(screen.queryByText('This should not render here')).not.toBeInTheDocument();
   });
 });

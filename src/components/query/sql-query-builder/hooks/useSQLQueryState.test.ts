@@ -92,12 +92,10 @@ describe('useSQLQueryState', () => {
 
     act(() => {
       result.current.updateQuery({
-        selectFields: [{ column: 'asset_description', aggregation: '', alias: 'name' }],
+        selectFields: [{ column: 'asset_name', aggregation: '', alias: 'name' }],
       });
     });
 
-    expect(result.current.queryState.selectFields).toEqual([
-      { column: 'asset_description', aggregation: '', alias: 'name' },
-    ]);
+    expect(result.current.queryState.selectFields).toEqual([{ column: 'asset_name', aggregation: '', alias: 'name' }]);
   });
 });

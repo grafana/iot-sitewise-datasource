@@ -4,13 +4,8 @@ export const validateQuery = (state: SitewiseQueryState): ValidationError[] => {
   const errors: ValidationError[] = [];
 
   // SELECT clause validation
-  if (!state.selectFields?.length || !state.selectFields.some((field) => field.column)) {
+  if (state.selectedAssetModel && (!state.selectFields?.length || !state.selectFields.some((field) => field.column))) {
     errors.push({ type: 'select', error: 'At least one column must be selected in the SELECT clause.' });
-  }
-
-  // FROM clause validation
-  if (!state.selectedAssetModel) {
-    errors.push({ type: 'from', error: 'A source (e.g., asset model or table) must be specified in the FROM clause.' });
   }
 
   // WHERE clause validation

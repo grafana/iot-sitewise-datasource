@@ -44,7 +44,6 @@ export function SitewiseQueryEditor(props: Props) {
   // Uncomment the following code when Builder mode is ready
   // const onEditorModeChange = (sel: SelectableValue<QueryEditorMode | 'sql'>, skipConfirmation = false) => {
   //   const newEditorMode = sel.value;
-  //   console.log(query)
   //   if (!newEditorMode) {
   //     return;
   //   }
@@ -147,12 +146,13 @@ export function SitewiseQueryEditor(props: Props) {
 
       {/* Confirmation Dialog */}
       {/* Uncomment the following code when Builder mode is ready */}
-      {/* <ConfirmDialog
+      {/* <ConfirmModal
       isOpen={showConfirmation}
       title="Switch to SQL Builder"
-      message="Are you sure to switch to sql builder mode? You will lose the changes done in code editor mode."
+      body="Are you sure to switch to sql builder mode? You will lose the changes done in code editor mode."
       onConfirm={handleConfirmModeChange}
-      onCancel={handleCancelModeChange}
+      confirmText = 'Switch'
+      onDismiss={handleCancelModeChange}
     /> */}
     </>
   );

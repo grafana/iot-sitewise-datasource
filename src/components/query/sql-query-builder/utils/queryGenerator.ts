@@ -160,7 +160,7 @@ const buildLimitClause = (limit: number | undefined): string => `LIMIT ${typeof 
  */
 export const generateQueryPreview = async (queryState: SitewiseQueryState): Promise<string> => {
   if (!queryState.selectedAssetModel) {
-    return 'Select an asset model to build your query';
+    return '';
   }
 
   const model = queryReferenceViews.find((m) => m.id === queryState.selectedAssetModel);

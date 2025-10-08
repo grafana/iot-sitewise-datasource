@@ -30,7 +30,7 @@ export function SqlQueryBuilder({ builderState, onChange }: SqlQueryBuilderProps
   const isHavingVisible = queryState.groupByTags.length > 0;
 
   return (
-    <div>
+    <>
       <EditorRows>
         <EditorRow>
           {/* FROM Clause Editor
@@ -40,7 +40,6 @@ export function SqlQueryBuilder({ builderState, onChange }: SqlQueryBuilderProps
             queryReferenceViews={queryReferenceViews}
             selectedModelId={queryState.selectedAssetModel || ''}
             updateQuery={updateQuery}
-            validationErrors={validationErrors}
           />
 
           {/* LIMIT Clause Editor
@@ -96,6 +95,6 @@ export function SqlQueryBuilder({ builderState, onChange }: SqlQueryBuilderProps
       {/* Query Preview Display
           - Shows the generated SQL query text and any validation errors */}
       <QueryPreviewDisplay preview={preview} errors={validationErrors} />
-    </div>
+    </>
   );
 }
