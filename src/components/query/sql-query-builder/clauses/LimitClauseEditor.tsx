@@ -54,7 +54,7 @@ export const LimitClauseEditor: React.FC<LimitClauseEditorProps> = ({ limit, val
         validationErrors.map(
           (err, idx) =>
             err.type === 'limit' && (
-              <Text variant="code" color="error">
+              <Text variant="code" color="error" key={idx}>
                 {err.error}
               </Text>
             )

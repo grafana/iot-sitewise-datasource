@@ -216,7 +216,7 @@ export const SelectClauseEditor: React.FC<SelectClauseEditorProps> = ({
           validationErrors.map(
             (err, idx) =>
               err.type === 'select' && (
-                <Text variant="code" color="error">
+                <Text variant="code" color="error" key={idx}>
                   {err.error}
                 </Text>
               )

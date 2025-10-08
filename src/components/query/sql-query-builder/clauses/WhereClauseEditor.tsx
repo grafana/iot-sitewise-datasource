@@ -192,7 +192,7 @@ export const WhereClauseEditor: React.FC<WhereClauseEditorProps> = ({
           validationErrors.map(
             (err, idx) =>
               err.type === 'where' && (
-                <Text variant="code" color="error">
+                <Text variant="code" color="error" key={idx}>
                   {err.error}
                 </Text>
               )
