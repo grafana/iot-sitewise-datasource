@@ -15,8 +15,8 @@ type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 // Uncomment the following code when Builder mode is ready
 // const editorModeOptions: Array<SelectableValue<QueryEditorMode | 'sql'>> = [
 //   { label: 'Builder', value: QueryEditorMode.Builder },
-//   { label: 'SQL Builder', value: 'sql' }, // custom option
-//   { label: 'Code', value: QueryEditorMode.Code },
+//   { label: 'Builder(sql)', value: 'sql' }, // custom option
+//   { label: 'Code(sql)', value: QueryEditorMode.Code },
 // ];
 
 export function SitewiseQueryEditor(props: Props) {
@@ -148,8 +148,8 @@ export function SitewiseQueryEditor(props: Props) {
       {/* Uncomment the following code when Builder mode is ready */}
       {/* <ConfirmModal
       isOpen={showConfirmation}
-      title="Switch to SQL Builder"
-      body="Are you sure to switch to sql builder mode? You will lose the changes done in code editor mode."
+      title="Switch to Builder(sql)"
+      body="Are you sure to switch to Builder(sql) mode? You will lose the changes done in Code(sql) mode."
       onConfirm={handleConfirmModeChange}
       confirmText = 'Switch'
       onDismiss={handleCancelModeChange}
