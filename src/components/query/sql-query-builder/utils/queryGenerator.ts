@@ -158,7 +158,7 @@ const buildLimitClause = (limit: number | undefined): string => `LIMIT ${typeof 
  * @param queryState - Full query state object containing selected model and clauses.
  * @returns A full SQL query string or message prompting to select a model.
  */
-export const generateQueryPreview = async (queryState: SitewiseQueryState): Promise<string> => {
+export const generateQueryPreview = (queryState: SitewiseQueryState): string => {
   if (!queryState.selectedAssetModel) {
     return '';
   }

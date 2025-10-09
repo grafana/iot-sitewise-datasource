@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Text } from '@grafana/ui';
+import { Alert, Box, Text } from '@grafana/ui';
 import { ValidationError } from './types';
 
 interface Props {
@@ -23,9 +23,11 @@ export const QueryPreviewDisplay: React.FC<Props> = ({ preview, errors }) => {
 
   return (
     <Box marginTop={2}>
-      <Text variant="code" color={severity}>
-        {preview}
-      </Text>
+      <Alert title="Query Preview" severity={severity}>
+        <Text variant="code" color={severity}>
+          {preview}
+        </Text>
+      </Alert>
     </Box>
   );
 };

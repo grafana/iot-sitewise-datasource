@@ -33,7 +33,7 @@ describe('useSQLQueryState', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (validateModule.validateQuery as jest.Mock).mockReturnValue(mockErrors);
-    (generatorModule.generateQueryPreview as jest.Mock).mockResolvedValue(mockPreview);
+    (generatorModule.generateQueryPreview as jest.Mock).mockReturnValue(mockPreview);
   });
 
   it('initializes with full query state', async () => {
@@ -50,7 +50,7 @@ describe('useSQLQueryState', () => {
 
   it('updates query state and triggers validation + preview', async () => {
     const onChange = jest.fn();
-    (generatorModule.generateQueryPreview as jest.Mock).mockResolvedValue('MOCK_PREVIEW');
+    (generatorModule.generateQueryPreview as jest.Mock).mockReturnValue('MOCK_PREVIEW');
     (validateModule.validateQuery as jest.Mock).mockReturnValue(['MOCK_ERROR']);
 
     const { result } = renderHook(() => useSQLQueryState({ initialQuery: mockQuery, onChange }));

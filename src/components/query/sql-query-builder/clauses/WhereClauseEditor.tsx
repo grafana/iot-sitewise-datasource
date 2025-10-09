@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Select, FieldSet, Stack, Text } from '@grafana/ui';
+import { Select, FieldSet, Stack, Text, Alert, Box } from '@grafana/ui';
 import { EditorRow, EditorField, EditorFieldGroup, AccessoryButton } from '@grafana/plugin-ui';
 import { isFunctionOfType, ValidationError, WhereCondition, whereOperators } from '../types';
 import { getSelectableTemplateVariables } from 'variables';
@@ -192,9 +192,13 @@ export const WhereClauseEditor: React.FC<WhereClauseEditorProps> = ({
           validationErrors.map(
             (err, idx) =>
               err.type === 'where' && (
-                <Text variant="code" color="error" key={idx}>
-                  {err.error}
-                </Text>
+                <Box marginTop={1} key={idx}>
+                  <Alert title="" severity="error">
+                    <Text variant="code" color="error">
+                      {err.error}
+                    </Text>
+                  </Alert>
+                </Box>
               )
           )}
       </FieldSet>

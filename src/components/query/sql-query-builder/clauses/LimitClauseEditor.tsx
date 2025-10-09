@@ -1,5 +1,5 @@
 import React from 'react';
-import { FieldSet, Input, Stack, Text } from '@grafana/ui';
+import { Alert, Box, FieldSet, Input, Stack, Text } from '@grafana/ui';
 import { EditorField } from '@grafana/plugin-ui';
 import { ValidationError } from '../types';
 import { css } from '@emotion/css';
@@ -54,9 +54,13 @@ export const LimitClauseEditor: React.FC<LimitClauseEditorProps> = ({ limit, val
         validationErrors.map(
           (err, idx) =>
             err.type === 'limit' && (
-              <Text variant="code" color="error" key={idx}>
-                {err.error}
-              </Text>
+              <Box marginTop={1} key={idx}>
+                <Alert title="" severity="error">
+                  <Text variant="code" color="error">
+                    {err.error}
+                  </Text>
+                </Alert>
+              </Box>
             )
         )}
     </FieldSet>

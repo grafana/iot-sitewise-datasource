@@ -60,7 +60,7 @@ export const useSQLQueryState = ({ initialQuery, onChange }: UseSQLQueryStateOpt
 
     debounceTimer.current = setTimeout(async () => {
       const errors = validateQuery(queryState);
-      const preview = await generateQueryPreview(queryState);
+      const preview = generateQueryPreview(queryState);
 
       if (isMounted) {
         setValidationErrors(errors);
@@ -84,7 +84,7 @@ export const useSQLQueryState = ({ initialQuery, onChange }: UseSQLQueryStateOpt
    */
   const updateQuery = async (newState: Partial<SitewiseQueryState>) => {
     const updatedStateBeforeSQL = { ...queryStateRef.current, ...newState };
-    const rawSQL = await generateQueryPreview(updatedStateBeforeSQL);
+    const rawSQL = generateQueryPreview(updatedStateBeforeSQL);
     setQueryState({ ...updatedStateBeforeSQL, rawSQL });
   };
 

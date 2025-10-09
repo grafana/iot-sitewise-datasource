@@ -13,7 +13,7 @@ describe('generateQueryPreview', () => {
       rawSQL: '',
     };
 
-    const preview = await generateQueryPreview(query);
+    const preview = generateQueryPreview(query);
     expect(preview).toBe('');
   });
 
@@ -28,7 +28,7 @@ describe('generateQueryPreview', () => {
       rawSQL: '',
     };
 
-    const preview = await generateQueryPreview(query);
+    const preview = generateQueryPreview(query);
     expect(preview).toContain('SELECT');
     expect(preview).toContain('FROM model-1');
   });
@@ -47,7 +47,7 @@ describe('generateQueryPreview', () => {
       rawSQL: '',
     };
 
-    const preview = await generateQueryPreview(query);
+    const preview = generateQueryPreview(query);
     expect(preview.replace(/\s+/g, ' ').trim()).toContain(
       "SELECT prop-1 FROM model-1 WHERE prop-1 = '100' AND prop-2 != '200' LIMIT 100"
     );
@@ -67,7 +67,7 @@ describe('generateQueryPreview', () => {
       rawSQL: '',
     };
 
-    const preview = await generateQueryPreview(query);
+    const preview = generateQueryPreview(query);
     expect(preview).toContain('AVG(');
     expect(preview).toContain('AS "avg1"');
     expect(preview).toContain('MAX(');
@@ -84,7 +84,7 @@ describe('generateQueryPreview', () => {
       rawSQL: '',
     };
 
-    const preview = await generateQueryPreview(query);
+    const preview = generateQueryPreview(query);
     expect(preview).toContain('GROUP BY prop-1');
     expect(preview).toContain('ORDER BY prop-1 DESC');
   });
@@ -101,7 +101,7 @@ describe('generateQueryPreview', () => {
       rawSQL: '',
     };
 
-    const preview = await generateQueryPreview(query);
+    const preview = generateQueryPreview(query);
     expect(preview).toContain('LIMIT 10');
   });
 
@@ -133,7 +133,7 @@ describe('generateQueryPreview', () => {
       rawSQL: '',
     };
 
-    const preview = await generateQueryPreview(query);
+    const preview = generateQueryPreview(query);
     expect(preview).toContain('CAST(prop-1 AS DOUBLE)');
     expect(preview).toContain('NOW()');
     expect(preview).toContain('DATE_ADD(1d, 0, prop-3)');
@@ -150,7 +150,7 @@ describe('generateQueryPreview', () => {
       rawSQL: '',
     };
 
-    const preview = await generateQueryPreview(query);
+    const preview = generateQueryPreview(query);
     expect(preview).toContain('HAVING COUNT(prop-1) > 5');
   });
 
@@ -172,7 +172,7 @@ describe('generateQueryPreview', () => {
       rawSQL: '',
     };
 
-    const preview = await generateQueryPreview(query);
+    const preview = generateQueryPreview(query);
     expect(preview).toContain('HAVING SUM(prop-1) >= 100 AND AVG(prop-2) < 50 OR COUNT(prop-2) = 10');
   });
 
@@ -197,7 +197,7 @@ describe('generateQueryPreview', () => {
       rawSQL: '',
     };
 
-    const preview = await generateQueryPreview(query);
+    const preview = generateQueryPreview(query);
     expect(preview).toContain('HAVING MAX(prop-1) = 20');
     expect(preview).not.toContain('MAX()');
     expect(preview).not.toContain("= '10'");

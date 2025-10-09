@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { Select, Input, Cascader, FieldSet, Stack, Text } from '@grafana/ui';
+import { Select, Input, Cascader, FieldSet, Stack, Text, Alert, Box } from '@grafana/ui';
 import { AccessoryButton, EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
 import { allFunctions, FUNCTION_ARGS, isFunctionOfType, SelectField, ValidationError } from '../types';
 
@@ -216,9 +216,13 @@ export const SelectClauseEditor: React.FC<SelectClauseEditorProps> = ({
           validationErrors.map(
             (err, idx) =>
               err.type === 'select' && (
-                <Text variant="code" color="error" key={idx}>
-                  {err.error}
-                </Text>
+                <Box marginTop={1} key={idx}>
+                  <Alert title="" severity="error">
+                    <Text variant="code" color="error">
+                      {err.error}
+                    </Text>
+                  </Alert>
+                </Box>
               )
           )}
       </FieldSet>
