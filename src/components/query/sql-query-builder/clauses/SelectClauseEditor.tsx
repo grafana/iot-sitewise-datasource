@@ -218,9 +218,7 @@ export const SelectClauseEditor: React.FC<SelectClauseEditorProps> = ({
               err.type === 'select' && (
                 <Box marginTop={1} key={idx}>
                   <Alert title="" severity="error">
-                    <Text variant="code" color="error">
-                      {err.error}
-                    </Text>
+                    <Text variant="code">{err.error}</Text>
                   </Alert>
                 </Box>
               )

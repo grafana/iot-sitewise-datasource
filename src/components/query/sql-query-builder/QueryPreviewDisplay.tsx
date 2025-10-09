@@ -24,9 +24,7 @@ export const QueryPreviewDisplay: React.FC<Props> = ({ preview, errors }) => {
   return (
     <Box marginTop={2}>
       <Alert title="Query Preview" severity={severity}>
-        <Text variant="code" color={severity}>
-          {preview}
-        </Text>
+        <Text variant="code">{preview}</Text>
       </Alert>
     </Box>
   );
