@@ -35,10 +35,13 @@ export const SelectClauseEditor: React.FC<SelectClauseEditorProps> = ({
    * Memoized list of available properties for the "Column" dropdown.
    * Converts `{ id, name }` into `{ label, value }` for use with the `Select` component.
    */
-  const columnOptions = useMemo(
-    () => availableProperties.map((prop) => ({ label: prop.name, value: prop.id })),
-    [availableProperties]
-  );
+  const columnOptions = useMemo(() => {
+    const propertyOptions = availableProperties.map((prop) => ({
+      label: prop.name,
+      value: prop.id,
+    }));
+    return selectFields.length === 1 ? [{ label: 'All(*)', value: 'all' }, ...propertyOptions] : propertyOptions;
+  }, [availableProperties, selectFields.length]);
 
   /**
    * Adds a new empty select field at the end of the list.
@@ -116,7 +119,13 @@ export const SelectClauseEditor: React.FC<SelectClauseEditorProps> = ({
                   <Select
                     options={columnOptions}
                     inputId={`column-${index}`}
-                    value={field.column ? { label: field.column, value: field.column } : null}
+                    value={
+                      field.column
+                        ? columnOptions.find((opt) => opt.value === field.column)
+                        : index === 0
+                          ? { label: '*', value: 'all' }
+                          : null
+                    }
                     onChange={(option) => updateSelectField(index, { column: option?.value || '' })}
                     placeholder="Select column..."
                   />
@@ -126,6 +135,7 @@ export const SelectClauseEditor: React.FC<SelectClauseEditorProps> = ({
                 <EditorField label="Aggregation" htmlFor={`aggregation-${index}`} width={30}>
                   <Cascader
                     key={uniqueKey}
+                    disabled={field.column === 'all'}
                     options={allFunctions}
                     id={`aggregation-${index}`}
                     initialValue={field.aggregation || 'Raw Values'}
@@ -189,6 +199,7 @@ export const SelectClauseEditor: React.FC<SelectClauseEditorProps> = ({
                   <Input
                     id={`alias-${index}`}
                     value={field.alias}
+                    disabled={field.column === 'all'}
                     onChange={(e) => updateSelectField(index, { alias: e.currentTarget.value })}
                     placeholder="Optional alias"
                   />
@@ -197,7 +208,13 @@ export const SelectClauseEditor: React.FC<SelectClauseEditorProps> = ({
                 {/* Action buttons: add/remove select field */}
                 <Stack gap={1} alignItems="flex-end">
                   {index === selectFields.length - 1 && (
-                    <AccessoryButton aria-label="Add field" icon="plus" variant="secondary" onClick={addSelectField} />
+                    <AccessoryButton
+                      aria-label="Add field"
+                      icon="plus"
+                      disabled={field.column === 'all'}
+                      variant="secondary"
+                      onClick={addSelectField}
+                    />
                   )}
                   {selectFields.length > 1 && (
                     <AccessoryButton

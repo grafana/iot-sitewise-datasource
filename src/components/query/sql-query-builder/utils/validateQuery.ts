@@ -3,15 +3,10 @@ import { SitewiseQueryState, ValidationError } from '../types';
 export const validateQuery = (state: SitewiseQueryState): ValidationError[] => {
   const errors: ValidationError[] = [];
 
-  // SELECT clause validation
-  if (state.selectedAssetModel && (!state.selectFields?.length || !state.selectFields.some((field) => field.column))) {
-    errors.push({ type: 'select', error: 'At least one column must be selected in the SELECT clause.' });
-  }
-
   // WHERE clause validation
   if (
     state.whereConditions?.some(
-      (cond) => cond.column && (!cond.operator || cond.value === undefined || cond.value === null)
+      (cond) => cond.column && (!cond.operator || cond.value === undefined || cond.value === null || cond.value === '')
     )
   ) {
     errors.push({

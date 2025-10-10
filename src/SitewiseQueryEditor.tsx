@@ -15,8 +15,8 @@ type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
 // Uncomment the following code when Builder mode is ready
 // const editorModeOptions: Array<SelectableValue<QueryEditorMode | 'sql'>> = [
 //   { label: 'Builder', value: QueryEditorMode.Builder },
-//   { label: 'Builder(sql)', value: 'sql' }, // custom option
-//   { label: 'Code(sql)', value: QueryEditorMode.Code },
+//   { label: 'Builder (SQL)', value: 'sql' }, // custom option
+//   { label: 'Code (SQL)', value: QueryEditorMode.Code },
 // ];
 
 export function SitewiseQueryEditor(props: Props) {
@@ -101,7 +101,7 @@ export function SitewiseQueryEditor(props: Props) {
         //     onChange={(sel) => onEditorModeChange(sel)}
         //     menuPlacement="auto"
         //     isSearchable={false}
-        //     width={14}
+        //     width={16}
         //   />
         // }
         extraHeaderElementLeft={

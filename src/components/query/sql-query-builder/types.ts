@@ -51,7 +51,7 @@ export interface SitewiseQueryState {
 
 export const defaultSitewiseQueryState: SitewiseQueryState = {
   selectedAssetModel: '',
-  selectFields: [{ column: '', aggregation: '', alias: '' }],
+  selectFields: [{ column: 'all', aggregation: '', alias: '' }],
   whereConditions: [{ column: '', operator: '', value: '', logicalOperator: 'AND' }],
   groupByTags: [],
   orderByFields: [{ column: '', direction: 'ASC' }],

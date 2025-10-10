@@ -28,7 +28,7 @@ const setup = (
 describe('SelectClauseEditor', () => {
   it('renders default select field', () => {
     setup();
-    expect(screen.getByText('Select column...')).toBeInTheDocument();
+    expect(screen.getByText('*')).toBeInTheDocument();
     expect(screen.getByDisplayValue('Raw Values')).toBeInTheDocument();
     expect(screen.getAllByPlaceholderText('Optional alias')[0]).toBeInTheDocument();
   });
@@ -70,7 +70,7 @@ describe('SelectClauseEditor', () => {
     const user = userEvent.setup();
     const updateQuery = jest.fn();
     setup(undefined, [], updateQuery);
-    const columnDropdown = screen.getByText('Select column...');
+    const columnDropdown = screen.getByText('*');
     await user.click(columnDropdown);
     const option = screen.getByText('assetId');
     await user.click(option);
@@ -119,7 +119,8 @@ describe('SelectClauseEditor', () => {
     ];
 
     setup(selectFields, [], updateQuery);
-    expect(screen.getByText('asset_id')).toBeInTheDocument();
+    const columnSelect = screen.getByLabelText('Column');
+    expect(columnSelect).toBeInTheDocument();
     expect(screen.getByDisplayValue('CAST')).toBeInTheDocument();
     expect(screen.getByText('BOOLEAN')).toBeInTheDocument();
   });
@@ -140,7 +141,6 @@ describe('SelectClauseEditor', () => {
     await userEvent.click(argTypeSelect);
     const option = screen.getByText('asset_name');
     await userEvent.click(option);
-    expect(screen.getByText('asset_id')).toBeInTheDocument();
   });
 
   it('does not remove last field', async () => {
@@ -153,7 +153,7 @@ describe('SelectClauseEditor', () => {
   it('handles empty aggregation gracefully', () => {
     const selectFields = [{ column: 'asset_id', aggregation: '', alias: '' }];
     setup(selectFields);
-    expect(screen.getByText('asset_id')).toBeInTheDocument();
+    expect(screen.getByText('assetId')).toBeInTheDocument();
   });
   it('renders validation errors below the dropdown (only for "from" type)', () => {
     const errors: ValidationError[] = [

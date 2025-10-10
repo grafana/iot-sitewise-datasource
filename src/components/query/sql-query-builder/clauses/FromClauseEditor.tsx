@@ -53,7 +53,7 @@ export const FromClauseEditor: React.FC<FromClauseEditorProps> = ({
             onChange={(option) =>
               updateQuery({
                 selectedAssetModel: option?.value || '',
-                selectFields: [{ column: '', aggregation: '', alias: '' }],
+                selectFields: [{ column: 'all', aggregation: '', alias: '' }],
                 whereConditions: [{ column: '', operator: '', value: '', logicalOperator: 'AND' }],
                 groupByFields: [{ column: '' }],
                 orderByFields: [{ column: '', direction: 'ASC' }],

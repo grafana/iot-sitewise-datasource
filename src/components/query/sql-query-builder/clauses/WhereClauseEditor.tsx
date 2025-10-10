@@ -193,7 +193,7 @@ export const WhereClauseEditor: React.FC<WhereClauseEditorProps> = ({
             (err, idx) =>
               err.type === 'where' && (
                 <Box marginTop={1} key={idx}>
-                  <Alert title="" severity="error">
+                  <Alert title="" severity="info">
                     <Text variant="code">{err.error}</Text>
                   </Alert>
                 </Box>

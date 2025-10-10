@@ -90,9 +90,10 @@ export const useSQLQueryState = ({ initialQuery, onChange }: UseSQLQueryStateOpt
 
   const selectedModel = queryReferenceViews.find((model) => model.id === queryState.selectedAssetModel);
   const availableProperties = selectedModel?.properties || [];
-  const availablePropertiesForGrouping = availableProperties.filter((prop) =>
-    queryState.selectFields.some((field) => field.column === prop.name)
-  );
+  const hasAllColumnsSelected = queryState.selectFields.some((field) => field.column === 'all');
+  const availablePropertiesForGrouping = hasAllColumnsSelected
+    ? availableProperties
+    : availableProperties.filter((prop) => queryState.selectFields.some((field) => field.column === prop.name));
 
   // Return all state and helper values to the calling component
   return {

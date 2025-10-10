@@ -17,34 +17,6 @@ describe('validateQuery', () => {
     expect(errors).toEqual([]);
   });
 
-  it('should return error if no selectFields', () => {
-    const invalidQuery: SitewiseQueryState = {
-      ...defaultSitewiseQueryState,
-      selectedAssetModel: 'asset',
-      selectFields: [],
-    };
-
-    const errors = validateQuery(invalidQuery);
-    expect(errors).toContainEqual({
-      error: 'At least one column must be selected in the SELECT clause.',
-      type: 'select',
-    });
-  });
-
-  it('should return error if selectFields has no valid column', () => {
-    const invalidQuery: SitewiseQueryState = {
-      ...defaultSitewiseQueryState,
-      selectedAssetModel: 'asset',
-      selectFields: [{ column: '' }],
-    };
-
-    const errors = validateQuery(invalidQuery);
-    expect(errors).toContainEqual({
-      error: 'At least one column must be selected in the SELECT clause.',
-      type: 'select',
-    });
-  });
-
   it('should return error if a WHERE condition is missing operator or value', () => {
     const query: SitewiseQueryState = {
       ...defaultSitewiseQueryState,

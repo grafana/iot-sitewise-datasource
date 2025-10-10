@@ -30,45 +30,48 @@ const quote = (val: any, operator: string): string | undefined => {
  * @returns SQL SELECT clause string.
  */
 const buildSelectClause = (fields: SelectField[], properties: any[]): string => {
-  const clauses = fields
-    .filter(({ column }) => column)
-    .map((field) => {
-      const base = properties.find((p) => p.id === field.column)?.name || field.column;
-      const { aggregation, functionArg, functionArgValue, functionArgValue2, alias } = field || '';
-      let expr = base;
+  const hasAllColumn = fields.some((field) => field.column === 'all');
+  const clauses = hasAllColumn
+    ? properties.map((prop) => prop.name)
+    : fields
+        .filter(({ column }) => column)
+        .map((field) => {
+          const base = properties.find((p) => p.id === field.column)?.name || field.column;
+          const { aggregation, functionArg, functionArgValue, functionArgValue2, alias } = field || '';
+          let expr = base;
 
-      if (!aggregation) {
-        return alias ? `${expr} AS "${alias}"` : expr;
-      }
-      // Handle different function types
-      switch (true) {
-        case isFunctionOfType(aggregation, 'date'):
-          expr = `${aggregation}(${functionArg ?? '1d'}, ${functionArgValue ?? '0'}, ${base})`;
-          break;
-        case isFunctionOfType(aggregation, 'math') || isFunctionOfType(aggregation, 'coalesce'):
-          expr = `${aggregation}(${base}, ${functionArgValue ?? '0'})`;
-          break;
-        case isFunctionOfType(aggregation, 'str'):
-          expr =
-            aggregation === 'STR_REPLACE'
-              ? `${aggregation}(${base}, '${functionArgValue}', '${functionArgValue2}')`
-              : `${aggregation}(${base}, ${functionArgValue}, ${functionArgValue2})`;
-          break;
-        case isFunctionOfType(aggregation, 'concat'):
-          expr = `${aggregation}(${base},${functionArg})`;
-          break;
-        case isFunctionOfType(aggregation, 'cast'):
-          expr = `CAST(${base} AS ${functionArg})`;
-          break;
-        case isFunctionOfType(aggregation, 'now'):
-          expr = 'NOW()';
-          break;
-        default:
-          expr = `${aggregation}(${base})`;
-      }
+          if (!aggregation) {
+            return alias ? `${expr} AS "${alias}"` : expr;
+          }
+          // Handle different function types
+          switch (true) {
+            case isFunctionOfType(aggregation, 'date'):
+              expr = `${aggregation}(${functionArg ?? '1d'}, ${functionArgValue ?? '0'}, ${base})`;
+              break;
+            case isFunctionOfType(aggregation, 'math') || isFunctionOfType(aggregation, 'coalesce'):
+              expr = `${aggregation}(${base}, ${functionArgValue ?? '0'})`;
+              break;
+            case isFunctionOfType(aggregation, 'str'):
+              expr =
+                aggregation === 'STR_REPLACE'
+                  ? `${aggregation}(${base}, '${functionArgValue}', '${functionArgValue2}')`
+                  : `${aggregation}(${base}, ${functionArgValue}, ${functionArgValue2})`;
+              break;
+            case isFunctionOfType(aggregation, 'concat'):
+              expr = `${aggregation}(${base},${functionArg})`;
+              break;
+            case isFunctionOfType(aggregation, 'cast'):
+              expr = `CAST(${base} AS ${functionArg})`;
+              break;
+            case isFunctionOfType(aggregation, 'now'):
+              expr = 'NOW()';
+              break;
+            default:
+              expr = `${aggregation}(${base})`;
+          }
 
-      return alias ? `${expr} AS "${alias}"` : expr;
-    });
+          return alias ? `${expr} AS "${alias}"` : expr;
+        });
 
   return `SELECT ${clauses.length ? clauses.join(', ') : '*'}`;
 };

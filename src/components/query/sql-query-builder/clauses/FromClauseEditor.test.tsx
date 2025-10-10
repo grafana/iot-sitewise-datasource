@@ -38,7 +38,7 @@ describe('FromClauseEditor', () => {
 
     expect(mockUpdateQuery).toHaveBeenCalledWith({
       selectedAssetModel: 'model-1',
-      selectFields: [{ column: '', aggregation: '', alias: '' }],
+      selectFields: [{ column: 'all', aggregation: '', alias: '' }],
       whereConditions: [{ column: '', operator: '', value: '', logicalOperator: 'AND' }],
       groupByFields: [{ column: '' }],
       orderByFields: [{ column: '', direction: 'ASC' }],
@@ -54,7 +54,7 @@ describe('FromClauseEditor', () => {
 
     expect(mockUpdateQuery).toHaveBeenCalledWith({
       selectedAssetModel: 'model-2',
-      selectFields: [{ column: '', aggregation: '', alias: '' }],
+      selectFields: [{ column: 'all', aggregation: '', alias: '' }],
       whereConditions: [{ column: '', operator: '', value: '', logicalOperator: 'AND' }],
       groupByFields: [{ column: '' }],
       orderByFields: [{ column: '', direction: 'ASC' }],
@@ -86,7 +86,7 @@ describe('FromClauseEditor', () => {
 
     expect(mockUpdateQuery).toHaveBeenCalledWith({
       selectedAssetModel: 'model-1',
-      selectFields: [{ column: '', aggregation: '', alias: '' }],
+      selectFields: [{ column: 'all', aggregation: '', alias: '' }],
       whereConditions: [{ column: '', operator: '', value: '', logicalOperator: 'AND' }],
       groupByFields: [{ column: '' }],
       orderByFields: [{ column: '', direction: 'ASC' }],
