@@ -1409,23 +1409,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grafana/async-query-data@npm:0.4.1":
-  version: 0.4.1
-  resolution: "@grafana/async-query-data@npm:0.4.1"
+"@grafana/async-query-data@npm:0.4.2":
+  version: 0.4.2
+  resolution: "@grafana/async-query-data@npm:0.4.2"
   dependencies:
     semver: "npm:^7.6.3"
     tslib: "npm:^2.8.0"
-  checksum: 10c0/c1df4032cd81150c6cbc92e2ccda42b46abe7a361c156402ebeb2b3857aaa736398112400ad8e99b32f55fc406380b695b240383d59f01e0654a63dd09a38cda
+  checksum: 10c0/239145fb092c94418c4297a9ae18c191f1d3eeec842b81c836bf120e46fe4a805e1710ba9c5027313d81ba0f0e98c8cdc1ba8e50a53464ff6e0114b62bd50380
   languageName: node
   linkType: hard
 
-"@grafana/aws-sdk@npm:0.7.1":
-  version: 0.7.1
-  resolution: "@grafana/aws-sdk@npm:0.7.1"
+"@grafana/aws-sdk@npm:0.8.1":
+  version: 0.8.1
+  resolution: "@grafana/aws-sdk@npm:0.8.1"
   dependencies:
-    "@grafana/async-query-data": "npm:0.4.1"
+    "@grafana/async-query-data": "npm:0.4.2"
     "@grafana/plugin-ui": "npm:^0.10.1"
-  checksum: 10c0/961d503a78876643de1e3856edce26329bc7a958e3cff9565c84ae469727e5c277e66a1ba24ee624eb9d7802538fca90e6aef59bf8615e44266452eecb2a0d1a
+  checksum: 10c0/660f2294023a5d36dc956b4d10aba057b1a6c11a2bf86db4a6e292eaa88081009e90213f46818a5075b60f13a8e607b7e821b107e6629b694a8e2119e3574d4c
   languageName: node
   linkType: hard
 
@@ -3821,7 +3821,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/tsconfig-utils@npm:8.39.0, @typescript-eslint/tsconfig-utils@npm:^8.39.0":
+"@typescript-eslint/tsconfig-utils@npm:8.39.0":
   version: 8.39.0
   resolution: "@typescript-eslint/tsconfig-utils@npm:8.39.0"
   peerDependencies:
@@ -3830,7 +3830,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/tsconfig-utils@npm:8.39.1, @typescript-eslint/tsconfig-utils@npm:^8.39.1":
+"@typescript-eslint/tsconfig-utils@npm:8.39.1, @typescript-eslint/tsconfig-utils@npm:^8.39.0, @typescript-eslint/tsconfig-utils@npm:^8.39.1":
   version: 8.39.1
   resolution: "@typescript-eslint/tsconfig-utils@npm:8.39.1"
   peerDependencies:
@@ -3862,14 +3862,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/types@npm:8.39.0, @typescript-eslint/types@npm:^8.34.1, @typescript-eslint/types@npm:^8.39.0":
+"@typescript-eslint/types@npm:8.39.0":
   version: 8.39.0
   resolution: "@typescript-eslint/types@npm:8.39.0"
   checksum: 10c0/4240b01b218f3ef8a4f6343cb78cd531c12b2a134b6edd6ab67a9de4d1808790bc468f7579d5d38e507a206457d14a5e8970f6f74d29b9858633f77258f7e43b
   languageName: node
   linkType: hard
 
-"@typescript-eslint/types@npm:8.39.1, @typescript-eslint/types@npm:^8.39.1":
+"@typescript-eslint/types@npm:8.39.1, @typescript-eslint/types@npm:^8.34.1, @typescript-eslint/types@npm:^8.39.0, @typescript-eslint/types@npm:^8.39.1":
   version: 8.39.1
   resolution: "@typescript-eslint/types@npm:8.39.1"
   checksum: 10c0/0e188d2d52509a24c500a87adf561387ffcac56b62cb9fd0ca1f929bb3d4eedb6b8f9d516c1890855d39930c9dd8d502d5b4600b8c9cc832d3ebb595d81c7533
@@ -3935,7 +3935,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:8.39.0, @typescript-eslint/utils@npm:^8.32.1":
+"@typescript-eslint/utils@npm:8.39.0":
   version: 8.39.0
   resolution: "@typescript-eslint/utils@npm:8.39.0"
   dependencies:
@@ -3964,7 +3964,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:^8.33.1":
+"@typescript-eslint/utils@npm:^8.32.1, @typescript-eslint/utils@npm:^8.33.1":
   version: 8.39.1
   resolution: "@typescript-eslint/utils@npm:8.39.1"
   dependencies:
@@ -7373,7 +7373,7 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.28.4"
     "@emotion/css": "npm:11.13.5"
-    "@grafana/aws-sdk": "npm:0.7.1"
+    "@grafana/aws-sdk": "npm:0.8.1"
     "@grafana/data": "npm:^12.1.0"
     "@grafana/eslint-config": "npm:^8.0.0"
     "@grafana/plugin-e2e": "npm:^2.1.13"
