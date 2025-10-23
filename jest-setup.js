@@ -1,6 +1,5 @@
 // Jest setup provided by Grafana scaffolding
 import './.config/jest-setup';
-
 // Used by LinkButton -> Text component from grafana/ui
 global.ResizeObserver = class ResizeObserver {
   //callback: ResizeObserverCallback;
@@ -32,15 +31,10 @@ global.ResizeObserver = class ResizeObserver {
   unobserve() {}
 };
 
-class IntersectionObserver {
-  constructor(callback, options) {}
-  observe() {}
-  unobserve() {}
-  disconnect() {}
-}
-
-Object.defineProperty(window, 'IntersectionObserver', {
-  writable: true,
-  configurable: true,
-  value: IntersectionObserver,
+beforeEach(() => {
+  global.IntersectionObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
 });
