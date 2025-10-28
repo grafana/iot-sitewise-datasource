@@ -102,7 +102,12 @@
     "eslintv",
     "cooldown",
     "Rspack",
+    "LTRIM",
+    "RTRIM",
+    "TRIM",
+    "Cascader",
     "protip",
-    "npmPreapprovedPackages"
+    "npmPreapprovedPackages",
+    "sqlstring"
   ]
 }
