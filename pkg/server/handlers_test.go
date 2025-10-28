@@ -8,7 +8,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 
+	"github.com/grafana/grafana-aws-sdk/pkg/awsds"
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
@@ -33,6 +35,11 @@ func TestHandlerExecution(t *testing.T) {
 
 	server := Server{
 		Datasource: &sitewise.Datasource{
+			Cfg: models.AWSSiteWiseDataSourceSetting{
+				AWSDatasourceSettings: awsds.AWSDatasourceSettings{
+					Region: "us-west-2",
+				},
+			},
 			GetClient: clientGetter,
 		},
 	}

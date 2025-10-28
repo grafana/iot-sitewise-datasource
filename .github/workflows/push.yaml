@@ -10,8 +10,8 @@ permissions: {}
 
 jobs:
   ci:
-    name: CI
-    uses: grafana/plugin-ci-workflows/.github/workflows/ci.yml@main # zizmor: ignore[unpinned-uses]
+    name: CI-plugins
+    uses: grafana/plugin-ci-workflows/.github/workflows/ci.yml@ci-cd-workflows/v3
     permissions:
       contents: read
       id-token: write

@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.3.2
+
+- QueryData: Set default region if empty in [#556](https://github.com/grafana/iot-sitewise-datasource/pull/556)
+- chore(deps): bump github.com/aws/smithy-go from 1.22.4 to 1.22.5 in [#540](https://github.com/grafana/iot-sitewise-datasource/pull/540)
+- chore(deps): bump github.com/aws/aws-sdk-go-v2/config from 1.29.17 to 1.29.18 in [#536](https://github.com/grafana/iot-sitewise-datasource/pull/536)
+- chore(deps-dev): bump @swc/core from 1.11.24 to 1.13.2 in [#547](https://github.com/grafana/iot-sitewise-datasource/pull/547)
+- chore(deps): bump github.com/grafana/grafana-aws-sdk from 1.0.5 to 1.1.0 in [#546](https://github.com/grafana/iot-sitewise-datasource/pull/546)
+- chore(deps): bump github.com/aws/aws-sdk-go-v2 from 1.36.5 to 1.36.6 in [#535](https://github.com/grafana/iot-sitewise-datasource/pull/535)
+- chore(deps-dev): bump lefthook from 1.11.12 to 1.12.1 in [#532](https://github.com/grafana/iot-sitewise-datasource/pull/532)
+- chore(deps): bump github.com/aws/aws-sdk-go-v2/service/iotsitewise from 1.47.3 to 1.47.4 in [#534](https://github.com/grafana/iot-sitewise-datasource/pull/534)
+- chore(deps-dev): bump @babel/core from 7.27.1 to 7.28.0 in [#528](https://github.com/grafana/iot-sitewise-datasource/pull/528)
+- Tweak dependabot schedule in [#543](https://github.com/grafana/iot-sitewise-datasource/pull/543)
+
 ## 2.3.1
 
 - Add support for auto-merging dependabot updates in [#497](https://github.com/grafana/iot-sitewise-datasource/pull/497)
@@ -10,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - chore(deps-dev): bump prettier from 3.5.3 to 3.6.2 in [#516](https://github.com/grafana/iot-sitewise-datasource/pull/516)
 - chore(deps-dev): bump sass from 1.88.0 to 1.89.2 in [#513](https://github.com/grafana/iot-sitewise-datasource/pull/513)
 - chore(deps-dev): bump webpack from 5.99.8 to 5.100.2 in [#515](https://github.com/grafana/iot-sitewise-datasource/pull/515)
+- chore(deps-dev): bump @playwright/test from 1.52.0 to 1.54.0 in [#533](https://github.com/grafana/iot-sitewise-datasource/pull/533)
 - chore(deps): bump golang.org/x/sync from 0.15.0 to 0.16.0 in [#511](https://github.com/grafana/iot-sitewise-datasource/pull/511)
 - Run e2e tests with plugin workflows in [#519](https://github.com/grafana/iot-sitewise-datasource/pull/519)
 - Added support for grafana variables in executeQuery requests and auto suggestion grafana variables in [#501](http://github.com/grafana/iot-sitewise-datasource/pull/501)

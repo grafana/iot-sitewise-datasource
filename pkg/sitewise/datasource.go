@@ -29,7 +29,7 @@ type clientGetterFunc func(ctx context.Context, region string) (client.SitewiseA
 type invokerFunc func(ctx context.Context, sw client.SitewiseAPIClient) (framer.Framer, error)
 
 type Datasource struct {
-	cfg               models.AWSSiteWiseDataSourceSetting
+	Cfg               models.AWSSiteWiseDataSourceSetting
 	edgeAuthenticator *EdgeAuthenticator
 	proxyOptions      *proxy.Options
 	GetClient         clientGetterFunc
@@ -68,7 +68,7 @@ func NewDatasource(ctx context.Context, settings backend.DataSourceInstanceSetti
 		return nil, err
 	}
 	ds := &Datasource{
-		cfg:          cfg,
+		Cfg:          cfg,
 		proxyOptions: proxyOptions,
 	}
 
@@ -94,35 +94,42 @@ func (ds *Datasource) Authenticate() error {
 	if authInfo == nil {
 		return nil
 	}
-	ds.cfg.AuthType = awsds.AuthTypeKeys
-	ds.cfg.AccessKey = authInfo.AccessKeyId
-	ds.cfg.SecretKey = authInfo.SecretAccessKey
-	ds.cfg.SessionToken = authInfo.SessionToken
+	ds.Cfg.AuthType = awsds.AuthTypeKeys
+	ds.Cfg.AccessKey = authInfo.AccessKeyId
+	ds.Cfg.SecretKey = authInfo.SecretAccessKey
+	ds.Cfg.SessionToken = authInfo.SessionToken
 	return nil
 }
 
 func (ds *Datasource) getClient(ctx context.Context, region string) (client.SitewiseAPIClient, error) {
+	if region == "" || region == "default" {
+		if ds.Cfg.Region == "" {
+			return nil, errors.New("region is not set in datasource settings")
+		}
+		region = ds.Cfg.Region
+	}
+
 	if ds.GetClient != nil {
 		return ds.GetClient(ctx, region)
 	}
 	if err := ds.Authenticate(); err != nil {
 		return nil, err
 	}
-	httpclient, err := client.GetHTTPClient(ds.cfg)
+	httpclient, err := client.GetHTTPClient(ds.Cfg)
 	if err != nil {
 		return nil, err
 	}
 
 	awsCfg, err := awsauth.NewConfigProvider().GetConfig(ctx, awsauth.Settings{
-		LegacyAuthType:     ds.cfg.AuthType,
-		AccessKey:          ds.cfg.AccessKey,
-		SecretKey:          ds.cfg.SecretKey,
-		SessionToken:       ds.cfg.SessionToken,
+		LegacyAuthType:     ds.Cfg.AuthType,
+		AccessKey:          ds.Cfg.AccessKey,
+		SecretKey:          ds.Cfg.SecretKey,
+		SessionToken:       ds.Cfg.SessionToken,
 		Region:             region,
-		CredentialsProfile: ds.cfg.Profile,
-		AssumeRoleARN:      ds.cfg.AssumeRoleARN,
-		Endpoint:           ds.cfg.Endpoint,
-		ExternalID:         ds.cfg.ExternalID,
+		CredentialsProfile: ds.Cfg.Profile,
+		AssumeRoleARN:      ds.Cfg.AssumeRoleARN,
+		Endpoint:           ds.Cfg.Endpoint,
+		ExternalID:         ds.Cfg.ExternalID,
 		UserAgent:          awsds.GetUserAgentString("grafana-iot-sitewise-datasource"),
 		HTTPClient:         httpclient,
 		ProxyOptions:       ds.proxyOptions,
@@ -133,7 +140,7 @@ func (ds *Datasource) getClient(ctx context.Context, region string) (client.Site
 	}
 
 	return &client.SitewiseClient{Client: iotsitewise.NewFromConfig(awsCfg, func(o *iotsitewise.Options) {
-		if ds.cfg.Region == models.EDGE_REGION {
+		if ds.Cfg.Region == models.EDGE_REGION {
 			o.APIOptions = append(o.APIOptions, func(stack *middleware.Stack) error {
 				return stack.Initialize.Add(&disableHostPrefixMiddleware{}, middleware.Before)
 			})
@@ -157,7 +164,7 @@ func (ds *Datasource) invoke(ctx context.Context, _ *backend.QueryDataRequest, b
 
 func (ds *Datasource) HealthCheck(ctx context.Context, req *backend.CheckHealthRequest) error {
 
-	sw, err := ds.getClient(ctx, ds.cfg.Region)
+	sw, err := ds.getClient(ctx, ds.Cfg.Region)
 	if err != nil {
 		return errors.Wrap(err, "unable to load settings")
 	}

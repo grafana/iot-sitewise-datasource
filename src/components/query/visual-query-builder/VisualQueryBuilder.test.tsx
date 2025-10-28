@@ -219,6 +219,50 @@ describe('VisualQueryBuilder', () => {
     });
   });
 
+  it('should allow multiple property selection with wildcard search', async () => {
+    const onChange = jest.fn();
+    const mockDatasource = {
+      getCache: () => ({
+        getAssetInfo: jest.fn().mockResolvedValue({}),
+        listAssetProperties: jest.fn().mockResolvedValue([
+          { id: 'temp1', name: 'temp1' },
+          { id: 'temp2', name: 'temp2' },
+          { id: 'time', name: 'time' },
+          { id: 'temperature', name: 'temperature' },
+        ]),
+        getAssetPickerOptions: jest.fn().mockResolvedValue([]),
+      }),
+    };
+
+    await setup(
+      {
+        queryType: QueryType.PropertyValue,
+        propertyIds: [],
+        assetIds: ['asset'],
+      },
+      {
+        ...defaultProps,
+        datasource: mockDatasource,
+        onChange,
+      } as any
+    );
+
+    const propertyCombo = (await screen.findAllByRole('combobox', { name: /property/i }))[1];
+    expect(propertyCombo).toBeInTheDocument();
+
+    await userEvent.type(propertyCombo, '*temp*');
+    await userEvent.keyboard('{Enter}');
+
+    await waitFor(() => {
+      expect(onChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          assetIds: ['asset'],
+          propertyIds: ['temp1', 'temp2', 'temperature'],
+        })
+      );
+    });
+  });
+
   it('should clear property when the only asset is deselected', async () => {
     const onChange = jest.fn();
 
@@ -234,7 +278,7 @@ describe('VisualQueryBuilder', () => {
       }
     );
 
-    const clearButton = (await screen.findAllByRole('button', { name: 'Clear value' }))[1];
+    const clearButton = (await screen.findAllByRole('button', { name: 'Clear value' }))[0];
     expect(clearButton).toBeInTheDocument();
     await userEvent.click(clearButton);
 
@@ -248,7 +292,6 @@ describe('VisualQueryBuilder', () => {
 
   it('should clear property when all assets are deselected', async () => {
     const onChange = jest.fn();
-
     await setup(
       {
         queryType: QueryType.PropertyValue,
@@ -261,7 +304,7 @@ describe('VisualQueryBuilder', () => {
       }
     );
 
-    const clearButton = (await screen.findAllByRole('button', { name: 'Clear value' }))[1];
+    const clearButton = (await screen.findAllByRole('button', { name: 'Clear value' }))[0];
     expect(clearButton).toBeInTheDocument();
     await userEvent.click(clearButton);
 
