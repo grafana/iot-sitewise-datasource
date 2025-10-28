@@ -107,6 +107,7 @@
     "TRIM",
     "Cascader",
     "protip",
-    "npmPreapprovedPackages"
+    "npmPreapprovedPackages",
+    "sqlstring"
   ]
 }
