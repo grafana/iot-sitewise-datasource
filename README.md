@@ -1,14 +1,8 @@
-# Compatibility
-
-AWS IoT Sitewise data source plugin >=2.0.0 is not compatible with Grafana versions <=10.4.x due to a breaking change in UI components.
-
 # AWS IoT Sitewise Data Source Development Guide
 
-Please add feedback to the [issues](https://github.com/grafana/iot-sitewise-datasource/issues) folder, and we will follow up shortly. Be sure to include version information for both grafana and the installed plugin.
+Access data source plugin documentation [here](https://grafana.com/docs/plugins/grafana-iot-sitewise-datasource/latest/)
 
 The production plugins can be downloaded from [the IoT sitewise plugin page](https://grafana.com/grafana/plugins/grafana-iot-sitewise-datasource/installation).
-
-For configuration options, see: [src/README.md](src/README.md)
 
 ## Development builds
 

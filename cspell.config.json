@@ -8,6 +8,7 @@
     "go.sum",
     "mage_output_file.go",
     "node_modules/**",
+    ".yarn/**",
     "pkg/**/*_test.go",
     "provisioning/**/*.yaml",
     "**/testdata/*.json",
@@ -100,6 +101,13 @@
     "smithyhttp",
     "eslintv",
     "cooldown",
-    "Rspack"
+    "Rspack",
+    "LTRIM",
+    "RTRIM",
+    "TRIM",
+    "Cascader",
+    "protip",
+    "npmPreapprovedPackages",
+    "sqlstring"
   ]
 }
