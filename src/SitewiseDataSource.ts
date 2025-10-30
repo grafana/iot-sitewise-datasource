@@ -178,7 +178,7 @@ export class DataSource extends DataSourceWithBackend<SitewiseQuery, SitewiseOpt
       resolution: query.resolution
         ? (templateSrv.replace(query.resolution, scopedVars) as SiteWiseResolution)
         : undefined,
-      rawSQL: templateSrv.replace(query.rawSQL, scopedVars),
+      rawSQL: templateSrv.replace(query.rawSQL, scopedVars, 'sqlstring'),
     };
     if (isListAssetsQuery(interpolatedQuery)) {
       interpolatedQuery.modelId = templateSrv.replace(interpolatedQuery.modelId, scopedVars);
