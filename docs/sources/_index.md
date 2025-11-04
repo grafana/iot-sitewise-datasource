@@ -36,6 +36,18 @@ Multiple aggregations can be shown for a single property:
 
 ![query-editor](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/editor2.png)
 
+### SQL Builder
+ 
+Use the "Builder (SQL)" selector to switch to the SQL Builder mode.
+ 
+![sql-builder](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/query-builder.png)
+ 
+Construct SQL queries step by step by specifying the FROM, SELECT, WHERE, ORDER BY, GROUP BY, and HAVING clauses.
+ 
+Once the clauses are defined, a data query preview is displayed as shown below:
+ 
+![sql-builder](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/query-builder2.png)
+
 ## Alerting
 
 Standard grafana alerting is support with this plugin, however note that alert queries may not include template variables.
