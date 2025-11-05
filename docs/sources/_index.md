@@ -43,14 +43,16 @@ Use the "Builder (SQL)" selector to switch to the SQL Builder mode.
 ![sql-builder](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/query-builder.png)
  
 Construct SQL queries step by step by specifying the FROM, SELECT, WHERE, ORDER BY, GROUP BY, and HAVING clauses.
+
+Queries must include at least one SELECT and FROM clause to be valid.
  
-Once the clauses are defined, a data query preview is displayed as shown below:
+Once the clauses are defined, a data query preview is displayed:
  
 ![sql-builder](https://raw.githubusercontent.com/grafana/iot-sitewise-datasource/main/docs/query-builder2.png)
 
 ## Alerting
 
-Standard grafana alerting is support with this plugin, however note that alert queries may not include template variables.
+Plugin supports standard Grafana Alerts; however note that alert queries may not include template variables.
 See the [Alerting](https://grafana.com/docs/grafana/latest/alerting/alerts-overview/) documentation for more on Grafana alerts.
 
 ## Configure the data source with provisioning
