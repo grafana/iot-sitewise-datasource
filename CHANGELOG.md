@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.4.0
+
+- Enabled Builder(SQL) and Code (SQL) for sitewise. in [#625](https://github.com/grafana/iot-sitewise-datasource/pull/625)
+- Publish to every environment on Cloud and Add On-Prem promotion in [#626](https://github.com/grafana/iot-sitewise-datasource/pull/626)
+- Feature: SQL Query Builder with clause components to generate rawSQL in [#541](https://github.com/grafana/iot-sitewise-datasource/pull/541)
+- Update gitignore for yarn files in [#607](https://github.com/grafana/iot-sitewise-datasource/pull/607)
+- Upgrade yarn to v4.10.3 in [#599](https://github.com/grafana/iot-sitewise-datasource/pull/599)
+- Chore: Move docs to docs/sources to enable publishing to website in [#601](https://github.com/grafana/iot-sitewise-datasource/pull/601)
+- CD: Publish Github release directly, skipping draft step in [#598](https://github.com/grafana/iot-sitewise-datasource/pull/598)
+- Update workflows and templates in [#587](https://github.com/grafana/iot-sitewise-datasource/pull/587)
+- Support selecting multiple asset properties with wildcard. in [#561](https://github.com/grafana/iot-sitewise-datasource/pull/561)
+
+- chore(deps): bump the aws-sdk-go-v2 group with 3 updates in [#593](https://github.com/grafana/iot-sitewise-datasource/pull/593)
+- chore(deps): bump actions/setup-node from 4 to 6 in [#609](https://github.com/grafana/iot-sitewise-datasource/pull/609)
+- chore(deps): bump actions/stale from 9 to 10 in [#583](https://github.com/grafana/iot-sitewise-datasource/pull/583)
+- chore(deps-dev): bump @testing-library/jest-dom and @types/testing-library__jest-dom in [#569](https://github.com/grafana/iot-sitewise-datasource/pull/569)
+- chore(deps-dev): bump the npm-patch-dev-dependencies group with 9 updates in [#595](https://github.com/grafana/iot-sitewise-datasource/pull/595)
+- chore(deps): bump github.com/grafana/grafana-plugin-sdk-go from 0.278.0 to 0.279.0 in [#594](https://github.com/grafana/iot-sitewise-datasource/pull/594)
+- Update dependabot groups in [#586](https://github.com/grafana/iot-sitewise-datasource/pull/586)
+- chore(deps-dev): bump eslint from 9.32.0 to 9.35.0 in [#589](https://github.com/grafana/iot-sitewise-datasource/pull/589)
+- Dependencies: bump jest-env-jsdom, github.com/aws/aws-sdk-go-v2/config, github.com/aws/aws-sdk-go-v2 in [#566](https://github.com/grafana/iot-sitewise-datasource/pull/566)
+- chore(deps): bump github.com/aws/aws-sdk-go-v2/service/iotsitewise from 1.47.4 to 1.49.0 in [#562](https://github.com/grafana/iot-sitewise-datasource/pull/562)
+- chore(deps): bump the grafana-dependencies group and update create-plugin in [#544](https://github.com/grafana/iot-sitewise-datasource/pull/544)
+
 ## 2.3.2
 
 - QueryData: Set default region if empty in [#556](https://github.com/grafana/iot-sitewise-datasource/pull/556)
