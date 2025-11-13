@@ -99,7 +99,7 @@ export function SitewiseQueryEditor(props: Props) {
           />
         }
         extraHeaderElementLeft={
-          editorMode === QueryEditorMode.Code ? (
+          editorMode === QueryEditorMode.Code || editorMode === 'sql' ? (
             <InlineSelect
               label="AWS Region"
               options={regionOptions}
