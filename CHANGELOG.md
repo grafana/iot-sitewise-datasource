@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.4.1
+
+- Enabled region for SQL builder in [#632](https://github.com/grafana/iot-sitewise-datasource/pull/632)
+
 ## 2.4.0
 
 - Enabled Builder(SQL) and Code (SQL) for sitewise. in [#625](https://github.com/grafana/iot-sitewise-datasource/pull/625)
@@ -17,7 +21,7 @@ All notable changes to this project will be documented in this file.
 - chore(deps): bump the aws-sdk-go-v2 group with 3 updates in [#593](https://github.com/grafana/iot-sitewise-datasource/pull/593)
 - chore(deps): bump actions/setup-node from 4 to 6 in [#609](https://github.com/grafana/iot-sitewise-datasource/pull/609)
 - chore(deps): bump actions/stale from 9 to 10 in [#583](https://github.com/grafana/iot-sitewise-datasource/pull/583)
-- chore(deps-dev): bump @testing-library/jest-dom and @types/testing-library__jest-dom in [#569](https://github.com/grafana/iot-sitewise-datasource/pull/569)
+- chore(deps-dev): bump @testing-library/jest-dom and @types/testing-library\_\_jest-dom in [#569](https://github.com/grafana/iot-sitewise-datasource/pull/569)
 - chore(deps-dev): bump the npm-patch-dev-dependencies group with 9 updates in [#595](https://github.com/grafana/iot-sitewise-datasource/pull/595)
 - chore(deps): bump github.com/grafana/grafana-plugin-sdk-go from 0.278.0 to 0.279.0 in [#594](https://github.com/grafana/iot-sitewise-datasource/pull/594)
 - Update dependabot groups in [#586](https://github.com/grafana/iot-sitewise-datasource/pull/586)
