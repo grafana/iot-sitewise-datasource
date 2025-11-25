@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.4.2
+
+- Bump SDKs and Prepare release in [#639](https://github.com/grafana/iot-sitewise-datasource/pull/639)
+- Fix CI workflows in [#638](https://github.com/grafana/iot-sitewise-datasource/pull/638)
+
 ## 2.4.1
 
 - Enabled region for SQL builder in [#632](https://github.com/grafana/iot-sitewise-datasource/pull/632)
