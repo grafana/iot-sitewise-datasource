@@ -34,7 +34,7 @@ func frameResponse(ctx context.Context, query models.BaseQuery, data framer.Fram
 	if err != nil {
 		return nil, err
 	}
-	if isRequireJSONParsing(query) {
+	if requiresJsonParsing(query) {
 		var assetID string
 		if len(query.AssetIds) > 0 {
 			assetID = strings.TrimSpace(query.AssetIds[0])
