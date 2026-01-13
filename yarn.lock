@@ -3678,7 +3678,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.17.0":
+"@types/node@npm:^22.19.3":
   version: 22.19.3
   resolution: "@types/node@npm:22.19.3"
   dependencies:
@@ -7391,7 +7391,7 @@ __metadata:
     "@types/glob": "npm:^8.1.0"
     "@types/jest": "npm:^30.0.0"
     "@types/lodash": "npm:^4.17.20"
-    "@types/node": "npm:^22.17.0"
+    "@types/node": "npm:^22.19.3"
     "@types/semver": "npm:^7.7.1"
     "@typescript-eslint/eslint-plugin": "npm:^8.51.0"
     "@typescript-eslint/parser": "npm:^8.51.0"
