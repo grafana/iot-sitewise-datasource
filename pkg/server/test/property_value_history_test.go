@@ -66,6 +66,8 @@ func Test_get_property_value_history_with_default_aka_table_response_format(t *t
 	mockBatchGetAssetPropertyValueHistoryPageAggregation(mockSw, nil, []iotsitewisetypes.BatchGetAssetPropertyValueHistorySuccessEntry{successEntry}, nil)
 
 	mockDescribeAssetProperty(mockSw)
+	mockDescribeAsset(mockSw)
+	mockDescribeAssetModel(mockSw)
 
 	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
@@ -132,6 +134,8 @@ func Test_get_property_value_history_with_time_series_response_format(t *testing
 	mockBatchGetAssetPropertyValueHistoryPageAggregation(mockSw, nil, []iotsitewisetypes.BatchGetAssetPropertyValueHistorySuccessEntry{successEntry}, nil)
 
 	mockDescribeAssetProperty(mockSw)
+	mockDescribeAsset(mockSw)
+	mockDescribeAssetModel(mockSw)
 
 	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
@@ -199,6 +203,8 @@ func Test_getPropertyValueBoolean(t *testing.T) {
 	mockSw := &mocks.SitewiseAPIClient{}
 	mockSw.On("BatchGetAssetPropertyValueHistoryPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propVals, nil)
 	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&propDesc, nil)
+	mockDescribeAsset(mockSw)
+	mockDescribeAssetModel(mockSw)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -299,6 +305,9 @@ func Test_get_property_value_history_with_flatten_l4e(t *testing.T) {
 		},
 	}, nil)
 
+	mockDescribeAsset(mockSw)
+	mockDescribeAssetModel(mockSw)
+
 	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
 	sitewise.GetCache = func() *cache.Cache {
@@ -387,6 +396,9 @@ func Test_get_property_value_history_with_struct_type(t *testing.T) {
 		},
 	}, nil)
 
+	mockDescribeAsset(mockSw)
+	mockDescribeAssetModel(mockSw)
+
 	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
 	sitewise.GetCache = func() *cache.Cache {
@@ -416,16 +428,52 @@ func Test_get_property_value_history_with_struct_type(t *testing.T) {
 	require.True(t, ok)
 	require.NotNil(t, qdr.Responses["A"].Frames[0])
 
-	expectedFrame := data.NewFrame("Demo Turbine Asset 1",
-		data.NewField("time", nil, []time.Time{time.Date(2021, 2, 1, 19, 20, 0, 0, time.UTC)}),
-		data.NewField("AWS/L4E_ANOMALY_RESULT", nil, []string{structValue}).SetConfig(&data.FieldConfig{}),
-		data.NewField("quality", nil, []string{"GOOD"}),
-	).SetMeta(&data.FrameMeta{
-		Custom: models.SitewiseCustomMeta{Resolution: "RAW", EntryId: *mockAssetPropertyEntryId},
-	})
-	if diff := cmp.Diff(expectedFrame, qdr.Responses["A"].Frames[0], data.FrameTestCompareOptions()...); diff != "" {
-		t.Errorf("Result mismatch (-want +got):\n%s", diff)
+	frame := qdr.Responses["A"].Frames[0]
+	require.Equal(t, "Demo Turbine Asset 1", frame.Name)
+	require.Equal(t, models.SitewiseCustomMeta{Resolution: "RAW", EntryId: *mockAssetPropertyEntryId}, frame.Meta.Custom)
+	require.Equal(t, 8, len(frame.Fields)) // time, AWS/L4E_ANOMALY_RESULT, 5 parsed fields, quality
+
+	// Create a map for easier field access by name (order-independent)
+	fieldMap := make(map[string]*data.Field)
+	for _, field := range frame.Fields {
+		fieldMap[field.Name] = field
 	}
+
+	// Assert time field
+	require.Contains(t, fieldMap, "time")
+	require.Equal(t, 1, fieldMap["time"].Len())
+	require.Equal(t, time.Date(2021, 2, 1, 19, 20, 0, 0, time.UTC).Unix(), fieldMap["time"].At(0).(time.Time).Unix())
+
+	// Assert AWS/L4E_ANOMALY_RESULT field (original struct value)
+	require.Contains(t, fieldMap, "AWS/L4E_ANOMALY_RESULT")
+	require.Equal(t, 1, fieldMap["AWS/L4E_ANOMALY_RESULT"].Len())
+	require.Equal(t, structValue, fieldMap["AWS/L4E_ANOMALY_RESULT"].At(0).(string))
+
+	// Assert quality field
+	require.Contains(t, fieldMap, "quality")
+	require.Equal(t, 1, fieldMap["quality"].Len())
+	require.Equal(t, "GOOD", fieldMap["quality"].At(0).(string))
+
+	// Assert parsed JSON fields with their values
+	require.Contains(t, fieldMap, "prediction")
+	require.Equal(t, 1, fieldMap["prediction"].Len())
+	require.InDelta(t, float64(0), fieldMap["prediction"].At(0).(float64), 0.0001)
+
+	require.Contains(t, fieldMap, "prediction_reason")
+	require.Equal(t, 1, fieldMap["prediction_reason"].Len())
+	require.Equal(t, "NO_ANOMALY_DETECTED", fieldMap["prediction_reason"].At(0).(string))
+
+	require.Contains(t, fieldMap, "anomaly_score")
+	require.Equal(t, 1, fieldMap["anomaly_score"].Len())
+	require.InDelta(t, 0.2674, fieldMap["anomaly_score"].At(0).(float64), 0.0001)
+
+	require.Contains(t, fieldMap, "contrib_Demo Turbine Asset 1_3a985085-ea71-4ae6-9395-b65990f58a05")
+	require.Equal(t, 1, fieldMap["contrib_Demo Turbine Asset 1_3a985085-ea71-4ae6-9395-b65990f58a05"].Len())
+	require.InDelta(t, 44.856, fieldMap["contrib_Demo Turbine Asset 1_3a985085-ea71-4ae6-9395-b65990f58a05"].At(0).(float64), 0.001)
+
+	require.Contains(t, fieldMap, "contrib_Demo Turbine Asset 1_44fa33e2-b2db-4724-ba03-48ce28902809")
+	require.Equal(t, 1, fieldMap["contrib_Demo Turbine Asset 1_44fa33e2-b2db-4724-ba03-48ce28902809"].Len())
+	require.InDelta(t, 55.144, fieldMap["contrib_Demo Turbine Asset 1_44fa33e2-b2db-4724-ba03-48ce28902809"].At(0).(float64), 0.001)
 
 	mockSw.AssertExpectations(t)
 }
@@ -817,6 +865,8 @@ func Test_get_property_value_history_from_expression_query_with_time_series_resp
 	mockBatchGetAssetPropertyValueHistoryPageAggregation(mockSw, nil, []iotsitewisetypes.BatchGetAssetPropertyValueHistorySuccessEntry{successEntry}, nil)
 
 	mockDescribeAssetProperty(mockSw)
+	mockDescribeAsset(mockSw)
+	mockDescribeAssetModel(mockSw)
 
 	srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
@@ -948,6 +998,8 @@ func Test_get_property_value_history_with_batched_queries(t *testing.T) {
 					}
 				}
 				mockDescribeAssetProperty(mockSw)
+				mockDescribeAsset(mockSw)
+				mockDescribeAssetModel(mockSw)
 			}
 
 			srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
@@ -1073,6 +1125,8 @@ func Test_get_property_value_history_with_batched_queries_with_error(t *testing.
 		}
 
 		mockDescribeAssetProperty(mockSw)
+		mockDescribeAsset(mockSw)
+		mockDescribeAssetModel(mockSw)
 
 		srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 

@@ -37,7 +37,6 @@ var requiredJSONFields = []string{
 //   - assetID is empty
 //   - the asset model cannot be fetched
 //   - no properties are found in the asset model
-
 func BuildPropertyNameMap(
 	ctx context.Context,
 	resources resource.ResourceProvider,
@@ -54,7 +53,6 @@ func BuildPropertyNameMap(
 	}
 
 	propertyNameMap := make(map[string]string)
-
 	for _, prop := range modelResp.AssetModelProperties {
 		if prop.Id != nil && prop.Name != nil {
 			propertyNameMap[*prop.Id] = *prop.Name
@@ -72,7 +70,6 @@ func BuildPropertyNameMap(
 }
 
 // requiresJsonParsing determines whether a given query type
-
 func requiresJsonParsing(query models.BaseQuery) bool {
 	switch query.QueryType {
 	case models.QueryTypePropertyValueHistory,
@@ -98,7 +95,7 @@ func ParseJSONFields(
 	resources resource.ResourceProvider,
 	assetID string,
 ) data.Frames {
-	backend.Logger.Info("ParseJSONFields: starting JSON parsing", "assetID", assetID)
+	backend.Logger.Debug("ParseJSONFields: starting JSON parsing", "assetID", assetID)
 
 	// Build property ID -> readable name map once per request
 	propertyNameMap, err := BuildPropertyNameMap(ctx, resources, assetID)
@@ -134,10 +131,6 @@ func ParseJSONFields(
 			for r := 0; r < rowCount; r++ {
 				rawStr, ok := field.At(r).(string)
 				if !ok || rawStr == "" {
-					continue
-				}
-				// Perform a fast check to ensure the value looks like a JSON object
-				if !strings.HasPrefix(rawStr, "{") {
 					continue
 				}
 
@@ -246,7 +239,7 @@ func ParseJSONFields(
 		newFrames = append(newFrames, newFrame)
 
 		if jsonParsed {
-			backend.Logger.Info("Parsed JSON in frame", "frame", frame.Name)
+			backend.Logger.Debug("Parsed JSON in frame", "frame", frame.Name)
 		}
 	}
 

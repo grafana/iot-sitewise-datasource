@@ -122,6 +122,12 @@ func TestPropertyValueAggregate(t *testing.T) {
 			mockSw := &mocks.SitewiseAPIClient{}
 
 			mockDescribeAssetProperty(mockSw)
+			// Only mock DescribeAsset and DescribeAssetModel when not using property alias
+			// because property alias queries with disassociated streams don't have assetIds
+			if tc.expectedDescribeTimeSeriesArgs == nil {
+				mockDescribeAsset(mockSw)
+				mockDescribeAssetModel(mockSw)
+			}
 			successEntry := mockBatchGetAssetPropertyAggregatesSuccessEntry(mockAssetPropertyEntryId, 0)
 			mockBatchGetAssetPropertyAggregatesPageAggregation(mockSw, Pointer("some-next-token"), []iotsitewisetypes.BatchGetAssetPropertyAggregatesSuccessEntry{successEntry}, nil)
 
@@ -336,6 +342,8 @@ func TestPropertyValueAggregate_with_error(t *testing.T) {
 		}, nil)
 
 		mockDescribeAssetProperty(mockSw)
+		mockDescribeAsset(mockSw)
+		mockDescribeAssetModel(mockSw)
 
 		srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
@@ -459,6 +467,8 @@ func TestPropertyValueAggregate_batched(t *testing.T) {
 					}
 				}
 				mockDescribeAssetProperty(mockSw)
+				mockDescribeAsset(mockSw)
+				mockDescribeAssetModel(mockSw)
 			}
 
 			srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
@@ -580,6 +590,8 @@ func TestPropertyValueAggregate_batched_with_error(t *testing.T) {
 		}
 
 		mockDescribeAssetProperty(mockSw)
+		mockDescribeAsset(mockSw)
+		mockDescribeAssetModel(mockSw)
 
 		srvr := &server.Server{Datasource: mockedDatasource(mockSw).(*sitewise.Datasource)}
 
