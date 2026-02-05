@@ -37,3 +37,24 @@ func mockDescribeAssetProperty(mockSw *mocks.SitewiseAPIClient) {
 		},
 	}, nil)
 }
+
+func mockDescribeAsset(mockSw *mocks.SitewiseAPIClient) {
+	mockSw.On("DescribeAsset", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetOutput{
+		AssetId:      Pointer(mockAssetId),
+		AssetName:    Pointer("Demo Turbine Asset 1"),
+		AssetModelId: Pointer("1f95cf92-34ff-4975-91a9-e9f2af35b6a5"),
+	}, nil)
+}
+
+func mockDescribeAssetModel(mockSw *mocks.SitewiseAPIClient) {
+	mockSw.On("DescribeAssetModel", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetModelOutput{
+		AssetModelId:   Pointer("1f95cf92-34ff-4975-91a9-e9f2af35b6a5"),
+		AssetModelName: Pointer("Demo Turbine Asset Model"),
+		AssetModelProperties: []iotsitewisetypes.AssetModelProperty{
+			{
+				Id:   Pointer(mockPropertyId),
+				Name: Pointer("Wind Speed"),
+			},
+		},
+	}, nil)
+}

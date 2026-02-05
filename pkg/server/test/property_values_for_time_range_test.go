@@ -39,6 +39,8 @@ func Test_propertyValueForTimeRange_raw_data_for_time_range(t *testing.T) {
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&propDesc, nil)
 	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+	mockDescribeAsset(mockSw)
+	mockDescribeAssetModel(mockSw)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -101,6 +103,8 @@ func Test_propertyValueForTimeRange_1m_data_for_time_range(t *testing.T) {
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&propDesc, nil)
 	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+	mockDescribeAsset(mockSw)
+	mockDescribeAssetModel(mockSw)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -163,6 +167,8 @@ func Test_propertyValueForTimeRange_1h_data_for_time_range(t *testing.T) {
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&propDesc, nil)
 	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+	mockDescribeAsset(mockSw)
+	mockDescribeAssetModel(mockSw)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -225,6 +231,8 @@ func Test_propertyValueForTimeRange_1d_data_for_time_range(t *testing.T) {
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&propDesc, nil)
 	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+	mockDescribeAsset(mockSw)
+	mockDescribeAssetModel(mockSw)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
@@ -287,6 +295,8 @@ func Test_propertyValueForTimeRange_1m_data_for_reduced_max_data_point(t *testin
 	mockSw.On("BatchGetAssetPropertyAggregatesPageAggregation", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&propAggregates, nil)
 	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&propDesc, nil)
 	mockSw.On("DescribeTimeSeries", mock.Anything, mock.Anything).Return(&propTimeSeries, nil)
+	mockDescribeAsset(mockSw)
+	mockDescribeAssetModel(mockSw)
 
 	srvr := &server.Server{
 		Datasource: mockedDatasource(mockSw).(*sitewise.Datasource),
