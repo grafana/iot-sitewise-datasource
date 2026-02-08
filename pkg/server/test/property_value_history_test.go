@@ -237,7 +237,7 @@ func Test_getPropertyValueBoolean(t *testing.T) {
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-boolean", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -467,13 +467,13 @@ func Test_get_property_value_history_with_struct_type(t *testing.T) {
 	require.Equal(t, 1, fieldMap["anomaly_score"].Len())
 	require.InDelta(t, 0.2674, fieldMap["anomaly_score"].At(0).(float64), 0.0001)
 
-	require.Contains(t, fieldMap, "contrib_Demo Turbine Asset 1_3a985085-ea71-4ae6-9395-b65990f58a05")
-	require.Equal(t, 1, fieldMap["contrib_Demo Turbine Asset 1_3a985085-ea71-4ae6-9395-b65990f58a05"].Len())
-	require.InDelta(t, 44.856, fieldMap["contrib_Demo Turbine Asset 1_3a985085-ea71-4ae6-9395-b65990f58a05"].At(0).(float64), 0.001)
+	require.Contains(t, fieldMap, "contrib_Demo Turbine Asset 1_RPM")
+	require.Equal(t, 1, fieldMap["contrib_Demo Turbine Asset 1_RPM"].Len())
+	require.InDelta(t, 0.44856, fieldMap["contrib_Demo Turbine Asset 1_RPM"].At(0).(float64), 0.00001)
 
-	require.Contains(t, fieldMap, "contrib_Demo Turbine Asset 1_44fa33e2-b2db-4724-ba03-48ce28902809")
-	require.Equal(t, 1, fieldMap["contrib_Demo Turbine Asset 1_44fa33e2-b2db-4724-ba03-48ce28902809"].Len())
-	require.InDelta(t, 55.144, fieldMap["contrib_Demo Turbine Asset 1_44fa33e2-b2db-4724-ba03-48ce28902809"].At(0).(float64), 0.001)
+	require.Contains(t, fieldMap, "contrib_Demo Turbine Asset 1_Torque")
+	require.Equal(t, 1, fieldMap["contrib_Demo Turbine Asset 1_Torque"].Len())
+	require.InDelta(t, 0.55144, fieldMap["contrib_Demo Turbine Asset 1_Torque"].At(0).(float64), 0.00001)
 
 	mockSw.AssertExpectations(t)
 }
@@ -519,7 +519,7 @@ func Test_getPropertyValueHistoryFromAliasCaseTable(t *testing.T) {
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-table", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -560,7 +560,7 @@ func Test_getPropertyValueHistoryFromAliasCaseTable_disassociated_stream(t *test
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-table-disassociated", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 func Test_getPropertyValueHistoryFromAliasCaseTable_disassociated_stream_empty_response(t *testing.T) {
@@ -600,7 +600,7 @@ func Test_getPropertyValueHistoryFromAliasCaseTable_disassociated_stream_empty_r
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-table-disassociated-empty-response", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -646,7 +646,7 @@ func Test_getPropertyValueHistoryFromAliasCaseTimeSeries(t *testing.T) {
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-timeseries", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 func Test_getPropertyValueHistoryFromAliasCaseTimeSeries_disassociated_stream(t *testing.T) {
@@ -687,7 +687,7 @@ func Test_getPropertyValueHistoryFromAliasCaseTimeSeries_disassociated_stream(t 
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-timeseries-disassociated", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 func Test_getPropertyValueHistoryFromAliasCaseTimeSeries_disassociated_stream_with_empty_response(t *testing.T) {
@@ -728,7 +728,7 @@ func Test_getPropertyValueHistoryFromAliasCaseTimeSeries_disassociated_stream_wi
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-timeseries-disassociated-empty-response", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 func Test_getPropertyValueBooleanFromAlias(t *testing.T) {
@@ -772,7 +772,7 @@ func Test_getPropertyValueBooleanFromAlias(t *testing.T) {
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-boolean-associated-stream", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -813,7 +813,7 @@ func Test_getPropertyValueBooleanFromAliasWithDisassociatedStream(t *testing.T) 
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-boolean-with-disassociated-stream", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -854,7 +854,7 @@ func Test_getPropertyValueBooleanFromAlias_disassociated_stream_with_empty_respo
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "property-history-values-from-alias-boolean-with-disassociated-stream-empty-response", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -1072,7 +1072,7 @@ func Test_get_property_value_history_with_batched_queries(t *testing.T) {
 
 			for i, dr := range qdr.Responses {
 				fname := fmt.Sprintf("%s-%s.golden", fmt.Sprintf("property-history-values-%s", tc.name), i)
-				experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+				experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 			}
 		})
 	}
