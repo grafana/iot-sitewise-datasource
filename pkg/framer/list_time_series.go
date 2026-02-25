@@ -2,6 +2,7 @@ package framer
 
 import (
 	"context"
+
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 
 	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
@@ -66,7 +67,7 @@ func (t TimeSeries) Frames(_ context.Context, _ resource.ResourceProvider) (data
 		if timeSeries.AssetId != nil {
 			tsf.assetId.Set(i, *timeSeries.AssetId)
 		}
-		tsf.dataType.Set(i, timeSeries.DataType)
+		tsf.dataType.Set(i, string(timeSeries.DataType))
 		if timeSeries.DataTypeSpec != nil {
 			tsf.dataTypeSpec.Set(i, *timeSeries.DataTypeSpec)
 		}
