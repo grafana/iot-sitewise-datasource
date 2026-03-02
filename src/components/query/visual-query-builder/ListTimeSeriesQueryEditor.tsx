@@ -39,13 +39,18 @@ export const ListTimeSeriesQueryEditorFunction = (props: Props) => {
   const onAssetIdChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { onChange, query } = props;
     setLastInput('id');
-    onChange({ ...query, assetId: e.target.value });
+    onChange({ ...query, assetIds: e.target.value ? [e.target.value] : [] });
   };
 
   const onTimeSeriesTypeChange = (sel: SelectableValue<string>) => {
     const { onChange, query } = props;
     if (sel.value === 'ALL' && lastInput === 'prefix') {
-      onChange({ ...query, timeSeriesType: sel.value as 'ASSOCIATED' | 'DISASSOCIATED' | 'ALL', assetId: undefined });
+      onChange({
+        ...query,
+        timeSeriesType: sel.value as 'ASSOCIATED' | 'DISASSOCIATED' | 'ALL',
+        assetId: undefined,
+        assetIds: [],
+      });
     } else if (sel.value === 'ALL' && lastInput === 'id') {
       onChange({
         ...query,
@@ -98,8 +103,13 @@ export const ListTimeSeriesQueryEditorFunction = (props: Props) => {
               'The ID of the asset in which the asset property was created. This can be either the actual ID in UUID format, or else externalId: followed by the external ID, if it has one'
             }
           >
-            {/* eslint-disable-next-line @typescript-eslint/no-deprecated */}
-            <Input id="assetId" value={query.assetId} onChange={onAssetIdChange} placeholder="Optional: asset id" />
+            {}
+            <Input
+              id="assetId"
+              value={query.assetIds?.[0]}
+              onChange={onAssetIdChange}
+              placeholder="Optional: asset id"
+            />
           </EditorField>
         )}
       </EditorFieldGroup>
