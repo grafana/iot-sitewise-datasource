@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## 2.5.1
 
+- fix(deps): update go patch updates in [#732](https://github.com/grafana/iot-sitewise-datasource/pull/732)
 - Fix panic for List Time Series query in [#726](https://github.com/grafana/iot-sitewise-datasource/pull/726)
 - chore(deps): update grafana/plugin-ci-workflows/ci-cd-workflows action to v6.1.1 in [#730](https://github.com/grafana/iot-sitewise-datasource/pull/730)
 - fix(deps): update module github.com/aws/smithy-go to v1.24.1 in [#729](https://github.com/grafana/iot-sitewise-datasource/pull/729)
