@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.5.1
+
+- chore(deps): update grafana/plugin-ci-workflows/ci-cd-workflows action to v6.1.1 in [#730](https://github.com/grafana/iot-sitewise-datasource/pull/730)
+- fix(deps): update module github.com/aws/smithy-go to v1.24.1 in [#729](https://github.com/grafana/iot-sitewise-datasource/pull/729)
+- fix(deps): update module github.com/grafana/grafana-plugin-sdk-go to v0.290.0 in [#728](https://github.com/grafana/iot-sitewise-datasource/pull/728)
+- fix(deps): update module github.com/aws/aws-sdk-go-v2/config to v1.32.9 in [#724](https://github.com/grafana/iot-sitewise-datasource/pull/724)
+- update plugins-e2e in [#727](https://github.com/grafana/iot-sitewise-datasource/pull/727)
+- chore(deps): update dependency lefthook to ^2.1.1 in [#707](https://github.com/grafana/iot-sitewise-datasource/pull/707)
+- chore(deps): update dependency dotenv to ^17.3.1 in [#716](https://github.com/grafana/iot-sitewise-datasource/pull/716)
+- fix(deps): update module github.com/grafana/grafana-plugin-sdk-go to v0.289.0 in [#720](https://github.com/grafana/iot-sitewise-datasource/pull/720)
+- chore(deps): update module go.opentelemetry.io/otel/sdk to v1.40.0 [security] in [#719](https://github.com/grafana/iot-sitewise-datasource/pull/719)
+- chore(deps): update dependency @babel/core to ^7.29.0 in [#703](https://github.com/grafana/iot-sitewise-datasource/pull/703)
+- fix(deps): update module github.com/grafana/grafana-plugin-sdk-go to v0.288.0 in [#717](https://github.com/grafana/iot-sitewise-datasource/pull/717)
+- chore(deps): update dependency @grafana/plugin-ui to v0.13.1 in [#714](https://github.com/grafana/iot-sitewise-datasource/pull/714)
+- chore(deps): update dependency sass-loader to v16.0.7 in [#710](https://github.com/grafana/iot-sitewise-datasource/pull/710)
+
 ## 2.5.0
 
 - chore: support React 19 readiness in [#711](https://github.com/grafana/iot-sitewise-datasource/pull/711)
