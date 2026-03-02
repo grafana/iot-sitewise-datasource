@@ -4,7 +4,7 @@ import { SitewiseQuery } from '../types';
 
 const migrateAssetProperty = (query: SitewiseQuery): SitewiseQuery => {
   if (query.assetId && !query.assetIds) {
-    return { ...query, assetIds: [query.assetId] };
+    return { ...query, assetIds: [query.assetId], assetId: undefined };
   }
 
   if (query.propertyId && !query.propertyIds) {
