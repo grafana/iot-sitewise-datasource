@@ -10,11 +10,11 @@ import (
 )
 
 type queryResourceProvider struct {
-	resources *cachingResourceProvider
+	resources *CachingResourceProvider
 	baseQuery models.BaseQuery
 }
 
-func NewQueryResourceProvider(cachingProvider *cachingResourceProvider, query models.BaseQuery) *queryResourceProvider {
+func NewQueryResourceProvider(cachingProvider *CachingResourceProvider, query models.BaseQuery) *queryResourceProvider {
 	return &queryResourceProvider{
 		resources: cachingProvider,
 		baseQuery: query,
