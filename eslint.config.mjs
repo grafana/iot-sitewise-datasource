@@ -17,6 +17,11 @@ export default [
   },
   ...compat.extends('./.config/.eslintrc'),
   {
+    settings: {
+      react: {
+        version: '18.3',
+      },
+    },
     rules: {
       'prefer-const': 'warn',
     },
