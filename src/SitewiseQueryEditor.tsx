@@ -62,7 +62,7 @@ export function SitewiseQueryEditor(props: Props) {
 
   const handleConfirmModeChange = () => {
     if (pendingMode) {
-      query.rawSQL = builderState.rawSQL;
+      onChange({ ...query, rawSQL: builderState.rawSQL });
       onEditorModeChange(pendingMode, true);
     }
     setShowConfirmation(false);

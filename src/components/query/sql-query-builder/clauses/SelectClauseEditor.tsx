@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Select, Input, Cascader, FieldSet, Stack, Text, Alert, Box } from '@grafana/ui';
 import { AccessoryButton, EditorField, EditorFieldGroup, EditorRow } from '@grafana/plugin-ui';
 import { allFunctions, FUNCTION_ARGS, isFunctionOfType, SelectField, ValidationError } from '../types';
@@ -22,14 +22,12 @@ export const SelectClauseEditor: React.FC<SelectClauseEditorProps> = ({
   availableProperties,
 }) => {
   // Tracks version of the select field list to ensure React re-renders components correctly
-  const listVersionRef = useRef(0);
-  const prevLengthRef = useRef(selectFields.length);
-  useEffect(() => {
-    if (selectFields.length !== prevLengthRef.current) {
-      listVersionRef.current += 1;
-      prevLengthRef.current = selectFields.length;
-    }
-  }, [selectFields.length]);
+  const [listVersion, setListVersion] = useState(0);
+  const [prevLength, setPrevLength] = useState(selectFields.length);
+  if (selectFields.length !== prevLength) {
+    setListVersion((v) => v + 1);
+    setPrevLength(selectFields.length);
+  }
 
   /**
    * Memoized list of available properties for the "Column" dropdown.
@@ -110,7 +108,7 @@ export const SelectClauseEditor: React.FC<SelectClauseEditorProps> = ({
             const functionArgs = getFunctionArgs(field.aggregation || '');
             const showInput1 = shouldShowInput1(field.aggregation || '');
             const showInput2 = shouldShowInput2(field.aggregation || '');
-            const uniqueKey = `${listVersionRef.current}-${index}`;
+            const uniqueKey = `${listVersion}-${index}`;
 
             return (
               <EditorFieldGroup key={uniqueKey}>
