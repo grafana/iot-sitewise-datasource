@@ -43,6 +43,7 @@ func (s *AWSSiteWiseDataSourceSetting) Load(config backend.DataSourceInstanceSet
 
 	s.AccessKey = config.DecryptedSecureJSONData["accessKey"]
 	s.SecretKey = config.DecryptedSecureJSONData["secretKey"]
+	s.SessionToken = config.DecryptedSecureJSONData["sessionToken"]
 	s.Cert = config.DecryptedSecureJSONData["cert"]
 	s.EdgeAuthPass = config.DecryptedSecureJSONData["edgeAuthPass"]
 	return nil
