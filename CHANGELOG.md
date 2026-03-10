@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.6.0
+
+- Add sessionToken handling to support Grafana Assume Role in [#741](https://github.com/grafana/iot-sitewise-datasource/pull/741)
+- fix(deps): update backend dependencies in [#738](https://github.com/grafana/iot-sitewise-datasource/pull/738)
+- chore(deps): pin grafana/grafana-enterprise docker tag to 582fc54 in [#736](https://github.com/grafana/iot-sitewise-datasource/pull/736)
+- chore(deps): lock file maintenance in [#721](https://github.com/grafana/iot-sitewise-datasource/pull/721)
+- chore(deps): update dependency lodash to v4.17.23 [security] in [#735](https://github.com/grafana/iot-sitewise-datasource/pull/735)
+- chore(deps): pin dependencies in [#611](https://github.com/grafana/iot-sitewise-datasource/pull/611)
+- Update renovate config to use data-sources base preset in [#733](https://github.com/grafana/iot-sitewise-datasource/pull/733)
+
 ## 2.5.1
 
 - fix(deps): update go patch updates in [#732](https://github.com/grafana/iot-sitewise-datasource/pull/732)
