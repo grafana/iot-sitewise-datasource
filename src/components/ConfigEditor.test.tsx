@@ -4,6 +4,15 @@ import { ConfigEditor } from './ConfigEditor';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { SitewiseOptions, SitewiseSecureJsonData } from 'types';
+
+jest.mock('@grafana/runtime', () => ({
+  ...jest.requireActual('@grafana/runtime'),
+  usePluginInteractionReporter: () => jest.fn(),
+  getAppEvents: () => ({
+    subscribe: () => ({ unsubscribe: jest.fn() }),
+  }),
+}));
+
 const datasourceOptions = {
   id: 1,
   uid: 'sitewise',
