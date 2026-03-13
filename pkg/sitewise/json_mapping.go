@@ -3,19 +3,17 @@
 //   - Resolve asset property IDs to readable names
 //   - Detect and parse JSON embedded in string fields
 //   - Expand JSON attributes into Grafana data frame fields
-//   - Normalize diagnostic contribution values for visualization
 package sitewise
 
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
-	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
+	"github.com/grafana/iot-sitewise-datasource/pkg/resource"
 )
 
 const (
@@ -30,43 +28,6 @@ var requiredJSONFields = []string{
 	jsonFieldTimestamp,
 	jsonFieldPrediction,
 	jsonFieldPredictionReason,
-}
-
-// BuildPropertyNameMap builds a lookup map of assetPropertyID -> assetPropertyName for the given asset.
-// Returns an error if:
-//   - assetID is empty
-//   - the asset model cannot be fetched
-//   - no properties are found in the asset model
-func BuildPropertyNameMap(
-	ctx context.Context,
-	resources resource.ResourceProvider,
-	assetID string,
-) (map[string]string, error) {
-
-	if assetID == "" {
-		return nil, fmt.Errorf("BuildPropertyNameMap: assetId is empty")
-	}
-
-	modelResp, err := resources.AssetModel(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("BuildPropertyNameMap: failed to describe asset model: %w", err)
-	}
-
-	propertyNameMap := make(map[string]string)
-	for _, prop := range modelResp.AssetModelProperties {
-		if prop.Id != nil && prop.Name != nil {
-			propertyNameMap[*prop.Id] = *prop.Name
-		}
-	}
-
-	if len(propertyNameMap) == 0 {
-		return nil, fmt.Errorf(
-			"BuildPropertyNameMap: no properties found for assetId %s",
-			assetID,
-		)
-	}
-
-	return propertyNameMap, nil
 }
 
 // requiresJsonParsing determines whether a given query type
@@ -88,30 +49,13 @@ func requiresJsonParsing(query models.BaseQuery) bool {
 //   - Only string fields are inspected
 //   - Rows that do not resemble JSON objects are skipped
 //   - Valid JSON objects are flattened into separate fields
-//   - Diagnostic contribution values are normalized to percentages
 func ParseJSONFields(
 	ctx context.Context,
 	frames data.Frames,
-	resources resource.ResourceProvider,
-	assetID string,
+	resources *resource.CachingResourceProvider,
 ) data.Frames {
-	backend.Logger.Debug("ParseJSONFields: starting JSON parsing", "assetID", assetID)
+	backend.Logger.Debug("ParseJSONFields: starting JSON parsing", "frames", frames)
 
-	// Build property ID -> readable name map once per request
-	propertyNameMap, err := BuildPropertyNameMap(ctx, resources, assetID)
-	if err != nil {
-		backend.Logger.Error("ParseJSONFields: failed to build property name map", "err", err)
-		return frames
-	}
-	// Resolve asset name for diagnostic field prefixes.
-	// Fallback to assetID if the name cannot be fetched.
-	assetName := assetID
-	assetResp, err := resources.Asset(ctx)
-	if err != nil {
-		backend.Logger.Warn("ParseJSONFields: failed to fetch asset name, using assetID", "assetID", assetID, "err", err)
-	} else if assetResp.AssetName != nil && *assetResp.AssetName != "" {
-		assetName = *assetResp.AssetName
-	}
 	newFrames := data.Frames{}
 
 	for _, frame := range frames {
@@ -137,7 +81,7 @@ func ParseJSONFields(
 				var obj map[string]interface{}
 				if err := json.Unmarshal([]byte(rawStr), &obj); err != nil {
 					// Invalid JSON should not fail the query. Log and skip the corrupted row safely.
-					backend.Logger.Warn("ParseJSONFields: corrupted JSON, skipping row", "err", err, "frame", frame.Name, "field", field.Name, "row", r)
+					backend.Logger.Debug("ParseJSONFields: Not a JSON string, skipping row", "frame", frame.Name, "field", field.Name, "row", r)
 					continue
 				}
 				jsonParsed = true
@@ -180,7 +124,6 @@ func ParseJSONFields(
 				// Diagnostics contain per-property contribution values.
 				// These are expanded into separate fields using the format:
 				//  contrib_<assetName>_<propertyName>
-				// Contribution values are normalized to percentages.
 				if diagArr, ok := obj[jsonFieldDiagnostics].([]interface{}); ok {
 					contribValues := map[string]float64{}
 					for _, item := range diagArr {
@@ -202,11 +145,25 @@ func ParseJSONFields(
 						if len(parts) < 2 {
 							continue
 						}
+						assetID := parts[0]
 						propertyID := parts[1]
-						readable := propertyID
-						if mapped, ok := propertyNameMap[propertyID]; ok {
-							readable = mapped
+
+						assetName := assetID
+						assetResp, err := resources.Asset(ctx, assetID)
+						if err != nil {
+							backend.Logger.Warn("ParseJSONFields: failed to fetch asset name, using assetID", "assetID", assetID, "err", err)
+						} else if assetResp.AssetName != nil && *assetResp.AssetName != "" {
+							assetName = *assetResp.AssetName
 						}
+
+						readable := propertyID
+						for _, prop := range assetResp.AssetProperties {
+							if *prop.Id == propertyID {
+								readable = *prop.Name
+								break
+							}
+						}
+
 						fieldName := "contrib_" + assetName + "_" + readable
 						if _, exists := jsonFields[fieldName]; !exists {
 							jsonFields[fieldName] = data.NewField(fieldName, nil, make([]float64, rowCount))
@@ -215,15 +172,8 @@ func ParseJSONFields(
 							contribValues[fieldName] = v
 						}
 					}
-					// Normalize contribution values so the total equals 100%
-					total := 0.0
-					for _, v := range contribValues {
-						total += v
-					}
-					if total > 0 {
-						for fieldName, rawValue := range contribValues {
-							jsonFields[fieldName].Set(r, (rawValue/total)*100.0)
-						}
+					for fieldName, fieldValue := range contribValues {
+						jsonFields[fieldName].Set(r, fieldValue)
 					}
 				}
 			}

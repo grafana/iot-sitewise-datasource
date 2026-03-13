@@ -95,7 +95,7 @@ func runTestScenario(t *testing.T, scenario *testScenario) {
 		// write out the golden for all data responses
 		for i, dr := range qdr.Responses {
 			fname := fmt.Sprintf("%s-%s.golden", scenario.goldenFileName, i)
-			experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+			experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 		}
 	})
 }

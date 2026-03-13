@@ -2,7 +2,6 @@ package sitewise
 
 import (
 	"context"
-	"strings"
 	"time"
 
 	"github.com/patrickmn/go-cache"
@@ -35,11 +34,7 @@ func frameResponse(ctx context.Context, query models.BaseQuery, data framer.Fram
 		return nil, err
 	}
 	if requiresJsonParsing(query) {
-		var assetID string
-		if len(query.AssetIds) > 0 {
-			assetID = strings.TrimSpace(query.AssetIds[0])
-		}
-		parsedFrames := ParseJSONFields(ctx, frames, rp, assetID)
+		parsedFrames := ParseJSONFields(ctx, frames, cp)
 		return parsedFrames, nil
 	}
 	return frames, nil
