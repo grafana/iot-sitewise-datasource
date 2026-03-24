@@ -3,7 +3,6 @@ package framer
 import (
 	"context"
 	"fmt"
-	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 	"strconv"
 	"time"
 
@@ -15,6 +14,7 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/resource"
+	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 
 	"github.com/pkg/errors"
 )
@@ -70,11 +70,7 @@ func SetValue(col iotsitewisetypes.ColumnInfo, scalarValue string, field *data.F
 			return strconv.ParseFloat(s, 64)
 		},
 		iotsitewisetypes.ScalarTypeTimestamp: func(s string) (interface{}, error) {
-			if t, err := strconv.ParseInt(s, 10, 64); err == nil {
-				return time.Unix(0, t*int64(time.Second)), nil
-			} else {
-				return nil, err
-			}
+			return parseTimestamp(s)
 		},
 	}
 
@@ -88,19 +84,26 @@ func SetValue(col iotsitewisetypes.ColumnInfo, scalarValue string, field *data.F
 		return err
 	}
 
-	// Override event_timestamp columns to be time values
-	if *col.Name == "event_timestamp" {
-		intValue := value.(int64)
-		// Detect if value is in seconds or nanoseconds
-		if intValue < 10000000000 {
-			intValue = intValue * 1000000000
-		}
-		value = time.Unix(0, intValue)
-	}
-
 	if value != nil {
 		field.Set(index, value)
 	}
 
 	return nil
+}
+
+func parseTimestamp(s string) (time.Time, error) {
+	layouts := []string{
+		time.RFC3339,
+		"2006-01-02 15:04:05Z07:00",
+		"2006-01-02T15:04:05",
+		"2006-01-02 15:04:05",
+	}
+
+	for _, layout := range layouts {
+		if t, err := time.Parse(layout, s); err == nil {
+			return t.UTC(), nil
+		}
+	}
+
+	return time.Time{}, fmt.Errorf("unsupported timestamp format: %q", s)
 }
