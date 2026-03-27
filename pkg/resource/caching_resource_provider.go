@@ -5,6 +5,7 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 	"github.com/patrickmn/go-cache"
 )
 
@@ -46,6 +47,9 @@ func (cp *cachingResourceProvider) Property(ctx context.Context, assetId string,
 	if ok {
 		a, ok := val.(iotsitewise.DescribeAssetPropertyOutput)
 		if ok {
+			if isRawPropertyAliasFallback(&a, propertyAlias) {
+				log.DefaultLogger.FromContext(ctx).Debug("SiteWise property metadata cache hit for raw property alias fallback metadata")
+			}
 			return &a, nil
 		}
 	}
