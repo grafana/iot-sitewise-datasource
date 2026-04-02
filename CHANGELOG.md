@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ## v2.6.0
 
+- fix: use declared scalar type for timestamps instead of column name override in [#753](https://github.com/grafana/iot-sitewise-datasource/pull/753)
+- chore(deps): update grafana/shared-workflows/ action to in [#759](https://github.com/grafana/iot-sitewise-datasource/pull/759)
+- fix(deps): update backend dependencies in [#758](https://github.com/grafana/iot-sitewise-datasource/pull/758)
+- chore(deps): update grafana/grafana-enterprise:latest docker digest to 8b65309 in [#757](https://github.com/grafana/iot-sitewise-datasource/pull/757)
+- chore(deps): update grafana/shared-workflows/ action to in [#755](https://github.com/grafana/iot-sitewise-datasource/pull/755)
+- fix(deps): update backend dependencies in [#751](https://github.com/grafana/iot-sitewise-datasource/pull/751)
+- chore(deps): update dependency webpack-cli to v7 in [#750](https://github.com/grafana/iot-sitewise-datasource/pull/750)
+- chore(deps): update module google.golang.org/grpc to v1.79.3 [security] in [#749](https://github.com/grafana/iot-sitewise-datasource/pull/749)
+- fix(deps): update backend dependencies in [#746](https://github.com/grafana/iot-sitewise-datasource/pull/746)
+- chore(deps): update grafana/grafana-enterprise:latest docker digest to 8e8fc4c in [#745](https://github.com/grafana/iot-sitewise-datasource/pull/745)
+- chore(deps): update actions/create-github-app-token digest to fee1f7d in [#744](https://github.com/grafana/iot-sitewise-datasource/pull/744)
+- Bump grafana-aws-sdk-react and prepare 2.6.0 release in [#743](https://github.com/grafana/iot-sitewise-datasource/pull/743)
+- chore(deps): update frontend dependencies (major) in [#739](https://github.com/grafana/iot-sitewise-datasource/pull/739)
 - Add sessionToken handling to support Grafana Assume Role in [#741](https://github.com/grafana/iot-sitewise-datasource/pull/741)
 - fix(deps): update backend dependencies in [#738](https://github.com/grafana/iot-sitewise-datasource/pull/738)
 - chore(deps): pin grafana/grafana-enterprise docker tag to 582fc54 in [#736](https://github.com/grafana/iot-sitewise-datasource/pull/736)
