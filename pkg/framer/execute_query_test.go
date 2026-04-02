@@ -2,11 +2,13 @@ package framer
 
 import (
 	"context"
+	"testing"
+	"time"
+
 	"github.com/aws/aws-sdk-go-v2/aws"
 	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
-	"testing"
-
 	"github.com/grafana/grafana-plugin-sdk-go/backend"
+	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/framer/fields"
 
 	"github.com/stretchr/testify/assert"
@@ -178,17 +180,26 @@ func TestSetValue(t *testing.T) {
 			expected:    123.456,
 			expectError: false,
 		},
-		//{
-		//	// FIXME: this test fails due either to TZ locale or daylight savings time
-		//	name: "TIMESTAMP",
-		//	col: iotsitewisetypes.ColumnInfo{
-		//		Name: aws.String("Test Field"),
-		//		Type: &iotsitewisetypes.ColumnType{ScalarType: iotsitewisetypes.ScalarTypeTimestamp},
-		//	},
-		//	scalarValue: []string{"1736116323"},
-		//	expected:    time.Date(2025, time.January, 5, 22, 32, 03, 0, time.Local),
-		//	expectError: false,
-		//},
+		{
+			name: "TIMESTAMP ISO string",
+			col: iotsitewisetypes.ColumnInfo{
+				Name: aws.String("event_timestamp"),
+				Type: &iotsitewisetypes.ColumnType{ScalarType: iotsitewisetypes.ScalarTypeTimestamp},
+			},
+			scalarValue: []string{"2026-03-24 10:59:29.128"},
+			expected:    time.Date(2026, time.March, 24, 10, 59, 29, 128000000, time.UTC),
+			expectError: false,
+		},
+		{
+			name: "TIMESTAMP RFC3339 string",
+			col: iotsitewisetypes.ColumnInfo{
+				Name: aws.String("event_timestamp"),
+				Type: &iotsitewisetypes.ColumnType{ScalarType: iotsitewisetypes.ScalarTypeTimestamp},
+			},
+			scalarValue: []string{"2026-03-24T10:59:29.128Z"},
+			expected:    time.Date(2026, time.March, 24, 10, 59, 29, 128000000, time.UTC),
+			expectError: false,
+		},
 		{
 			name: "Unsupported type",
 			col: iotsitewisetypes.ColumnInfo{
@@ -263,4 +274,19 @@ func TestSetValue(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestEventTimestampIsNotForcedToTimeWhenScalarTypeIsInt(t *testing.T) {
+	col := iotsitewisetypes.ColumnInfo{
+		Name: aws.String("event_timestamp"),
+		Type: &iotsitewisetypes.ColumnType{ScalarType: iotsitewisetypes.ScalarTypeInt},
+	}
+
+	field := fields.DatumField(1, col)
+
+	assert.Equal(t, data.FieldTypeInt64, field.Type())
+
+	err := SetValue(col, "123", field, 0)
+	require.NoError(t, err)
+	assert.Equal(t, int64(123), field.At(0))
 }
