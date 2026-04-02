@@ -2,6 +2,8 @@ import { test, expect } from './helpers';
 import { interceptRequests } from './interceptRequests';
 import { type SitewiseOptions, type SitewiseSecureJsonData } from '../src/types';
 
+const emptyStateText = /No data|Run a query to visualize it here/i;
+
 test.describe('Query Editor', () => {
   test.describe('Queries', () => {
     test.beforeEach(async ({ page, panelEditPage, readProvisionedDataSource }) => {
@@ -33,13 +35,13 @@ test.describe('Query Editor', () => {
 
       await queryEditor.runQuery();
 
-      await expect(page.getByText('No data')).toBeVisible();
+      await expect(page.getByText(emptyStateText)).toBeVisible();
 
       await queryEditor.selectProperty('Total Average Power');
 
       await queryEditor.runQuery();
 
-      await expect(page.getByText('No data')).not.toBeVisible();
+      await expect(page.getByText(emptyStateText)).not.toBeVisible();
       await expect(panelEditPage.panel.data).toContainText(['15.6 kW', 'GOOD']);
     });
 
@@ -58,7 +60,7 @@ test.describe('Query Editor', () => {
 
       await queryEditor.runQuery();
 
-      await expect(page.getByText('No data')).toBeVisible();
+      await expect(page.getByText(emptyStateText)).toBeVisible();
 
       await queryEditor.selectProperty('Total Average Power');
 
@@ -69,7 +71,7 @@ test.describe('Query Editor', () => {
 
       await queryEditor.runQuery();
 
-      await expect(page.getByText('No data')).not.toBeVisible();
+      await expect(page.getByText(emptyStateText)).not.toBeVisible();
       await expect(panelEditPage.panel.data).toContainText(['15.6 kW', '14.3 kW', '16.3 kW', 'GOOD']);
     });
 
@@ -94,7 +96,7 @@ test.describe('Query Editor', () => {
 
       await queryEditor.runQuery();
 
-      await expect(page.getByText('No data')).toBeVisible();
+      await expect(page.getByText(emptyStateText)).toBeVisible();
 
       await queryEditor.selectProperty('Total Average Power');
 
@@ -106,7 +108,7 @@ test.describe('Query Editor', () => {
 
       await queryEditor.runQuery();
 
-      await expect(page.getByText('No data')).not.toBeVisible();
+      await expect(page.getByText(emptyStateText)).not.toBeVisible();
       await expect(panelEditPage.panel.data).toContainText(['15.6 kW', '14.3 kW', '16.3 kW', 'GOOD']);
     });
 
@@ -129,12 +131,12 @@ test.describe('Query Editor', () => {
 
       await queryEditor.runQuery();
 
-      await expect(page.getByText('No data')).toBeVisible();
+      await expect(page.getByText(emptyStateText)).toBeVisible();
 
       await queryEditor.selectProperty('Total Average Power');
       await queryEditor.runQuery();
 
-      await expect(page.getByText('No data')).not.toBeVisible();
+      await expect(page.getByText(emptyStateText)).not.toBeVisible();
       await expect(panelEditPage.panel.data).toContainText(['15.6 kW', '14.3 kW', '16.3 kW', 'GOOD']);
     });
 
