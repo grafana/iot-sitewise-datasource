@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ## v2.6.0
 
 - chore: add debug logs for raw property alias fallback in [#756](https://github.com/grafana/iot-sitewise-datasource/pull/756)
-- Update codeowners in [#761](https://github.com/grafana/iot-sitewise-datasource/pull/761)
+- Update CODEOWNERS in [#761](https://github.com/grafana/iot-sitewise-datasource/pull/761)
 - fix: use declared scalar type for timestamps instead of column name override in [#753](https://github.com/grafana/iot-sitewise-datasource/pull/753)
 - chore(deps): update grafana/shared-workflows/ action to in [#759](https://github.com/grafana/iot-sitewise-datasource/pull/759)
 - fix(deps): update backend dependencies in [#758](https://github.com/grafana/iot-sitewise-datasource/pull/758)
