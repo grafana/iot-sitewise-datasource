@@ -70,6 +70,8 @@
     "combobox",
     "Cacheable",
     "Stalebot",
+    "CODEOWNERS",
+    "codeowners",
     "gofmt",
     "eslintcache",
     "lefthook",
