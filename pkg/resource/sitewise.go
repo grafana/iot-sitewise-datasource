@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
 	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+	"github.com/grafana/grafana-plugin-sdk-go/backend/log"
 
 	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
 )
@@ -53,6 +54,7 @@ func (rp *SitewiseResources) Property(ctx context.Context, assetId string, prope
 			})
 		}
 
+		log.DefaultLogger.FromContext(ctx).Debug("SiteWise alias lookup did not resolve asset/property IDs; using raw property alias fallback metadata")
 		return defaultOutput, nil
 	}
 
@@ -69,4 +71,16 @@ func (rp *SitewiseResources) AssetModel(ctx context.Context, modelId string) (*i
 	})
 
 	return resp, err
+}
+
+func isRawPropertyAliasFallback(property *iotsitewise.DescribeAssetPropertyOutput, propertyAlias string) bool {
+	if property == nil || propertyAlias == "" || property.AssetName == nil || *property.AssetName != "" {
+		return false
+	}
+
+	if property.AssetProperty == nil || property.AssetProperty.Name == nil {
+		return false
+	}
+
+	return *property.AssetProperty.Name == propertyAlias
 }
