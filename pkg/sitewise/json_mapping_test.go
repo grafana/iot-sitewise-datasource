@@ -2,218 +2,230 @@ package sitewise
 
 import (
 	"context"
-	"math"
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/iotsitewise"
-	iotsitewisetypes "github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
+	"github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
 	"github.com/grafana/grafana-plugin-sdk-go/data"
 	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/resource"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client/mocks"
+	"github.com/patrickmn/go-cache"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
-type testResourceProvider struct {
-	assetOut *iotsitewise.DescribeAssetOutput
-	modelOut *iotsitewise.DescribeAssetModelOutput
-	err      error
-}
-
-func (t *testResourceProvider) Asset(ctx context.Context) (*iotsitewise.DescribeAssetOutput, error) {
-	return t.assetOut, t.err
-}
-
-func (t *testResourceProvider) Assets(ctx context.Context) (map[string]*iotsitewise.DescribeAssetOutput, error) {
-	return nil, t.err
-}
-
-func (t *testResourceProvider) Property(ctx context.Context) (*iotsitewise.DescribeAssetPropertyOutput, error) {
-	return nil, t.err
-}
-
-func (t *testResourceProvider) Properties(ctx context.Context) (map[string]*iotsitewise.DescribeAssetPropertyOutput, error) {
-	return nil, t.err
-}
-
-func (t *testResourceProvider) AssetModel(ctx context.Context) (*iotsitewise.DescribeAssetModelOutput, error) {
-	return t.modelOut, t.err
-}
-
-func getField(frame *data.Frame, name string) *data.Field {
-	for _, f := range frame.Fields {
-		if f != nil && f.Name == name {
-			return f
-		}
-	}
-	return nil
-}
-
-func floatEq(a, b float64) bool {
-	return math.Abs(a-b) < 1e-6
-}
-
-func TestBuildPropertyNameMap_EmptyAssetID(t *testing.T) {
-	out, err := BuildPropertyNameMap(context.Background(), nil, "")
-	if err == nil {
-		t.Fatalf("expected error for empty assetID")
-	}
-	if out != nil {
-		t.Fatalf("expected nil map")
-	}
-}
-
-func TestBuildPropertyNameMap_ErrorFromModel(t *testing.T) {
-	p := &testResourceProvider{err: context.Canceled}
-
-	out, err := BuildPropertyNameMap(context.Background(), p, "asset-1")
-	if err == nil {
-		t.Fatalf("expected error")
-	}
-	if out != nil {
-		t.Fatalf("expected nil map")
-	}
-}
-
-func TestBuildPropertyNameMap_NoProperties(t *testing.T) {
-	p := &testResourceProvider{
-		modelOut: &iotsitewise.DescribeAssetModelOutput{},
-	}
-
-	out, err := BuildPropertyNameMap(context.Background(), p, "asset-1")
-	if err == nil {
-		t.Fatalf("expected error when no properties")
-	}
-	if out != nil {
-		t.Fatalf("expected nil map")
-	}
-}
-
-func TestBuildPropertyNameMap_Success(t *testing.T) {
-	p := &testResourceProvider{
-		modelOut: &iotsitewise.DescribeAssetModelOutput{
-			AssetModelProperties: []iotsitewisetypes.AssetModelProperty{
-				{Id: aws.String("p1"), Name: aws.String("Pressure")},
-				{Id: aws.String("p2"), Name: aws.String("Temperature")},
-			},
-		},
-	}
-
-	out, err := BuildPropertyNameMap(context.Background(), p, "asset-1")
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-	if len(out) != 2 {
-		t.Fatalf("expected 2 entries")
-	}
-}
-
 func TestRequiresJsonParsing(t *testing.T) {
-	if !requiresJsonParsing(models.BaseQuery{QueryType: models.QueryTypePropertyValue}) {
-		t.Fatalf("expected true")
-	}
-	if !requiresJsonParsing(models.BaseQuery{QueryType: models.QueryTypePropertyAggregate}) {
-		t.Fatalf("expected true")
-	}
-	if !requiresJsonParsing(models.BaseQuery{QueryType: models.QueryTypePropertyValueHistory}) {
-		t.Fatalf("expected true")
-	}
-	if requiresJsonParsing(models.BaseQuery{}) {
-		t.Fatalf("expected false for unknown query type")
+	tests := []struct {
+		name      string
+		queryType string
+		expected  bool
+	}{
+		{
+			name:      "PropertyValueHistory requires parsing",
+			queryType: models.QueryTypePropertyValueHistory,
+			expected:  true,
+		},
+		{
+			name:      "PropertyAggregate requires parsing",
+			queryType: models.QueryTypePropertyAggregate,
+			expected:  true,
+		},
+		{
+			name:      "PropertyValue requires parsing",
+			queryType: models.QueryTypePropertyValue,
+			expected:  true,
+		},
+		{
+			name:      "ListAssets does not require parsing",
+			queryType: models.QueryTypeListAssets,
+			expected:  false,
+		},
+		{
+			name:      "ListAssociatedAssets does not require parsing",
+			queryType: models.QueryTypeListAssociatedAssets,
+			expected:  false,
+		},
+		{
+			name:      "Empty query type does not require parsing",
+			queryType: "",
+			expected:  false,
+		},
 	}
 
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			query := models.BaseQuery{QueryType: tt.queryType}
+			result := requiresJsonParsing(query)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
 }
 
-func TestParseJSONFields_HappyPath_WithMappingAndAssetName(t *testing.T) {
+func TestParseJSONFields_MultipleDiagnosticsFromDifferentAssets(t *testing.T) {
 	ctx := context.Background()
+	mockClient := &mocks.SitewiseAPIClient{}
+	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
 
-	p := &testResourceProvider{
-		assetOut: &iotsitewise.DescribeAssetOutput{
-			AssetName: aws.String("Pump1"),
-		},
-		modelOut: &iotsitewise.DescribeAssetModelOutput{
-			AssetModelProperties: []iotsitewisetypes.AssetModelProperty{
-				{Id: aws.String("prop-1"), Name: aws.String("pressure")},
-				{Id: aws.String("prop-2"), Name: aws.String("temperature")},
+	testAsset1 := &iotsitewise.DescribeAssetOutput{
+		AssetName: aws.String("Generator"),
+		AssetProperties: []types.AssetProperty{
+			{
+				Id:   aws.String("prop-123"),
+				Name: aws.String("Vibration"),
+			},
+			{
+				Id:   aws.String("prop-456"),
+				Name: aws.String("Voltage"),
 			},
 		},
 	}
 
-	js := `{
-  "timestamp":1,
-  "prediction":"ANOMALY",
-  "prediction_reason":"threshold",
-  "anomaly_score":0.8,
-  "value":12.3,
-  "diagnostics":[
-   {"name":"x\\prop-1","value":20},
-   {"name":"x\\prop-2","value":80}
-  ]
- }`
-
-	frame := data.NewFrame("f", data.NewField("raw", nil, []string{js}))
-	out := ParseJSONFields(ctx, data.Frames{frame}, p, "asset-1")
-	of := out[0]
-
-	if getField(of, "prediction") == nil {
-		t.Fatalf("prediction missing")
+	testAsset2 := &iotsitewise.DescribeAssetOutput{
+		AssetName: aws.String("AirCompressor"),
+		AssetProperties: []types.AssetProperty{
+			{
+				Id:   aws.String("prop-789"),
+				Name: aws.String("Pressure"),
+			},
+			{
+				Id:   aws.String("prop-012"),
+				Name: aws.String("Temperature"),
+			},
+		},
 	}
 
-	if !floatEq(getField(of, "anomaly_score").At(0).(float64), 0.8) {
-		t.Fatalf("wrong anomaly_score")
-	}
+	mockClient.On("DescribeAsset", mock.Anything, mock.MatchedBy(func(input *iotsitewise.DescribeAssetInput) bool {
+		return *input.AssetId == "asset-123"
+	}), mock.Anything).Return(testAsset1, nil)
 
-	c1 := getField(of, "contrib_Pump1_pressure")
-	c2 := getField(of, "contrib_Pump1_temperature")
-	if c1 == nil || c2 == nil {
-		t.Fatalf("missing contrib fields")
-	}
-	if !floatEq(c1.At(0).(float64)+c2.At(0).(float64), 100) {
-		t.Fatalf("contrib not normalized")
-	}
-}
+	mockClient.On("DescribeAsset", mock.Anything, mock.MatchedBy(func(input *iotsitewise.DescribeAssetInput) bool {
+		return *input.AssetId == "asset-456"
+	}), mock.Anything).Return(testAsset2, nil)
 
-func TestParseJSONFields_CorruptAndNonJSON(t *testing.T) {
-	ctx := context.Background()
+	resources := resource.NewCachingResourceProvider(resource.NewSitewiseResources(mockClient), c)
 
-	frame := data.NewFrame(
-		"bad",
-		data.NewField("v", nil, []string{
-			`{"invalid":`,
-			"hello",
-		}),
+	jsonStr := `{
+		"timestamp": "2026-02-20T22:30:00.000000",
+		"prediction": 1,
+		"prediction_reason": "ANOMALY_DETECTED",
+		"anomaly_score": 0.81356,
+		"diagnostics": [
+			{"name": "asset-123\\prop-123", "value": 0.2847},
+			{"name": "asset-123\\prop-456", "value": 0.1923},
+			{"name": "asset-456\\prop-789", "value": 0.3562},
+			{"name": "asset-456\\prop-012", "value": 0.1668}
+		]
+	}`
+
+	frame := data.NewFrame("test",
+		data.NewField("data", nil, []string{jsonStr}),
 	)
 
-	out := ParseJSONFields(ctx, data.Frames{frame}, &testResourceProvider{
-		modelOut: &iotsitewise.DescribeAssetModelOutput{},
-	}, "asset-1")
+	result := ParseJSONFields(ctx, data.Frames{frame}, resources)
+	assert.Len(t, result, 1)
 
-	if len(out[0].Fields) != 1 {
-		t.Fatalf("expected only original field")
+	resultFieldMap := make(map[string]*data.Field)
+	for _, field := range result[0].Fields {
+		resultFieldMap[field.Name] = field
 	}
+
+	expectedFields := map[string]float64{
+		"contrib_Generator_Vibration":       0.2847,
+		"contrib_Generator_Voltage":         0.1923,
+		"contrib_AirCompressor_Pressure":    0.3562,
+		"contrib_AirCompressor_Temperature": 0.1668,
+	}
+
+	for fieldName, expectedValue := range expectedFields {
+		field, exists := resultFieldMap[fieldName]
+		assert.True(t, exists, "Expected field %s to exist", fieldName)
+		if exists {
+			assert.Equal(t, expectedValue, field.At(0), "Field %s should have value %f", fieldName, expectedValue)
+		}
+	}
+
+	assert.NotNil(t, resultFieldMap["prediction"])
+	assert.Equal(t, 1.0, resultFieldMap["prediction"].At(0))
+
+	assert.NotNil(t, resultFieldMap["prediction_reason"])
+	assert.Equal(t, "ANOMALY_DETECTED", resultFieldMap["prediction_reason"].At(0))
+
+	assert.NotNil(t, resultFieldMap["anomaly_score"])
+	assert.Equal(t, 0.81356, resultFieldMap["anomaly_score"].At(0))
+
+	mockClient.AssertExpectations(t)
 }
 
-func TestParseJSONFields_AssetNameFallback(t *testing.T) {
+func TestParseJSONFields_NonStringField(t *testing.T) {
 	ctx := context.Background()
+	mockClient := &mocks.SitewiseAPIClient{}
+	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
+	resources := resource.NewCachingResourceProvider(resource.NewSitewiseResources(mockClient), c)
 
-	p := &testResourceProvider{
-		assetOut: &iotsitewise.DescribeAssetOutput{},
-		modelOut: &iotsitewise.DescribeAssetModelOutput{
-			AssetModelProperties: []iotsitewisetypes.AssetModelProperty{
-				{Id: aws.String("p1"), Name: aws.String("speed")},
-			},
-		},
+	frame := data.NewFrame("test",
+		data.NewField("number", nil, []float64{1.0, 2.0, 3.0}),
+	)
+
+	result := ParseJSONFields(ctx, data.Frames{frame}, resources)
+
+	assert.Len(t, result, 1)
+	assert.Len(t, result[0].Fields, 1)
+	assert.Equal(t, "number", result[0].Fields[0].Name)
+}
+
+func TestParseJSONFields_EmptyStringField(t *testing.T) {
+	ctx := context.Background()
+	mockClient := &mocks.SitewiseAPIClient{}
+	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
+	resources := resource.NewCachingResourceProvider(resource.NewSitewiseResources(mockClient), c)
+
+	frame := data.NewFrame("test",
+		data.NewField("data", nil, []string{}),
+	)
+
+	result := ParseJSONFields(ctx, data.Frames{frame}, resources)
+
+	assert.Len(t, result, 1)
+	assert.Len(t, result[0].Fields, 1)
+}
+
+func TestParseJSONFields_InvalidJSON(t *testing.T) {
+	ctx := context.Background()
+	mockClient := &mocks.SitewiseAPIClient{}
+	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
+	resources := resource.NewCachingResourceProvider(resource.NewSitewiseResources(mockClient), c)
+
+	frame := data.NewFrame("test",
+		data.NewField("data", nil, []string{"not json", "also not json"}),
+	)
+
+	result := ParseJSONFields(ctx, data.Frames{frame}, resources)
+
+	assert.Len(t, result, 1)
+	assert.Len(t, result[0].Fields, 1)
+	assert.Equal(t, "data", result[0].Fields[0].Name)
+}
+
+func TestParseJSONFields_PreservesFrameMeta(t *testing.T) {
+	ctx := context.Background()
+	mockClient := &mocks.SitewiseAPIClient{}
+	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
+	resources := resource.NewCachingResourceProvider(resource.NewSitewiseResources(mockClient), c)
+
+	jsonStr := `{"timestamp": "2026-02-20T22:30:00.000000", "prediction": 0, "prediction_reason": "NO_ANOMALY_DETECTED", "anomaly_score": 0.0, "diagnostics": []}`
+	frame := data.NewFrame("test",
+		data.NewField("data", nil, []string{jsonStr}),
+	)
+	frame.Meta = &data.FrameMeta{
+		Custom: map[string]interface{}{"key": "value"},
 	}
 
-	js := `{
-  "timestamp":1,
-  "prediction":"OK",
-  "prediction_reason":"none",
-  "diagnostics":[{"name":"x\\p1","value":100}]
- }`
+	result := ParseJSONFields(ctx, data.Frames{frame}, resources)
 
-	frame := data.NewFrame("f", data.NewField("v", nil, []string{js}))
-	out := ParseJSONFields(ctx, data.Frames{frame}, p, "asset-X")
-
-	if getField(out[0], "contrib_asset-X_speed") == nil {
-		t.Fatalf("expected fallback assetID field")
-	}
+	assert.NotNil(t, result[0].Meta)
+	customMap, ok := result[0].Meta.Custom.(map[string]interface{})
+	assert.True(t, ok)
+	assert.Equal(t, "value", customMap["key"])
 }
