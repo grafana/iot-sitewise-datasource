@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.6.1
+- Update frontend dependencies
+
 ## v2.6.0
 
 - chore: add debug logs for raw property alias fallback in [#756](https://github.com/grafana/iot-sitewise-datasource/pull/756)
