@@ -28,7 +28,7 @@ export class QueryEditor {
     this.propertyAliasInput = page.getByLabel('Property alias');
     this.qualitySelect = page.getByLabel('Quality');
     this.timeSelect = page.getByLabel('Time', { exact: true });
-    this.formatSelect = page.getByLabel('Format');
+    this.formatSelect = page.getByLabel('Format', { exact: true });
     this.aggregatePicker = page.getByLabel('Aggregate');
     this.resolutionSelect = page.getByLabel('Resolution');
     this.modelIdSelect = page.getByLabel('Model ID');
