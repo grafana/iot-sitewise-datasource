@@ -39,6 +39,30 @@ func mockDescribeAssetProperty(mockSw *mocks.SitewiseAPIClient) {
 	}, nil)
 }
 
+func mockDescribeDiagnosticAssetProperties(mockSw *mocks.SitewiseAPIClient) {
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+		return req.PropertyId != nil && *req.PropertyId == "3a985085-ea71-4ae6-9395-b65990f58a05"
+	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
+		AssetName: Pointer("Demo Turbine Asset 1"),
+		AssetProperty: &iotsitewisetypes.Property{
+			Id:       Pointer("3a985085-ea71-4ae6-9395-b65990f58a05"),
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
+			Name:     Pointer("RPM"),
+		},
+	}, nil)
+
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+		return req.PropertyId != nil && *req.PropertyId == "44fa33e2-b2db-4724-ba03-48ce28902809"
+	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
+		AssetName: Pointer("Demo Turbine Asset 1"),
+		AssetProperty: &iotsitewisetypes.Property{
+			Id:       Pointer("44fa33e2-b2db-4724-ba03-48ce28902809"),
+			DataType: iotsitewisetypes.PropertyDataTypeDouble,
+			Name:     Pointer("Torque"),
+		},
+	}, nil)
+}
+
 func mockDescribeAsset(mockSw *mocks.SitewiseAPIClient) {
 	mockSw.On("DescribeAsset", mock.Anything, mock.MatchedBy(func(input *iotsitewise.DescribeAssetInput) bool {
 		return input.AssetId != nil

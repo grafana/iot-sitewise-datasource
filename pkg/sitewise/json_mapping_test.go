@@ -16,6 +16,12 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+func newTestResourceLookup(mockClient *mocks.SitewiseAPIClient) resource.ResourceLookup {
+	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
+	cp := resource.NewCachingResourceProvider(resource.NewSitewiseResources(mockClient), c)
+	return resource.NewQueryResourceProvider(cp, models.BaseQuery{})
+}
+
 func TestRequiresJsonParsing(t *testing.T) {
 	tests := []struct {
 		name      string
@@ -66,45 +72,28 @@ func TestRequiresJsonParsing(t *testing.T) {
 func TestParseJSONFields_MultipleDiagnosticsFromDifferentAssets(t *testing.T) {
 	ctx := context.Background()
 	mockClient := &mocks.SitewiseAPIClient{}
-	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
 
-	testAsset1 := &iotsitewise.DescribeAssetOutput{
-		AssetName: aws.String("Generator"),
-		AssetProperties: []types.AssetProperty{
-			{
-				Id:   aws.String("prop-123"),
-				Name: aws.String("Vibration"),
+	mockDescribeAssetProperty := func(assetID, propertyID, assetName, propertyName string) {
+		property := &iotsitewise.DescribeAssetPropertyOutput{
+			AssetId:   aws.String(assetID),
+			AssetName: aws.String(assetName),
+			AssetProperty: &types.Property{
+				Id:   aws.String(propertyID),
+				Name: aws.String(propertyName),
 			},
-			{
-				Id:   aws.String("prop-456"),
-				Name: aws.String("Voltage"),
-			},
-		},
+		}
+
+		mockClient.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(input *iotsitewise.DescribeAssetPropertyInput) bool {
+			return aws.ToString(input.AssetId) == assetID && aws.ToString(input.PropertyId) == propertyID
+		}), mock.Anything).Return(property, nil).Once()
 	}
 
-	testAsset2 := &iotsitewise.DescribeAssetOutput{
-		AssetName: aws.String("AirCompressor"),
-		AssetProperties: []types.AssetProperty{
-			{
-				Id:   aws.String("prop-789"),
-				Name: aws.String("Pressure"),
-			},
-			{
-				Id:   aws.String("prop-012"),
-				Name: aws.String("Temperature"),
-			},
-		},
-	}
+	mockDescribeAssetProperty("asset-123", "prop-123", "Generator", "Vibration")
+	mockDescribeAssetProperty("asset-123", "prop-456", "Generator", "Voltage")
+	mockDescribeAssetProperty("asset-456", "prop-789", "AirCompressor", "Pressure")
+	mockDescribeAssetProperty("asset-456", "prop-012", "AirCompressor", "Temperature")
 
-	mockClient.On("DescribeAsset", mock.Anything, mock.MatchedBy(func(input *iotsitewise.DescribeAssetInput) bool {
-		return *input.AssetId == "asset-123"
-	}), mock.Anything).Return(testAsset1, nil)
-
-	mockClient.On("DescribeAsset", mock.Anything, mock.MatchedBy(func(input *iotsitewise.DescribeAssetInput) bool {
-		return *input.AssetId == "asset-456"
-	}), mock.Anything).Return(testAsset2, nil)
-
-	resources := resource.NewCachingResourceProvider(resource.NewSitewiseResources(mockClient), c)
+	resources := newTestResourceLookup(mockClient)
 
 	jsonStr := `{
 		"timestamp": "2026-02-20T22:30:00.000000",
@@ -158,11 +147,51 @@ func TestParseJSONFields_MultipleDiagnosticsFromDifferentAssets(t *testing.T) {
 	mockClient.AssertExpectations(t)
 }
 
+func TestParseJSONFields_DiagnosticLookupErrorFallsBackToIDs(t *testing.T) {
+	ctx := context.Background()
+	mockClient := &mocks.SitewiseAPIClient{}
+
+	mockClient.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(input *iotsitewise.DescribeAssetPropertyInput) bool {
+		return aws.ToString(input.AssetId) == "asset-123" && aws.ToString(input.PropertyId) == "prop-123"
+	}), mock.Anything).Return(nil, assert.AnError).Once()
+
+	resources := newTestResourceLookup(mockClient)
+
+	jsonStr := `{
+		"timestamp": "2026-02-20T22:30:00.000000",
+		"prediction": 1,
+		"prediction_reason": "ANOMALY_DETECTED",
+		"anomaly_score": 0.81356,
+		"diagnostics": [
+			{"name": "asset-123\\prop-123", "value": 0.2847}
+		]
+	}`
+
+	frame := data.NewFrame("test",
+		data.NewField("data", nil, []string{jsonStr}),
+	)
+
+	result := ParseJSONFields(ctx, data.Frames{frame}, resources)
+	assert.Len(t, result, 1)
+
+	resultFieldMap := make(map[string]*data.Field)
+	for _, field := range result[0].Fields {
+		resultFieldMap[field.Name] = field
+	}
+
+	field, exists := resultFieldMap["contrib_asset-123_prop-123"]
+	assert.True(t, exists)
+	if exists {
+		assert.Equal(t, 0.2847, field.At(0))
+	}
+
+	mockClient.AssertExpectations(t)
+}
+
 func TestParseJSONFields_NonStringField(t *testing.T) {
 	ctx := context.Background()
 	mockClient := &mocks.SitewiseAPIClient{}
-	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
-	resources := resource.NewCachingResourceProvider(resource.NewSitewiseResources(mockClient), c)
+	resources := newTestResourceLookup(mockClient)
 
 	frame := data.NewFrame("test",
 		data.NewField("number", nil, []float64{1.0, 2.0, 3.0}),
@@ -178,8 +207,7 @@ func TestParseJSONFields_NonStringField(t *testing.T) {
 func TestParseJSONFields_EmptyStringField(t *testing.T) {
 	ctx := context.Background()
 	mockClient := &mocks.SitewiseAPIClient{}
-	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
-	resources := resource.NewCachingResourceProvider(resource.NewSitewiseResources(mockClient), c)
+	resources := newTestResourceLookup(mockClient)
 
 	frame := data.NewFrame("test",
 		data.NewField("data", nil, []string{}),
@@ -194,8 +222,7 @@ func TestParseJSONFields_EmptyStringField(t *testing.T) {
 func TestParseJSONFields_InvalidJSON(t *testing.T) {
 	ctx := context.Background()
 	mockClient := &mocks.SitewiseAPIClient{}
-	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
-	resources := resource.NewCachingResourceProvider(resource.NewSitewiseResources(mockClient), c)
+	resources := newTestResourceLookup(mockClient)
 
 	frame := data.NewFrame("test",
 		data.NewField("data", nil, []string{"not json", "also not json"}),
@@ -211,8 +238,7 @@ func TestParseJSONFields_InvalidJSON(t *testing.T) {
 func TestParseJSONFields_PreservesFrameMeta(t *testing.T) {
 	ctx := context.Background()
 	mockClient := &mocks.SitewiseAPIClient{}
-	c := cache.New(cache.DefaultExpiration, cache.NoExpiration)
-	resources := resource.NewCachingResourceProvider(resource.NewSitewiseResources(mockClient), c)
+	resources := newTestResourceLookup(mockClient)
 
 	jsonStr := `{"timestamp": "2026-02-20T22:30:00.000000", "prediction": 0, "prediction_reason": "NO_ANOMALY_DETECTED", "anomaly_score": 0.0, "diagnostics": []}`
 	frame := data.NewFrame("test",

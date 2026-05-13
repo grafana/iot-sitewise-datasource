@@ -222,7 +222,9 @@ func Test_property_value_query_by_asset_id_and_property_id_of_struct_type(t *tes
 		StringValue: Pointer(structValue),
 	}, 0)
 	mockBatchGetAssetPropertyValue(mockSw, nil, []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{successEntry}, nil)
-	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+		return req.PropertyId != nil && *req.PropertyId == mockPropertyId
+	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetId:   Pointer(mockAssetId),
 		AssetName: Pointer("Demo Turbine Asset 1"),
 		CompositeModel: &iotsitewisetypes.CompositeModelProperty{
@@ -233,7 +235,7 @@ func Test_property_value_query_by_asset_id_and_property_id_of_struct_type(t *tes
 			},
 		},
 	}, nil)
-
+	mockDescribeDiagnosticAssetProperties(mockSw)
 	mockDescribeAsset(mockSw)
 	mockDescribeAssetModel(mockSw)
 

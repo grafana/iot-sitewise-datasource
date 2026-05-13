@@ -8,19 +8,19 @@ import (
 	"github.com/patrickmn/go-cache"
 )
 
-type CachingResourceProvider struct {
+type cachingResourceProvider struct {
 	resources *SitewiseResources
 	cache     *cache.Cache
 }
 
-func NewCachingResourceProvider(resources *SitewiseResources, c *cache.Cache) *CachingResourceProvider {
-	return &CachingResourceProvider{
+func NewCachingResourceProvider(resources *SitewiseResources, c *cache.Cache) *cachingResourceProvider {
+	return &cachingResourceProvider{
 		resources: resources,
 		cache:     c,
 	}
 }
 
-func (cp *CachingResourceProvider) Asset(ctx context.Context, assetId string) (*iotsitewise.DescribeAssetOutput, error) {
+func (cp *cachingResourceProvider) Asset(ctx context.Context, assetId string) (*iotsitewise.DescribeAssetOutput, error) {
 	val, ok := cp.cache.Get(assetId)
 	if ok {
 		a, ok := val.(iotsitewise.DescribeAssetOutput)
@@ -37,7 +37,7 @@ func (cp *CachingResourceProvider) Asset(ctx context.Context, assetId string) (*
 	return a, nil
 }
 
-func (cp *CachingResourceProvider) Property(ctx context.Context, assetId string, propertyId string, propertyAlias string) (*iotsitewise.DescribeAssetPropertyOutput, error) {
+func (cp *cachingResourceProvider) Property(ctx context.Context, assetId string, propertyId string, propertyAlias string) (*iotsitewise.DescribeAssetPropertyOutput, error) {
 	key := assetId + "/" + propertyId
 	if propertyAlias != "" {
 		key = propertyAlias
@@ -58,7 +58,7 @@ func (cp *CachingResourceProvider) Property(ctx context.Context, assetId string,
 	return a, nil
 }
 
-func (cp *CachingResourceProvider) AssetModel(ctx context.Context, modelId string) (*iotsitewise.DescribeAssetModelOutput, error) {
+func (cp *cachingResourceProvider) AssetModel(ctx context.Context, modelId string) (*iotsitewise.DescribeAssetModelOutput, error) {
 	val, ok := cp.cache.Get(modelId)
 	if ok {
 		a, ok := val.(iotsitewise.DescribeAssetModelOutput)

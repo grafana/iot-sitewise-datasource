@@ -52,7 +52,7 @@ func requiresJsonParsing(query models.BaseQuery) bool {
 func ParseJSONFields(
 	ctx context.Context,
 	frames data.Frames,
-	resources *resource.CachingResourceProvider,
+	resources resource.ResourceLookup,
 ) data.Frames {
 	backend.Logger.Debug("ParseJSONFields: starting JSON parsing", "frames", frames)
 
@@ -149,18 +149,16 @@ func ParseJSONFields(
 						propertyID := parts[1]
 
 						assetName := assetID
-						assetResp, err := resources.Asset(ctx, assetID)
-						if err != nil {
-							backend.Logger.Warn("ParseJSONFields: failed to fetch asset name, using assetID", "assetID", assetID, "err", err)
-						} else if assetResp.AssetName != nil && *assetResp.AssetName != "" {
-							assetName = *assetResp.AssetName
-						}
-
 						readable := propertyID
-						for _, prop := range assetResp.AssetProperties {
-							if *prop.Id == propertyID {
-								readable = *prop.Name
-								break
+						propertyResp, err := resources.LookupAssetProperty(ctx, assetID, propertyID, "")
+						if err != nil {
+							backend.Logger.Warn("ParseJSONFields: failed to fetch asset property, using IDs", "assetID", assetID, "propertyID", propertyID, "err", err)
+						} else if propertyResp != nil {
+							if propertyResp.AssetName != nil && *propertyResp.AssetName != "" {
+								assetName = *propertyResp.AssetName
+							}
+							if propertyResp.AssetProperty != nil && propertyResp.AssetProperty.Name != nil && *propertyResp.AssetProperty.Name != "" {
+								readable = *propertyResp.AssetProperty.Name
 							}
 						}
 

@@ -34,7 +34,7 @@ func frameResponse(ctx context.Context, query models.BaseQuery, data framer.Fram
 		return nil, err
 	}
 	if requiresJsonParsing(query) {
-		parsedFrames := ParseJSONFields(ctx, frames, cp)
+		parsedFrames := ParseJSONFields(ctx, frames, rp)
 		return parsedFrames, nil
 	}
 	return frames, nil

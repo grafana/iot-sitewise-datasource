@@ -9,12 +9,19 @@ import (
 	"github.com/grafana/iot-sitewise-datasource/pkg/util"
 )
 
+// ResourceLookup resolves arbitrary SiteWise resources by ID or alias.
+type ResourceLookup interface {
+	LookupAsset(ctx context.Context, assetId string) (*iotsitewise.DescribeAssetOutput, error)
+	LookupAssetProperty(ctx context.Context, assetId string, propertyId string, propertyAlias string) (*iotsitewise.DescribeAssetPropertyOutput, error)
+	LookupAssetModel(ctx context.Context, modelId string) (*iotsitewise.DescribeAssetModelOutput, error)
+}
+
 type queryResourceProvider struct {
-	resources *CachingResourceProvider
+	resources *cachingResourceProvider
 	baseQuery models.BaseQuery
 }
 
-func NewQueryResourceProvider(cachingProvider *CachingResourceProvider, query models.BaseQuery) *queryResourceProvider {
+func NewQueryResourceProvider(cachingProvider *cachingResourceProvider, query models.BaseQuery) *queryResourceProvider {
 	return &queryResourceProvider{
 		resources: cachingProvider,
 		baseQuery: query,
@@ -101,4 +108,16 @@ func (rp *queryResourceProvider) AssetModel(ctx context.Context) (*iotsitewise.D
 	}
 
 	return rp.resources.AssetModel(ctx, *asset.AssetModelId)
+}
+
+func (rp *queryResourceProvider) LookupAsset(ctx context.Context, assetId string) (*iotsitewise.DescribeAssetOutput, error) {
+	return rp.resources.Asset(ctx, assetId)
+}
+
+func (rp *queryResourceProvider) LookupAssetProperty(ctx context.Context, assetId string, propertyId string, propertyAlias string) (*iotsitewise.DescribeAssetPropertyOutput, error) {
+	return rp.resources.Property(ctx, assetId, propertyId, propertyAlias)
+}
+
+func (rp *queryResourceProvider) LookupAssetModel(ctx context.Context, modelId string) (*iotsitewise.DescribeAssetModelOutput, error) {
+	return rp.resources.AssetModel(ctx, modelId)
 }

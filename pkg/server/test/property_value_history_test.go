@@ -384,7 +384,9 @@ func Test_get_property_value_history_with_struct_type(t *testing.T) {
 			},
 		},
 	}, nil)
-	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+		return req.PropertyId != nil && *req.PropertyId == mockPropertyId
+	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetId:   Pointer(mockAssetId),
 		AssetName: Pointer("Demo Turbine Asset 1"),
 		CompositeModel: &iotsitewisetypes.CompositeModelProperty{
@@ -395,7 +397,7 @@ func Test_get_property_value_history_with_struct_type(t *testing.T) {
 			},
 		},
 	}, nil)
-
+	mockDescribeDiagnosticAssetProperties(mockSw)
 	mockDescribeAsset(mockSw)
 	mockDescribeAssetModel(mockSw)
 
