@@ -1,7 +1,6 @@
 module github.com/grafana/iot-sitewise-datasource
 
-go 1.25.7
-
+go 1.26.3
 require (
 	github.com/aws/aws-sdk-go-v2 v1.41.5
 	github.com/aws/aws-sdk-go-v2/config v1.32.15
