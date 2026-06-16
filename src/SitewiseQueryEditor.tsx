@@ -1,0 +1,152 @@
+import React, { useState, useCallback } from 'react';
+import { Space, CodeEditor, ConfirmModal } from '@grafana/ui';
+import { EditorRows, QueryEditorMode, InlineSelect } from '@grafana/plugin-ui';
+import { QueryEditorProps, SelectableValue } from '@grafana/data';
+import { QueryEditorHeader } from '@grafana/aws-sdk';
+import { SitewiseQuery, SitewiseOptions, QueryType } from 'types';
+import { DataSource } from 'SitewiseDataSource';
+import { VisualQueryBuilder } from 'components/query/visual-query-builder/VisualQueryBuilder';
+import { SqlQueryBuilder } from 'components/query/sql-query-builder/SqlQueryBuilder';
+import { defaultSitewiseQueryState, SitewiseQueryState } from 'components/query/sql-query-builder/types';
+import { regionOptions, type Region } from 'regions';
+import { SitewiseCompletionProvider } from 'language/autoComplete';
+
+type Props = QueryEditorProps<DataSource, SitewiseQuery, SitewiseOptions>;
+const editorModeOptions: Array<SelectableValue<QueryEditorMode | 'sql'>> = [
+  { label: 'Builder', value: QueryEditorMode.Builder },
+  { label: 'Builder (SQL)', value: 'sql' }, // custom option
+  { label: 'Code (SQL)', value: QueryEditorMode.Code },
+];
+
+export function SitewiseQueryEditor(props: Props) {
+  const { query, onChange, onRunQuery, datasource } = props;
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [pendingMode, setPendingMode] = useState<SelectableValue<QueryEditorMode | 'sql'> | null>(null);
+  const [builderState, setBuilderState] = useState(query.sqlQueryState || defaultSitewiseQueryState);
+  const [editorMode, setEditorMode] = useState<QueryEditorMode | 'sql'>(query.editorMode || QueryEditorMode.Builder);
+
+  const handleQueryChange = useCallback(
+    (updatedState: SitewiseQueryState) => {
+      setBuilderState(updatedState);
+      onChange({
+        ...query,
+        rawSQL: updatedState.rawSQL,
+        sqlQueryState: updatedState,
+      });
+    },
+    [query, onChange]
+  );
+
+  const onEditorModeChange = (sel: SelectableValue<QueryEditorMode | 'sql'>, skipConfirmation = false) => {
+    const newEditorMode = sel.value;
+    if (!newEditorMode) {
+      return;
+    }
+    if (!skipConfirmation && editorMode === QueryEditorMode.Code && newEditorMode === 'sql') {
+      setPendingMode(sel);
+      setShowConfirmation(true);
+      return;
+    }
+    const newQuery = { ...query };
+    if (newEditorMode === QueryEditorMode.Code || newEditorMode === 'sql') {
+      newQuery.queryType = QueryType.ExecuteQuery;
+      newQuery.clientCache = false;
+      newQuery.rawSQL = newQuery.rawSQL || datasource.defaultQuery;
+    }
+    setEditorMode(newEditorMode);
+    onChange({
+      ...newQuery,
+      editorMode: newEditorMode as QueryEditorMode,
+    });
+  };
+
+  const handleConfirmModeChange = () => {
+    if (pendingMode) {
+      onChange({ ...query, rawSQL: builderState.rawSQL });
+      onEditorModeChange(pendingMode, true);
+    }
+    setShowConfirmation(false);
+    setPendingMode(null);
+  };
+
+  const handleCancelModeChange = () => {
+    setShowConfirmation(false);
+    setPendingMode(null);
+  };
+
+  const onRegionChange = (sel: SelectableValue<Region>) => {
+    onChange({ ...query, region: sel.value });
+  };
+
+  const selectedRegionOption = regionOptions.find((option) => {
+    return option.value === query.region;
+  });
+
+  return (
+    <>
+      <QueryEditorHeader<DataSource, SitewiseQuery, SitewiseOptions>
+        {...props}
+        enableRunButton
+        extraHeaderElementRight={
+          <InlineSelect
+            label="Mode"
+            options={editorModeOptions}
+            value={editorModeOptions.find((opt) => opt.value === editorMode) || editorModeOptions[0]}
+            onChange={(sel) => onEditorModeChange(sel)}
+            menuPlacement="auto"
+            isSearchable={false}
+            width={16}
+          />
+        }
+        extraHeaderElementLeft={
+          editorMode === QueryEditorMode.Code || editorMode === 'sql' ? (
+            <InlineSelect
+              label="AWS Region"
+              options={regionOptions}
+              value={selectedRegionOption}
+              onChange={onRegionChange}
+              backspaceRemovesValue
+              allowCustomValue
+              isClearable
+              menuPlacement="auto"
+            />
+          ) : undefined
+        }
+      />
+      <Space v={0.5} />
+      <EditorRows>
+        {editorMode === QueryEditorMode.Code && (
+          <CodeEditor
+            language="sql"
+            showLineNumbers
+            showMiniMap={false}
+            value={query.rawSQL || datasource.defaultQuery}
+            onSave={(text) => onChange({ ...query, rawSQL: text })}
+            onBlur={(text) => onChange({ ...query, rawSQL: text })}
+            onBeforeEditorMount={(monaco) => {
+              if (SitewiseCompletionProvider.monaco === null) {
+                SitewiseCompletionProvider.monaco = monaco;
+                monaco.languages.registerCompletionItemProvider('sql', SitewiseCompletionProvider);
+              }
+            }}
+            height={'200px'}
+          />
+        )}
+        {editorMode === 'sql' && <SqlQueryBuilder builderState={builderState} onChange={handleQueryChange} />}
+        {editorMode === QueryEditorMode.Builder && (
+          <VisualQueryBuilder datasource={datasource} query={query} onChange={onChange} onRunQuery={onRunQuery} />
+        )}
+      </EditorRows>
+
+      {/* Confirmation Dialog */}
+      <ConfirmModal
+        isOpen={showConfirmation}
+        title="Switch to Builder(sql)"
+        body="Are you sure to switch to Builder(sql) mode? You will lose the changes done in Code(sql) mode."
+        onConfirm={handleConfirmModeChange}
+        confirmText="Switch"
+        onDismiss={handleCancelModeChange}
+      />
+    </>
+  );
+}

@@ -1,0 +1,21 @@
+{
+  "SuccessEntries": [
+    {
+      "AssetPropertyValue": {
+        "Quality": "GOOD",
+        "Timestamp": {
+          "OffsetInNanos": 0,
+          "TimeInSeconds": 1612207200
+        },
+        "Value": {
+          "BooleanValue": null,
+          "DoubleValue": 23.81007059955162,
+          "IntegerValue": null,
+          "StringValue": null
+        }
+      },
+      "EntryId": "61e4e1a8ab39463fa0b9418d9be2923e364f40a8b935b69d006b999516cdecef"
+    }
+  ],
+  "NextToken": null
+}

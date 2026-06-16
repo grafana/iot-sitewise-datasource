@@ -1,0 +1,66 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] {
+//      "typeVersion": [
+//          0,
+//          0
+//      ],
+//      "custom": {}
+//  }
+//  Name: 
+//  Dimensions: 2 Fields by 2 Rows
+//  +--------------------------------------+-----------------------+
+//  | Name: id                             | Name: name            |
+//  | Labels:                              | Labels:               |
+//  | Type: []string                       | Type: []string        |
+//  +--------------------------------------+-----------------------+
+//  | aedd92ad-b034-4d4b-bbd8-1eca007c5750 | Asset Property 1 Name |
+//  | bedd92ad-b034-4d4b-bbd8-1eca007c5750 | Asset Property 2 Name |
+//  +--------------------------------------+-----------------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "meta": {
+          "typeVersion": [
+            0,
+            0
+          ],
+          "custom": {}
+        },
+        "fields": [
+          {
+            "name": "id",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          },
+          {
+            "name": "name",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            "aedd92ad-b034-4d4b-bbd8-1eca007c5750",
+            "bedd92ad-b034-4d4b-bbd8-1eca007c5750"
+          ],
+          [
+            "Asset Property 1 Name",
+            "Asset Property 2 Name"
+          ]
+        ]
+      }
+    }
+  ]
+}

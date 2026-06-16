@@ -1,0 +1,81 @@
+{
+    "AssetArn": "arn:aws:iotsitewise:us-east-1:526544423884:asset/6edf67ad-e647-45bd-b609-4974a86729ce",
+    "AssetCompositeModels": null,
+    "AssetCreationDate": "2020-11-24T02:18:29Z",
+    "AssetHierarchies": [
+        {
+            "Id": "883165ce-ea4d-4bac-a223-783e79c5b271",
+            "Name": "Turbine Asset Model"
+        }
+    ],
+    "AssetId": "6edf67ad-e647-45bd-b609-4974a86729ce",
+    "AssetLastUpdateDate": "2020-11-24T02:18:29Z",
+    "AssetModelId": "cec092ac-b034-4d4b-bbd8-1eca007c5750",
+    "AssetName": "Demo Wind Farm Asset",
+    "AssetProperties": [
+        {
+            "Alias": null,
+            "DataType": "STRING",
+            "DataTypeSpec": null,
+            "Id": "3016a465-b862-47bc-8e24-0cc7b619347e",
+            "Name": "Reliability Manager",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/cec092ac-b034-4d4b-bbd8-1eca007c5750/assets/6edf67ad-e647-45bd-b609-4974a86729ce/properties/3016a465-b862-47bc-8e24-0cc7b619347e"
+            },
+            "Unit": null
+        },
+        {
+            "Alias": null,
+            "DataType": "INTEGER",
+            "DataTypeSpec": null,
+            "Id": "3a0025fa-5a2a-4837-8023-4421eff2bf20",
+            "Name": "Code",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/cec092ac-b034-4d4b-bbd8-1eca007c5750/assets/6edf67ad-e647-45bd-b609-4974a86729ce/properties/3a0025fa-5a2a-4837-8023-4421eff2bf20"
+            },
+            "Unit": null
+        },
+        {
+            "Alias": null,
+            "DataType": "STRING",
+            "DataTypeSpec": null,
+            "Id": "8ab8b7b2-118b-4bd8-93f6-4125e1a7bd8e",
+            "Name": "Location",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/cec092ac-b034-4d4b-bbd8-1eca007c5750/assets/6edf67ad-e647-45bd-b609-4974a86729ce/properties/8ab8b7b2-118b-4bd8-93f6-4125e1a7bd8e"
+            },
+            "Unit": null
+        },
+        {
+            "Alias": null,
+            "DataType": "DOUBLE",
+            "DataTypeSpec": null,
+            "Id": "cd66c574-350a-4031-9c18-bedb8d84fa90",
+            "Name": "Total Average Power",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/cec092ac-b034-4d4b-bbd8-1eca007c5750/assets/6edf67ad-e647-45bd-b609-4974a86729ce/properties/cd66c574-350a-4031-9c18-bedb8d84fa90"
+            },
+            "Unit": "Watts"
+        },
+        {
+            "Alias": null,
+            "DataType": "DOUBLE",
+            "DataTypeSpec": null,
+            "Id": "23d44fd0-3a3c-45ac-a385-0e29ce4b8652",
+            "Name": "Total Overdrive State Time",
+            "Notification": {
+                "State": "DISABLED",
+                "Topic": "$aws/sitewise/asset-models/cec092ac-b034-4d4b-bbd8-1eca007c5750/assets/6edf67ad-e647-45bd-b609-4974a86729ce/properties/23d44fd0-3a3c-45ac-a385-0e29ce4b8652"
+            },
+            "Unit": "seconds"
+        }
+    ],
+    "AssetStatus": {
+        "Error": null,
+        "State": "ACTIVE"
+    }
+}

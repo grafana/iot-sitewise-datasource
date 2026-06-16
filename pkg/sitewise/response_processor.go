@@ -1,0 +1,46 @@
+package sitewise
+
+import (
+	"context"
+	"strings"
+	"time"
+
+	"github.com/patrickmn/go-cache"
+
+	"github.com/grafana/grafana-plugin-sdk-go/data"
+	"github.com/grafana/iot-sitewise-datasource/pkg/models"
+	"github.com/grafana/iot-sitewise-datasource/pkg/resource"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/client"
+	"github.com/grafana/iot-sitewise-datasource/pkg/sitewise/framer"
+)
+
+// cacheDuration is a constant that defines how long to keep cached elements before they are refreshed
+const cacheDuration = time.Minute * 5
+
+// cacheCleanupInterval is the interval at which the internal cache is cleaned / garbage collected
+const cacheCleanupInterval = time.Minute * 10
+
+var GetCache = func() func() *cache.Cache {
+	var gCache = cache.New(cacheDuration, cacheCleanupInterval) // max size not supported
+	return func() *cache.Cache {
+		return gCache
+	}
+}()
+
+func frameResponse(ctx context.Context, query models.BaseQuery, data framer.Framer, sw client.SitewiseAPIClient) (data.Frames, error) {
+	cp := resource.NewCachingResourceProvider(resource.NewSitewiseResources(sw), GetCache())
+	rp := resource.NewQueryResourceProvider(cp, query)
+	frames, err := data.Frames(ctx, rp)
+	if err != nil {
+		return nil, err
+	}
+	if requiresJsonParsing(query) {
+		var assetID string
+		if len(query.AssetIds) > 0 {
+			assetID = strings.TrimSpace(query.AssetIds[0])
+		}
+		parsedFrames := ParseJSONFields(ctx, frames, rp, assetID)
+		return parsedFrames, nil
+	}
+	return frames, nil
+}

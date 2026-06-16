@@ -1,0 +1,23 @@
+{
+    "AssetSummaries": [
+        {
+            "Arn": "arn:aws:iotsitewise:us-east-1:526544423884:asset/6edf67ad-e647-45bd-b609-4974a86729ce",
+            "AssetModelId": "cec092ac-b034-4d4b-bbd8-1eca007c5750",
+            "CreationDate": "2020-11-24T02:18:29Z",
+            "Hierarchies": [
+                {
+                    "Id": "883165ce-ea4d-4bac-a223-783e79c5b271",
+                    "Name": "Turbine Asset Model"
+                }
+            ],
+            "Id": "6edf67ad-e647-45bd-b609-4974a86729ce",
+            "LastUpdateDate": "2020-11-24T02:18:29Z",
+            "Name": "Demo Wind Farm Asset",
+            "Status": {
+                "Error": null,
+                "State": "ACTIVE"
+            }
+        }
+    ],
+    "NextToken": null
+}

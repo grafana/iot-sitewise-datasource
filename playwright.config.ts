@@ -1,0 +1,55 @@
+import { dirname } from 'path';
+import { defineConfig, devices } from '@playwright/test';
+import { PluginOptions } from '@grafana/plugin-e2e';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Read from ".env" file.
+dotenv.config({ path: path.resolve(__dirname, '.env') });
+
+const pluginE2eAuth = `${dirname(require.resolve('@grafana/plugin-e2e'))}/auth`;
+
+/**
+ * See https://playwright.dev/docs/test-configuration.
+ * See https://grafana.com/developers/plugin-tools/e2e-test-a-plugin/introduction
+ */
+export default defineConfig<PluginOptions>({
+  testDir: './tests',
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  timeout: 60000,
+  expect: {
+    timeout: 30000,
+  },
+  workers: process.env.CI ? 1 : undefined,
+  reporter: 'html',
+  use: {
+    baseURL: 'http://localhost:3000',
+    featureToggles: {
+      dashboardNewLayouts: false,
+    },
+    openFeature: {
+      flags: {
+        splashScreen: false,
+      },
+    },
+    trace: 'on-first-retry',
+  },
+
+  projects: [
+    {
+      name: 'auth',
+      testDir: pluginE2eAuth,
+      testMatch: [/.*\.js/],
+    },
+    {
+      name: 'run-tests',
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: 'playwright/.auth/admin.json',
+      },
+      dependencies: ['auth'],
+    },
+  ],
+});

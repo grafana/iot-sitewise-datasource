@@ -1,0 +1,64 @@
+//  🌟 This was machine generated.  Do not edit. 🌟
+//  
+//  Frame[0] 
+//  Name: Demo Turbine Asset 1
+//  Dimensions: 3 Fields by 1 Rows
+//  +-------------------------------+-------------------+----------------+
+//  | Name: time                    | Name: Wind Speed  | Name: quality  |
+//  | Labels:                       | Labels:           | Labels:        |
+//  | Type: []time.Time             | Type: []float64   | Type: []string |
+//  +-------------------------------+-------------------+----------------+
+//  | 2021-02-01 11:20:00 -0800 PST | 23.81007059955162 | GOOD           |
+//  +-------------------------------+-------------------+----------------+
+//  
+//  
+//  🌟 This was machine generated.  Do not edit. 🌟
+{
+  "status": 200,
+  "frames": [
+    {
+      "schema": {
+        "name": "Demo Turbine Asset 1",
+        "fields": [
+          {
+            "name": "time",
+            "type": "time",
+            "typeInfo": {
+              "frame": "time.Time"
+            }
+          },
+          {
+            "name": "Wind Speed",
+            "type": "number",
+            "typeInfo": {
+              "frame": "float64"
+            },
+            "config": {
+              "unit": "m/s"
+            }
+          },
+          {
+            "name": "quality",
+            "type": "string",
+            "typeInfo": {
+              "frame": "string"
+            }
+          }
+        ]
+      },
+      "data": {
+        "values": [
+          [
+            1612207200000
+          ],
+          [
+            23.81007059955162
+          ],
+          [
+            "GOOD"
+          ]
+        ]
+      }
+    }
+  ]
+}
