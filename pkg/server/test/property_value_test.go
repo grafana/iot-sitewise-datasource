@@ -222,7 +222,9 @@ func Test_property_value_query_by_asset_id_and_property_id_of_struct_type(t *tes
 		StringValue: Pointer(structValue),
 	}, 0)
 	mockBatchGetAssetPropertyValue(mockSw, nil, []iotsitewisetypes.BatchGetAssetPropertyValueSuccessEntry{successEntry}, nil)
-	mockSw.On("DescribeAssetProperty", mock.Anything, mock.Anything).Return(&iotsitewise.DescribeAssetPropertyOutput{
+	mockSw.On("DescribeAssetProperty", mock.Anything, mock.MatchedBy(func(req *iotsitewise.DescribeAssetPropertyInput) bool {
+		return req.PropertyId != nil && *req.PropertyId == mockPropertyId
+	})).Return(&iotsitewise.DescribeAssetPropertyOutput{
 		AssetId:   Pointer(mockAssetId),
 		AssetName: Pointer("Demo Turbine Asset 1"),
 		CompositeModel: &iotsitewisetypes.CompositeModelProperty{
@@ -233,7 +235,7 @@ func Test_property_value_query_by_asset_id_and_property_id_of_struct_type(t *tes
 			},
 		},
 	}, nil)
-
+	mockDescribeDiagnosticAssetProperties(mockSw)
 	mockDescribeAsset(mockSw)
 	mockDescribeAssetModel(mockSw)
 
@@ -297,11 +299,11 @@ func Test_property_value_query_by_asset_id_and_property_id_of_struct_type(t *tes
 	require.Contains(t, fieldMap, "anomaly_score")
 	require.InDelta(t, 0.2674, fieldMap["anomaly_score"].At(0).(float64), 0.0001)
 
-	require.Contains(t, fieldMap, "contrib_Demo Turbine Asset 1_3a985085-ea71-4ae6-9395-b65990f58a05")
-	require.InDelta(t, 44.856, fieldMap["contrib_Demo Turbine Asset 1_3a985085-ea71-4ae6-9395-b65990f58a05"].At(0).(float64), 0.001)
+	require.Contains(t, fieldMap, "contrib_Demo Turbine Asset 1_RPM")
+	require.InDelta(t, 0.44856, fieldMap["contrib_Demo Turbine Asset 1_RPM"].At(0).(float64), 0.00001)
 
-	require.Contains(t, fieldMap, "contrib_Demo Turbine Asset 1_44fa33e2-b2db-4724-ba03-48ce28902809")
-	require.InDelta(t, 55.144, fieldMap["contrib_Demo Turbine Asset 1_44fa33e2-b2db-4724-ba03-48ce28902809"].At(0).(float64), 0.001)
+	require.Contains(t, fieldMap, "contrib_Demo Turbine Asset 1_Torque")
+	require.InDelta(t, 0.55144, fieldMap["contrib_Demo Turbine Asset 1_Torque"].At(0).(float64), 0.00001)
 
 	mockSw.AssertExpectations(t)
 	mockSw.AssertCalled(t,
