@@ -83,7 +83,7 @@ func Test_propertyValueForTimeRange_raw_data_for_time_range(t *testing.T) {
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "prop-val-for-time-range-raw-data-for-time-range", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -147,7 +147,7 @@ func Test_propertyValueForTimeRange_1m_data_for_time_range(t *testing.T) {
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "prop-val-for-time-range-1m-data-for-time-range", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -211,7 +211,7 @@ func Test_propertyValueForTimeRange_1h_data_for_time_range(t *testing.T) {
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "prop-val-for-time-range-1h-data-for-time-range", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -275,7 +275,7 @@ func Test_propertyValueForTimeRange_1d_data_for_time_range(t *testing.T) {
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "prop-val-for-time-range-1d-data-for-time-range", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -339,7 +339,7 @@ func Test_propertyValueForTimeRange_1m_data_for_reduced_max_data_point(t *testin
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "prop-val-for-time-range-1m-data-for-reduced-max-data-point", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -400,7 +400,7 @@ func Test_propertyValueForTimeRange_raw_data_for_time_range_from_alias(t *testin
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "prop-val-for-time-range-raw-data-for-time-range-from-alias", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -461,7 +461,7 @@ func Test_propertyValueForTimeRange_1m_data_for_time_range_from_alias(t *testing
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "prop-val-for-time-range-1m-data-for-time-range-from-alias", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -522,7 +522,7 @@ func Test_propertyValueForTimeRange_1h_data_for_time_range_from_alias(t *testing
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "prop-val-for-time-range-1h-data-for-time-range-from-alias", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -583,7 +583,7 @@ func Test_propertyValueForTimeRange_1d_data_for_time_range_from_alias(t *testing
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "prop-val-for-time-range-1d-data-for-time-range-from-alias", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
 
@@ -644,6 +644,6 @@ func Test_propertyValueForTimeRange_1m_data_for_reduced_max_data_point_from_alia
 
 	for i, dr := range qdr.Responses {
 		fname := fmt.Sprintf("%s-%s.golden", "prop-val-for-time-range-1m-data-for-reduced-max-data-point-from-alias", i)
-		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, true)
+		experimental.CheckGoldenJSONResponse(t, "../../testdata", fname, &dr, false)
 	}
 }
