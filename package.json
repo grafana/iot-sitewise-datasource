@@ -9,9 +9,9 @@
     "e2e:debug": "npx playwright test --ui",
     "generate-release-notes": "PREV_TAG=$(git tag | tail -n 1) && gh api --method POST /repos/grafana/iot-sitewise-datasource/releases/generate-notes -f tag_name=v${npm_package_version} -f target_commitish=main -f previous_tag_name=${PREV_TAG} | jq -r .body",
     "lint": "eslint --cache .",
-    "lint:fix": "yarn run lint --fix && prettier --write --list-different .",
+    "lint:fix": "npm run lint -- --fix && prettier --write --list-different .",
     "server": "docker compose up --build",
-    "server:dev": "DEVELOPMENT=true yarn server",
+    "server:dev": "DEVELOPMENT=true npm run server",
     "sign": "npx --yes @grafana/sign-plugin@latest",
     "spellcheck": "cspell -c cspell.config.json \"**/*.{ts,tsx,js,go,md,mdx,yml,yaml,json,scss,css}\"",
     "test": "jest --watch --onlyChanged",
@@ -23,13 +23,33 @@
   "repository": "github:grafana/iot-sitewise-datasource",
   "author": "Grafana Labs <team@grafana.com> (https://grafana.com)",
   "license": "Apache-2.0",
+  "overrides": {
+    "eslint-plugin-react": {
+      "eslint": "$eslint"
+    },
+    "eslint-plugin-react-hooks": {
+      "eslint": "$eslint"
+    },
+    "eslint-plugin-prettier": {
+      "eslint": "$eslint"
+    },
+    "eslint-plugin-jsdoc": {
+      "eslint": "$eslint"
+    },
+    "eslint-webpack-plugin": {
+      "eslint": "$eslint"
+    },
+    "eslint-plugin-deprecation": {
+      "eslint": "$eslint"
+    }
+  },
   "dependencies": {
     "@emotion/css": "11.13.5",
-    "@grafana/data": "^12.1.0",
+    "@grafana/data": "12.1.0",
     "@grafana/plugin-ui": "^0.13.0",
-    "@grafana/runtime": "^12.1.0",
-    "@grafana/schema": "^12.1.0",
-    "@grafana/ui": "^12.1.0",
+    "@grafana/runtime": "12.1.0",
+    "@grafana/schema": "12.1.0",
+    "@grafana/ui": "12.1.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router-dom": "^6.22.0",
@@ -69,7 +89,7 @@
     "eslint-plugin-jsdoc": "^62.7.1",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.0",
+    "eslint-plugin-react-hooks": "7.0.1",
     "eslint-webpack-plugin": "^5.0.2",
     "fork-ts-checker-webpack-plugin": "^9.1.0",
     "glob": "^13.0.0",
@@ -96,5 +116,5 @@
     "webpack-subresource-integrity": "^5.1.0",
     "webpack-virtual-modules": "^0.6.2"
   },
-  "packageManager": "yarn@4.12.0"
+  "packageManager": "npm@11.18.0"
 }

@@ -17,32 +17,32 @@ Make sure you have the following dependencies installed first:
 - [Go](https://golang.org/dl/) (see [go.mod](../go.mod#L3) for minimum required version)
 - [Mage](https://magefile.org/)
 - [Node.js (Long Term Support)](https://nodejs.org)
-- [Yarn](https://yarnpkg.com)
+- [npm](https://www.npmjs.com)
 
 ## Frontend
 
 1. Install dependencies
 
 ```BASH
-yarn install
+npm install
 ```
 
 2. Build plugin in development mode or run in watch mode
 
 ```BASH
-yarn dev
+npm run dev
 ```
 
 3. Build plugin in production mode
 
 ```BASH
-yarn build
+npm run build
 ```
 
 4. Run tests
 
 ```BASH
-yarn test
+npm test
 ```
 
 ## Backend
@@ -89,21 +89,21 @@ See https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html fo
 
 ```BASH
 cd /Workspace/iot-sitewise-datasource
-yarn server:dev
+npm run server:dev
 ```
 
-Starting the docker image with `yarn server:dev` will automatically rebuild and reload the plugin whenever changes are made.
+Starting the docker image with `npm run server:dev` will automatically rebuild and reload the plugin whenever changes are made.
 
 Access from `http://localhost:3000`.
 
-If you run `yarn server:dev` with `ANONYMOUS_AUTH_ENABLED=false` the first time login will be user:**admin** password:**admin**.
+If you run `npm run server:dev` with `ANONYMOUS_AUTH_ENABLED=false` the first time login will be user:**admin** password:**admin**.
 
 ### Build a release
 
 You need to have commit rights to the GitHub repository to publish a release.
 
 1. Update the version number in the `package.json` file.
-2. Update the `CHANGELOG.md` by copy and pasting the relevant PRs from [Github's Release drafter interface](https://github.com/grafana/iot-sitewise-datasource/releases/new) or by running `yarn generate-release-notes` (you'll need to install the [gh cli](https://cli.github.com/) and [jq](https://jqlang.github.io/jq/) to run this command).
+2. Update the `CHANGELOG.md` by copy and pasting the relevant PRs from [Github's Release drafter interface](https://github.com/grafana/iot-sitewise-datasource/releases/new) or by running `npm run generate-release-notes` (you'll need to install the [gh cli](https://cli.github.com/) and [jq](https://jqlang.github.io/jq/) to run this command).
 3. PR the changes.
 4. Once merged, follow the release process that you can find [here](https://enghub.grafana-ops.net/docs/default/component/grafana-plugins-platform/plugins-ci-github-actions/010-plugins-ci-github-actions/#cd_1)
 
@@ -137,19 +137,19 @@ datasources:
 To run e2e tests locally, first run the local server:
 
 ```
-yarn server:dev
+npm run server:dev
 ```
 
 Then run the e2e test command:
 
 ```
-yarn run e2e
+npm run e2e
 ```
 
 This will then print out a report that can be viewed. Or To run e2e tests locally with [UI mode](https://playwright.dev/docs/test-ui-mode) for easier debugging:
 
 ```
-yarn run e2e:debug
+npm run e2e:debug
 ```
 
 You may also wish to enable "traces" in the playwright.config.ts file which will show screenshots of failures and network requests.
