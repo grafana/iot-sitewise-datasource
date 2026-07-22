@@ -35,6 +35,13 @@ func getNextToken(query models.BaseQuery) *string {
 		}
 		// If there are any issues looking up the nextToken it should error and bubble up
 		nextToken := query.NextTokens[entryId]
+		// A map miss (e.g. an entry that completed pagination on a prior page) yields
+		// the empty string. Sending an empty nextToken to the IoT SiteWise API is
+		// rejected with a 400 InvalidRequestException, so omit it (return nil) to end
+		// pagination for that entry, mirroring the single-entry branch below.
+		if nextToken == "" {
+			return nil
+		}
 		return aws.String(nextToken)
 	} else {
 		if query.NextToken == "" {
