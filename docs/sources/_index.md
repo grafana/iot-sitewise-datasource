@@ -42,6 +42,14 @@ The following table lists the features available with this data source.
 | Annotations | Yes |
 | Template variables | Yes |
 
+## Requirements
+
+To use the AWS IoT SiteWise data source, you need:
+
+- A Grafana instance running version 10.4.0 or later.
+- An AWS account with AWS IoT SiteWise enabled in at least one Region, or a configured SiteWise Edge gateway.
+- AWS credentials or an IAM identity with read access to AWS IoT SiteWise.
+
 ## Get started
 
 The following pages help you get started with the AWS IoT SiteWise data source.
@@ -52,16 +60,6 @@ The following pages help you get started with the AWS IoT SiteWise data source.
 - [Annotations](https://grafana.com/docs/plugins/grafana-iot-sitewise-datasource/latest/annotations/)
 - [Alerting](https://grafana.com/docs/plugins/grafana-iot-sitewise-datasource/latest/alerting/)
 - [Troubleshooting](https://grafana.com/docs/plugins/grafana-iot-sitewise-datasource/latest/troubleshooting/)
-
-## Authentication
-
-The AWS IoT SiteWise data source uses the same authentication system as the other AWS data sources in Grafana, such as Amazon CloudWatch. It supports IAM roles, IAM access and secret keys, credentials files, and temporary credentials through Grafana Assume Role. For SiteWise Edge gateways, the data source also supports Linux and LDAP authentication with an SSL certificate.
-
-For setup instructions and a comparison of each method, refer to [Configure the AWS IoT SiteWise data source](https://grafana.com/docs/plugins/grafana-iot-sitewise-datasource/latest/configure/#authentication).
-
-## Alerting
-
-The AWS IoT SiteWise data source supports standard Grafana alerting. Alert queries can't include template variables. For more information, refer to [AWS IoT SiteWise alerting](https://grafana.com/docs/plugins/grafana-iot-sitewise-datasource/latest/alerting/).
 
 ## Additional features
 
