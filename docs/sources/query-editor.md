@@ -229,6 +229,13 @@ AWS IoT SiteWise can store Amazon Lookout for Equipment (L4E) anomaly detection 
 
 The original JSON value is retained in the `AWS/L4E_ANOMALY_RESULT` column.
 
+## Inspect query metadata
+
+For **Get property value aggregates** queries, the data source attaches metadata to the results. To view it, open the panel inspector and select the metadata view. The inspector shows:
+
+- **Resolution:** The resolution used for the query, such as `1h`.
+- **Aggregates:** The aggregate functions returned, such as `AVERAGE` or `MAXIMUM`.
+
 ## Query examples
 
 Use the following examples as starting points. The SQL examples use the views described in [Available views](#available-views).
