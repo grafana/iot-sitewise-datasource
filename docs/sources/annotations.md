@@ -1,6 +1,4 @@
 ---
-aliases:
-  - /docs/plugins/grafana-iot-sitewise-datasource/latest/annotations/
 description: Add annotations from AWS IoT SiteWise data in Grafana.
 keywords:
   - grafana

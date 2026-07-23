@@ -1,6 +1,7 @@
 ---
 aliases:
   - /docs/plugins/grafana-iot-sitewise-datasource/latest/query/
+  - /docs/plugins/grafana-iot-sitewise-datasource/query/
 description: Use the AWS IoT SiteWise query editor to build visual and SQL queries against asset properties, aggregates, and time series.
 keywords:
   - grafana

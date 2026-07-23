@@ -1,6 +1,4 @@
 ---
-aliases:
-  - /docs/plugins/grafana-iot-sitewise-datasource/latest/alerting/
 description: Set up Grafana Alerting with the AWS IoT SiteWise data source.
 keywords:
   - grafana

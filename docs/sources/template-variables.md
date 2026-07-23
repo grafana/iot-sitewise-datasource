@@ -1,6 +1,7 @@
 ---
 aliases:
   - /docs/plugins/grafana-iot-sitewise-datasource/latest/variables/
+  - /docs/plugins/grafana-iot-sitewise-datasource/variables/
 description: Use template variables with the AWS IoT SiteWise data source to build dynamic, reusable dashboards.
 keywords:
   - grafana

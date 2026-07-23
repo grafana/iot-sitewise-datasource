@@ -1,6 +1,7 @@
 ---
 aliases:
   - /docs/plugins/grafana-iot-sitewise-datasource/latest/troubleshoot/
+  - /docs/plugins/grafana-iot-sitewise-datasource/troubleshoot/
 description: Troubleshoot common issues with the AWS IoT SiteWise data source in Grafana.
 keywords:
   - grafana

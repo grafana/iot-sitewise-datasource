@@ -1,6 +1,7 @@
 ---
 aliases:
   - /docs/plugins/grafana-iot-sitewise-datasource/latest/setup/
+  - /docs/plugins/grafana-iot-sitewise-datasource/setup/
 description: Configure the AWS IoT SiteWise data source in Grafana, including authentication, SiteWise Edge, private data source connect, provisioning, and Terraform.
 keywords:
   - grafana
