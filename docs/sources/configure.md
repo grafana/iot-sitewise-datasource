@@ -1,7 +1,7 @@
 ---
 aliases:
   - /docs/plugins/grafana-iot-sitewise-datasource/latest/setup/
-description: Configure the AWS IoT SiteWise data source in Grafana, including authentication, SiteWise Edge, and provisioning.
+description: Configure the AWS IoT SiteWise data source in Grafana, including authentication, SiteWise Edge, private data source connect, provisioning, and Terraform.
 keywords:
   - grafana
   - aws iot sitewise
@@ -9,6 +9,8 @@ keywords:
   - configure
   - authentication
   - provisioning
+  - terraform
+  - private data source connect
   - iam
 labels:
   products:
@@ -58,11 +60,11 @@ To add the AWS IoT SiteWise data source:
 
 ## Authentication
 
-The AWS IoT SiteWise data source uses the same authentication system as the other AWS data sources in Grafana. Choose the method that matches your deployment.
+The AWS IoT SiteWise data source uses the same authentication system as the other AWS data sources in Grafana. In the data source settings, these options appear under **Connection Details**. Choose the method that matches your deployment.
 
 | Method | Best for | Grafana Cloud | Server configuration required |
 | --- | --- | --- | --- |
-| **AWS SDK Default** | Grafana instances running on AWS infrastructure with an attached role | No | Yes |
+| **AWS SDK Default** | Self-managed Grafana with credentials in the environment or default chain | No | Yes |
 | **Workspace IAM Role** | Grafana running on Amazon EC2 with an instance profile | No | Yes |
 | **Grafana Assume Role** | Grafana Cloud users who want temporary credentials | Yes | No |
 | **Access & secret key** | Any deployment | Yes | No |
@@ -80,7 +82,7 @@ This method uses the IAM role attached to the Amazon EC2 instance that runs Graf
 
 ### Grafana Assume Role
 
-This method lets Grafana assume an IAM role that you create for temporary credentials. It's available in Grafana Cloud when your administrator enables it. Create an IAM role that trusts the Grafana account, then provide the role's Amazon Resource Name.
+This method lets Grafana assume an IAM role for temporary credentials without storing long-lived keys. It's available in Grafana Cloud when your administrator enables it. Select **Grafana Assume Role** as the **Authentication Provider**, then expand **How to create an IAM role for grafana to assume** for the trust policy and steps. Create the role so it trusts the Grafana account, and enter its Amazon Resource Name in the **Assume Role ARN** field.
 
 ### Access & secret key
 
@@ -99,23 +101,43 @@ This method reads credentials from an AWS shared credentials file on the Grafana
 | --- | --- |
 | **Credentials Profile Name** | The profile name in the shared credentials file. Leave blank to use the default profile. |
 
-### Assume a role
+### Assume Role
 
-You can assume an IAM role with any authentication method except Grafana Assume Role, which manages its own role.
+The **Assume Role** section appears for every authentication provider. Grafana can assume an IAM role instead of using the selected provider's credentials directly.
 
 | Setting | Description |
 | --- | --- |
 | **Assume Role ARN** | Optional. The Amazon Resource Name of an IAM role to assume. Grafana uses the selected authentication provider to assume this role instead of using the credentials directly. |
-| **External ID** | Optional. The external ID required by a role in another account. This field doesn't apply to Grafana Assume Role. |
+| **External ID** | Optional. The external ID required by a role in another account. This field doesn't appear when you use Grafana Assume Role. |
 
 ### Additional settings
 
-Set the following options for all authentication methods.
+Set the following options in the **Additional Settings** section.
 
 | Setting | Description |
 | --- | --- |
-| **Endpoint** | Optional. A custom endpoint for the AWS IoT SiteWise service, in the form `https://{service}.{region}.amazonaws.com`. Required for SiteWise Edge. |
+| **Endpoint** | Optional. A custom endpoint for the AWS IoT SiteWise service, in the form `https://{service}.{region}.amazonaws.com`. Required for SiteWise Edge. This field doesn't appear when you use Grafana Assume Role. |
 | **Default Region** | The AWS Region that queries use by default, such as `us-west-2` for US West (Oregon). Select **Edge** to connect to a SiteWise Edge gateway. |
+
+## Connect to private networks
+
+AWS IoT SiteWise is usually reachable over public AWS endpoints. If you need to reach a private endpoint, such as a SiteWise Edge gateway or a service behind a private network that isn't publicly accessible, use one of the following options.
+
+### Private data source connect (Grafana Cloud)
+
+If you use Grafana Cloud, use [Private data source connect (PDC)](https://grafana.com/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/) to securely connect Grafana Cloud to a private network without opening the network to inbound traffic. PDC establishes an outbound connection from an agent that runs inside your network.
+
+When PDC is enabled for your Grafana Cloud instance, a **Private data source connect** section appears in the data source settings, which lets you query data that lives within a secured network without opening the network to inbound traffic from Grafana Cloud. Select the **Private data source connect network** where your endpoint is available.
+
+{{< admonition type="note" >}}
+Private data source connect is available exclusively in Grafana Cloud. On self-managed Grafana, use the secure Socks proxy, a VPN, or AWS PrivateLink to reach private endpoints.
+{{< /admonition >}}
+
+For setup instructions, refer to [Private data source connect](https://grafana.com/docs/grafana-cloud/connect-externally-hosted/private-data-source-connect/).
+
+### Secure Socks proxy (self-managed Grafana)
+
+On self-managed Grafana, if your administrator enables the secure Socks proxy, a **Secure Socks Proxy** section appears in the data source configuration so you can route requests through the proxy. This option requires Grafana version 10.0.0 or later. To enable it, configure the `[secure_socks_datasource_proxy]` section in the Grafana configuration file. For more information, refer to [Configure Grafana](https://grafana.com/docs/grafana/<GRAFANA_VERSION>/setup-grafana/configure-grafana/#secure_socks_datasource_proxy).
 
 ## Configure SiteWise Edge
 
@@ -138,10 +160,6 @@ For Linux and LDAP modes, provide the following values.
 | **SSL Certificate** | The PEM certificate used for SSL-enabled authentication. The value begins with `-----BEGIN CERTIFICATE-----`. Grafana stores this value as a secure setting. |
 
 To replace a saved certificate, click **Reset** and enter a new certificate.
-
-## Configure a Secure Socks proxy
-
-If your Grafana administrator enables the secure Socks proxy, you can send data source requests through a proxy. This option appears in the configuration page when the proxy is enabled and Grafana is version 10.0.0 or later. For more information, refer to [Configure a data source connection proxy](https://grafana.com/docs/grafana/<GRAFANA_VERSION>/setup-grafana/configure-security/configure-database-encryption/).
 
 ## Verify the connection
 
@@ -239,6 +257,77 @@ The following table describes the provisioning keys.
 | `sessionToken` | An optional session token for temporary credentials. Store in `secureJsonData`. |
 | `edgeAuthPass` | The Edge local proxy password. Store in `secureJsonData`. |
 | `cert` | The PEM SSL certificate for Edge. Store in `secureJsonData`. |
+| `enableSecureSocksProxy` | Set to `true` to route requests through the secure Socks proxy on self-managed Grafana. |
+
+### Private data source connect
+
+To route a provisioned data source through the secure Socks proxy, set `enableSecureSocksProxy` to `true`.
+
+```yaml
+apiVersion: 1
+
+datasources:
+  - name: AWS IoT SiteWise
+    type: grafana-iot-sitewise-datasource
+    jsonData:
+      authType: keys
+      defaultRegion: us-east-1
+      enableSecureSocksProxy: true
+    secureJsonData:
+      accessKey: <YOUR_ACCESS_KEY>
+      secretKey: <YOUR_SECRET_KEY>
+```
+
+## Provision with Terraform
+
+You can use the [Grafana Terraform provider](https://registry.terraform.io/providers/grafana/grafana/latest/docs) to provision the AWS IoT SiteWise data source as code. The following examples use the `grafana_data_source` resource.
+
+### Access and secret key with Terraform
+
+```hcl
+resource "grafana_data_source" "sitewise" {
+  type = "grafana-iot-sitewise-datasource"
+  name = "AWS IoT SiteWise"
+
+  json_data_encoded = jsonencode({
+    authType      = "keys"
+    defaultRegion = "us-east-1"
+  })
+
+  secure_json_data_encoded = jsonencode({
+    accessKey = var.aws_access_key
+    secretKey = var.aws_secret_key
+  })
+}
+```
+
+To use temporary AWS credentials from STS, add `sessionToken` to `secure_json_data_encoded`:
+
+```hcl
+  secure_json_data_encoded = jsonencode({
+    accessKey    = var.aws_access_key
+    secretKey    = var.aws_secret_key
+    sessionToken = var.aws_session_token
+  })
+```
+
+### Assume role with Terraform
+
+```hcl
+resource "grafana_data_source" "sitewise" {
+  type = "grafana-iot-sitewise-datasource"
+  name = "AWS IoT SiteWise"
+
+  json_data_encoded = jsonencode({
+    authType      = "default"
+    defaultRegion = "us-east-1"
+    assumeRoleArn = "arn:aws:iam::123456789012:role/grafana-sitewise"
+    externalId    = var.external_id
+  })
+}
+```
+
+For more information, refer to the [`grafana_data_source` resource](https://registry.terraform.io/providers/grafana/grafana/latest/docs/resources/data_source) in the Grafana Terraform provider documentation.
 
 ## Next steps
 
