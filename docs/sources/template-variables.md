@@ -71,14 +71,38 @@ Other query types run successfully but don't map their results to variable optio
 
 ## Use variables in queries
 
-After you create a variable, reference it in a query field with the `${variable_name}` syntax. You can use variables in the following places:
+After you create a variable, reference it in a query field with the `${variable_name}` syntax. The data source interpolates variables in the following fields:
 
 - **Region:** Switch the Region for a query.
-- **Asset and property fields:** Select assets, properties, or property aliases dynamically.
+- **Asset and property fields:** Set the asset, property, or property alias dynamically.
+- **Model ID:** Filter a **List assets** query by a selected asset model.
 - **Resolution:** Change the aggregate or interpolated resolution.
-- **SQL queries:** Insert variable values into `WHERE` conditions and other clauses.
+- **SQL queries:** Insert variable values into `WHERE` conditions and other clauses. String values are quoted and escaped automatically.
 
-For example, create a **List assets** variable named `asset`, then reference it in the **Asset** field of a property query as `${asset}`. When a user selects a different asset from the drop-down, the panel updates automatically.
+The **Asset**, **Property**, and **Property Alias** fields accept multi-value variables. When a variable holds more than one value, the query expands to include every selected value.
+
+## Examples
+
+### Chain a model and asset variable
+
+Build a dashboard where the user first selects an asset model, then an asset that uses that model:
+
+1. Create a **List asset models** variable named `model`.
+1. Create a **List assets** variable named `asset`. Set the query **Filter** to **All** and the **Model ID** to `${model}`.
+1. In your panels, reference `${asset}` in the **Asset** field.
+
+When the user selects a different model, the asset drop-down updates to show only the assets for that model, and the panels update automatically.
+
+### Use a variable in an SQL query
+
+Reference a variable in a `WHERE` condition. The data source quotes and escapes string values, so you don't add quotation marks:
+
+```sql
+select event_timestamp, double_value
+from raw_time_series
+where asset_id = ${asset} and $__timeFilter(event_timestamp)
+order by event_timestamp asc
+```
 
 ## Next steps
 
