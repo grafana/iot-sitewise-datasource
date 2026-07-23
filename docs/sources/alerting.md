@@ -61,16 +61,23 @@ Alert rule queries must return numeric data that Grafana can evaluate against a 
 
 ### Example visual query
 
-Use the **Get property value aggregates** query type with the **Average** aggregate and the **Time series** format to evaluate an asset property against a threshold. Select the asset and property explicitly rather than using a template variable.
+To evaluate an asset property against a threshold with the visual builder:
+
+1. Set **Query type** to **Get property value aggregates**.
+1. Select the **Asset** and **Property** explicitly. Don't use a template variable.
+1. Set **Aggregate** to **Average** and choose a fixed **Resolution**, such as **Hour**.
+1. Set **Format** to **Time series**.
 
 ### Example SQL query
 
-The following query returns the average value for a property from precomputed aggregates, which you can evaluate against a threshold.
+The following query returns the hourly average value for a specific property from precomputed aggregates, which you can evaluate against a threshold. Filter to a single property so the alert evaluates one series:
 
 ```sql
 select event_timestamp, average_value
 from precomputed_aggregates
-where resolution = '1h' and $__timeFilter(event_timestamp)
+where property_alias = '<YOUR_PROPERTY_ALIAS>'
+  and resolution = '1h'
+  and $__timeFilter(event_timestamp)
 order by event_timestamp asc
 ```
 
@@ -79,6 +86,7 @@ order by event_timestamp asc
 Keep the following considerations in mind when you configure alert rules for AWS IoT SiteWise.
 
 - **Evaluation interval:** Set an evaluation interval that accounts for query time and the resolution of your data.
+- **No pagination for alert queries:** When a property value history or aggregate query runs for an alert rule, it fetches all results without pagination so the rule can evaluate synchronously. A wide time range or a fine resolution can pull a large volume of data. Use a fixed, coarse resolution and a bounded evaluation window to limit the data returned.
 - **API limits:** Each evaluation runs a query against AWS IoT SiteWise. Frequent evaluations across many assets can lead to API throttling. Widen the evaluation interval or increase the aggregate resolution to reduce API calls.
 - **Query caching:** Enable [query caching](https://grafana.com/docs/grafana/<GRAFANA_VERSION>/administration/data-source-management/#query-caching) to reduce the number of queries sent to AWS IoT SiteWise. Query caching is available in Grafana Enterprise and Grafana Cloud.
 
