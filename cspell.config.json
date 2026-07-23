@@ -16,7 +16,8 @@
     "**/dashboards/*.json",
     "src/static/**",
     "vendor/**",
-    "yarn.lock"
+    "yarn.lock",
+    "jest.config.js"
   ],
   "words": [
     "Sitewise",
