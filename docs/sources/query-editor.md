@@ -119,7 +119,17 @@ For the **Get property value aggregates** query type, select one or more aggrega
 
 ### Set the resolution
 
-For aggregate and interpolated queries, select a **Resolution** to control the interval that AWS IoT SiteWise uses to compute values. Select **Auto** to let Grafana choose a resolution based on the panel width and time range. Resolution options support template variables.
+For aggregate and interpolated queries, select a **Resolution** to control the interval that AWS IoT SiteWise uses to compute values. Aggregate queries offer the following resolutions. Interpolated queries offer additional finer resolutions, such as **Second** and **10 Seconds**.
+
+| Resolution | Description |
+| --- | --- |
+| **Auto** | Grafana picks a resolution based on the time window, and switches to raw data if a resolution finer than one minute is needed. |
+| **Minute** | One point every minute (`1m`). |
+| **15 Minutes** | One point every 15 minutes (`15m`). |
+| **Hour** | One point every hour (`1h`). |
+| **Day** | One point every day (`1d`). |
+
+Resolution options also accept template variables.
 
 ### Set query options
 
@@ -221,7 +231,18 @@ The original JSON value is retained in the `AWS/L4E_ANOMALY_RESULT` column.
 
 ## Query examples
 
-Use the following examples as starting points.
+Use the following examples as starting points. The SQL examples use the views described in [Available views](#available-views).
+
+### Chart aggregated values with the visual builder
+
+To chart the hourly average of an asset property:
+
+1. Set **Query type** to **Get property value aggregates**.
+1. Select the **Asset** and **Property**, or enter a **Property Alias**.
+1. Set **Aggregate** to **Average** and **Resolution** to **Hour**.
+1. Set **Format** to **Time series**.
+
+### Return raw property values
 
 Return the raw values for a property over the dashboard time range:
 
@@ -232,15 +253,37 @@ where $__timeFilter(event_timestamp)
 order by event_timestamp asc
 ```
 
-Return hourly averages from precomputed aggregates:
+### Return raw values for a specific asset
+
+Filter the raw values to a single asset:
+
+```sql
+select event_timestamp, double_value
+from raw_time_series
+where asset_id = '<YOUR_ASSET_ID>' and $__timeFilter(event_timestamp)
+order by event_timestamp asc
+```
+
+### Return the most recent value for each property
+
+```sql
+select property_alias, event_timestamp, double_value
+from latest_value_time_series
+order by property_alias
+```
+
+### Return aggregates with automatic resolution
+
+Use the `$__autoResolution()` macro to match the resolution to the panel interval:
 
 ```sql
 select event_timestamp, average_value
 from precomputed_aggregates
-where resolution = '1h' and $__timeFilter(event_timestamp)
+where resolution = '$__autoResolution()' and $__timeFilter(event_timestamp)
+order by event_timestamp asc
 ```
 
-List the assets that use a specific asset model:
+### List the assets that use an asset model
 
 ```sql
 select asset_id, asset_name
