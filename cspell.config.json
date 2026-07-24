@@ -17,7 +17,8 @@
     "src/static/**",
     "vendor/**",
     "yarn.lock",
-    "jest.config.js"
+    "jest.config.js",
+    "tests/mocks/**"
   ],
   "words": [
     "Sitewise",
