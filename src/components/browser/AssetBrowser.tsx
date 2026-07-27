@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
 import { Button, Icon, Modal, Spinner, Tab, TabContent, TabsBar } from '@grafana/ui';
-import { AssetInfo } from '../../types';
 import { DataSource } from 'SitewiseDataSource';
+import React, { Component } from 'react';
 import { SitewiseCache } from 'sitewiseCache';
-import { BrowseModels } from './BrowseModels';
-import { BrowseHierarchy } from './BrowseHierarchy';
 import { type Region } from '../../regions';
+import { AssetInfo } from '../../types';
+import { BrowseHierarchy } from './BrowseHierarchy';
+import { BrowseModels } from './BrowseModels';
 
 export interface Props {
   datasource: DataSource;
@@ -103,7 +103,12 @@ export class AssetBrowser extends Component<Props, State> {
         >
           Explore
         </Button>
-        <Modal title={<ModalHeader />} isOpen={isOpen} onDismiss={() => this.setState({ isOpen: false })}>
+        <Modal
+          title={<ModalHeader />}
+          ariaLabel="Asset Browser"
+          isOpen={isOpen}
+          onDismiss={() => this.setState({ isOpen: false })}
+        >
           <div>
             <div>
               <TabsBar>
