@@ -21,5 +21,5 @@ module.exports = {
 
   transformIgnorePatterns: [nodeModulesToTransform([...grafanaESModules,
       '@grafana/plugin-ui',
-      '@marcbachmann/cel-js', '@marcbachmann/cel-js'])],
+      '@marcbachmann/cel-js'])],
 };
