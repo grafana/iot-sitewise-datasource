@@ -19,5 +19,7 @@ module.exports = {
     'react-inlinesvg': path.resolve(__dirname, 'tests', 'mocks', 'react-inlinesvg.tsx'),
   },
 
-  transformIgnorePatterns: [nodeModulesToTransform([...grafanaESModules, '@marcbachmann/cel-js'])],
+  transformIgnorePatterns: [nodeModulesToTransform([...grafanaESModules,
+      '@grafana/plugin-ui',
+      '@marcbachmann/cel-js'])],
 };
