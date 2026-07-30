@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
-    "@babel/core": "^7.29.0",
+    "@babel/core": "^7.29.6",
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^10.0.1",
     "@grafana/aws-sdk": "0.12.0",
