@@ -112,6 +112,7 @@
     "Cascader",
     "protip",
     "npmPreapprovedPackages",
-    "sqlstring"
+    "sqlstring",
+    "GATB"
   ]
 }
