@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.6.1
+
+- Fixed out of SLO CVEs in [#834](https://github.com/grafana/iot-sitewise-datasource/pull/834)
+- fix(api): don't send empty nextToken when batched IoT SiteWise queries finish paginating in [#831](https://github.com/grafana/iot-sitewise-datasource/pull/831)
+- chore(deps-dev): bump @babel/core from 7.29.0 to 7.29.6 in [#833](https://github.com/grafana/iot-sitewise-datasource/pull/833)
+- Update dependencies in [#832](https://github.com/grafana/iot-sitewise-datasource/pull/832)
+- Bump @grafana/* to 13.1.1 and update dependencies in [#830](https://github.com/grafana/iot-sitewise-datasource/pull/830)
+- Bump grafana/* dependencies in [#825](https://github.com/grafana/iot-sitewise-datasource/pull/825)
+- Bump dependencies in [#829](https://github.com/grafana/iot-sitewise-datasource/pull/829)
+- ci: use shared reusable add-to-project workflow in [#823](https://github.com/grafana/iot-sitewise-datasource/pull/823)
+- ci: use shared reusable stale workflow in [#822](https://github.com/grafana/iot-sitewise-datasource/pull/822)
+- chore(deps): update grafana/grafana-enterprise:latest docker digest to 9d4017a in [#800](https://github.com/grafana/iot-sitewise-datasource/pull/800)
+- ci: add stale issue and PR workflow in [#815](https://github.com/grafana/iot-sitewise-datasource/pull/815)
+- fix(deps): update backend dependencies in [#818](https://github.com/grafana/iot-sitewise-datasource/pull/818)
+- chore(deps): update dependency sass-loader to v17 in [#792](https://github.com/grafana/iot-sitewise-datasource/pull/792)
+- Fix workflow name in [#816](https://github.com/grafana/iot-sitewise-datasource/pull/816)
+- fix(json): use caching to retrieve asset and property names correctly in [#723](https://github.com/grafana/iot-sitewise-datasource/pull/723)
+- chore: use shared data-sources Renovate base preset in [#814](https://github.com/grafana/iot-sitewise-datasource/pull/814)
+- Add add-to-project workflow and remove issue_commands in [#812](https://github.com/grafana/iot-sitewise-datasource/pull/812)
+- docs: add signed commits requirement to CONTRIBUTING.md in [#810](https://github.com/grafana/iot-sitewise-datasource/pull/810)
+- Updating plugin-ci-workflows in [#809](https://github.com/grafana/iot-sitewise-datasource/pull/809)
+- chore(deps): update grafana/plugin-ci-workflows/ci-cd-workflows action to v9.0.0 in [#798](https://github.com/grafana/iot-sitewise-datasource/pull/798)
+- chore: make grafanaDependency prerelease-inclusive in [#806](https://github.com/grafana/iot-sitewise-datasource/pull/806)
+- chore: update plugin-ci-workflows to v8.0.1 in [#796](https://github.com/grafana/iot-sitewise-datasource/pull/796)
+- Use GATB in GitHub workflows in [#785](https://github.com/grafana/iot-sitewise-datasource/pull/785)
+- set enable scripts to false in .yarnrc.yml in [#781](https://github.com/grafana/iot-sitewise-datasource/pull/781)
+- chore(deps): update grafana/shared-workflows/ action to in [#774](https://github.com/grafana/iot-sitewise-datasource/pull/774)
+- chore(deps): update grafana/plugin-ci-workflows/ci-cd-workflows action to v7.2.0 in [#747](https://github.com/grafana/iot-sitewise-datasource/pull/747)
+- chore(deps): update grafana/shared-workflows/ action to in [#770](https://github.com/grafana/iot-sitewise-datasource/pull/770)
+- chore(deps): update actions/setup-node digest to 48b55a0 in [#773](https://github.com/grafana/iot-sitewise-datasource/pull/773)
+- fix(deps): update backend dependencies in [#772](https://github.com/grafana/iot-sitewise-datasource/pull/772)
+- chore(deps): update grafana/grafana-enterprise:latest docker digest to f7e79dc in [#771](https://github.com/grafana/iot-sitewise-datasource/pull/771)
+- chore(deps): update grafana/shared-workflows/ action to in [#760](https://github.com/grafana/iot-sitewise-datasource/pull/760)
+- chore(deps): update actions/create-github-app-token action to v3 in [#748](https://github.com/grafana/iot-sitewise-datasource/pull/748)
+- chore(deps): update dependency @grafana/plugin-e2e to v3.4.13 in [#768](https://github.com/grafana/iot-sitewise-datasource/pull/768)
+- chore(deps): update dependency cspell to v10 in [#767](https://github.com/grafana/iot-sitewise-datasource/pull/767)
+- fix(deps): update backend dependencies in [#764](https://github.com/grafana/iot-sitewise-datasource/pull/764)
+- chore(deps): update dependency lodash to v4.18.1 [security] in [#763](https://github.com/grafana/iot-sitewise-datasource/pull/763)
+- chore(deps): update module go.opentelemetry.io/otel/sdk to v1.43.0 [security] in [#766](https://github.com/grafana/iot-sitewise-datasource/pull/766)
+
 ## v2.6.0
 
 - chore: add debug logs for raw property alias fallback in [#756](https://github.com/grafana/iot-sitewise-datasource/pull/756)
