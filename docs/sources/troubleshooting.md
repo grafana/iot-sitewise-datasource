@@ -280,6 +280,20 @@ Alias resolution can behave differently depending on the property's data type, s
 1. Where possible, query by asset and property instead of by alias, so the plugin resolves a consistent asset property name.
 1. Add a **Rename by regex** or **Organize fields** transformation to set a stable display name.
 
+### Intermittent "No data" after saving a dashboard during a fallback
+
+**Symptoms:**
+
+- Stat or time series panels that query by property alias intermittently show "No data".
+- A saved field override or field selection references a raw alias path, but the query currently returns the asset property name.
+
+**Cause:** The data source caches alias resolution metadata for a short period. If the metadata lookup temporarily fails, the data source falls back to using the raw property alias as the field name. If you save the dashboard while the fallback is active, the saved field name no longer matches the field name the data source returns after resolution recovers.
+
+**Solution:**
+
+1. Re-select the field in the panel options or field override so it matches the current field name, then save the dashboard again.
+1. To confirm a fallback occurred, enable debug logging and look for log entries about the raw property alias fallback. Plugin version 2.6.0 added debug logging for this fallback.
+
 ## Template variable errors
 
 These errors occur when you use template variables with the data source.
@@ -292,6 +306,20 @@ These errors occur when you use template variables with the data source.
 1. Use a query type that returns variable options: **List asset models**, **List assets**, or **List associated assets**.
 1. For the **List assets** query, verify that the **Model ID** is set when you use the **All** filter.
 1. Verify that the identity has permission to list the requested resources.
+
+## Alert rule errors
+
+These errors occur when you use the data source in alert rules.
+
+### "input data must be a wide series but got type long"
+
+**Symptoms:**
+
+- A query returns data in a dashboard panel, but the same query fails in an alert rule with an error such as `input data must be a wide series but got type long`.
+
+**Cause:** Alert conditions can only evaluate numeric data. This error occurs when the alert rule query returns string values or table-formatted data that Grafana can't reduce to a number for the alert condition.
+
+**Solution:** Build the alert rule query so it returns numeric time series data, such as a numeric asset property with the **Time series** format. Refer to [Query requirements for alerting](https://grafana.com/docs/plugins/grafana-iot-sitewise-datasource/latest/alerting/#query-requirements-for-alerting).
 
 ## Enable debug logging
 

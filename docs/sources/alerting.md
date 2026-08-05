@@ -79,7 +79,7 @@ where property_alias = '<YOUR_PROPERTY_ALIAS>'
 order by event_timestamp asc
 ```
 
-## Performance considerations
+## Considerations
 
 Keep the following considerations in mind when you configure alert rules for AWS IoT SiteWise.
 
@@ -87,6 +87,7 @@ Keep the following considerations in mind when you configure alert rules for AWS
 - **No pagination for alert queries:** When a property value history or aggregate query runs for an alert rule, it fetches all results without pagination so the rule can evaluate synchronously. A wide time range or a fine resolution can pull a large volume of data. Use a fixed, coarse resolution and a bounded evaluation window to limit the data returned.
 - **API limits:** Each evaluation runs a query against AWS IoT SiteWise. Frequent evaluations across many assets can lead to API throttling. Widen the evaluation interval or increase the aggregate resolution to reduce API calls.
 - **Query caching:** Enable [query caching](https://grafana.com/docs/grafana/<GRAFANA_VERSION>/administration/data-source-management/#query-caching) to reduce the number of queries sent to AWS IoT SiteWise. Query caching is available in Grafana Enterprise and Grafana Cloud.
+- **Notification timestamps:** Alert notifications show the time Grafana evaluated the rule, not the timestamp of the data point that crossed the threshold. This is standard Grafana Alerting behavior.
 
 ## Next steps
 
