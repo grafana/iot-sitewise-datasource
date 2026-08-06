@@ -16,7 +16,9 @@
     "**/dashboards/*.json",
     "src/static/**",
     "vendor/**",
-    "yarn.lock"
+    "yarn.lock",
+    "jest.config.js",
+    "tests/mocks/**"
   ],
   "words": [
     "Sitewise",
@@ -110,6 +112,7 @@
     "Cascader",
     "protip",
     "npmPreapprovedPackages",
-    "sqlstring"
+    "sqlstring",
+    "GATB"
   ]
 }
