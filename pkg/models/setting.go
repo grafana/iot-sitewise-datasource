@@ -79,12 +79,14 @@ func (s *AWSSiteWiseDataSourceSetting) ToAWSDatasourceSettings() awsds.AWSDataso
 		Region:        s.Region,
 		AuthType:      s.AuthType,
 		AssumeRoleARN: s.AssumeRoleARN,
-		ExternalID:    s.ExternalID,
-		Endpoint:      s.Endpoint,
-		DefaultRegion: s.DefaultRegion,
-		AccessKey:     s.AccessKey,
-		SecretKey:     s.SecretKey,
-		SessionToken:  s.SessionToken,
+		ExternalID:                 s.ExternalID,
+		GrafanaExternalID:          s.GrafanaExternalID,
+		UsePerDatasourceExternalID: s.UsePerDatasourceExternalID,
+		Endpoint:                   s.Endpoint,
+		DefaultRegion:              s.DefaultRegion,
+		AccessKey:                  s.AccessKey,
+		SecretKey:                  s.SecretKey,
+		SessionToken:               s.SessionToken,
 	}
 
 	return cfg
