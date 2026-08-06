@@ -100,7 +100,8 @@
     "webpack-virtual-modules": "^0.6.2"
   },
   "resolutions": {
-    "diff": "8.0.3"
+    "diff": "8.0.3",
+    "serialize-javascript@npm:^6.0.2": "7.0.7"
   },
   "packageManager": "yarn@4.12.0"
 }
