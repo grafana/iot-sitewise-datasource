@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.6.2
+
+- fix(security): bump out-of-SLO serialize-javascript to 7.0.7 in [#837](https://github.com/grafana/iot-sitewise-datasource/pull/837)
+
 ## v2.6.1
 
 - Fixed out of SLO CVEs in [#834](https://github.com/grafana/iot-sitewise-datasource/pull/834)
