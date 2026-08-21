@@ -34,7 +34,7 @@ export const PropertyQueryEditor = ({ query, datasource, onChange }: SitewiseQue
   const [loadedQuery, setLoadedQuery] = useState<SitewiseQuery | undefined>();
 
   const cache = useMemo(() => datasource.getCache(query.region), [datasource, query.region]);
-  const propertyAliases = getSelectableTemplateVariables();
+  const propertyAliases: Array<SelectableValue<string>> = getSelectableTemplateVariables();
   const isLoading = loadedQuery !== query;
 
   const onAliasChange = useCallback(
@@ -325,9 +325,9 @@ export const PropertyQueryEditor = ({ query, datasource, onChange }: SitewiseQue
 
   const showQuality = Boolean(
     query.propertyIds ||
-      (query.propertyAliases && isAssetPropertyAggregatesQuery(query)) ||
-      isAssetPropertyValueHistoryQuery(query) ||
-      isAssetPropertyInterpolatedQuery(query)
+    (query.propertyAliases && isAssetPropertyAggregatesQuery(query)) ||
+    isAssetPropertyValueHistoryQuery(query) ||
+    isAssetPropertyInterpolatedQuery(query)
   );
 
   const showOptionsRow = shouldShowOptionsRow(query, showProp);
