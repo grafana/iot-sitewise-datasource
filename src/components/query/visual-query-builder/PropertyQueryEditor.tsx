@@ -27,14 +27,15 @@ const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89abAB][0-9a-f]{3}
 const ALL_HIERARCHIES = '*';
 
 export const PropertyQueryEditor = ({ query, datasource, onChange }: SitewiseQueryEditorProps) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [assetId, setAssetId] = useState<string | undefined>(query.assetIds?.[0]);
   const [asset, setAsset] = useState<AssetInfo | undefined>(undefined);
   const [assets, setAssets] = useState<Array<SelectableValue<string>>>([]);
   const [assetProperties, setAssetProperties] = useState<Array<SelectableValue<string>>>([]);
-  const [propertyAliases, setPropertyAliases] = useState<Array<SelectableValue<string>>>([]);
+  const [loadedQuery, setLoadedQuery] = useState<SitewiseQuery | undefined>();
 
   const cache = useMemo(() => datasource.getCache(query.region), [datasource, query.region]);
+  const propertyAliases = getSelectableTemplateVariables();
+  const isLoading = loadedQuery !== query;
 
   const onAliasChange = useCallback(
     (sel: SelectableValue<string> | Array<SelectableValue<string>>) => {
@@ -247,28 +248,45 @@ export const PropertyQueryEditor = ({ query, datasource, onChange }: SitewiseQue
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    const assetId = query.assetIds?.[0];
-
-    setPropertyAliases(getSelectableTemplateVariables());
+    const currentQuery = query;
+    const selectedAssetId = currentQuery.assetIds?.[0];
+    let cancelled = false;
 
     Promise.allSettled([
-      assetId && cache.getAssetInfo(assetId).then(setAsset),
-      assetId &&
-        cache.listAssetProperties(assetId).then((assetProperties) => {
-          setAssetProperties(
-            assetProperties?.map(({ id, name }) => ({
-              value: id,
-              label: name,
-            })) ?? []
-          );
+      selectedAssetId &&
+        cache.getAssetInfo(selectedAssetId).then((info) => {
+          if (!cancelled) {
+            setAsset(info);
+          }
         }),
-      cache.getAssetPickerOptions().then(setAssets),
+      selectedAssetId &&
+        cache.listAssetProperties(selectedAssetId).then((properties) => {
+          if (!cancelled) {
+            setAssetProperties(
+              properties?.map(({ id, name }) => ({
+                value: id,
+                label: name,
+              })) ?? []
+            );
+          }
+        }),
+      cache.getAssetPickerOptions().then((options) => {
+        if (!cancelled) {
+          setAssets(options);
+        }
+      }),
     ])
       .catch(console.error)
-      .finally(() => setIsLoading(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
+      .finally(() => {
+        if (!cancelled) {
+          setLoadedQuery(currentQuery);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [query, cache]);
 
   let selectedPropertyAliases = propertyAliases.filter(
     (alias) => alias.value && query.propertyAliases?.includes(alias.value)
