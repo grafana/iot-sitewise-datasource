@@ -1,6 +1,6 @@
 {
   "name": "grafana-iot-sitewise-datasource",
-  "version": "2.6.1",
+  "version": "2.6.2",
   "description": "View IoT Sitewise data in grafana",
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
@@ -89,7 +89,7 @@
     "semver": "^7.7.3",
     "style-loader": "4.0.0",
     "swc-loader": "^0.2.6",
-    "terser-webpack-plugin": "^5.3.14",
+    "terser-webpack-plugin": "^5.6.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "5.9.3",
