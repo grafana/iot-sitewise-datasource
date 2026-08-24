@@ -138,11 +138,11 @@ Use the **Query options** section to refine the results.
 
 | Option | Description |
 | --- | --- |
-| **Quality** | Filter values by quality: `GOOD`, `BAD`, or `UNCERTAIN`. The default is `GOOD`. |
-| **Time** | The time ordering of the results: `ASCENDING` or `DESCENDING`. |
-| **Format** | The response format: **Table** or **Time series**. |
+| **Quality** | Filter values by quality: `GOOD`, `BAD`, or `UNCERTAIN`. The default is `GOOD`. Applies to history, aggregate, and interpolated queries. |
+| **Time** | The time ordering of the results: `ASCENDING` or `DESCENDING`. Applies to history and aggregate queries. |
+| **Format** | The response format: **Table** or **Time series**. Applies to history, aggregate, and interpolated queries. |
 | **Expand Time Range** | Include the last value before the time range and the next value after it. Applies to history and aggregate queries. |
-| **Format L4E Anomaly Result** | Parse Amazon Lookout for Equipment anomaly results into separate fields. Enabled by default. |
+| **Format L4E Anomaly Result** | Parse Amazon Lookout for Equipment anomaly results into separate fields. Enabled by default. Applies to **Get property value** and **Get property value history** queries. |
 | **Client cache** | Cache query results older than 15 minutes for relative time ranges. Enabled by default. |
 
 ### Query-specific fields
@@ -222,13 +222,13 @@ Use macros in SQL queries to reference the dashboard time range and other dynami
 
 ## Format Amazon Lookout for Equipment results
 
-AWS IoT SiteWise can store Amazon Lookout for Equipment (L4E) anomaly detection results as a composite model property named `AWS/L4E_ANOMALY_RESULT`. When you enable **Format L4E Anomaly Result** on a **Get property value** or **Get property value history** query, Grafana parses the JSON result into separate fields, including:
+AWS IoT SiteWise can store Amazon Lookout for Equipment (L4E) anomaly detection results as a composite model property named `AWS/L4E_ANOMALY_RESULT`. When you enable **Format L4E Anomaly Result** on a **Get property value** or **Get property value history** query, Grafana replaces the original JSON with a frame that contains:
 
+- `time`: The timestamp of the prediction.
+- `quality`: The quality of the value.
 - `anomaly_score`: The anomaly score for the prediction.
 - `prediction_reason`: The reason for the prediction.
 - A diagnostic contribution field for each property that contributes to the anomaly.
-
-The original JSON value is retained in the `AWS/L4E_ANOMALY_RESULT` column.
 
 ## Inspect query metadata
 

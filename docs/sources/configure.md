@@ -36,6 +36,26 @@ Before you configure the data source, ensure you have:
 - **An AWS account** with AWS IoT SiteWise enabled in at least one Region, or a configured SiteWise Edge gateway.
 - **AWS credentials or an IAM identity** with read access to AWS IoT SiteWise. At a minimum, grant `iotsitewise:List*`, `iotsitewise:Describe*`, and `iotsitewise:Get*`. To use the SQL query editor, also grant `iotsitewise:ExecuteQuery`.
 
+Attach the following example policy to the IAM identity. Omit `iotsitewise:ExecuteQuery` if you don't use the SQL query editor.
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iotsitewise:List*",
+        "iotsitewise:Describe*",
+        "iotsitewise:Get*",
+        "iotsitewise:ExecuteQuery"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+```
+
 ## Key concepts
 
 If you're new to AWS, these terms are used throughout the configuration.
@@ -152,15 +172,20 @@ Select the **Authentication Mode** for the gateway.
 | **Linux** | Uses Linux-based authentication against the gateway's local authentication proxy. |
 | **LDAP** | Uses LDAP-based authentication against the gateway's local authentication proxy. |
 
-For Linux and LDAP modes, provide the following values.
+Provide an SSL certificate for every Edge connection, including **Standard** mode.
+
+| Setting | Description |
+| --- | --- |
+| **SSL Certificate** | The PEM certificate used for SSL-enabled authentication. The value begins with `-----BEGIN CERTIFICATE-----`. Grafana stores this value as a secure setting. |
+
+To replace a saved certificate, click **Reset** and enter a new certificate.
+
+For Linux and LDAP modes, also provide the following values.
 
 | Setting | Description |
 | --- | --- |
 | **Username** | The username sent to the local authentication proxy. |
 | **Password** | The password sent to the local authentication proxy. Grafana stores this value as a secure setting. |
-| **SSL Certificate** | The PEM certificate used for SSL-enabled authentication. The value begins with `-----BEGIN CERTIFICATE-----`. Grafana stores this value as a secure setting. |
-
-To replace a saved certificate, click **Reset** and enter a new certificate.
 
 ## Verify the connection
 
@@ -257,10 +282,10 @@ The following table describes the provisioning keys.
 | `secretKey` | The AWS secret access key. Store in `secureJsonData`. |
 | `sessionToken` | An optional session token for temporary credentials. Store in `secureJsonData`. |
 | `edgeAuthPass` | The Edge local proxy password. Store in `secureJsonData`. |
-| `cert` | The PEM SSL certificate for Edge. Store in `secureJsonData`. |
+| `cert` | The PEM SSL certificate for Edge. Required for every Edge authentication mode, including Standard. Store in `secureJsonData`. |
 | `enableSecureSocksProxy` | Set to `true` to route requests through the secure Socks proxy on self-managed Grafana. |
 
-### Private data source connect
+### Secure Socks proxy
 
 To route a provisioned data source through the secure Socks proxy, set `enableSecureSocksProxy` to `true`.
 
