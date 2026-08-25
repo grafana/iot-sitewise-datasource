@@ -9,9 +9,9 @@
     "e2e:debug": "npx playwright test --ui",
     "generate-release-notes": "PREV_TAG=$(git tag | tail -n 1) && gh api --method POST /repos/grafana/iot-sitewise-datasource/releases/generate-notes -f tag_name=v${npm_package_version} -f target_commitish=main -f previous_tag_name=${PREV_TAG} | jq -r .body",
     "lint": "eslint --cache --ignore-pattern ./.gitignore --ext .js,.jsx,.ts,.tsx .",
-    "lint:fix": "yarn run lint --fix && prettier --write --list-different .",
+    "lint:fix": "npm run lint -- --fix && prettier --write --list-different .",
     "server": "docker compose up --build",
-    "server:dev": "DEVELOPMENT=true yarn server",
+    "server:dev": "DEVELOPMENT=true npm run server",
     "sign": "sign-plugin",
     "spellcheck": "cspell -c cspell.config.json \"**/*.{ts,tsx,js,go,md,mdx,yml,yaml,json,scss,css}\"",
     "test": "jest --watch --onlyChanged",
@@ -40,7 +40,7 @@
     "@axe-core/playwright": "^4.11.1",
     "@babel/core": "^7.29.6",
     "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^10.0.1",
+    "@eslint/js": "^9.39.5",
     "@grafana/aws-sdk": "0.12.0",
     "@grafana/eslint-config": "^9.0.0",
     "@grafana/plugin-e2e": "3.10.0",
@@ -67,7 +67,7 @@
     "cspell": "^10.0.0",
     "css-loader": "^7.1.2",
     "dotenv": "^17.3.1",
-    "eslint": "^10.0.0",
+    "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-jsdoc": "^62.7.1",
     "eslint-plugin-prettier": "^5.5.4",
@@ -99,8 +99,12 @@
     "webpack-subresource-integrity": "^5.1.0",
     "webpack-virtual-modules": "^0.6.2"
   },
-  "resolutions": {
+  "packageManager": "npm@11.17.0",
+  "overrides": {
     "diff": "8.0.3"
   },
-  "packageManager": "yarn@4.12.0"
+  "engines": {
+    "node": ">=24",
+    "npm": ">=11.17.0"
+  }
 }

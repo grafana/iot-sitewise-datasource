@@ -3,7 +3,14 @@ import { map } from 'rxjs/operators';
 import { assign } from 'lodash';
 import { ListAssetsQuery, QueryType, SitewiseQuery } from './types';
 import { DataSource } from './SitewiseDataSource';
-import { DataQueryRequest, DataQueryResponse, CustomVariableSupport, DataFrameView, ScopedVars } from '@grafana/data';
+import {
+  DataQueryRequest,
+  DataQueryResponse,
+  CustomVariableSupport,
+  DataFrameView,
+  ScopedVars,
+  type SelectableValue,
+} from '@grafana/data';
 import { VisualQueryBuilder } from './components/query/visual-query-builder/VisualQueryBuilder';
 import { AssetModelSummary } from 'queryResponseTypes';
 import { getTemplateSrv, TemplateSrv } from '@grafana/runtime';
@@ -79,7 +86,7 @@ export class SitewiseVariableSupport extends CustomVariableSupport<DataSource, S
   }
 }
 
-export const getSelectableTemplateVariables = () => {
+export const getSelectableTemplateVariables = (): Array<SelectableValue<string>> => {
   return getTemplateSrv()
     .getVariables()
     .map((variable) => ({
