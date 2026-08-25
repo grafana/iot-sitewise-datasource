@@ -99,7 +99,7 @@
     "webpack-subresource-integrity": "^5.1.0",
     "webpack-virtual-modules": "^0.6.2"
   },
-  "packageManager": "npm@11.17.0",
+  "packageManager": "npm@12.0.2",
   "overrides": {
     "diff": "8.0.3"
   },
