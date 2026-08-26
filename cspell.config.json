@@ -112,6 +112,8 @@
     "protip",
     "npmPreapprovedPackages",
     "sqlstring",
-    "GATB"
+    "GATB",
+    "timeend",
+    "jsonencode"
   ]
 }
