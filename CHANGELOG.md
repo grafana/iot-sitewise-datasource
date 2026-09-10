@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.6.3
+
+- fix(security): bump fast-uri to 3.1.7
+- fix(deps): update backend dependencies in [#824](https://github.com/grafana/iot-sitewise-datasource/pull/824)
+- Docs: Updated data source docs for IoT Sitewise in [#826](https://github.com/grafana/iot-sitewise-datasource/pull/826)
+- Chore: Use npm as package manager in [#839](https://github.com/grafana/iot-sitewise-datasource/pull/839)
+
 ## v2.6.2
 
 - fix(security): bump out-of-SLO serialize-javascript to 7.0.7 in [#837](https://github.com/grafana/iot-sitewise-datasource/pull/837)
