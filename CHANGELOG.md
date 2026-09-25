@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.6.4
+
+- Fix security vulnerabilities (CVE-2026-53668, CVE-2026-84375)
+
 ## v2.6.3
 
 - fix(security): bump fast-uri to 3.1.7 in [#840](https://github.com/grafana/iot-sitewise-datasource/pull/840)
