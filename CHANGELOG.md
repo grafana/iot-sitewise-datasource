@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+- Bump `@grafana/aws-sdk` to 0.12.2 so Grafana Assume Role uses the server-minted external ID
+
 ## v2.6.4
 
 - Fix security vulnerabilities (CVE-2026-53668, CVE-2026-84375)
