@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.6.5
+
+- Fix security vulnerabilities (CVE-2026-102278, CVE-2026-102276, CVE-2026-102990)
+
 ## v2.6.4
 
 - Fix security vulnerabilities (CVE-2026-53668, CVE-2026-84375)
