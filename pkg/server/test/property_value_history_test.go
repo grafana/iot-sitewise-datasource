@@ -225,9 +225,9 @@ func Test_getPropertyValueBoolean(t *testing.T) {
 				TimeRange:     timeRange,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:  testdata.AwsRegion,
-						AssetId:    testdata.DemoTurbineAsset1,
-						PropertyId: testdata.TurbinePropAvgWindSpeed,
+						AwsRegion:   testdata.AwsRegion,
+						AssetIds:    []string{testdata.DemoTurbineAsset1},
+						PropertyIds: []string{testdata.TurbinePropAvgWindSpeed},
 					},
 				}),
 			},
@@ -510,8 +510,8 @@ func Test_getPropertyValueHistoryFromAliasCaseTable(t *testing.T) {
 				TimeRange:     timeRange,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:     testdata.AwsRegion,
-						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
+						AwsRegion:       testdata.AwsRegion,
+						PropertyAliases: []string{testdata.TurbinePropWindSpeedAlias},
 					},
 				}),
 			},
@@ -551,8 +551,8 @@ func Test_getPropertyValueHistoryFromAliasCaseTable_disassociated_stream(t *test
 				TimeRange:     timeRange,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:     testdata.AwsRegion,
-						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
+						AwsRegion:       testdata.AwsRegion,
+						PropertyAliases: []string{testdata.TurbinePropWindSpeedAlias},
 					},
 				}),
 			},
@@ -591,8 +591,8 @@ func Test_getPropertyValueHistoryFromAliasCaseTable_disassociated_stream_empty_r
 				TimeRange:     timeRange,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:     testdata.AwsRegion,
-						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
+						AwsRegion:       testdata.AwsRegion,
+						PropertyAliases: []string{testdata.TurbinePropWindSpeedAlias},
 					},
 				}),
 			},
@@ -636,9 +636,9 @@ func Test_getPropertyValueHistoryFromAliasCaseTimeSeries(t *testing.T) {
 				TimeRange:     timeRange,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						ResponseFormat: "timeseries",
-						AwsRegion:      testdata.AwsRegion,
-						PropertyAlias:  testdata.TurbinePropWindSpeedAlias,
+						ResponseFormat:  "timeseries",
+						AwsRegion:       testdata.AwsRegion,
+						PropertyAliases: []string{testdata.TurbinePropWindSpeedAlias},
 					},
 				}),
 			},
@@ -677,9 +677,9 @@ func Test_getPropertyValueHistoryFromAliasCaseTimeSeries_disassociated_stream(t 
 				TimeRange:     timeRange,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						ResponseFormat: "timeseries",
-						AwsRegion:      testdata.AwsRegion,
-						PropertyAlias:  testdata.TurbinePropWindSpeedAlias,
+						ResponseFormat:  "timeseries",
+						AwsRegion:       testdata.AwsRegion,
+						PropertyAliases: []string{testdata.TurbinePropWindSpeedAlias},
 					},
 				}),
 			},
@@ -718,9 +718,9 @@ func Test_getPropertyValueHistoryFromAliasCaseTimeSeries_disassociated_stream_wi
 				TimeRange:     timeRange,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						ResponseFormat: "timeseries",
-						AwsRegion:      testdata.AwsRegion,
-						PropertyAlias:  testdata.TurbinePropWindSpeedAlias,
+						ResponseFormat:  "timeseries",
+						AwsRegion:       testdata.AwsRegion,
+						PropertyAliases: []string{testdata.TurbinePropWindSpeedAlias},
 					},
 				}),
 			},
@@ -763,8 +763,8 @@ func Test_getPropertyValueBooleanFromAlias(t *testing.T) {
 				TimeRange:     timeRange,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:     testdata.AwsRegion,
-						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
+						AwsRegion:       testdata.AwsRegion,
+						PropertyAliases: []string{testdata.TurbinePropWindSpeedAlias},
 					},
 				}),
 			},
@@ -804,8 +804,8 @@ func Test_getPropertyValueBooleanFromAliasWithDisassociatedStream(t *testing.T) 
 				TimeRange:     timeRange,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:     testdata.AwsRegion,
-						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
+						AwsRegion:       testdata.AwsRegion,
+						PropertyAliases: []string{testdata.TurbinePropWindSpeedAlias},
 					},
 				}),
 			},
@@ -845,8 +845,8 @@ func Test_getPropertyValueBooleanFromAlias_disassociated_stream_with_empty_respo
 				TimeRange:     timeRange,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:     testdata.AwsRegion,
-						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
+						AwsRegion:       testdata.AwsRegion,
+						PropertyAliases: []string{testdata.TurbinePropWindSpeedAlias},
 					},
 				}),
 			},
