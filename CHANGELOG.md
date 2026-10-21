@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.6.6
+
+- Chore: Pin golangci-lint to 2.15.0 in development dependencies and CI/CD pipelines
+
 ## v2.6.5
 
 - Fix security vulnerabilities (CVE-2026-102278, CVE-2026-102276, CVE-2026-102990)
