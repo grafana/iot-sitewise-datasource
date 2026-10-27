@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.6.7
+
+- Bump backend dependency
+
 ## v2.6.6
 
 - Chore: Pin golangci-lint to 2.15.0 in development dependencies and CI/CD pipelines
