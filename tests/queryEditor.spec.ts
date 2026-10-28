@@ -1,6 +1,7 @@
 import { test, expect } from './helpers';
 import { interceptRequests } from './interceptRequests';
 import { type SitewiseOptions, type SitewiseSecureJsonData } from '../src/types';
+import { setVisualization } from './setVisualization';
 
 const emptyStateText = /No data|Run a query to visualize it here/i;
 
@@ -15,7 +16,7 @@ test.describe('Query Editor', () => {
         fileName: 'mock-iot-sitewise.e2e.yaml',
       });
       await panelEditPage.datasource.set(ds.name);
-      await panelEditPage.setVisualization('Table');
+      await setVisualization(panelEditPage, 'Table');
     });
 
     test('Get property value', async ({ page, panelEditPage, queryEditor }) => {
@@ -189,7 +190,7 @@ test.describe('Query Editor', () => {
         fileName: 'mock-iot-sitewise.e2e.yaml',
       });
       await panelEditPage.datasource.set(ds.name);
-      await panelEditPage.setVisualization('Table');
+      await setVisualization(panelEditPage, 'Table');
     });
 
     // Uncomment the following code when Builder mode is ready
