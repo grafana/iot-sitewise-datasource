@@ -6,7 +6,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.47.5
 	github.com/aws/aws-sdk-go-v2/config v1.33.13
 	github.com/aws/aws-sdk-go-v2/service/iotsitewise v1.65.2
-	github.com/aws/smithy-go v1.28.7
+	github.com/aws/smithy-go v1.28.8
 	github.com/google/go-cmp v0.7.0
 	github.com/grafana/grafana-aws-sdk v1.5.7
 	github.com/grafana/grafana-plugin-sdk-go v0.298.0
