@@ -25,9 +25,6 @@ export default defineConfig<PluginOptions>({
   reporter: 'html',
   use: {
     baseURL: 'http://localhost:3000',
-    featureToggles: {
-      dashboardNewLayouts: false,
-    },
     openFeature: {
       flags: {
         splashScreen: false,
