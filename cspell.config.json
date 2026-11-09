@@ -20,6 +20,7 @@
     "package-lock.json"
   ],
   "words": [
+    "GOPATH",
     "Sitewise",
     "sitewise",
     "datasource",
@@ -112,6 +113,8 @@
     "protip",
     "npmPreapprovedPackages",
     "sqlstring",
-    "GATB"
+    "GATB",
+    "timeend",
+    "jsonencode"
   ]
 }

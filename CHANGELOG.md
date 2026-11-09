@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.6.8
+
+- Fix a connection freeze between Grafana and the plugin under heavy query load by updating google.golang.org/grpc to v1.85.0 ([grpc/grpc-go#9330](https://github.com/grpc/grpc-go/issues/9330))
+- Update frontend dependencies
+
+## v2.6.7
+
+- Bump backend dependency
+
+## v2.6.6
+
+- Chore: Pin golangci-lint to 2.15.0 in development dependencies and CI/CD pipelines
+
+## v2.6.5
+
+- Fix security vulnerabilities (CVE-2026-102278, CVE-2026-102276, CVE-2026-102990)
+
+## v2.6.4
+
+- Fix security vulnerabilities (CVE-2026-53668, CVE-2026-84375)
+
+## v2.6.3
+
+- fix(security): bump fast-uri to 3.1.7 in [#840](https://github.com/grafana/iot-sitewise-datasource/pull/840)
+- fix(deps): update backend dependencies in [#824](https://github.com/grafana/iot-sitewise-datasource/pull/824)
+- Docs: Updated data source docs for IoT Sitewise in [#826](https://github.com/grafana/iot-sitewise-datasource/pull/826)
+- Chore: Use npm as package manager in [#839](https://github.com/grafana/iot-sitewise-datasource/pull/839)
+
 ## v2.6.2
 
 - fix(security): bump out-of-SLO serialize-javascript to 7.0.7 in [#837](https://github.com/grafana/iot-sitewise-datasource/pull/837)
