@@ -60,9 +60,9 @@ func Test_propertyValueForTimeRange_raw_data_for_time_range(t *testing.T) {
 				MaxDataPoints: 720,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:  testdata.AwsRegion,
-						AssetId:    testdata.DemoTurbineAsset1,
-						PropertyId: testdata.TurbinePropWindSpeed,
+						AwsRegion:   testdata.AwsRegion,
+						AssetIds:    []string{testdata.DemoTurbineAsset1},
+						PropertyIds: []string{testdata.TurbinePropWindSpeed},
 					},
 					AggregateTypes: []iotsitewisetypes.AggregateType{iotsitewisetypes.AggregateTypeAverage},
 					Resolution:     "AUTO",
@@ -124,9 +124,9 @@ func Test_propertyValueForTimeRange_1m_data_for_time_range(t *testing.T) {
 				MaxDataPoints: 720,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:  testdata.AwsRegion,
-						AssetId:    testdata.DemoTurbineAsset1,
-						PropertyId: testdata.TurbinePropWindSpeed,
+						AwsRegion:   testdata.AwsRegion,
+						AssetIds:    []string{testdata.DemoTurbineAsset1},
+						PropertyIds: []string{testdata.TurbinePropWindSpeed},
 					},
 					AggregateTypes: []iotsitewisetypes.AggregateType{iotsitewisetypes.AggregateTypeAverage},
 					Resolution:     "AUTO",
@@ -188,9 +188,9 @@ func Test_propertyValueForTimeRange_1h_data_for_time_range(t *testing.T) {
 				MaxDataPoints: 720,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:  testdata.AwsRegion,
-						AssetId:    testdata.DemoTurbineAsset1,
-						PropertyId: testdata.TurbinePropWindSpeed,
+						AwsRegion:   testdata.AwsRegion,
+						AssetIds:    []string{testdata.DemoTurbineAsset1},
+						PropertyIds: []string{testdata.TurbinePropWindSpeed},
 					},
 					AggregateTypes: []iotsitewisetypes.AggregateType{iotsitewisetypes.AggregateTypeAverage},
 					Resolution:     "AUTO",
@@ -252,9 +252,9 @@ func Test_propertyValueForTimeRange_1d_data_for_time_range(t *testing.T) {
 				MaxDataPoints: 720,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:  testdata.AwsRegion,
-						AssetId:    testdata.DemoTurbineAsset1,
-						PropertyId: testdata.TurbinePropWindSpeed,
+						AwsRegion:   testdata.AwsRegion,
+						AssetIds:    []string{testdata.DemoTurbineAsset1},
+						PropertyIds: []string{testdata.TurbinePropWindSpeed},
 					},
 					AggregateTypes: []iotsitewisetypes.AggregateType{iotsitewisetypes.AggregateTypeAverage},
 					Resolution:     "AUTO",
@@ -316,9 +316,9 @@ func Test_propertyValueForTimeRange_1m_data_for_reduced_max_data_point(t *testin
 				MaxDataPoints: 299,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:  testdata.AwsRegion,
-						AssetId:    testdata.DemoTurbineAsset1,
-						PropertyId: testdata.TurbinePropWindSpeed,
+						AwsRegion:   testdata.AwsRegion,
+						AssetIds:    []string{testdata.DemoTurbineAsset1},
+						PropertyIds: []string{testdata.TurbinePropWindSpeed},
 					},
 					AggregateTypes: []iotsitewisetypes.AggregateType{iotsitewisetypes.AggregateTypeAverage},
 					Resolution:     "AUTO",
@@ -378,8 +378,8 @@ func Test_propertyValueForTimeRange_raw_data_for_time_range_from_alias(t *testin
 				MaxDataPoints: 720,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:     testdata.AwsRegion,
-						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
+						AwsRegion:       testdata.AwsRegion,
+						PropertyAliases: []string{testdata.TurbinePropWindSpeedAlias},
 					},
 					AggregateTypes: []iotsitewisetypes.AggregateType{iotsitewisetypes.AggregateTypeAverage},
 					Resolution:     "AUTO",
@@ -439,8 +439,8 @@ func Test_propertyValueForTimeRange_1m_data_for_time_range_from_alias(t *testing
 				MaxDataPoints: 720,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:     testdata.AwsRegion,
-						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
+						AwsRegion:       testdata.AwsRegion,
+						PropertyAliases: []string{testdata.TurbinePropWindSpeedAlias},
 					},
 					AggregateTypes: []iotsitewisetypes.AggregateType{iotsitewisetypes.AggregateTypeAverage},
 					Resolution:     "AUTO",
@@ -500,8 +500,8 @@ func Test_propertyValueForTimeRange_1h_data_for_time_range_from_alias(t *testing
 				MaxDataPoints: 720,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:     testdata.AwsRegion,
-						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
+						AwsRegion:       testdata.AwsRegion,
+						PropertyAliases: []string{testdata.TurbinePropWindSpeedAlias},
 					},
 					AggregateTypes: []iotsitewisetypes.AggregateType{iotsitewisetypes.AggregateTypeAverage},
 					Resolution:     "AUTO",
@@ -561,8 +561,8 @@ func Test_propertyValueForTimeRange_1d_data_for_time_range_from_alias(t *testing
 				MaxDataPoints: 720,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:     testdata.AwsRegion,
-						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
+						AwsRegion:       testdata.AwsRegion,
+						PropertyAliases: []string{testdata.TurbinePropWindSpeedAlias},
 					},
 					AggregateTypes: []iotsitewisetypes.AggregateType{iotsitewisetypes.AggregateTypeAverage},
 					Resolution:     "AUTO",
@@ -622,8 +622,8 @@ func Test_propertyValueForTimeRange_1m_data_for_reduced_max_data_point_from_alia
 				MaxDataPoints: 299,
 				JSON: testdata.SerializeStruct(t, models.AssetPropertyValueQuery{
 					BaseQuery: models.BaseQuery{
-						AwsRegion:     testdata.AwsRegion,
-						PropertyAlias: testdata.TurbinePropWindSpeedAlias,
+						AwsRegion:       testdata.AwsRegion,
+						PropertyAliases: []string{testdata.TurbinePropWindSpeedAlias},
 					},
 					AggregateTypes: []iotsitewisetypes.AggregateType{iotsitewisetypes.AggregateTypeAverage},
 					Resolution:     "AUTO",

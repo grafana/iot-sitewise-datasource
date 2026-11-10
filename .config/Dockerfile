@@ -1,4 +1,4 @@
-ARG grafana_version=latest
+ARG grafana_version=latest@sha256:23e1937c869e8ddf38bcad54bcfa5a11b60b84ec6e27e11215d93952cf95339e
 ARG grafana_image=grafana-enterprise
 
 FROM grafana/${grafana_image}:${grafana_version}
@@ -7,7 +7,7 @@ ARG anonymous_auth_enabled=true
 ARG development=false
 ARG TARGETARCH
 
-ARG GO_VERSION=1.21.6
+ARG GO_VERSION=1.27.3
 ARG GO_ARCH=${TARGETARCH:-amd64}
 
 ENV DEV "${development}"
