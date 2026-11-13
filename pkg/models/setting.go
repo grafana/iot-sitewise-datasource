@@ -75,16 +75,18 @@ func (s *AWSSiteWiseDataSourceSetting) Validate() error {
 
 func (s *AWSSiteWiseDataSourceSetting) ToAWSDatasourceSettings() awsds.AWSDatasourceSettings {
 	cfg := awsds.AWSDatasourceSettings{
-		Profile:       s.Profile,
-		Region:        s.Region,
-		AuthType:      s.AuthType,
-		AssumeRoleARN: s.AssumeRoleARN,
-		ExternalID:    s.ExternalID,
-		Endpoint:      s.Endpoint,
-		DefaultRegion: s.DefaultRegion,
-		AccessKey:     s.AccessKey,
-		SecretKey:     s.SecretKey,
-		SessionToken:  s.SessionToken,
+		Profile:                    s.Profile,
+		Region:                     s.Region,
+		AuthType:                   s.AuthType,
+		AssumeRoleARN:              s.AssumeRoleARN,
+		ExternalID:                 s.ExternalID,
+		GrafanaExternalID:          s.GrafanaExternalID,
+		UsePerDatasourceExternalID: s.UsePerDatasourceExternalID,
+		Endpoint:                   s.Endpoint,
+		DefaultRegion:              s.DefaultRegion,
+		AccessKey:                  s.AccessKey,
+		SecretKey:                  s.SecretKey,
+		SessionToken:               s.SessionToken,
 	}
 
 	return cfg
