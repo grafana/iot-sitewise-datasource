@@ -25,6 +25,8 @@ import (
 
 const EDGE_REGION string = "Edge"
 
+var newAWSConfigProvider = awsauth.NewConfigProvider
+
 type clientGetterFunc func(ctx context.Context, region string) (client.SitewiseAPIClient, error)
 type invokerFunc func(ctx context.Context, sw client.SitewiseAPIClient) (framer.Framer, error)
 
@@ -120,19 +122,21 @@ func (ds *Datasource) getClient(ctx context.Context, region string) (client.Site
 		return nil, err
 	}
 
-	awsCfg, err := awsauth.NewConfigProvider().GetConfig(ctx, awsauth.Settings{
-		LegacyAuthType:     ds.Cfg.AuthType,
-		AccessKey:          ds.Cfg.AccessKey,
-		SecretKey:          ds.Cfg.SecretKey,
-		SessionToken:       ds.Cfg.SessionToken,
-		Region:             region,
-		CredentialsProfile: ds.Cfg.Profile,
-		AssumeRoleARN:      ds.Cfg.AssumeRoleARN,
-		Endpoint:           ds.Cfg.Endpoint,
-		ExternalID:         ds.Cfg.ExternalID,
-		UserAgent:          awsds.GetUserAgentString("grafana-iot-sitewise-datasource"),
-		HTTPClient:         httpclient,
-		ProxyOptions:       ds.proxyOptions,
+	awsCfg, err := newAWSConfigProvider().GetConfig(ctx, awsauth.Settings{
+		LegacyAuthType:             ds.Cfg.AuthType,
+		AccessKey:                  ds.Cfg.AccessKey,
+		SecretKey:                  ds.Cfg.SecretKey,
+		SessionToken:               ds.Cfg.SessionToken,
+		Region:                     region,
+		CredentialsProfile:         ds.Cfg.Profile,
+		AssumeRoleARN:              ds.Cfg.AssumeRoleARN,
+		Endpoint:                   ds.Cfg.Endpoint,
+		ExternalID:                 ds.Cfg.ExternalID,
+		GrafanaExternalID:          ds.Cfg.GrafanaExternalID,
+		UsePerDatasourceExternalID: ds.Cfg.UsePerDatasourceExternalID,
+		UserAgent:                  awsds.GetUserAgentString("grafana-iot-sitewise-datasource"),
+		HTTPClient:                 httpclient,
+		ProxyOptions:               ds.proxyOptions,
 	})
 
 	if err != nil {
