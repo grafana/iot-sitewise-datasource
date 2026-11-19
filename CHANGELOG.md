@@ -2,9 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## v2.6.9
 
-- Pass the per-datasource Grafana external ID through to Assume Role, and bump `@grafana/aws-sdk` to 0.12.2.
+- Pass the per-datasource Grafana external ID through to Assume Role in [#880](https://github.com/grafana/iot-sitewise-datasource/pull/880)
+- Bump `@grafana/aws-sdk` to 0.13.1 in [#882](https://github.com/grafana/iot-sitewise-datasource/pull/882)
+- Fix a security vulnerability in glob in [#857](https://github.com/grafana/iot-sitewise-datasource/pull/857)
+- Fix a security vulnerability in golang.org/x/crypto in [#876](https://github.com/grafana/iot-sitewise-datasource/pull/876)
+- Fix CVEs in moment, ip-address and fast-uri in [#858](https://github.com/grafana/iot-sitewise-datasource/pull/858)
+- Update backend dependencies in [#853](https://github.com/grafana/iot-sitewise-datasource/pull/853), [#861](https://github.com/grafana/iot-sitewise-datasource/pull/861), [#867](https://github.com/grafana/iot-sitewise-datasource/pull/867), [#877](https://github.com/grafana/iot-sitewise-datasource/pull/877), and [#879](https://github.com/grafana/iot-sitewise-datasource/pull/879)
+- Pin the Grafana Enterprise docker tag in [#843](https://github.com/grafana/iot-sitewise-datasource/pull/843)
+- Update Node.js to 24.22.2 in [#849](https://github.com/grafana/iot-sitewise-datasource/pull/849) and 24.22.3 in [#878](https://github.com/grafana/iot-sitewise-datasource/pull/878)
+- Update dotenv to v18 in [#868](https://github.com/grafana/iot-sitewise-datasource/pull/868)
+- Update GitHub Actions dependencies to v7 in [#871](https://github.com/grafana/iot-sitewise-datasource/pull/871)
+- Update plugin CI workflows to v12.1.1 in [#873](https://github.com/grafana/iot-sitewise-datasource/pull/873)
+- Update npm to v12 in [#875](https://github.com/grafana/iot-sitewise-datasource/pull/875)
 
 ## v2.6.8
 
