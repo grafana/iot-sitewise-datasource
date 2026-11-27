@@ -115,6 +115,7 @@
     "sqlstring",
     "GATB",
     "timeend",
-    "jsonencode"
+    "jsonencode",
+    "smol"
   ]
 }

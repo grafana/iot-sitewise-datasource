@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v2.6.10
+
+- Fix CVEs in source-map-js, smol-toml and postcss-selector-parser in [#885](https://github.com/grafana/iot-sitewise-datasource/pull/885)
+
 ## v2.6.9
 
 - Pass the per-datasource Grafana external ID through to Assume Role in [#880](https://github.com/grafana/iot-sitewise-datasource/pull/880)
